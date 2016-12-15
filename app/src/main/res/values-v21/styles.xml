@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="windowNoTitle">true</item>
+        <!--状态栏透明-->
+        <item name="android:windowTranslucentStatus">true</item>
+        <!--导航栏不透明-->
+        <item name="android:windowTranslucentNavigation">false</item>
+    </style>
+
+    <!--全透明主题-->
+    <style name="TranslucentNavigation" parent="AppTheme">
+        <!--导航栏不透明-->
+        <item name="android:windowTranslucentNavigation">true</item>
+    </style>
+</resources>

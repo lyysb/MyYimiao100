@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:padding="10dp"
+    android:background="@drawable/shape_dialog2"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <LinearLayout
+        android:background="@android:color/white"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <TextView
+            android:id="@+id/tv1"
+            android:text="【签约须知】"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:textColor="@color/color666"
+            android:gravity="center_horizontal"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+        <TextView
+            android:text="\t\t感谢您诚意参与本次推广资源的竞标，为了维护您的合法权益，避免、减少签订协议时产生不必要的麻烦和损失，请在签订协议之前仔细阅读本须知。"
+            android:padding="12dp"
+            style="@style/style57"/>
+        <TextView
+            android:text="正式完成签约还需要完成两个操作："
+            android:paddingLeft="12dp"
+            android:paddingTop="10dp"
+            android:paddingRight="12dp"
+            android:textStyle="bold"
+            style="@style/style57"/>
+        <TextView
+            android:text="1、 按照要求在规定截止日前，将推广产品保证金转账到规定账户。
+2、 上传签署正确、完整的推广协议扫描件。"
+            android:padding="12dp"
+            style="@style/style57"/>
+
+
+        <TextView
+            android:text="上传电子协议要求："
+            android:paddingTop="10dp"
+            android:paddingLeft="12dp"
+            android:paddingRight="12dp"
+            android:textStyle="bold"
+            style="@style/style57"/>
+        <TextView
+            android:text="1、 填写推广主体必须与申请资源推广的主体信息一致。
+2、 扫描件必须清晰、摆正。"
+            android:layout_weight="1"
+            android:padding="12dp"
+            style="@style/style57"/>
+
+
+
+
+        <CheckBox
+            android:id="@+id/order_read_already"
+            android:layout_marginBottom="35dp"
+            android:button="@drawable/selector_order_agree"
+            android:padding="10dp"
+            android:text="我已阅读以上条文"
+            android:textSize="12sp"
+            android:textColor="@color/colorMain"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <ImageView
+            android:id="@+id/order_agree"
+            android:layout_marginBottom="30dp"
+            android:src="@mipmap/ico_my_order_agree_default"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+</FrameLayout>

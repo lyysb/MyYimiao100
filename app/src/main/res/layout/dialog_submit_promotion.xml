@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@android:color/transparent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <RelativeLayout
+        android:background="@mipmap/ico_personal_promotion_submit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <TextView
+            android:text="为保证竞标秩序，所有竞标者需提交竞标\n保证金，竞标结束之后所有竞标保证金会在\n5个工作日内退还原有账户。"
+            android:textSize="14sp"
+            android:gravity="center_horizontal"
+            android:layout_marginTop="160dp"
+            android:layout_centerHorizontal="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    </RelativeLayout>
+    <TextView
+        android:id="@+id/dialog_tv3"
+        android:text="提交竞标保证金"
+        android:gravity="center"
+        android:textSize="16sp"
+        android:textColor="@color/colorMain"
+        android:background="@drawable/shape_dialog"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"/>
+</LinearLayout>

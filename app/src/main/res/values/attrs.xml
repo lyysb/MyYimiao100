@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+
+    <declare-styleable name="TitleView">
+
+        <!--整体背景颜色-->
+        <attr name="title_background" format="reference|color"/>
+        <!--左侧图标是否显示-->
+        <attr name="left_isShow" format="boolean"/>
+        <!--中间标题-->
+        <attr name="title_text" format="string"/>
+        <!--右侧文字功能说明-->
+        <attr name="title_right" format="string"/>
+        <!--右侧文字是否显示-->
+        <attr name="right_isShow" format="boolean"/>
+    </declare-styleable>
+
+    <declare-styleable name="HorizontalProgressBar">
+        <attr name="progressReachColor" format="color"/>
+        <attr name="progressReachHeight" format="dimension"/>
+        <attr name="progressUnReachColor" format="color"/>
+        <attr name="progressUnReachHeight" format="dimension"/>
+        <attr name="progressText" format="string"/>
+        <attr name="progressTextColor" format="color"/>
+        <attr name="progressTextSize" format="dimension"/>
+        <attr name="progressTextOffset" format="dimension"/>
+    </declare-styleable>
+    <!-- Declare custom theme attributes that allow changing which styles are
+         used for button bars depending on the API level.
+         ?android:attr/buttonBarStyle is new as of API 11 so this is
+         necessary to support previous API levels. -->
+    <declare-styleable name="ButtonBarContainerTheme">
+        <attr name="metaButtonBarStyle" format="reference"/>
+        <attr name="metaButtonBarButtonStyle" format="reference"/>
+    </declare-styleable>
+    <declare-styleable name="TextViewExpandableAnimation">
+        <attr name="tvea_expandLines" format="integer" />
+        <attr name="tvea_shrinkBitmap" format="reference" />
+        <attr name="tvea_expandBitmap" format="reference" />
+        <attr name="tvea_textStateColor" format="color" />
+        <attr name="tvea_textContentColor" format="color" />
+        <attr name="tvea_textContentSize" format="dimension" />
+        <attr name="tvea_textShrink" format="string" />
+        <attr name="tvea_textExpand" format="string" />
+    </declare-styleable>
+    <declare-styleable name="FlikerProgressBar">
+        <attr name="textSize" format="dimension|reference"/>
+
+        <attr name="loadingColor" format="color|reference"/>
+
+        <attr name="stopColor" format="color|reference"/>
+
+    </declare-styleable>
+</resources>

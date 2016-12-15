@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    style="@style/TitleStyle"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorEee"
+        android:orientation="vertical">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@mipmap/ico_my_points_background"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+            <com.yimiao100.sale.view.TitleView
+                android:id="@+id/integral_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:left_isShow="true"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="40dp"
+                android:text="疫苗圈个人积分"
+                android:textColor="@android:color/white"
+                android:textSize="14sp"/>
+            <TextView
+                android:id="@+id/integral_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:textColor="@android:color/white"
+                android:textSize="29sp"
+                android:textStyle="bold"/>
+            <ImageView
+                android:id="@+id/integral_add"
+                android:layout_marginTop="50dp"
+                android:src="@mipmap/ico_my_points_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="69dp"
+            android:background="#2E87D7"
+            android:orientation="horizontal">
+            <LinearLayout
+                android:id="@+id/integral_detail"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
+                <TextView
+                    android:id="@+id/integral_detail2"
+                    android:text=" "
+                    style="@style/style51"/>
+                <TextView
+                    android:text="积分明细"
+                    style="@style/style52"/>
+            </LinearLayout>
+            <View
+                android:background="#5c9bdc"
+                style="@style/view_vertical"/>
+            <LinearLayout
+                android:id="@+id/integral_get"
+                android:layout_weight="1"
+                android:gravity="center_horizontal"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+                <TextView
+                    android:text=" "
+                    style="@style/style51"/>
+                <TextView
+                    android:text="赚取积分"
+                    style="@style/style52"/>
+            </LinearLayout>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="90dp"
+            android:background="@android:color/white"
+            android:orientation="horizontal">
+            <TextView
+                style="@style/style50"
+                android:background="@mipmap/ico_my_points_shop"
+                android:text="积分商城"
+                android:id="@+id/integral_detail_shop"/>
+            <View style="@style/view_vertical"/>
+            <TextView
+                android:id="@+id/integral_detail_note"
+                style="@style/style50"
+                android:background="@mipmap/ico_my_points_record"
+                android:text="兑换记录"/>
+            <View style="@style/view_vertical"/>
+            <TextView
+                android:id="@+id/integral_add2"
+                style="@style/style50"
+                android:background="@mipmap/ico_my_points_recharge"
+                android:text="充值"/>
+            <View style="@style/view_vertical"/>
+            <TextView
+                android:id="@+id/integral_service"
+                style="@style/style50"
+                android:background="@mipmap/ico_my_points_customer_service"
+                android:text="客服"/>
+
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

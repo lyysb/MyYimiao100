@@ -1,0 +1,321 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          xmlns:tools="http://schemas.android.com/tools"
+          package="com.yimiao100.sale">
+
+    <uses-permission android:name="android.permission.CALL_PHONE"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_CONTACTS"/>
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.RECEIVE_SMS"/>
+    <uses-permission android:name="android.permission.READ_SMS"/>
+    <uses-permission android:name="android.permission.GET_TASKS"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="com.android.launcher.permission.READ_SETTINGS"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.WRITE_SETTINGS"/>
+    <uses-permission android:name="android.permission.READ_LOGS"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.SET_DEBUG_APP"/>
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
+    <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
+    <uses-permission android:name="android.permission.USE_CREDENTIALS"/>
+    <uses-permission android:name="android.permission.MANAGE_ACCOUNTS"/>
+    <uses-permission android:name="android.permission.REORDER_TASKS"/>
+    <!-- 银联需要的权限 -->
+    <uses-permission android:name="android.permission.NFC" />
+
+    <application
+        android:name=".MyApplication"
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme"
+        tools:replace="android:icon">
+        <meta-data
+            android:name="com.baidu.lbsapi.API_KEY"
+            android:value="A7qd5sCOV4EhjIuh5IvOadVjkGB5PW2N"/>
+        <meta-data
+            android:name="UMENG_APPKEY"
+            android:value="579ff3aae0f55a0a4a003216">
+        </meta-data>
+        <!-- Ping++ SDK -->
+        <activity
+            android:name="com.pingplusplus.android.PaymentActivity"
+            android:configChanges="orientation|screenSize"
+            android:launchMode="singleTop"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+
+        <!-- 微信支付 -->
+        <activity-alias
+            android:name=".wxapi.WXPayEntryActivity"
+            android:exported="true"
+            android:targetActivity="com.pingplusplus.android.PaymentActivity" />
+
+        <!-- 支付宝 -->
+        <activity
+            android:name="com.alipay.sdk.app.H5PayActivity"
+            android:configChanges="orientation|keyboardHidden|navigation"
+            android:exported="false"
+            android:screenOrientation="behind" >
+        </activity>
+        <activity
+            android:name="com.alipay.sdk.auth.AuthActivity"
+            android:configChanges="orientation|keyboardHidden|navigation"
+            android:exported="false"
+            android:screenOrientation="behind" >
+        </activity>
+
+        <!-- 银联支付 -->
+        <activity android:name="com.unionpay.uppay.PayActivity" />
+
+        <!-- -友盟 -->
+        <activity
+            android:name="com.umeng.socialize.editorpage.ShareActivity"
+            android:excludeFromRecents="true"
+            android:theme="@style/Theme.UMDefault"/>
+        <!-- 微信 -->
+        <activity
+            android:name=".wxapi.WXEntryActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:exported="true"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
+        <!-- 新浪微博 -->
+        <activity
+            android:name=".WBShareActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="com.sina.weibo.sdk.action.ACTION_SDK_REQ_ACTIVITY"/>
+
+                <category android:name="android.intent.category.DEFAULT"/>
+                <!-- <category android:name="com.yimiao100.sale"/> -->
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.sina.weibo.sdk.component.WeiboSdkBrowser"
+            android:configChanges="keyboardHidden|orientation"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize">
+        </activity>
+
+        <service
+            android:name="com.sina.weibo.sdk.net.DownloadService"
+            android:exported="false">
+        </service>
+        <!-- QQ/QZone -->
+        <activity
+            android:name="com.tencent.tauth.AuthActivity"
+            android:launchMode="singleTask"
+            android:noHistory="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+
+                <data android:scheme="tencent1105579589"/>
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.tencent.connect.common.AssistActivity"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
+        <!-- -友盟 -->
+        <activity android:name=".base.BaseActivity">
+        </activity>
+        <activity
+            android:name=".activity.SplashActivity"
+            android:theme="@style/FullScreenTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+
+                <data android:scheme="vaccinesale"/>
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".activity.LoginActivity"
+            android:launchMode="singleInstance"
+            android:theme="@style/TranslucentNavigation">
+        </activity>
+        <activity
+            android:name=".activity.RegisterActivity"
+            android:theme="@style/TranslucentNavigation">
+        </activity>
+        <activity
+            android:name=".activity.MainActivity"
+            android:launchMode="singleTask">
+        </activity>
+        <activity android:name=".activity.PersonalSettingActivity">
+        </activity>
+        <activity android:name=".activity.PersonalNameActivity">
+        </activity>
+        <activity android:name=".activity.PersonalPhoneActivity">
+        </activity>
+        <activity android:name=".activity.ForgetPwdActivity">
+        </activity>
+        <activity android:name=".activity.ForgetPwd2Activity">
+        </activity>
+        <activity android:name=".activity.ChangePwdActivity">
+        </activity>
+        <activity android:name=".activity.BindPromotionActivity">
+        </activity>
+        <activity android:name=".activity.BindPersonalActivity">
+        </activity>
+        <activity
+            android:name=".activity.BindCompanyActivity"
+            android:windowSoftInputMode="adjustPan">
+        </activity>
+        <activity android:name=".activity.PersonalEmailActivity">
+        </activity>
+        <activity android:name=".activity.ChangeFinishedActivity">
+        </activity>
+        <activity android:name=".activity.InformationDetailActivity">
+        </activity>
+        <activity android:name=".activity.SearchActivity">
+        </activity>
+        <activity android:name=".activity.ChangeErrorActivity">
+        </activity>
+        <activity android:name=".activity.PersonalIDCardActivity">
+        </activity>
+        <activity android:name=".activity.NoticeActivity">
+        </activity>
+        <activity android:name=".activity.NoticeDetailActivity">
+        </activity>
+        <activity
+            android:name=".activity.ResourcesActivity"
+            android:launchMode="singleTask">
+        </activity>
+        <activity android:name=".activity.CollectionActivity">
+        </activity>
+        <activity android:name=".activity.ResourcesDetailActivity">
+        </activity>
+        <activity android:name=".activity.ResourcesPromotionActivity">
+        </activity>
+        <activity android:name=".activity.ConfirmPromotionActivity">
+        </activity>
+        <activity android:name=".activity.OrderActivity">
+        </activity>
+        <activity android:name=".activity.OrderErrorActivity">
+        </activity>
+        <activity android:name=".activity.OrderAlreadyActivity">
+        </activity>
+        <activity android:name=".activity.ReconciliationActivity">
+        </activity>
+        <activity android:name=".activity.ReconciliationDetailActivity">
+        </activity>
+        <activity android:name=".activity.CustomerActivity">
+        </activity>
+        <activity android:name=".activity.CustomerDetailActivity">
+        </activity>
+        <activity android:name=".activity.ClinicActivity">
+        </activity>
+        <activity android:name=".activity.ClinicDetailActivity">
+        </activity>
+        <activity android:name=".activity.OrderLaterActivity">
+        </activity>
+        <activity
+            android:name=".activity.RichesActivity"
+            android:launchMode="singleTask">
+        </activity>
+        <activity android:name=".activity.CashActivity">
+        </activity>
+        <activity android:name=".activity.RichesDetailActivity">
+        </activity>
+        <activity android:name=".activity.AssuranceActivity">
+        </activity>
+        <activity android:name=".activity.AssuranceCompanyActivity">
+        </activity>
+        <activity android:name=".activity.PromotionActivity">
+        </activity>
+        <activity android:name=".activity.CashPersonalActivity">
+        </activity>
+        <activity android:name=".activity.CashCompanyActivity">
+        </activity>
+        <activity android:name=".activity.PromotionDetailActivity">
+        </activity>
+        <activity android:name=".activity.ShipActivity">
+        </activity>
+        <activity android:name=".activity.PaymentActivity">
+        </activity>
+        <activity android:name=".activity.OrderCompletedActivity">
+        </activity>
+        <activity android:name=".activity.OrderSubmitActivity">
+        </activity>
+        <activity android:name=".activity.WareHouseActivity">
+        </activity>
+        <activity android:name=".activity.WholesaleActivity">
+        </activity>
+        <activity android:name=".activity.ExamActivity">
+        </activity>
+        <activity android:name=".activity.VideoListActivity">
+        </activity>
+        <activity android:name=".activity.WinScoreActivity">
+        </activity>
+        <activity android:name=".activity.MineAchievementActivity">
+        </activity>
+        <activity android:name=".activity.StudyTaskActivity">
+        </activity>
+        <activity android:name=".activity.VideoDetailActivity">
+        </activity>
+        <activity android:name=".activity.StudyCollectionActivity">
+        </activity>
+        <activity android:name=".activity.ScoreDetailActivity">
+        </activity>
+        <activity android:name=".activity.PersonalAddressActivity">
+        </activity>
+        <activity android:name=".activity.PersonalAddressAddActivity">
+        </activity>
+        <activity android:name=".activity.IntegralActivity">
+        </activity>
+        <activity android:name=".activity.IntegralDetailActivity">
+        </activity>
+        <activity android:name=".activity.VendorListActivity">
+        </activity>
+        <activity android:name=".activity.PromotionCashConfirmActivity">
+        </activity>
+        <activity android:name=".activity.ScholarshipActivity">
+        </activity>
+        <activity android:name=".ScholarshipCashConfirmActivity">
+        </activity>
+        <activity android:name=".activity.RichItemDetailActivity">
+        </activity>
+        <activity android:name=".activity.IntegralShopActivity">
+        </activity>
+        <activity
+            android:name=".activity.IntegralGoodsListActivity"
+            android:launchMode="singleTask">
+        </activity>
+        <activity android:name=".activity.CommodityDetailActivity">
+        </activity>
+        <activity android:name=".activity.CommodityConfirmActivity">
+        </activity>
+        <activity android:name=".activity.ExchangeNoteActivity">
+        </activity>
+        <activity android:name=".activity.PromotionExperienceActivity">
+        </activity>
+        <activity android:name=".activity.GuideActivity">
+        </activity>
+        <activity android:name=".activity.LiveActivity">
+        </activity>
+        <activity android:name=".Main2Activity">
+        </activity>
+    </application>
+
+</manifest>

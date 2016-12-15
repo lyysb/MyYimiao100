@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    style="@style/TitleStyle"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <com.yimiao100.sale.view.TitleView
+        android:id="@+id/list_title"
+        app:left_isShow="true"
+        app:right_isShow="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+    <RelativeLayout
+        android:background="@color/colorEee"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/list_swipe"
+            android:background="@color/colorEee"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <com.yimiao100.sale.view.PullToRefreshListView
+                android:id="@+id/list_list_view"
+                style="@style/list_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+        </android.support.v4.widget.SwipeRefreshLayout>
+        <include
+            android:id="@+id/list_empty_view"
+            layout="@layout/empty_view"/>
+    </RelativeLayout>
+
+
+</LinearLayout>

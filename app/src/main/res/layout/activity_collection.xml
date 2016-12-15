@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    style="@style/TitleStyle"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <com.yimiao100.sale.view.TitleView
+        android:id="@+id/collection_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:left_isShow="true"
+        app:title_text="收藏"
+    />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorEee">
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/collection_swipe"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <com.baoyz.swipemenulistview.SwipeMenuListView
+                android:id="@+id/collection_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+        </android.support.v4.widget.SwipeRefreshLayout>
+        <include
+            android:id="@+id/collection_empty_view"
+            layout="@layout/empty_view"/>
+
+    </RelativeLayout>
+</LinearLayout>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/TitleStyle"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <com.yimiao100.sale.view.TitleView
+        android:id="@+id/personal_address_title"
+        app:title_text="常用邮寄地址"
+        app:left_isShow="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+    <TextView
+        android:id="@+id/personal_address_add"
+        android:layout_alignParentBottom="true"
+        android:background="@android:color/white"
+        android:text="新增收货地址"
+        android:gravity="center"
+        android:textSize="14sp"
+        android:textColor="@color/colorMain"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"/>
+
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:layout_below="@id/personal_address_title"
+        android:layout_above="@id/personal_address_add"
+        android:id="@+id/personal_address_swipe"
+        android:background="@color/colorEee"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <ListView
+            android:id="@+id/personal_address_list_view"
+            style="@style/list_view"
+            android:dividerHeight="7dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+    </android.support.v4.widget.SwipeRefreshLayout>
+</RelativeLayout>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+    <!--主色-->
+    <color name="colorMain">#4188d2</color>
+    <color name="colorOrigin">#ec6941</color>
+
+    <!--登录界面APP-疫苗圈名字颜色-->
+    <color name="appName">#54a4d3</color>
+    <!--输入框和输入框内字体的颜色-->
+    <color name="colorLoginInput">#e5e5e5</color>
+    <color name="color999">#999999</color>
+    <!--浅色-->
+    <color name="colorSecond">#85b6e9</color>
+    <color name="color666">#666666</color>
+    <!--水波的颜色-->
+    <color name="colorWave">#884188d2</color>
+    <!--半透白-->
+    <color name="colorEee">#eeeeee</color>
+    <!--浅绿-->
+    <color name="colorMain2">#7DBAB4</color>
+    <color name="colorMain3">#356FAB</color>
+
+    <color name="black_overlay">#66000000</color>
+    <color name="view">#66000000</color>
+    <color name="color333">#333333</color>
+    <color name="colorRed">#d24141</color>
+    <color name="colorB2">#b2b2b2</color>
+    <color name="colorBlue1">#6ea2d8</color>
+    <color name="colorBlue2">#2b5a8a</color>
+    <color name="colorBlue3">#a7d2ff</color>
+    <color name="colorBlue4">#c4e1ff</color>
+    <color name="colorBlue5">#8ac7ea</color>
+    <color name="colorBlue6">#74b0f9</color>
+    <color name="colorBlue7">#97bde4</color>
+    <color name="colorBD">#bdbdbd</color>
+    <color name="trans_black">#50000000</color>
+
+    <color name="color_divider_line_gray">#e2e2e2</color>
+
+    <color name="color_gray_light_content_text">#5d5d5d</color>
+
+    <color name="colorRed1">#d74a4a</color>
+    <color name="colorRed2">#c00e11</color>
+    <color name="colorRed3">#c00015</color>
+
+    <color name="colorGreen1">#566d84</color>
+
+    <color name="colorOriginal">#eb6100</color>
+    <color name="colorAdvertisement">#22ac38</color>
+    <color name="colorForward">#004986</color>
+    <color name="colorExcerpt">#4188d2</color>
+    <color name="colorTop">#eb6100</color>
+</resources>

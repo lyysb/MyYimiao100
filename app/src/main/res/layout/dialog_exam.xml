@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@mipmap/ico_study_popup">
+    <TextView
+        android:text="完成课程学习后，将自动进入考试页面，请认真答题。考试结果参与奖学金计算。"
+        android:gravity="center_horizontal"
+        android:layout_marginTop="120dp"
+        android:paddingLeft="12dp"
+        android:paddingRight="12dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    <ImageView
+        android:id="@+id/dialog_exam_confirm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="190dp"
+        android:src="@mipmap/ico_study_ok"/>
+    <CheckBox
+        android:id="@+id/dialog_exam_radio"
+        android:text="不再提示"
+        android:textColor="@color/color999"
+        android:button="@drawable/selector_never_notice"
+        android:padding="5dp"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="240dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="12dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+</RelativeLayout>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    style="@style/TitleStyle"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <com.yimiao100.sale.view.TitleView
+        app:title_text="资讯"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/information_live_radio"
+            android:layout_alignParentLeft="true"
+            android:src="@mipmap/ico_live_radio"
+            android:scaleType="center"
+            android:layout_width="50dp"
+            android:layout_height="50dp"/>
+        <ImageView
+            android:id="@+id/information_search"
+            android:layout_alignParentRight="true"
+            android:src="@mipmap/ico_information_search"
+            android:scaleType="center"
+            android:layout_width="50dp"
+            android:layout_height="50dp"/>
+    </com.yimiao100.sale.view.TitleView>
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/information_swipe"
+        android:background="@android:color/white"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <com.yimiao100.sale.view.PullToRefreshListView
+            android:id="@+id/information_list"
+            android:divider="@color/colorLoginInput"
+            android:dividerHeight="0.5dp"
+            android:listSelector="?android:attr/selectableItemBackground"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+    </android.support.v4.widget.SwipeRefreshLayout>
+</LinearLayout>

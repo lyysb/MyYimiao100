@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    style="@style/TitleStyle"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <com.yimiao100.sale.view.TitleView
+        android:id="@+id/phone_title"
+        app:left_isShow="true"
+        app:title_text="电话号码"
+        app:right_isShow="true"
+        app:title_right="保存"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorLoginInput"
+        android:orientation="vertical"
+        >
+        <LinearLayout
+            android:layout_marginTop="12dp"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:orientation="horizontal"
+            android:background="@android:color/white"
+            android:paddingLeft="12dp"
+            android:gravity="center_vertical">
+            <TextView
+                style="@style/Personal1"
+                android:text="电话"
+                />
+            <EditText
+                android:id="@+id/personal_phone"
+                style="@style/Personal3"
+                android:inputType="phone"
+                android:hint="请设置您的电话"
+                />
+            <ImageView
+                android:id="@+id/phone_clear"
+                android:scaleType="center"
+                android:layout_width="40dp"
+                android:layout_height="match_parent"
+                android:src="@drawable/selector_personal_delete"
+                />
+        </LinearLayout>
+
+    </LinearLayout>
+</LinearLayout>

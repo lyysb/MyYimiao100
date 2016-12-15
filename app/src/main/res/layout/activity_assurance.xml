@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    style="@style/TitleStyle"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <com.yimiao100.sale.view.TitleView
+        android:id="@+id/assurance_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:left_isShow="true"
+        app:title_text="推广保证金提现"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/white">
+        <LinearLayout
+            android:id="@+id/ll_assurance_confirm"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:orientation="horizontal">
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:padding="15dp">
+                <TextView
+                    android:id="@+id/assurance_check_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="已选择："
+                    android:textColor="@color/color666"
+                    android:textSize="14sp"/>
+                <TextView
+                    android:id="@+id/assurance_account"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="您目前申请提现的金额是："
+                    android:textColor="@color/color666"
+                    android:textSize="9sp"/>
+
+            </LinearLayout>
+            <ImageButton
+                android:id="@+id/assurance_confirm"
+                style="?android:attr/borderlessButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:background="@drawable/selector_assurance_confirm"/>
+        </LinearLayout>
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/assurance_refresh"
+            android:layout_width="match_parent"
+            android:layout_above="@id/ll_assurance_confirm"
+            android:layout_height="match_parent">
+            <com.yimiao100.sale.view.PullToRefreshListView
+                android:id="@+id/assurance_company_list_view"
+                style="@style/style23"
+                android:layout_above="@id/ll_assurance_confirm"
+                android:background="@color/colorEee"/>
+        </android.support.v4.widget.SwipeRefreshLayout>
+        <include
+            android:id="@+id/assurance_empty"
+            layout="@layout/empty_view"/>
+
+    </RelativeLayout>
+</LinearLayout>

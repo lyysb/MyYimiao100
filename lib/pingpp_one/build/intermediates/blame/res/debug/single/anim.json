@@ -1,0 +1,18 @@
+[
+    {
+        "merged": "C:\\Project\\MyYimiao100\\lib\\pingpp_one\\build\\intermediates\\res\\merged\\debug\\anim\\dialog_exit.xml",
+        "source": "C:\\Project\\MyYimiao100\\lib\\pingpp_one\\res\\anim\\dialog_exit.xml"
+    },
+    {
+        "merged": "C:\\Project\\MyYimiao100\\lib\\pingpp_one\\build\\intermediates\\res\\merged\\debug\\anim\\cmbkb_push_bottom_out.xml",
+        "source": "C:\\Project\\MyYimiao100\\lib\\pingpp_one\\build\\intermediates\\exploded-aar\\MyYimiao100.lib\\pingpp\\unspecified\\res\\anim\\cmbkb_push_bottom_out.xml"
+    },
+    {
+        "merged": "C:\\Project\\MyYimiao100\\lib\\pingpp_one\\build\\intermediates\\res\\merged\\debug\\anim\\dialog_enter.xml",
+        "source": "C:\\Project\\MyYimiao100\\lib\\pingpp_one\\res\\anim\\dialog_enter.xml"
+    },
+    {
+        "merged": "C:\\Project\\MyYimiao100\\lib\\pingpp_one\\build\\intermediates\\res\\merged\\debug\\anim\\cmbkb_push_bottom_in.xml",
+        "source": "C:\\Project\\MyYimiao100\\lib\\pingpp_one\\build\\intermediates\\exploded-aar\\MyYimiao100.lib\\pingpp\\unspecified\\res\\anim\\cmbkb_push_bottom_in.xml"
+    }
+]

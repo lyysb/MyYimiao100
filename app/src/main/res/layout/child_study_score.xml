@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="#f8f8f8"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="12dp"
+    android:gravity="center_vertical"
+    android:orientation="horizontal">
+    <TextView
+        android:id="@+id/score_detail_course_name"
+        android:textSize="12sp"
+        android:textColor="@color/color666"
+        android:drawableLeft="@mipmap/ico_my_grades_book"
+        android:drawablePadding="10dp"
+        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"/>
+    <View
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="10dp"
+        style="@style/view_vertical"/>
+    <TextView
+        android:id="@+id/score_detail_score"
+        android:text="      "
+        android:textSize="15sp"
+        android:textStyle="bold"
+        android:textColor="@color/color666"
+        android:drawableLeft="@mipmap/ico_my_grades_medal"
+        android:drawablePadding="7dp"
+        android:gravity="center_vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+</LinearLayout>

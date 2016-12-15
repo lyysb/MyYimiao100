@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@mipmap/login_page_background"
+    android:fitsSystemWindows="true"
+    >
+    <ScrollView
+        android:id="@+id/sv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <ImageView
+                android:id="@+id/appIcon"
+                android:layout_width="67.9dp"
+                android:layout_height="67.9dp"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="97dp"
+                android:src="@mipmap/logo"
+                />
+
+            <TextView
+                android:id="@+id/appName"
+                style="@style/AppName"/>
+
+
+            <LinearLayout
+                android:id="@+id/ll_login"
+                android:layout_marginTop="27dp"
+                android:layout_below="@id/appName"
+                style="@style/InputAttr.Login">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="17dp"
+                    android:layout_marginRight="16dp"
+                    android:src="@mipmap/ico_login_phone"/>
+
+                <EditText
+                    android:id="@+id/login_phone"
+                    style="@style/Input.Login"
+                    android:hint="请输入您的手机号"
+                    android:inputType="phone"
+                    />
+            </LinearLayout>
+            <LinearLayout
+                android:id="@+id/ll_login_password"
+                android:layout_marginTop="13dp"
+                android:layout_below="@id/ll_login"
+                style="@style/InputAttr.Login"
+                >
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="17dp"
+                    android:layout_marginRight="16dp"
+                    android:src="@mipmap/ico_login_password"/>
+
+                <EditText
+                    android:id="@+id/login_password"
+                    style="@style/Input.Login"
+                    android:hint="请输入您的密码"
+                    android:inputType="textPassword"
+                    />
+                <RelativeLayout
+                    android:id="@+id/show_password_parent"
+                    android:layout_width="43dp"
+                    android:layout_height="match_parent">
+                    <CheckBox
+                        android:id="@+id/show_password"
+                        android:layout_width="21dp"
+                        android:layout_height="15dp"
+                        android:layout_centerInParent="true"
+                        android:layout_marginRight="10dp"
+                        android:background="@drawable/selector_login_showpassword"
+                        android:button="@null"/>
+                </RelativeLayout>
+            </LinearLayout>
+            <TextView
+                android:id="@+id/login_forget_password"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:gravity="center_vertical"
+                android:layout_below="@id/ll_login_password"
+                android:layout_alignRight="@id/ll_login_password"
+                android:text="忘记密码>"
+                android:textColor="@color/colorLoginInput"
+                android:textSize="12sp"
+                />
+
+
+        </RelativeLayout>
+    </ScrollView>
+    <LinearLayout
+        android:layout_below="@id/sv"
+
+        android:layout_marginTop="126dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:orientation="horizontal"
+        >
+        <Button
+            android:id="@+id/login_register"
+            android:layout_width="133dp"
+            android:layout_height="50dp"
+            android:layout_marginRight="8dp"
+            android:background="@drawable/selector_login_register"/>
+        <Button
+            android:id="@+id/login_login"
+            android:layout_width="133dp"
+            android:layout_height="50dp"
+            android:background="@drawable/selector_login"/>
+    </LinearLayout>
+
+
+</RelativeLayout>

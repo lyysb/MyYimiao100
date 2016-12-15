@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:padding="12dp">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/score_detail_product_name"
+                style="@style/style44"
+                android:text="    "/>
+            <TextView
+                android:id="@+id/score_detail_category_name"
+                style="@style/style44"
+                android:text="    "/>
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:id="@+id/score_detail_dosage_form"
+                style="@style/style45"
+                android:text="剂型：      "/>
+            <TextView
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:id="@+id/score_detail_spec"
+                style="@style/style45"
+                android:text="规格："/>
+
+        </LinearLayout>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="8dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <TextView
+                    style="@style/style43"
+                    android:text="平均成绩"/>
+                <TextView
+                    style="@style/style43"
+                    android:layout_marginTop="8dp"
+                    android:text="总发货量"/>
+
+            </LinearLayout>
+            <LinearLayout
+                android:layout_marginRight="10dp"
+                android:paddingLeft="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+                <com.yimiao100.sale.view.HorizontalProgressBar
+                    android:layout_weight="1"
+                    android:id="@+id/score_detail_avg_score_progress"
+                    app:progressReachColor="@color/colorBlue6"
+                    app:progressTextColor="@color/colorMain"
+                    android:layout_width="match_parent"
+                    android:layout_height="18dp"/>
+
+                <com.yimiao100.sale.view.HorizontalProgressBar
+                    android:layout_weight="1"
+                    android:id="@+id/score_detail_ship_progress"
+                    app:progressReachColor="@color/colorBlue6"
+                    app:progressTextColor="@color/colorMain"
+                    android:layout_width="match_parent"
+                    android:layout_height="18dp"/>
+            </LinearLayout>
+
+        </LinearLayout>
+        <ImageView
+            android:id="@+id/score_detail_expend_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="12dp"
+            android:src="@mipmap/ico_my_grades_open"/>
+    </LinearLayout>
+    <TextView
+        android:id="@+id/score_detail_bounds"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="8dp"
+        android:text="奖学金："
+        android:textColor="@color/color333"
+        android:textSize="12sp"/>
+</LinearLayout>

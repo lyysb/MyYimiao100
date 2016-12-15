@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">疫苗圈</string>
+
+    <string name="title_activity_fullscreen">FullscreenActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="expand">查看详情</string>
+    <string name="shrink">收起</string>
+    <string name="tips">This is a custom TextView that can be expanded with a smooth transition
+        animation,you can set the number of lines to expand,change its icon or text and so on\n
+    </string>
+</resources>

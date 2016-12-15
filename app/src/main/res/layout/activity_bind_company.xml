@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    style="@style/TitleStyle"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <com.yimiao100.sale.view.TitleView
+        android:id="@+id/bind_company_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:title_text="绑定对公账户"
+        app:left_isShow="true"
+        >
+        <ImageView
+            android:id="@+id/bind_company_service"
+            android:layout_alignParentRight="true"
+            android:src="@mipmap/ico_service"
+            android:scaleType="center"
+            android:layout_width="50dp"
+            android:layout_height="50dp"/>
+    </com.yimiao100.sale.view.TitleView>
+    <ListView
+        android:id="@+id/bind_company_list_view"
+        style="@style/list_view"
+        android:background="@color/colorEee"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+
+</LinearLayout>

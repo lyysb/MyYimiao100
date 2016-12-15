@@ -1,0 +1,109 @@
+package com.yimiao100.sale.activity;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.widget.TextView;
+
+import com.alibaba.fastjson.JSON;
+import com.yimiao100.sale.R;
+import com.yimiao100.sale.base.BaseActivity;
+import com.yimiao100.sale.bean.ErrorBean;
+import com.yimiao100.sale.bean.NoticeDetailBean;
+import com.yimiao100.sale.bean.NoticedListBean;
+import com.yimiao100.sale.utils.Constant;
+import com.yimiao100.sale.utils.LogUtil;
+import com.yimiao100.sale.utils.SharePreferenceUtil;
+import com.yimiao100.sale.utils.TimeUtil;
+import com.yimiao100.sale.utils.Util;
+import com.yimiao100.sale.view.TitleView;
+import com.zhy.http.okhttp.OkHttpUtils;
+import com.zhy.http.okhttp.callback.StringCallback;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import okhttp3.Call;
+
+/**
+ * 我的通知-通知详情
+ */
+public class NoticeDetailActivity extends BaseActivity implements TitleView.TitleBarOnClickListener {
+
+    @BindView(R.id.notice_detail_head)
+    TitleView mNoticeDetailHead;
+    @BindView(R.id.notice_detail_title)
+    TextView mNoticeDetailTitle;
+    @BindView(R.id.notice_detail_from)
+    TextView mNoticeDetailFrom;
+    @BindView(R.id.notice_detail_time)
+    TextView mNoticeDetailTime;
+    @BindView(R.id.notice_detail_content)
+    TextView mNoticeDetailContent;
+    private int mNoticeId;
+    private String mAccessToken;
+
+    private final String USER_NOTICE = "/api/notice/user_notice";
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_notice_detail);
+        ButterKnife.bind(this);
+
+        Intent intent = getIntent();
+        mNoticeId = intent.getIntExtra("noticeId", -1);
+
+        mAccessToken = (String) SharePreferenceUtil.get(this, Constant.ACCESSTOKEN, "");
+
+        mNoticeDetailHead.setOnTitleBarClick(this);
+
+        initData();
+
+    }
+
+
+    private void initData() {
+        String detail_url = Constant.BASE_URL + USER_NOTICE;
+        OkHttpUtils
+                .post()
+                .url(detail_url)
+                .addHeader("X-Authorization-Token", mAccessToken)
+                .addParams("noticeId", mNoticeId + "")
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        LogUtil.d("通知详情E：" + e.getMessage());
+                        Util.showTimeOutNotice(currentContext);
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
+                        switch (errorBean.getStatus()){
+                            case "success":
+                                LogUtil.d("通知详情：" + response);
+                                //解析JSON
+                                NoticedListBean userNotice = JSON.parseObject(response, NoticeDetailBean.class).getUserNotice();
+                                mNoticeDetailTitle.setText(userNotice.getNoticeTitle());
+                                mNoticeDetailFrom.setText("来源：" + userNotice.getNoticeSource());
+                                mNoticeDetailTime.setText(TimeUtil.timeStamp2Date(userNotice.getCreatedAt() + "", "yyyy年MM月dd日 HH:mm:ss"));
+                                mNoticeDetailContent.setText(userNotice.getNoticeContent());
+                                break;
+                            case "failure":
+                                Util.showError(NoticeDetailActivity.this, errorBean.getReason());
+                                break;
+                        }
+                    }
+                });
+    }
+
+    @Override
+    public void leftOnClick() {
+        finish();
+    }
+
+    @Override
+    public void rightOnClick() {
+
+    }
+}

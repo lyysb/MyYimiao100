@@ -3,7 +3,6 @@ package com.yimiao100.sale.activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
@@ -31,6 +30,7 @@ import com.baidu.mapapi.search.geocode.OnGetGeoCoderResultListener;
 import com.baidu.mapapi.search.geocode.ReverseGeoCodeResult;
 import com.yimiao100.sale.R;
 import com.yimiao100.sale.base.BaseActivity;
+import com.yimiao100.sale.bean.CDCListBean;
 import com.yimiao100.sale.bean.ErrorBean;
 import com.yimiao100.sale.utils.Constant;
 import com.yimiao100.sale.utils.LogUtil;
@@ -85,6 +85,7 @@ public class CustomerDetailActivity extends BaseActivity implements TitleView.Ti
     private String mCdcId;
     private int mUserAddStatus;
 
+    private final int RESULT_CDC_COLLECTION = 111;
     private final String ADD_USER_CDC = "/api/cdc/add_user_cdc";
     private final String CANCEL_USER_CDC = "/api/cdc/cancel_user_cdc";
 
@@ -111,19 +112,17 @@ public class CustomerDetailActivity extends BaseActivity implements TitleView.Ti
 
     private void initData() {
         Intent intent = getIntent();
-//        String from = intent.getStringExtra("from");
-//        ToastUtil.showLong(this, from);
-        Bundle bundle = intent.getExtras();
+        CDCListBean cdc = intent.getParcelableExtra("cdc");
         //CDC名称
-        String cdcName = bundle.getString("cdcName");
+        String cdcName = cdc.getCdcName();
         mCustomerDetailCdcName.setText(cdcName);
         mCustomerDetailCdc.setText(cdcName);
         //新生儿建卡数
-        String cardAmount = bundle.getString("cardAmount", "0");
+        int cardAmount = cdc.getCardAmount();
         //狂犬疫苗使用数量
-        String useAmount = bundle.getString("useAmount", "0");
-        //如果二者都是默认值，则证明没有数据，隐藏客户信息内容
-        if (TextUtils.equals(cardAmount, "0") && TextUtils.equals(useAmount, "0")) {
+        int useAmount = cdc.getUseAmount();
+        //如果二者都是0，则证明没有数据，隐藏客户信息内容
+        if (cardAmount == 0 && useAmount == 0) {
             mCustomerDetailInformation.setVisibility(View.GONE);
             mCustomerDetailCardAccount.setVisibility(View.GONE);
             mCustomerDetailUseAccount.setVisibility(View.GONE);
@@ -135,13 +134,13 @@ public class CustomerDetailActivity extends BaseActivity implements TitleView.Ti
         mCustomerDetailCardAccount.setText("新生儿建卡数：         " + cardAmount + " 张/年");
         mCustomerDetailUseAccount.setText("狂犬疫苗使用数量： " + useAmount + " 支/年");
         //地址
-        String address = bundle.getString("address");
+        String address = cdc.getAddress();
         mCustomerDetailAddress.setText(address);
         //电话
-        String phoneNumber = bundle.getString("phoneNumber");
+        String phoneNumber = cdc.getPhoneNumber();
         mCustomerDetailPhone.setText(phoneNumber);
         //和用户关系0-未收藏，1-已收藏
-        mUserAddStatus = bundle.getInt("userAddStatus");
+        mUserAddStatus = cdc.getUserAddStatus();
         LogUtil.d("mUserAddStatus-init：" + mUserAddStatus);
         if (mUserAddStatus == 1) {
             //表示是用户已经收藏的客户，更换图标显示
@@ -150,7 +149,7 @@ public class CustomerDetailActivity extends BaseActivity implements TitleView.Ti
             mCustomerDetailCollection.setImageResource(R.mipmap.ico_customer_details_collection);
         }
         //CDCId
-        mCdcId = bundle.getString("cdcId");
+        mCdcId = cdc.getId() + "";
         //初始化百度地图
         initBaiduMap();
     }
@@ -207,6 +206,7 @@ public class CustomerDetailActivity extends BaseActivity implements TitleView.Ti
             case R.id.customer_detail_collection:
                 //收藏CDC
                 collectCustomer();
+                setResult(RESULT_CDC_COLLECTION);
                 break;
             case R.id.customer_detail_map_toggle:
                 //显示地图控件

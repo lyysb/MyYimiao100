@@ -16,6 +16,7 @@ import com.yimiao100.sale.adapter.listview.CustomerAdapter;
 import com.yimiao100.sale.base.BaseActivity;
 import com.yimiao100.sale.bean.CDCBean;
 import com.yimiao100.sale.bean.CDCListBean;
+import com.yimiao100.sale.bean.CDCResult;
 import com.yimiao100.sale.bean.ErrorBean;
 import com.yimiao100.sale.utils.Constant;
 import com.yimiao100.sale.utils.LogUtil;
@@ -56,21 +57,20 @@ public class CustomerActivity extends BaseActivity implements TitleView.TitleBar
     FrameLayout mCustomerSearch;
 
 
-    private final String CDC_LIST = "/api/cdc/cdc_list";
-
-    private final String USER_CDC_LIST = "/api/cdc/user_cdc_list";
+    private final String URL_CDC_LIST = Constant.BASE_URL + "/api/cdc/cdc_list";
+    private final String URL_USER_CDC_LIST = Constant.BASE_URL + "/api/cdc/user_cdc_list";
+    private final int REQUEST_CDC_DETAIL = 110;
+    private final int RESULT_CDC_COLLECTION = 111;
     private ArrayList<CDCListBean> mCdcAllList;
     private CustomerAdapter mCdcAllAdapter;
     private ArrayList<CDCListBean> mUserCdcList;
     private CustomerAdapter mUserCdcAdapter;
 
-    private int PAGE_MY;
-    private int TOTAL_PAGE_MY;
+    private int mPageMine;
+    private int mTotalPageMine;
 
-    private int PAGE_ALL;
-    private int TOTAL_PAGE_ALL;
-    private String mUser_cdc_list_url;
-    private String mCdc_list_url;
+    private int mPageAll;
+    private int mTotalPageAll;
     private View mEmptyView;
 
     @Override
@@ -83,12 +83,6 @@ public class CustomerActivity extends BaseActivity implements TitleView.TitleBar
 
         initData();
 
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        initData();
     }
 
     private void initView() {
@@ -144,20 +138,15 @@ public class CustomerActivity extends BaseActivity implements TitleView.TitleBar
     }
 
     private void initData() {
-        //加载我的客户
-        loadUserCDC();
-        //加载全部客户
+        loadMineCDC();
         loadAllCDC();
     }
 
     /**
      * 加载我的客户
      */
-    private void loadUserCDC() {
-        //用户CDC列表url
-        mUser_cdc_list_url = Constant.BASE_URL + USER_CDC_LIST;
-        //联网请求数据
-        getBuild(mUser_cdc_list_url, 1).execute(new StringCallback() {
+    private void loadMineCDC() {
+        getBuild(URL_USER_CDC_LIST, 1).execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
                 LogUtil.d("用户CDC列表E：" + e.getMessage());
@@ -170,19 +159,16 @@ public class CustomerActivity extends BaseActivity implements TitleView.TitleBar
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":
-                        PAGE_MY = 2;
-                        TOTAL_PAGE_MY = JSON.parseObject(response, CDCBean.class).getPagedResult().getTotalPage();
-                        //解析JSON数据
-                        mUserCdcList = JSON.parseObject(response, CDCBean.class).getPagedResult().getPagedList();
-                        //如果列表为空
-                        if (mUserCdcList.size() == 0 && mCustomerMy.isChecked()) {
-                            //显示空白页
-                            mEmptyView.setVisibility(View.VISIBLE);
-                        } else {
-                            //如果列表不为空
-                            //隐藏空白页
-                            mEmptyView.setVisibility(View.INVISIBLE);
+                        mPageMine = 2;
+                        CDCResult cdcResult = JSON.parseObject(response, CDCBean.class).getPagedResult();
+                        mTotalPageMine = cdcResult.getTotalPage();
+                        if (mUserCdcList != null) {
+                            mUserCdcList.clear();
                         }
+                        mUserCdcList = cdcResult.getPagedList();
+                        //如果列表为空，并且选中我的客户，显示空白页
+                        mEmptyView.setVisibility((mUserCdcList.size() == 0 &&
+                                mCustomerMy.isChecked()) ? View.VISIBLE : View.INVISIBLE);
                         //填充“我的客户”Adapter
                         mUserCdcAdapter = new CustomerAdapter(getApplicationContext(), mUserCdcList);
                         mCustomerMyCustomer.setAdapter(mUserCdcAdapter);
@@ -199,9 +185,7 @@ public class CustomerActivity extends BaseActivity implements TitleView.TitleBar
      */
     private void loadAllCDC() {
         //CDC列表url
-        mCdc_list_url = Constant.BASE_URL + CDC_LIST;
-        //联网请求数据
-        getBuild(mCdc_list_url, 1).execute(new StringCallback() {
+        getBuild(URL_CDC_LIST, 1).execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
                 LogUtil.d("CDC列表E：" + e.getMessage());
@@ -214,9 +198,10 @@ public class CustomerActivity extends BaseActivity implements TitleView.TitleBar
                 switch (errorBean.getStatus()) {
                     case "success":
                         //解析JSON数据
-                        mCdcAllList = JSON.parseObject(response, CDCBean.class).getPagedResult().getPagedList();
-                        TOTAL_PAGE_ALL = JSON.parseObject(response, CDCBean.class).getPagedResult().getTotalPage();
-                        PAGE_ALL = 2;
+                        CDCResult cdcResult = JSON.parseObject(response, CDCBean.class).getPagedResult();
+                        mCdcAllList = cdcResult.getPagedList();
+                        mTotalPageAll = cdcResult.getTotalPage();
+                        mPageAll = 2;
                         //填充“全部客户”Adapter
                         mCdcAllAdapter = new CustomerAdapter(getApplicationContext(), mCdcAllList);
                         mCustomerAllCustomer.setAdapter(mCdcAllAdapter);
@@ -234,7 +219,7 @@ public class CustomerActivity extends BaseActivity implements TitleView.TitleBar
         //根据Radio的选中的状态的不同，进行不同的网络请求
         if (mCustomerMy.isChecked()) {
             //联网请求数据
-            getBuild(mUser_cdc_list_url, 1).execute(new StringCallback() {
+            getBuild(URL_USER_CDC_LIST, 1).execute(new StringCallback() {
                 @Override
                 public void onError(Call call, Exception e, int id) {
                     LogUtil.d("用户CDC列表E：" + e.getMessage());
@@ -254,10 +239,11 @@ public class CustomerActivity extends BaseActivity implements TitleView.TitleBar
                     ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                     switch (errorBean.getStatus()) {
                         case "success":
-                            PAGE_MY = 2;
-                            TOTAL_PAGE_MY = JSON.parseObject(response, CDCBean.class).getPagedResult().getTotalPage();
+                            mPageMine = 2;
+                            CDCResult cdcResult = JSON.parseObject(response, CDCBean.class).getPagedResult();
+                            mTotalPageMine = cdcResult.getTotalPage();
                             //解析JSON数据
-                            mUserCdcList = JSON.parseObject(response, CDCBean.class).getPagedResult().getPagedList();
+                            mUserCdcList = cdcResult.getPagedList();
                             if (mUserCdcList.size() == 0 && mCustomerMy.isChecked()) {
                                 //显示空白页
                                 mEmptyView.setVisibility(View.VISIBLE);
@@ -278,7 +264,7 @@ public class CustomerActivity extends BaseActivity implements TitleView.TitleBar
             });
         } else if (mCustomerAll.isChecked()) {
             //联网请求数据
-            getBuild(mCdc_list_url, 1).execute(new StringCallback() {
+            getBuild(URL_CDC_LIST, 1).execute(new StringCallback() {
                 @Override
                 public void onError(Call call, Exception e, int id) {
                     LogUtil.d("CDC列表E：" + e.getMessage());
@@ -298,10 +284,11 @@ public class CustomerActivity extends BaseActivity implements TitleView.TitleBar
                     ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                     switch (errorBean.getStatus()) {
                         case "success":
-                            PAGE_ALL = 2;
-                            TOTAL_PAGE_ALL = JSON.parseObject(response, CDCBean.class).getPagedResult().getTotalPage();
+                            mPageAll = 2;
+                            CDCResult cdcResult = JSON.parseObject(response, CDCBean.class).getPagedResult();
+                            mTotalPageAll = cdcResult.getTotalPage();
                             //解析JSON数据
-                            mCdcAllList = JSON.parseObject(response, CDCBean.class).getPagedResult().getPagedList();
+                            mCdcAllList = cdcResult.getPagedList();
                             //填充“全部客户”Adapter
                             mCdcAllAdapter = new CustomerAdapter(getApplicationContext(), mCdcAllList);
                             mCustomerAllCustomer.setAdapter(mCdcAllAdapter);
@@ -374,74 +361,41 @@ public class CustomerActivity extends BaseActivity implements TitleView.TitleBar
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         //根据RadioButton选中状态，携带不同列表的数据进入详情页
         Intent intent = new Intent(this, CustomerDetailActivity.class);
+        CDCListBean cdc;
         if (mCustomerMy.isChecked()) {
             //携带“我的客户”的数据
-            CDCListBean cdc = mUserCdcList.get(position);
-            Bundle bundle = new Bundle();
-            //CDC名称
-            String cdcName = cdc.getCdcName();
-            bundle.putString("cdcName", cdcName);
-            //新生儿建卡数
-            int cardAmount = cdc.getCardAmount();
-            bundle.putString("cardAmount", cardAmount + "");
-            //狂犬病使用量
-            int useAmount = cdc.getUseAmount();
-            bundle.putString("useAmount", useAmount + "");
-            //地址
-            String address = cdc.getAddress();
-            bundle.putString("address", address);
-            //电话
-            String phoneNumber = cdc.getPhoneNumber();
-            bundle.putString("phoneNumber", phoneNumber);
-            //和用户的关系0-未收藏，1-已收藏
-            int userAddStatus = cdc.getUserAddStatus();
-            bundle.putInt("userAddStatus", userAddStatus);
-            //CDCId
-            int cdcId = cdc.getId();
-            bundle.putString("cdcId", cdcId + "");
-            intent.putExtras(bundle);
+            cdc = mUserCdcList.get(position);
         } else {
-            CDCListBean cdc = mCdcAllList.get(position);
-            Bundle bundle = new Bundle();
-            //携带“全部客户”的数据
-            //CDC名称
-            String cdcName = cdc.getCdcName();
-            bundle.putString("cdcName", cdcName);
-            //新生儿建卡数
-            int cardAmount = cdc.getCardAmount();
-            bundle.putString("cardAmount", cardAmount + "");
-            //狂犬病使用量
-            int useAmount = cdc.getUseAmount();
-            bundle.putString("useAmount", useAmount + "");
-            //地址
-            String address = cdc.getAddress();
-            bundle.putString("address", address);
-            //电话
-            String phoneNumber = cdc.getPhoneNumber();
-            bundle.putString("phoneNumber", phoneNumber);
-            //和用户的关系0-未收藏，1-已收藏
-            int userAddStatus = cdc.getUserAddStatus();
-            bundle.putInt("userAddStatus", userAddStatus);
-            //CDCId
-            int cdcId = cdc.getId();
-            bundle.putString("cdcId", cdcId + "");
-            intent.putExtras(bundle);
+            cdc = mCdcAllList.get(position);
         }
-        startActivity(intent);
+        intent.putExtra("cdc", cdc);
+        startActivityForResult(intent, REQUEST_CDC_DETAIL);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_CDC_DETAIL) {
+            //进入了客户详情页
+            if (resultCode == RESULT_CDC_COLLECTION) {
+                //在详情页用户做了“收藏”的操作
+                //重新加载我的客户--反正全部客户的数据不会因为这个变
+                loadMineCDC();
+            }
+        }
     }
 
     @Override
     public void onLoadMore() {
         if (mCustomerMy.isChecked()) {
             //加载“我的客户”的更多数据
-            if (PAGE_MY <= TOTAL_PAGE_MY) {
+            if (mPageMine <= mTotalPageMine) {
                 loadMyMore();
             }else {
                 mCustomerMyCustomer.noMore();
             }
         } else if (mCustomerAll.isChecked()) {
             //加载“全部客户”的更多数据
-            if (PAGE_ALL <= TOTAL_PAGE_ALL) {
+            if (mPageAll <= mTotalPageAll) {
                 loadAllMore();
             } else {
                 mCustomerMyCustomer.noMore();
@@ -451,7 +405,7 @@ public class CustomerActivity extends BaseActivity implements TitleView.TitleBar
 
     private void loadMyMore() {
         //联网请求数据
-        getBuild(mUser_cdc_list_url, PAGE_MY).execute(new StringCallback() {
+        getBuild(URL_USER_CDC_LIST, mPageMine).execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
                 LogUtil.d("用户CDC列表E：" + e.getMessage());
@@ -464,7 +418,7 @@ public class CustomerActivity extends BaseActivity implements TitleView.TitleBar
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":
-                        PAGE_MY ++;
+                        mPageMine++;
                         mUserCdcList.addAll(JSON.parseObject(response, CDCBean.class).getPagedResult().getPagedList());
                         mUserCdcAdapter.notifyDataSetChanged();
                         break;
@@ -479,7 +433,7 @@ public class CustomerActivity extends BaseActivity implements TitleView.TitleBar
 
     private void loadAllMore() {
         //联网请求数据
-        getBuild(mCdc_list_url, PAGE_ALL).execute(new StringCallback() {
+        getBuild(URL_CDC_LIST, mPageAll).execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
                 LogUtil.d("CDC列表E：" + e.getMessage());
@@ -492,8 +446,8 @@ public class CustomerActivity extends BaseActivity implements TitleView.TitleBar
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":
-                        PAGE_ALL++;
-                        LogUtil.d(PAGE_ALL + "");
+                        mPageAll++;
+                        LogUtil.d(mPageAll + "");
                         mCdcAllList.addAll(JSON.parseObject(response, CDCBean.class).getPagedResult().getPagedList());
                         mCdcAllAdapter.notifyDataSetChanged();
                         break;

@@ -1,9 +1,13 @@
 package com.yimiao100.sale.bean;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
+ * 客户列表条目
  * Created by 亿苗通 on 2016/8/31.
  */
-public class CDCListBean {
+public class CDCListBean implements Parcelable {
     private int id;
     private int provinceId;
     private int cityId;
@@ -148,4 +152,61 @@ public class CDCListBean {
     public void setUpdatedAt(long updatedAt) {
         this.updatedAt = updatedAt;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(this.id);
+        dest.writeInt(this.provinceId);
+        dest.writeInt(this.cityId);
+        dest.writeInt(this.areaId);
+        dest.writeString(this.cdcName);
+        dest.writeString(this.clinicName);
+        dest.writeString(this.address);
+        dest.writeString(this.phoneNumber);
+        dest.writeInt(this.cardAmount);
+        dest.writeInt(this.useAmount);
+        dest.writeString(this.provinceName);
+        dest.writeString(this.cityName);
+        dest.writeString(this.areaName);
+        dest.writeInt(this.userAddStatus);
+        dest.writeLong(this.createdAt);
+        dest.writeLong(this.updatedAt);
+    }
+
+    public CDCListBean() {
+    }
+
+    protected CDCListBean(Parcel in) {
+        this.id = in.readInt();
+        this.provinceId = in.readInt();
+        this.cityId = in.readInt();
+        this.areaId = in.readInt();
+        this.cdcName = in.readString();
+        this.clinicName = in.readString();
+        this.address = in.readString();
+        this.phoneNumber = in.readString();
+        this.cardAmount = in.readInt();
+        this.useAmount = in.readInt();
+        this.provinceName = in.readString();
+        this.cityName = in.readString();
+        this.areaName = in.readString();
+        this.userAddStatus = in.readInt();
+        this.createdAt = in.readLong();
+        this.updatedAt = in.readLong();
+    }
+
+    public static final Parcelable.Creator<CDCListBean> CREATOR = new Parcelable.Creator<CDCListBean>() {
+        public CDCListBean createFromParcel(Parcel source) {
+            return new CDCListBean(source);
+        }
+
+        public CDCListBean[] newArray(int size) {
+            return new CDCListBean[size];
+        }
+    };
 }

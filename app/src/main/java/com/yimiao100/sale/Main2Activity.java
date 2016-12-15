@@ -74,7 +74,6 @@ public class Main2Activity extends BaseActivity implements View.OnClickListener 
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                //发送请求
             }
         });
     }

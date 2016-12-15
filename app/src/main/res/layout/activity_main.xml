@@ -24,7 +24,7 @@
             android:layout_height="1dp"
             android:background="#D6D6D6"/>
 
-        <android.support.v4.app.FragmentTabHost
+        <com.yimiao100.sale.fragment.FragmentTabHost
             android:id="@android:id/tabhost"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>

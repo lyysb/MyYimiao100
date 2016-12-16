@@ -253,7 +253,7 @@ public class CustomerDetailActivity extends BaseActivity implements TitleView.Ti
                         LogUtil.d("mUserAddStatus:" + mUserAddStatus);
                         //更换收藏图标
                         mCustomerDetailCollection.setImageResource(mUserAddStatus == 0 ? R.mipmap.ico_customer_details_collection : R.mipmap.ico_customer_details_cancel_collection);
-                        ToastUtil.showLong(getApplicationContext(), mUserAddStatus == 0 ? "取消收藏成功" : "收藏成功");
+                        ToastUtil.showShort(getApplicationContext(), mUserAddStatus == 0 ? "取消收藏成功" : "收藏成功");
                         break;
                     case "failure":
                         //显示错误信息

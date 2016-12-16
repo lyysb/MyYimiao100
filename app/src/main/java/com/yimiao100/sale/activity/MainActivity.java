@@ -20,6 +20,7 @@ import com.yimiao100.sale.fragment.InformationFragment;
 import com.yimiao100.sale.fragment.MineFragment;
 import com.yimiao100.sale.fragment.StudyFragment;
 import com.yimiao100.sale.utils.Constant;
+import com.yimiao100.sale.utils.DensityUtil;
 import com.yimiao100.sale.utils.LogUtil;
 import com.yimiao100.sale.utils.SharePreferenceUtil;
 import com.yimiao100.sale.utils.ToastUtil;
@@ -216,7 +217,7 @@ public class MainActivity extends BaseActivity {
         tabView.setTextSize(12);
         tabView.setText(tabName);
         tabView.setGravity(Gravity.CENTER);
-        tabView.setPadding(0, 10, 0, 0);
+        tabView.setPadding(0, DensityUtil.dp2px(this, 5), 0, DensityUtil.dp2px(this, 2));
         tabView.setTextColor(getResources().getColorStateList(R.color
                 .viewpage_selector_slide_title));
         tabView.setCompoundDrawablesWithIntrinsicBounds(0, tabIcon, 0, 0);

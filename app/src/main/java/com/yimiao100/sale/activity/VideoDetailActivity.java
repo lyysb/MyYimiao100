@@ -140,6 +140,9 @@ public class VideoDetailActivity extends BaseActivity implements YMVideoPlayer
      * @param course
      */
     private void initVideoData(Course course) {
+        if (course.getVideoUrl() != null) {
+            LogUtil.d("视频链接：" + course.getVideoUrl());
+        }
         mVideoDetailPlayer.setUp(course.getVideoUrl() != null ? course.getVideoUrl() :
                         "http://oduhua0b1.bkt.clouddn.com/default_video.mp4",
                 JCVideoPlayerStandard.SCREEN_LAYOUT_LIST, course.getCourseName());

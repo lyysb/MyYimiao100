@@ -29,7 +29,7 @@
     <uses-permission android:name="android.permission.MANAGE_ACCOUNTS"/>
     <uses-permission android:name="android.permission.REORDER_TASKS"/>
     <!-- 银联需要的权限 -->
-    <uses-permission android:name="android.permission.NFC" />
+    <uses-permission android:name="android.permission.NFC"/>
 
     <application
         android:name=".MyApplication"
@@ -51,30 +51,30 @@
             android:name="com.pingplusplus.android.PaymentActivity"
             android:configChanges="orientation|screenSize"
             android:launchMode="singleTop"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
 
         <!-- 微信支付 -->
         <activity-alias
             android:name=".wxapi.WXPayEntryActivity"
             android:exported="true"
-            android:targetActivity="com.pingplusplus.android.PaymentActivity" />
+            android:targetActivity="com.pingplusplus.android.PaymentActivity"/>
 
         <!-- 支付宝 -->
         <activity
             android:name="com.alipay.sdk.app.H5PayActivity"
             android:configChanges="orientation|keyboardHidden|navigation"
             android:exported="false"
-            android:screenOrientation="behind" >
+            android:screenOrientation="behind">
         </activity>
         <activity
             android:name="com.alipay.sdk.auth.AuthActivity"
             android:configChanges="orientation|keyboardHidden|navigation"
             android:exported="false"
-            android:screenOrientation="behind" >
+            android:screenOrientation="behind">
         </activity>
 
         <!-- 银联支付 -->
-        <activity android:name="com.unionpay.uppay.PayActivity" />
+        <activity android:name="com.unionpay.uppay.PayActivity"/>
 
         <!-- -友盟 -->
         <activity
@@ -315,6 +315,8 @@
         <activity android:name=".activity.LiveActivity">
         </activity>
         <activity android:name=".Main2Activity">
+        </activity>
+        <activity android:name=".activity.ShowWebImageActivity">
         </activity>
     </application>
 

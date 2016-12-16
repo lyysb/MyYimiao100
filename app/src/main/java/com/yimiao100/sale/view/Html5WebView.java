@@ -7,15 +7,17 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.webkit.GeolocationPermissions;
 import android.webkit.WebChromeClient;
+import android.webkit.WebResourceError;
+import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import com.yimiao100.sale.utils.NetStatusUtil;
+import com.yimiao100.sale.utils.ToastUtil;
 
 /**
- * Wing_Li
- * 2016/9/9.
+ * 自定义WebView
  */
 public class Html5WebView extends WebView {
 
@@ -84,15 +86,55 @@ public class Html5WebView extends WebView {
         mWebSettings.setAppCachePath(appCachePath);
     }
 
+    /**
+     * 自定义WebViewClient
+     */
     WebViewClient webViewClient = new WebViewClient() {
-        /**
-         * 多页面在同一个WebView中打开，就是不新建activity或者调用系统浏览器打开
-         */
+
+        // 多页面在同一个WebView中打开，就是不新建activity或者调用系统浏览器打开
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             view.loadUrl(url);
             Log.d("Url:", url);
             return true;
+        }
+
+        // 网页开始加载
+        @Override
+        public void onPageStarted(WebView view, String url, Bitmap favicon) {
+            view.getSettings().setJavaScriptEnabled(true);
+            super.onPageStarted(view, url, favicon);
+        }
+
+        // 网页加载结束
+        @Override
+        public void onPageFinished(WebView view, String url) {
+            view.getSettings().setJavaScriptEnabled(true);
+            super.onPageFinished(view, url);
+            // 加载完成之后，添加监听图片的点击JS函数
+            addImageClickListener(view);
+        }
+
+        @Override
+        public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
+            // 出现错误界面，隐藏WebView，弹出错误提示
+            view.setVisibility(view.INVISIBLE);
+            ToastUtil.showShort(mContext, "请检查您的网络设置。");
+        }
+
+        // 注入js函数监听
+        private void addImageClickListener(WebView view) {
+            // 这段js函数的功能就是，遍历所有的img几点，并添加onclick函数，函数的功能是在图片点击的时候调用本地java接口并传递url过去
+            view.loadUrl("javascript:(function(){" +
+                    "var objs = document.getElementsByTagName(\"img\"); " +
+                    "for(var i=0;i<objs.length;i++)  " +
+                    "{"
+                    + "    objs[i].onclick=function()  " +
+                    "    {  "
+                    + "        window.imagelistner.openImage(this.src);  " +
+                    "    }  " +
+                    "}" +
+                    "})()");
         }
     };
 

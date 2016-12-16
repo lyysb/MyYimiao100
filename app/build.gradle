@@ -79,4 +79,5 @@ dependencies {
     //其中latest.release指代最新版本号，也可以指定明确的版本号，例如2.1.5
     compile project(':lib:bdwallet_pay_sdk')
     compile project(':lib:pingpp')
+    compile 'com.github.chrisbanes.photoview:library:1.2.4'
 }

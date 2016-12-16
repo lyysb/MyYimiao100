@@ -44,12 +44,4 @@
         <attr name="tvea_textShrink" format="string" />
         <attr name="tvea_textExpand" format="string" />
     </declare-styleable>
-    <declare-styleable name="FlikerProgressBar">
-        <attr name="textSize" format="dimension|reference"/>
-
-        <attr name="loadingColor" format="color|reference"/>
-
-        <attr name="stopColor" format="color|reference"/>
-
-    </declare-styleable>
 </resources>

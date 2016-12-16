@@ -41,6 +41,7 @@ import com.yimiao100.sale.utils.ToastUtil;
 import com.yimiao100.sale.utils.Util;
 import com.yimiao100.sale.view.CommentPopupWindow;
 import com.yimiao100.sale.view.Html5WebView;
+import com.yimiao100.sale.view.JavascriptInterface;
 import com.yimiao100.sale.view.PullToRefreshListView;
 import com.yimiao100.sale.view.TitleView;
 import com.zhy.http.okhttp.OkHttpUtils;
@@ -100,7 +101,7 @@ public class InformationDetailActivity extends BaseActivity implements View.OnCl
 
     private PullToRefreshListView mComment_list;
     private int mNewsId;
-    private WebView mInformationDetailContent;
+    private WebView mWebView;
     private TextView mInformationDetailTitle1;
     private TextView mInformationDetailFrom;
     private TextView mInformationDetailTime;
@@ -197,9 +198,11 @@ public class InformationDetailActivity extends BaseActivity implements View.OnCl
         mLayout = (LinearLayout) mInformationHead.findViewById(R.id.information_detail_content);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams
                 .WRAP_CONTENT);
-        mInformationDetailContent = new Html5WebView(this);
-        mInformationDetailContent.setLayoutParams(params);
-        mLayout.addView(mInformationDetailContent);
+        mWebView = new Html5WebView(this);
+        mWebView.setLayoutParams(params);
+        mLayout.addView(mWebView);
+        //载入js--可以点击显示图片，进行放大处理
+        mWebView.addJavascriptInterface(new JavascriptInterface(this), "imagelistner");
 
         //标签
         mInformationTagGroup = (TagGroup) mInformationHead.findViewById(R.id
@@ -374,12 +377,12 @@ public class InformationDetailActivity extends BaseActivity implements View.OnCl
      * WebView显示资讯详情内容
      */
     private void showInformationContent() {
-        WebSettings settings = mInformationDetailContent.getSettings();
+        WebSettings settings = mWebView.getSettings();
         settings.setJavaScriptEnabled(true);
         //自适应屏幕
         settings.setLoadWithOverviewMode(true);
-        mInformationDetailContent.loadUrl(CONTENT_URL + "?newsId=" + mNewsId);
-        mInformationDetailContent.setWebChromeClient(new WebChromeClient() {
+        mWebView.loadUrl(CONTENT_URL + "?newsId=" + mNewsId);
+        mWebView.setWebChromeClient(new WebChromeClient() {
             @Override
             public void onProgressChanged(WebView view, int newProgress) {
                 super.onProgressChanged(view, newProgress);
@@ -907,8 +910,8 @@ public class InformationDetailActivity extends BaseActivity implements View.OnCl
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mLayout.removeView(mInformationDetailContent);
-        mInformationDetailContent.removeAllViews();
-        mInformationDetailContent.destroy();
+        mLayout.removeView(mWebView);
+        mWebView.removeAllViews();
+        mWebView.destroy();
     }
 }

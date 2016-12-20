@@ -237,6 +237,7 @@ public class InformationFragment extends Fragment implements SwipeRefreshLayout
         getBuild(1).execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
+                e.printStackTrace();
                 LogUtil.d("资讯列表E：" + e.getMessage());
                 if (InformationFragment.this.isAdded()) {
                     //防止Fragment点击报空指针
@@ -273,6 +274,7 @@ public class InformationFragment extends Fragment implements SwipeRefreshLayout
     private void initDots() {
         for (int i = 0; i < mCarouselList.size(); i++) {
             View dot = new View(getContext());
+
             dot.setBackgroundResource(R.drawable.selector_dot);
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(DensityUtil.dp2px
                     (getContext(), 5), DensityUtil.dp2px(getContext(), 5));

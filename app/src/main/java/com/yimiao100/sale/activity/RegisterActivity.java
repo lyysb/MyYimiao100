@@ -27,7 +27,7 @@ import com.yimiao100.sale.utils.SharePreferenceUtil;
 import com.yimiao100.sale.utils.ToastUtil;
 import com.yimiao100.sale.utils.Util;
 import com.zhy.http.okhttp.OkHttpUtils;
-import com.zhy.http.okhttp.callback.Callback;
+import com.zhy.http.okhttp.callback.StringCallback;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -38,7 +38,6 @@ import butterknife.OnClick;
 import cn.smssdk.EventHandler;
 import cn.smssdk.SMSSDK;
 import okhttp3.Call;
-import okhttp3.Response;
 
 public class RegisterActivity extends BaseActivity implements CompoundButton.OnCheckedChangeListener {
 
@@ -158,13 +157,18 @@ public class RegisterActivity extends BaseActivity implements CompoundButton.OnC
                 .addParams("accountNumber", mRegisterPhone.getText().toString().trim())
                 .addParams("password", mRegisterPassword.getText().toString().trim())
                 .build()
-                .execute(new Callback() {
+                .execute(new StringCallback() {
+
                     @Override
-                    public Object parseNetworkResponse(Response response, int id) throws Exception {
-                        //针对返回的Json数据进行处理
-                        String json = response.body().string();
-                        LogUtil.d(json);
-                        SignUpBean signUpBean = JSON.parseObject(json, SignUpBean.class);
+                    public void onError(Call call, Exception e, int id) {
+                        e.printStackTrace();
+                        Util.showTimeOutNotice(currentContext);
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        LogUtil.d("注册账号：" + response);
+                        SignUpBean signUpBean = JSON.parseObject(response, SignUpBean.class);
                         LogUtil.d(signUpBean.getStatus());
                         switch (signUpBean.getStatus()){
                             case "success":
@@ -179,18 +183,6 @@ public class RegisterActivity extends BaseActivity implements CompoundButton.OnC
                                 Util.showError(currentContext, signUpBean.getReason());
                                 break;
                         }
-                        return null;
-                    }
-
-                    @Override
-                    public void onError(Call call, Exception e, int id) {
-
-                        Util.showTimeOutNotice(currentContext);
-                    }
-
-                    @Override
-                    public void onResponse(Object response, int id) {
-
                     }
                 });
     }

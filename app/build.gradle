@@ -19,8 +19,8 @@ android {
         applicationId "com.yimiao100.sale"
         minSdkVersion 15
         targetSdkVersion 22
-        versionCode 6
-        versionName "1.2.2"
+        versionCode 7
+        versionName "1.2.3"
         multiDexEnabled true
     }
     buildTypes {
@@ -77,7 +77,6 @@ dependencies {
     compile project(':jcvideoplayer-lib')
     compile 'com.tencent.bugly:crashreport:latest.release'
     //其中latest.release指代最新版本号，也可以指定明确的版本号，例如2.1.5
-    compile project(':lib:bdwallet_pay_sdk')
-    compile project(':lib:pingpp')
     compile 'com.github.chrisbanes.photoview:library:1.2.4'
+    compile files('libs/SocialSDK_WeiXin_1.jar')
 }

@@ -91,6 +91,9 @@ public class LoginActivity extends BaseActivity implements CompoundButton.OnChec
         }
     }
 
+    /**
+     * 却换密码的显示状态
+     */
     private void ShowPwd() {
         if (pwdIsShow){
             pwdIsShow = false;
@@ -103,11 +106,14 @@ public class LoginActivity extends BaseActivity implements CompoundButton.OnChec
         }
     }
 
+    /**
+     * 登录
+     */
     private void Login() {
         String username = mLoginPhone.getText().toString().trim();
         String password = mLoginPassword.getText().toString().trim();
         if (TextUtils.isEmpty(username) || TextUtils.isEmpty(password)){
-            ToastUtil.showLong(this, "账号密码不能为空");
+            ToastUtil.showShort(this, "账号密码不能为空");
             return;
         }
         //向提交账号密码，根据返回结果判断是否允许进入主界面

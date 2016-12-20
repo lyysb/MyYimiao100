@@ -7,6 +7,8 @@
     <color name="colorMain">#4188d2</color>
     <color name="colorOrigin">#ec6941</color>
 
+    <color name="colorPress">#356FAB</color>
+
     <!--登录界面APP-疫苗圈名字颜色-->
     <color name="appName">#54a4d3</color>
     <!--输入框和输入框内字体的颜色-->

@@ -73,7 +73,9 @@ public class ResourcesAdapter extends BaseAdapter{
 
         //厂家Logo
         ImageView resource_vendor_logo = ViewHolderUtil.get(convertView, R.id.resource_vendor_logo);
-        Picasso.with(mContext).load(resource.getVendorLogoImageUrl()).into(resource_vendor_logo);
+        if (resource.getVendorLogoImageUrl() != null && resource.getVendorLogoImageUrl().length() != 0) {
+            Picasso.with(mContext).load(resource.getVendorLogoImageUrl()).into(resource_vendor_logo);
+        }
 
 
 

@@ -1,12 +1,10 @@
 package com.yimiao100.sale.activity;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AlertDialog;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
@@ -48,8 +46,8 @@ import static com.alibaba.fastjson.JSON.parseObject;
 /**
  * 资源-资源列表
  */
-public class ResourcesActivity extends BaseActivitySingleList implements CarouselUtil.HandleCarouselListener, View.OnClickListener, RegionUtil.HandleRegionListListener {
-
+public class ResourcesActivity extends BaseActivitySingleList implements CarouselUtil
+        .HandleCarouselListener, View.OnClickListener, RegionUtil.HandleRegionListListener {
 
 
     private final String URL_RESOURCE_LIST = Constant.BASE_URL + "/api/resource/resource_list";
@@ -102,6 +100,7 @@ public class ResourcesActivity extends BaseActivitySingleList implements Carouse
         mOptions = new CharacterPickerWindow(this);
         initHeadView();
     }
+
     @Override
     protected void setTitle(TitleView titleView) {
         titleView.setTitle("资源");
@@ -206,32 +205,13 @@ public class ResourcesActivity extends BaseActivitySingleList implements Carouse
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        //判断是否是模拟数据
-        String productName = mResourcesList.get(position - 1).getProductName();
-        if (productName.indexOf("模拟") != -1) {
-            //是模拟数据，可以进入资源详情//获取Item的资源信息，携带resourceId进入资源详情界面
-            int resourceID = mResourcesList.get(position - 1).getId();
-            Intent intent = new Intent(this, ResourcesDetailActivity.class);
-            //封装resourceID
-            intent.putExtra("resourceID", resourceID);
-            //进入详情页
-            startActivity(intent);
-        } else {
-            //不是模拟数据，弹窗提示
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle("温馨提示");
-            builder.setMessage("本资源暂未开放竞标，敬请期待！");
-            builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.dismiss();
-                }
-            });
-            AlertDialog dialog = builder.create();
-            dialog.show();
-        }
-
-
+        //获取Item的资源信息，携带resourceId进入资源详情界面
+        int resourceID = mResourcesList.get(position - 1).getId();
+        Intent intent = new Intent(this, ResourcesDetailActivity.class);
+        //封装resourceID
+        intent.putExtra("resourceID", resourceID);
+        //进入详情页
+        startActivity(intent);
     }
 
 
@@ -438,7 +418,8 @@ public class ResourcesActivity extends BaseActivitySingleList implements Carouse
                         switch (errorBean.getStatus()) {
                             case "success":
                                 mPage = 2;
-                                ResourceResultBean resourceResult = parseObject(response, ResourceBean.class).getResourceResult();
+                                ResourceResultBean resourceResult = parseObject(response,
+                                        ResourceBean.class).getResourceResult();
                                 mTotalPage = resourceResult.getTotalPage();
                                 //解析JSON，填充Adapter
                                 //获取资源列表
@@ -456,9 +437,6 @@ public class ResourcesActivity extends BaseActivitySingleList implements Carouse
                     }
                 });
     }
-
-
-
 
 
     @Override
@@ -500,6 +478,7 @@ public class ResourcesActivity extends BaseActivitySingleList implements Carouse
 
     /**
      * 处理轮播图数据
+     *
      * @param carouselList
      */
     @Override

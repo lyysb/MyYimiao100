@@ -7,7 +7,8 @@ import java.util.HashMap;
  * Created by 亿苗通 on 2016/8/9.
  */
 public interface Constant {
-    String BASE_URL = "http://123.56.203.55/ymt";
+    String BASE_URL = "http://161p3p2316.iask.in/ymt";
+//    String BASE_URL = "http://123.56.203.55/ymt";
     String SHARE_URL = "http://www.yimiaoquan100.com/ymt";
     /**
      * Mob-AppKey

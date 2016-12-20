@@ -108,33 +108,36 @@
                     style="@style/style3"/>
                 <View
                     style="@style/view_horizontal"/>
-                <RelativeLayout
+                <LinearLayout
+                    android:gravity="center_vertical"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
                     <TextView
-                        android:text="厂家："
+                        android:text="厂家    ："
                         style="@style/style4"/>
                     <TextView
                         android:id="@+id/resource_promotion_vendor_name"
                         style="@style/style5"/>
-                </RelativeLayout>
+                </LinearLayout>
 
                 <View
                     style="@style/view_horizontal"/>
-                <RelativeLayout
+                <LinearLayout
+                    android:gravity="center_vertical"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
                     <TextView
-                        android:text="产品："
+                        android:text="产品    ："
                         style="@style/style4"/>
                     <TextView
                         android:id="@+id/resource_promotion_product_formal_name"
                         style="@style/style5"/>
-                </RelativeLayout>
+                </LinearLayout>
 
                 <View
                     style="@style/view_horizontal"/>
-                <RelativeLayout
+                <LinearLayout
+                    android:gravity="center_vertical"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
                     <TextView
@@ -143,9 +146,10 @@
                     <TextView
                         android:id="@+id/resource_promotion_product_common_name"
                         style="@style/style5"/>
-                </RelativeLayout>
+                </LinearLayout>
             </LinearLayout>
-            <RelativeLayout
+            <LinearLayout
+                android:gravity="center_vertical"
                 android:background="@android:color/white"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
@@ -155,7 +159,7 @@
                 <TextView
                     android:id="@+id/resource_promotion_region"
                     style="@style/style5"/>
-            </RelativeLayout>
+            </LinearLayout>
             <LinearLayout
                 android:layout_marginTop="7dp"
                 android:layout_marginBottom="7dp"
@@ -169,40 +173,43 @@
                     style="@style/style3"/>
                 <View
                     style="@style/view_horizontal"/>
-                <RelativeLayout
+                <LinearLayout
+                    android:gravity="center_vertical"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
                     <TextView
-                        android:text="推广周期："
+                        android:text="推广周期            ："
                         style="@style/style4"/>
                     <TextView
                         android:id="@+id/resource_promotion_time"
                         style="@style/style5"/>
-                </RelativeLayout>
+                </LinearLayout>
                 <View
                     style="@style/view_horizontal"/>
-                <RelativeLayout
+                <LinearLayout
+                    android:gravity="center_vertical"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
                     <TextView
-                        android:text="基础指标："
+                        android:text="基础指标            ："
                         style="@style/style4"/>
                     <TextView
                         android:id="@+id/resource_promotion_quota"
                         style="@style/style5"/>
-                </RelativeLayout>
+                </LinearLayout>
                 <View
                     style="@style/view_horizontal"/>
-                <RelativeLayout
+                <LinearLayout
+                    android:gravity="center_vertical"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
                     <TextView
-                        android:text="推广保证金："
+                        android:text="推广保证金基数："
                         style="@style/style4"/>
                     <TextView
                         android:id="@+id/resource_promotion_total_deposit"
                         style="@style/style5"/>
-                </RelativeLayout>
+                </LinearLayout>
             </LinearLayout>
 
             <LinearLayout
@@ -259,6 +266,7 @@
             </LinearLayout>
             <View style="@style/view_horizontal"/>
             <LinearLayout
+                android:gravity="center_vertical"
                 android:background="@android:color/white"
                 android:padding="12dp"
                 android:layout_width="match_parent"
@@ -272,6 +280,7 @@
                     android:layout_height="wrap_content"/>
                 <TextView
                     android:id="@+id/resource_promotion_total_count"
+                    android:text="{total_count}"
                     android:textSize="14sp"
                     android:textColor="@color/colorRed"
                     android:paddingRight="50dp"
@@ -279,6 +288,30 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
             </LinearLayout>
+            <LinearLayout
+                android:gravity="center_vertical"
+                android:background="@android:color/white"
+                android:padding="12dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:layout_weight="1"
+                    android:text="您最终需要提交的推广保证金："
+                    android:textSize="12sp"
+                    android:textColor="@color/colorMain"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+                <TextView
+                    android:id="@+id/resource_promotion_total_amount"
+                    android:text="{total_amount}"
+                    android:textSize="14sp"
+                    android:textColor="@color/colorRed"
+                    android:paddingRight="40dp"
+                    android:paddingLeft="50dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
+
         </LinearLayout>
 
     </ScrollView>

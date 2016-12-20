@@ -13,7 +13,9 @@ import android.widget.TextView;
 
 import com.yimiao100.sale.R;
 import com.yimiao100.sale.base.BaseActivity;
+import com.yimiao100.sale.bean.ResourceListBean;
 import com.yimiao100.sale.utils.LogUtil;
+import com.yimiao100.sale.utils.TimeUtil;
 import com.yimiao100.sale.utils.Util;
 import com.yimiao100.sale.view.TitleView;
 import com.zhy.http.okhttp.OkHttpUtils;
@@ -87,32 +89,32 @@ public class OrderCompletedActivity extends BaseActivity implements TitleView.Ti
     }
 
     private void initData() {
-        Bundle bundle = getIntent().getExtras();
-        mOrderId = bundle.getString("orderId");
-        String submit_time = bundle.getString("submit_time");
+        ResourceListBean order = getIntent().getParcelableExtra("order");
+        mOrderId = order.getId() + "";
+        String submit_time = TimeUtil.timeStamp2Date(order.getCreatedAt() + "", "yyyy年MM月dd日");
         mOrderCompleteSubmitTime.setText(submit_time + "提交的申请推广已经正式签约，\n请按照推广协议尽快完成推广任务。");
-        mVendorName = bundle.getString("vendorName");
+        mVendorName = order.getVendorName();
         mOrderCompleteVendorName.setText(mVendorName);
-        mCategoryName = bundle.getString("categoryName");
+        mCategoryName = order.getCategoryName();
         mOrderCompleteCommonName.setText(mCategoryName);
-        mSpec = bundle.getString("spec");
+        mSpec = order.getSpec();
         mOrderCompleteSpec.setText("规格：" + mSpec);
-        mDosageForm = bundle.getString("dosageForm");
+        mDosageForm = order.getDosageForm();
         mOrderCompleteDosageForm.setText("剂型：" + mDosageForm);
-        String region = bundle.getString("region");
+        String region = order.getProvinceName() + "\t" + order.getCityName() + "\t" + order.getAreaName();
         mOrderCompleteRegion.setText("区域：" + region);
-        String time = bundle.getString("time");
+        String time = TimeUtil.timeStamp2Date(order.getCreatedAt() + "", "yyyy.MM.dd");
         mOrderCompleteTime.setText("时间：" + time);
-        String totalDeposit = bundle.getString("totalDeposit");
+        String totalDeposit = order.getSaleDeposit() + "";
         Spanned totalMoney = Html.fromHtml("推广保证金：" + "<font color=\"#4188d2\">" + totalDeposit + "</font>" + "(人民币)");
         mOrderCompleteTotalMoney.setText(totalMoney);
-        mSerialNo = bundle.getString("serialNo");
+        mSerialNo = order.getSerialNo();
         mOrderCompleteSerialNo.setText("协议单号：" + mSerialNo);
-        mOrderProtocolUrl = bundle.getString("orderProtocolUrl");
-        mResourceProtocolUrl = bundle.getString("resourceProtocolUrl");
+        mOrderProtocolUrl = order.getOrderProtocolUrl();
+        mResourceProtocolUrl = order.getResourceProtocolUrl();
 
-        mProductName = bundle.getString("productName");
-        mCustomerName = bundle.getString("customerName");
+        mProductName = order.getProductName();
+        mCustomerName = order.getCustomerName();
 
     }
 

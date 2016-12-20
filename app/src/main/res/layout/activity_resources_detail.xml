@@ -224,7 +224,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="推广周期    ："
+                        android:text="推广周期            ："
                         android:textColor="@color/color333"
                         android:textSize="12sp" android:id="@+id/textView"/>
 
@@ -244,7 +244,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="基础指标    ："
+                        android:text="基础指标            ："
                         android:textColor="@color/color333"
                         android:textSize="12sp"/>
 
@@ -264,7 +264,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="推广保证金："
+                        android:text="推广保证金基数："
                         android:textColor="@color/color333"
                         android:textSize="12sp"/>
 

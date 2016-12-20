@@ -32,6 +32,7 @@
                 android:layout_height="0dp">
                 <TextView
                     android:id="@+id/order_status_name"
+                    android:text="{status}"
                     android:textSize="18sp"
                     android:textStyle="bold"
                     android:layout_margin="30dp"
@@ -43,6 +44,7 @@
                     style="@style/view_horizontal"/>
                 <TextView
                     android:id="@+id/order_error_reason"
+                    android:text="{reason}"
                     android:textSize="14sp"
                     android:textColor="@color/color666"
                     android:lineSpacingMultiplier="1.2"
@@ -68,13 +70,6 @@
 
             </LinearLayout>
 
-            <ImageView
-                android:layout_marginTop="20dp"
-                android:layout_marginBottom="10dp"
-                android:layout_gravity="center_horizontal"
-                android:src="@mipmap/ic_launcher"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
 
         </LinearLayout>
     </FrameLayout>

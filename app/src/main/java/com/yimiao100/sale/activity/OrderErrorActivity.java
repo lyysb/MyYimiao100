@@ -6,6 +6,7 @@ import android.widget.TextView;
 
 import com.yimiao100.sale.R;
 import com.yimiao100.sale.base.BaseActivity;
+import com.yimiao100.sale.bean.ResourceListBean;
 import com.yimiao100.sale.view.TitleView;
 
 import butterknife.BindView;
@@ -42,10 +43,10 @@ public class OrderErrorActivity extends BaseActivity implements TitleView.TitleB
 
     private void initData() {
         Intent intent = getIntent();
-        Bundle bundle = intent.getExtras();
-        String orderStatusName = bundle.getString("orderStatusName");
+        ResourceListBean order = intent.getParcelableExtra("order");
+        String orderStatusName = order.getOrderStatusName();
         mOrderStatusName.setText(orderStatusName);
-        String invalidReason = bundle.getString("invalidReason");
+        String invalidReason = order.getInvalidReason();
         mOrderErrorReason.setText(invalidReason);
     }
 

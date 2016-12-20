@@ -1,1 +1,1 @@
-include ':app', ':CharacterPickerViewLibrary', ':MPChartLib', ':AndroidTagGrouplibrary', ':jcvideoplayer-lib', ':lib:bdwallet_pay_sdk', ':lib:pingpp', ':lib:pingpp_one'
+include ':app', ':CharacterPickerViewLibrary', ':MPChartLib', ':AndroidTagGrouplibrary', ':jcvideoplayer-lib'

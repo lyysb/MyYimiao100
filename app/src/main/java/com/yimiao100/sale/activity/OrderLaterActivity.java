@@ -9,6 +9,8 @@ import android.widget.TextView;
 
 import com.yimiao100.sale.R;
 import com.yimiao100.sale.base.BaseActivity;
+import com.yimiao100.sale.bean.ResourceListBean;
+import com.yimiao100.sale.utils.TimeUtil;
 import com.yimiao100.sale.view.TitleView;
 
 import butterknife.BindView;
@@ -16,7 +18,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 /**
- * 我的业务-第二状态-审核中状态
+ * 我的业务-第二状态-审核中状态-废弃
  */
 public class OrderLaterActivity extends BaseActivity implements TitleView.TitleBarOnClickListener {
 
@@ -62,37 +64,37 @@ public class OrderLaterActivity extends BaseActivity implements TitleView.TitleB
 
     private void initData() {
         Intent intent = getIntent();
-        Bundle bundle = intent.getExtras();
+        ResourceListBean order = intent.getParcelableExtra("order");
         //提交日期
-        String submit_time = bundle.getString("submit_time");
+        String submit_time = TimeUtil.timeStamp2Date(order.getCreatedAt() + "", "yyyy年MM月dd日");
         mOrderLaterSubmitTime.setText(submit_time + "提交的申请推广已经收到您提交的竞标保证金，\n目前正在审核中，请您耐心等待。");
         //厂家名称
-        String vendorName = bundle.getString("vendorName");
+        String vendorName = order.getVendorName();
         mOrderLaterVendorName.setText(vendorName);
         //产品名称-分类名
-        String categoryName = bundle.getString("categoryName");
+        String categoryName = order.getCategoryName();
         mOrderLaterCommonName.setText("产品：" + categoryName);
         //规格
-        String spec = bundle.getString("spec");
+        String spec = order.getSpec();
         mOrderLaterSpec.setText("规格：" + spec);
         //剂型
-        String dosageForm = bundle.getString("dosageForm");
+        String dosageForm = order.getDosageForm();
         mOrderLaterDosageForm.setText("剂型：" + dosageForm);
         //区域
-        String region = bundle.getString("region");
+        String region = order.getProvinceName() + "\t" + order.getCityName() + "\t" + order.getAreaName();
         mOrderLaterRegion.setText("区域：" + region);
         //时间
-        String time = bundle.getString("time");
+        String time = TimeUtil.timeStamp2Date(order.getCreatedAt() + "", "yyyy.MM.dd");
         mOrderLaterTime.setText("时间：" + time);
         //保证金
-        String totalDeposit = bundle.getString("totalDeposit");
+        String totalDeposit = order.getSaleDeposit() + "";
         Spanned totalMoney = Html.fromHtml("推广保证金：" + "<font color=\"#4188d2\">" + totalDeposit + "</font>" + " (人民币)");
         mOrderLaterMoney.setText(totalMoney);
         //协议单号
-        String serialNo = bundle.getString("serialNo");
+        String serialNo = order.getSerialNo();
         mOrderLaterNo.setText("协议单号：" + serialNo);
         //竞标保证金提示
-        String bidDeposit = bundle.getString("bidDeposit");
+        String bidDeposit = order.getBidDeposit() + "";
         mOrderLaterHint.setText("本次推广资源的竞标保证金为￥" + bidDeposit + "元，请于竞标截止日前转到如下账户。\n汇款转账时,必须在备注处填写协议单号。");
     }
 

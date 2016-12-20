@@ -46,35 +46,6 @@
             android:name="UMENG_APPKEY"
             android:value="579ff3aae0f55a0a4a003216">
         </meta-data>
-        <!-- Ping++ SDK -->
-        <activity
-            android:name="com.pingplusplus.android.PaymentActivity"
-            android:configChanges="orientation|screenSize"
-            android:launchMode="singleTop"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
-
-        <!-- 微信支付 -->
-        <activity-alias
-            android:name=".wxapi.WXPayEntryActivity"
-            android:exported="true"
-            android:targetActivity="com.pingplusplus.android.PaymentActivity"/>
-
-        <!-- 支付宝 -->
-        <activity
-            android:name="com.alipay.sdk.app.H5PayActivity"
-            android:configChanges="orientation|keyboardHidden|navigation"
-            android:exported="false"
-            android:screenOrientation="behind">
-        </activity>
-        <activity
-            android:name="com.alipay.sdk.auth.AuthActivity"
-            android:configChanges="orientation|keyboardHidden|navigation"
-            android:exported="false"
-            android:screenOrientation="behind">
-        </activity>
-
-        <!-- 银联支付 -->
-        <activity android:name="com.unionpay.uppay.PayActivity"/>
 
         <!-- -友盟 -->
         <activity
@@ -210,7 +181,8 @@
         </activity>
         <activity android:name=".activity.ConfirmPromotionActivity">
         </activity>
-        <activity android:name=".activity.OrderActivity">
+        <activity android:name=".activity.OrderActivity"
+            android:launchMode="singleTask">
         </activity>
         <activity android:name=".activity.OrderErrorActivity">
         </activity>
@@ -234,8 +206,6 @@
             android:name=".activity.RichesActivity"
             android:launchMode="singleTask">
         </activity>
-        <activity android:name=".activity.CashActivity">
-        </activity>
         <activity android:name=".activity.RichesDetailActivity">
         </activity>
         <activity android:name=".activity.AssuranceActivity">
@@ -243,10 +213,6 @@
         <activity android:name=".activity.AssuranceCompanyActivity">
         </activity>
         <activity android:name=".activity.PromotionActivity">
-        </activity>
-        <activity android:name=".activity.CashPersonalActivity">
-        </activity>
-        <activity android:name=".activity.CashCompanyActivity">
         </activity>
         <activity android:name=".activity.PromotionDetailActivity">
         </activity>
@@ -314,9 +280,16 @@
         </activity>
         <activity android:name=".activity.LiveActivity">
         </activity>
-        <activity android:name=".Main2Activity">
-        </activity>
         <activity android:name=".activity.ShowWebImageActivity">
+        </activity>
+        <activity
+            android:name=".wxapi.WXPayEntryActivity"
+            android:exported="true"
+            android:launchMode="singleTop">
+        </activity>
+        <activity android:name=".activity.SubmitPromotionActivity">
+        </activity>
+        <activity android:name=".activity.OrderUnpaidActivity">
         </activity>
     </application>
 

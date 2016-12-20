@@ -14,7 +14,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSON;
-import com.yimiao100.sale.Main2Activity;
 import com.yimiao100.sale.R;
 import com.yimiao100.sale.activity.CustomerActivity;
 import com.yimiao100.sale.activity.NoticeActivity;
@@ -236,7 +235,6 @@ public class CRMFragment extends Fragment implements View.OnClickListener, Carou
             case R.id.crm_analysis:
                 //todo 跳转到分析页面
                 ToastUtil.showShort(getContext(), "敬请期待");
-                //startActivity(new Intent(getContext(), Main2Activity.class));
                 break;
             case R.id.crm_reconciliation:
                 //跳转到对账列表

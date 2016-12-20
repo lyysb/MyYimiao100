@@ -19,7 +19,6 @@ import com.yimiao100.sale.bean.ResourceListBean;
 import com.yimiao100.sale.utils.Constant;
 import com.yimiao100.sale.utils.FormatUtils;
 import com.yimiao100.sale.utils.LogUtil;
-import com.yimiao100.sale.utils.SharePreferenceUtil;
 import com.yimiao100.sale.utils.TimeUtil;
 import com.yimiao100.sale.utils.Util;
 import com.yimiao100.sale.view.TextViewExpandableAnimation;
@@ -72,7 +71,6 @@ public class ResourcesDetailActivity extends BaseActivity implements TitleView.T
     JCVideoPlayerStandard mResourceDetailVideo;
 
     private int mResourceID;
-    private String mAccessToken;
 
     private final String URL_RESOURCE_INFO = Constant.BASE_URL + "/api/resource/resource_info";
     private ResourceListBean mResourceInfo;
@@ -84,7 +82,6 @@ public class ResourcesDetailActivity extends BaseActivity implements TitleView.T
         setContentView(R.layout.activity_resources_detail);
         ButterKnife.bind(this);
 
-        mAccessToken = (String) SharePreferenceUtil.get(this, Constant.ACCESSTOKEN, "");
 
         mResourceID = getIntent().getIntExtra("resourceID", -1);
 
@@ -109,7 +106,7 @@ public class ResourcesDetailActivity extends BaseActivity implements TitleView.T
         OkHttpUtils
                 .post()
                 .url(URL_RESOURCE_INFO)
-                .addHeader("X-Authorization-Token", mAccessToken)
+                .addHeader(ACCESS_TOKEN, mAccessToken)
                 .addParams("resourceId", mResourceID + "")
                 .build()
                 .execute(new StringCallback() {

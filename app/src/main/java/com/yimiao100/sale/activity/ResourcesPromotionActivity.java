@@ -23,6 +23,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 
+
 /**
  * 资源-公司推广
  */
@@ -64,12 +65,15 @@ public class ResourcesPromotionActivity extends BaseActivity implements TitleVie
     TextView mResourcePromotionTotalDeposit;
     @BindView(R.id.resource_promotion_total_count)
     TextView mResourcePromotionTotalCount;
+    @BindView(R.id.resource_promotion_total_amount)
+    TextView mResourcePromotionTotalAmount;
     private int mNum;
     private AlertDialog mDialog;
 
     private int mChange;
     private int mQuota;
     private ResourceListBean mResourceInfo;
+    private double mSaleDeposit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -152,13 +156,17 @@ public class ResourcesPromotionActivity extends BaseActivity implements TitleVie
         //基础指标&&单位
         mQuota = mResourceInfo.getQuota();
         mResourcePromotionQuota.setText(mQuota + mResourceInfo.getUnits());
-        mResourcePromotionTotalCount.setText(mQuota + mResourceInfo.getUnits());
-        mPromotionNum.setText("0");
-        //保证金-总额
-        double totalDeposit = mResourceInfo.getSaleDeposit();
-        mResourcePromotionTotalDeposit.setText(FormatUtils.MoneyFormat(totalDeposit) + "（人民币）");
+        //推广保证金基数
+        mSaleDeposit = mResourceInfo.getSaleDeposit();
+        mResourcePromotionTotalDeposit.setText(FormatUtils.MoneyFormat(mSaleDeposit) + "（人民币）");
         //竞标增量
         int increment = mResourceInfo.getIncrement();
+        //增加竞标数量
+        mPromotionNum.setText("0");
+        //最终竞标数量
+        mResourcePromotionTotalCount.setText(mQuota + mResourceInfo.getUnits());
+        //最终提交的保证金--（ 基础指标+竞标数量）*推广保证金基数
+        mResourcePromotionTotalAmount.setText(FormatUtils.MoneyFormat(mQuota * mSaleDeposit) + "人民币");
 
         mChange = mQuota * increment / 100;
     }
@@ -182,30 +190,41 @@ public class ResourcesPromotionActivity extends BaseActivity implements TitleVie
                 if (mNum >= mChange) {
                     mNum = mNum - mChange;
                 }
+                //增加竞标数量
                 mPromotionNum.setText(mNum + "");
+                //最终竞标数量
                 mResourcePromotionTotalCount.setText((mQuota + mNum) + mResourceInfo.getUnits());
+                //最终提交的保证金--（ 基础指标+竞标数量）*推广保证金基数
+                mResourcePromotionTotalAmount.setText(FormatUtils.MoneyFormat((mQuota + mNum) * mSaleDeposit) + "人民币");
                 break;
             case R.id.promotion_add:
                 //指标数增加
                 mNum = Integer.parseInt(mPromotionNum.getText().toString());
                 mNum = mNum + mChange;
+                //增加竞标数量
                 mPromotionNum.setText(mNum + "");
+                //最终竞标数量
                 mResourcePromotionTotalCount.setText((mQuota + mNum) + mResourceInfo.getUnits());
+                //最终提交的保证金--（ 基础指标+竞标数量）*推广保证金基数-只是作为显示
+                mResourcePromotionTotalAmount.setText(FormatUtils.MoneyFormat((mQuota + mNum) * mSaleDeposit) + "人民币");
                 break;
             case R.id.resources_promotion_submit:
                 //提交
                 showSubmitDialog();
                 break;
             case R.id.dialog_tv3:
-                //点击Dialog确定-进入推广确定界面
-                Intent intent = new Intent(this, ConfirmPromotionActivity.class);
+                //点击Dialog确定-进入提交推广保证金
+                Intent intent = new Intent(this, SubmitPromotionActivity.class);
                 intent.putExtra("resourceInfo", mResourceInfo);                 //资源
                 intent.putExtra("bidQty", mPromotionNum.getText().toString());  //竞标数量
+                intent.putExtra("mark", "resource");     //标识来源界面
                 startActivity(intent);
                 mDialog.dismiss();
                 break;
         }
     }
+
+
 
     /**
      * 显示推广确认Dialog

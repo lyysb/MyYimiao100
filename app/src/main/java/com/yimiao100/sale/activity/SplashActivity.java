@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -114,9 +115,10 @@ public class SplashActivity extends BaseActivity {
                 .build().execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.d("验证APPKey短连接错误：" + e.getLocalizedMessage());
+                LogUtil.d("验证APPKey短连接错误E：" + e.getLocalizedMessage());
                 //访问失败，直接进入下一页
                 enterNext();
+                Util.showTimeOutNotice(currentContext);
             }
 
             @Override
@@ -179,6 +181,7 @@ public class SplashActivity extends BaseActivity {
                 .build().execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
+                e.printStackTrace();
                 //进入下一页
                 enterNext();
             }
@@ -194,6 +197,7 @@ public class SplashActivity extends BaseActivity {
                     builder.setTitle("发现新版本");
                     String appUpdateDescription = data.getAppUpdateDescription();
                     builder.setMessage(appUpdateDescription);
+                    //判断是否是重大更新
                     if (appUpdateDescription.contains("重大更新")) {
                         //如果存在重大更新，只能更新或者退出应用
                         builder.setCancelable(false);
@@ -236,6 +240,12 @@ public class SplashActivity extends BaseActivity {
                     });
 
                     AlertDialog dialog = builder.create();
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                        if (SplashActivity.this.isDestroyed()) {
+                            //如果Activity被销毁，则不需要弹出Dialog
+                            return;
+                        }
+                    }
                     //显示对话框
                     dialog.show();
                 } else {

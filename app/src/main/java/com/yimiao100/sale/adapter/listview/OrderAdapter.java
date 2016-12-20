@@ -73,7 +73,9 @@ public class OrderAdapter extends BaseAdapter {
 
         //厂家Logo
         ImageView order_vendor_logo = ViewHolderUtil.get(convertView, R.id.order_vendor_logo);
-        Picasso.with(mContext).load(resource.getVendorLogoImageUrl()).into(order_vendor_logo);
+        if (resource.getVendorLogoImageUrl() != null && resource.getVendorLogoImageUrl().length() != 0) {
+            Picasso.with(mContext).load(resource.getVendorLogoImageUrl()).into(order_vendor_logo);
+        }
 
         //协议单号
         TextView order_serial_no = ViewHolderUtil.get(convertView, R.id.order_serial_no);
@@ -88,6 +90,11 @@ public class OrderAdapter extends BaseAdapter {
         String orderStatusName = resource.getOrderStatusName();
         order_status.setText(orderStatusName);
         switch (orderStatus) {
+            case "unpaid":
+                //最初状态-未支付
+                order_status.setText("未支付");
+                order_status.setTextColor(mContext.getResources().getColor(R.color.colorOrigin));
+                break;
             case "bidding":
                 //第一状态-竞标中
                 order_status.setTextColor(mContext.getResources().getColor(R.color.colorOrigin));

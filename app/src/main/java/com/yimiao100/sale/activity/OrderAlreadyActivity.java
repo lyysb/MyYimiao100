@@ -22,10 +22,13 @@ import com.alibaba.fastjson.JSON;
 import com.yimiao100.sale.R;
 import com.yimiao100.sale.base.BaseActivity;
 import com.yimiao100.sale.bean.ErrorBean;
+import com.yimiao100.sale.bean.ResourceListBean;
 import com.yimiao100.sale.utils.BitmapUtil;
 import com.yimiao100.sale.utils.Constant;
 import com.yimiao100.sale.utils.DensityUtil;
+import com.yimiao100.sale.utils.FormatUtils;
 import com.yimiao100.sale.utils.LogUtil;
+import com.yimiao100.sale.utils.TimeUtil;
 import com.yimiao100.sale.utils.ToastUtil;
 import com.yimiao100.sale.utils.Util;
 import com.yimiao100.sale.view.TitleView;
@@ -84,6 +87,7 @@ public class OrderAlreadyActivity extends BaseActivity implements TitleView
     private final String UPLOAD_PROTOCOL_FILE = "/api/order/upload_protocol_file";
     private String mOrderId;
     private String mResourceProtocolUrl;
+    private ResourceListBean mOrder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,48 +107,48 @@ public class OrderAlreadyActivity extends BaseActivity implements TitleView
 
     private void initData() {
         Intent intent = getIntent();
-        Bundle bundle = intent.getExtras();
+        mOrder = intent.getParcelableExtra("order");
         //提交日期
-        String submit_time = bundle.getString("submit_time");
+        String submit_time = TimeUtil.timeStamp2Date(mOrder.getCreatedAt() + "", "yyyy年MM月dd日");
         mOrderAlreadySubmitTime.setText(submit_time + "提交的申请推广已经通过审核，\n您提交的竞标保证金已经查收。");
         //厂家名称
-        String vendorName = bundle.getString("vendorName");
+        String vendorName = mOrder.getVendorName();
         mOrderAlreadyVendorName.setText(vendorName);
         //产品名称-分类名
-        String categoryName = bundle.getString("categoryName");
+        String categoryName = mOrder.getCategoryName();
         mOrderAlreadyCommonName.setText("产品：" + categoryName);
         //规格
-        String spec = bundle.getString("spec");
+        String spec = mOrder.getSpec();
         mOrderAlreadySpec.setText("规格：" + spec);
         //剂型
-        String dosageForm = bundle.getString("dosageForm");
+        String dosageForm = mOrder.getDosageForm();
         mOrderAlreadyDosageForm.setText("剂型：" + dosageForm);
         //区域
-        String region = bundle.getString("region");
+        String region = mOrder.getProvinceName() + "\t" + mOrder.getCityName() + "\t" + mOrder.getAreaName();
         mOrderAlreadyRegion.setText("区域：" + region);
         //时间
-        String time = bundle.getString("time");
+        String time = TimeUtil.timeStamp2Date(mOrder.getCreatedAt() + "", "yyyy.MM.dd");
         mOrderAlreadyTime.setText("时间：" + time);
         //保证金
-        String totalDeposit = bundle.getString("totalDeposit");
+        String totalDeposit = mOrder.getSaleDeposit() + "";
         Spanned totalMoney = Html.fromHtml("推广保证金：" + "<font color=\"#4188d2\">" + totalDeposit +
                 "</font>" + "(人民币)");
         mOrderAlreadyTotalMoney.setText(totalMoney);
         //协议单号
-        String serialNo = bundle.getString("serialNo");
+        String serialNo = mOrder.getSerialNo();
         mOrderAlreadyNo.setText("协议单号：" + serialNo);
         //总额保证金
-        String orderTotalDeposit = bundle.getString("orderTotalDeposit");
+        String orderTotalDeposit = FormatUtils.MoneyFormat(mOrder.getSaleDeposit());
         //竞标有效时间
-        String defaultExpiredAt = bundle.getString("defaultExpiredAt");
+        String defaultExpiredAt = TimeUtil.timeStamp2Date(mOrder.getDefaultExpiredAt() + "", "yyyy年MM月dd日");
         mOrderAlreadyRe.setText("请在" + defaultExpiredAt
                 + "之前尽快将本次推广资源的保证金" + orderTotalDeposit + "转到如下账户，并按照要求下载上传电子协议。");
         //协议文件
-        mResourceProtocolUrl = bundle.getString("resourceProtocolUrl");
+        mResourceProtocolUrl = mOrder.getResourceProtocolUrl();
         //订单id
-        mOrderId = bundle.getString("orderId");
+        mOrderId = mOrder.getId() + "";
         //获取是否已经阅读过免责信息
-        boolean isRead = bundle.getBoolean("isRead");
+        boolean isRead = mOrder.isRead();
         if (!isRead) {
             //没有阅读过，弹窗显示
             //弹窗
@@ -175,6 +179,7 @@ public class OrderAlreadyActivity extends BaseActivity implements TitleView
                     order_agree.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
+                            mOrder.setRead(true);
                             mDialog.dismiss();
                         }
                     });

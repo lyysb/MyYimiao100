@@ -32,7 +32,7 @@ import okhttp3.Call;
 public class OrderActivity extends BaseActivitySingleList{
 
 
-    private final String USER_ORDER_LIST = "/api/order/user_order_list";
+    private final String USER_ORDER_LIST = Constant.BASE_URL + "/api/order/user_order_list";
     private ArrayList<ResourceListBean> mOrderList;
 
     private OrderAdapter mOrderAdapter;
@@ -58,7 +58,7 @@ public class OrderActivity extends BaseActivitySingleList{
 
 
     private RequestCall getBuild(int page) {
-        return OkHttpUtils.post().url(Constant.BASE_URL + USER_ORDER_LIST)
+        return OkHttpUtils.post().url(USER_ORDER_LIST)
                 .addHeader(ACCESS_TOKEN, mAccessToken)
                 .addParams(PAGE, page + "").addParams(PAGE_SIZE, mPageSize)
                 .build();
@@ -150,10 +150,10 @@ public class OrderActivity extends BaseActivitySingleList{
                 //第一状态-竞标中
                 clz = OrderSubmitActivity.class;
                 break;
-            case "auditing":
-                //第二状态-审核中-作废
-                clz = OrderLaterActivity.class;
-                break;
+//            case "auditing":
+//                //第二状态-审核中-作废
+//                clz = OrderLaterActivity.class;
+//                break;
             case "to_be_signed":
                 //第三状态-待签约
                 clz = OrderAlreadyActivity.class;

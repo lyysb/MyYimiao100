@@ -60,9 +60,11 @@ public class StudyCollectionAdapter extends BaseAdapter {
         TextView duration = ViewHolderUtil.get(convertView, R.id.course_collect_duration);
 
         //视频缩略图
-        Picasso.with(parent.getContext()).load(collectClass.getVideoUrl()
-                + "?vframe/png/offset/10/w/96/h/86").placeholder(R.mipmap.ico_default_short_picture)
-                .into(frame);
+        if (collectClass.getImageUrl() != null && !collectClass.getImageUrl().isEmpty()) {
+            Picasso.with(parent.getContext()).load(collectClass.getImageUrl()
+                    + "?imageMogr2/thumbnail/96x86").placeholder(R.mipmap.ico_default_short_picture)
+                    .into(frame);
+        }
         //课程名称
         name.setText(collectClass.getCourseName());
         //课程时长

@@ -212,7 +212,7 @@ public class ResourcesPromotionActivity extends BaseActivity implements TitleVie
                 //提交
                 showSubmitDialog();
                 break;
-            case R.id.dialog_tv3:
+            case R.id.dialog_submit:
                 //点击Dialog确定-进入提交推广保证金
                 Intent intent = new Intent(this, SubmitPromotionActivity.class);
                 intent.putExtra("resourceInfo", mResourceInfo);                 //资源
@@ -232,9 +232,8 @@ public class ResourcesPromotionActivity extends BaseActivity implements TitleVie
     private void showSubmitDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.dialog);
         View view = View.inflate(this, R.layout.dialog_submit_promotion, null);
+        view.findViewById(R.id.dialog_submit).setOnClickListener(this);
         builder.setView(view);
-        TextView submit = (TextView) view.findViewById(R.id.dialog_tv3);
-        submit.setOnClickListener(this);
         mDialog = builder.create();
         mDialog.show();
     }

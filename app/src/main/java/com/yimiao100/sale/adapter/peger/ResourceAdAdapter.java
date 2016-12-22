@@ -41,9 +41,11 @@ public class ResourceAdAdapter extends PagerAdapter {
         position = position % mList.size();
         ImageView imageView = new ImageView(container.getContext());
         String imageUrl = mList.get(position).getMediaUrl();
-        Picasso.with(container.getContext()).load(imageUrl).placeholder(R.mipmap.ico_default_bannner)
-                .resize(ScreenUtil.getScreenWidth(container.getContext()), DensityUtil.dp2px(container.getContext(), 99))
-                .into(imageView);
+        if (!imageUrl.isEmpty()) {
+            Picasso.with(container.getContext()).load(imageUrl).placeholder(R.mipmap.ico_default_bannner)
+                    .resize(ScreenUtil.getScreenWidth(container.getContext()), DensityUtil.dp2px(container.getContext(), 99))
+                    .into(imageView);
+        }
         container.addView(imageView);
         return imageView;
     }

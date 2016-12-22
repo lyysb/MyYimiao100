@@ -36,11 +36,14 @@ public class StudyAdAdapter extends PagerAdapter {
     public Object instantiateItem(ViewGroup container, int position) {
         position = position % mCarouselList.size();
         ImageView imageView = new ImageView(container.getContext());
-        String url = mCarouselList.get(position).getMediaUrl() + "?vframe/png/offset/10/w/480/h/240/";
-        Picasso.with(container.getContext()).load(url).placeholder(R.mipmap.ico_default_bannner)
-                .resize(ScreenUtil.getScreenWidth(container.getContext()),
-                        DensityUtil.dp2px(container.getContext(), 190))
-                .into(imageView);
+        if (mCarouselList.get(position).getMediaUrl() != null &&
+                !mCarouselList.get(position).getMediaUrl().isEmpty()) {
+            String url = mCarouselList.get(position).getMediaUrl() + "?imageMogr2/thumbnail/480x240/";
+            Picasso.with(container.getContext()).load(url).placeholder(R.mipmap.ico_default_bannner)
+                    .resize(ScreenUtil.getScreenWidth(container.getContext()),
+                            DensityUtil.dp2px(container.getContext(), 190))
+                    .into(imageView);
+        }
         //对外暴露点击事件
         final int finalPosition = position;
         imageView.setOnClickListener(new View.OnClickListener() {

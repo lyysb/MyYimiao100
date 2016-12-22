@@ -3,29 +3,72 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:background="@android:color/transparent"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
-    <RelativeLayout
-        android:background="@mipmap/ico_personal_promotion_submit"
-        android:layout_width="wrap_content"
+    android:layout_height="match_parent">
+    <LinearLayout
+        android:background="@drawable/shape_dialog3"
+        android:paddingLeft="12dp"
+        android:paddingRight="12dp"
+        android:paddingTop="60dp"
+        android:paddingBottom="25dp"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <TextView
-            android:text="为保证竞标秩序，所有竞标者需提交竞标\n保证金，竞标结束之后所有竞标保证金会在\n5个工作日内退还原有账户。"
+            android:text="为保证竞标秩序，所有参与竞标者需提交竞标保证金。"
             android:textSize="14sp"
-            android:gravity="center_horizontal"
-            android:layout_marginTop="160dp"
-            android:layout_centerHorizontal="true"
-            android:layout_width="wrap_content"
+            android:textColor="@color/colorBlue8"
+            android:textStyle="bold"
+            android:lineSpacingMultiplier="1.2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+        <TextView
+            android:text="竞标结束，针对本次推广资源："
+            android:textSize="14sp"
+            android:textColor="@color/colorBlue8"
+            android:textStyle="bold"
+            android:lineSpacingMultiplier="1.2"
+            android:layout_marginTop="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+        <TextView
+            android:text="未通过、已签约竞标保证金退回到原来账户。"
+            android:textSize="12sp"
+            android:textColor="@color/colorBlue8"
+            android:lineSpacingMultiplier="1.2"
+            android:drawableLeft="@drawable/shape_dot_blue2"
+            android:drawablePadding="10dp"
+            android:layout_marginLeft="2dp"
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 
-    </RelativeLayout>
-    <TextView
-        android:id="@+id/dialog_tv3"
-        android:text="提交竞标保证金"
-        android:gravity="center"
-        android:textSize="16sp"
-        android:textColor="@color/colorMain"
-        android:background="@drawable/shape_dialog"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"/>
+        <TextView
+            android:text="确定竞标成功未按时提交产品推广保证金，以及未按时签订协议，扣除本次竞标保证金。"
+            android:textSize="12sp"
+            android:textColor="@color/colorBlue8"
+            android:lineSpacingMultiplier="1.2"
+            android:drawableLeft="@drawable/shape_dot_blue2"
+            android:drawablePadding="10dp"
+            android:layout_marginLeft="2dp"
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <Button
+            android:id="@+id/dialog_submit"
+            android:text="提交竞标保证金"
+            style="?android:attr/borderlessButtonStyle"
+            android:textColor="@android:color/white"
+            android:background="@drawable/selector_confirm_pay"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginLeft="60dp"
+            android:layout_marginTop="30dp"
+            android:layout_marginRight="60dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+
+    </LinearLayout>
+
+
 </LinearLayout>

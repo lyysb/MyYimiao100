@@ -42,9 +42,12 @@ public class InformationAdAdapter extends PagerAdapter{
         position = position % mList.size();
         ImageView imageView = new ImageView(container.getContext());
         String imageUrl = mList.get(position).getMediaUrl();
-        Picasso.with(container.getContext()).load(imageUrl).placeholder(R.mipmap.ico_default_bannner)
+        if (!imageUrl.isEmpty()) {
+            Picasso.with(container.getContext()).load(imageUrl + "?imageMogr2/thumbnail/480x240/")
+                    .placeholder(R.mipmap.ico_default_bannner)
                     .resize(ScreenUtil.getScreenWidth(container.getContext()), DensityUtil.dp2px(container.getContext(), 190))
                     .into(imageView);
+        }
         final int finalPosition = position;
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override

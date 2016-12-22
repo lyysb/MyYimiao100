@@ -19,7 +19,9 @@ import com.yimiao100.sale.bean.Course;
 import com.yimiao100.sale.bean.CourseBean;
 import com.yimiao100.sale.bean.ErrorBean;
 import com.yimiao100.sale.utils.Constant;
+import com.yimiao100.sale.utils.DensityUtil;
 import com.yimiao100.sale.utils.LogUtil;
+import com.yimiao100.sale.utils.ScreenUtil;
 import com.yimiao100.sale.utils.SharePreferenceUtil;
 import com.yimiao100.sale.utils.TimeUtil;
 import com.yimiao100.sale.utils.ToastUtil;
@@ -146,8 +148,12 @@ public class VideoDetailActivity extends BaseActivity implements YMVideoPlayer
         mVideoDetailPlayer.setUp(course.getVideoUrl() != null ? course.getVideoUrl() :
                         "http://oduhua0b1.bkt.clouddn.com/default_video.mp4",
                 JCVideoPlayerStandard.SCREEN_LAYOUT_LIST, course.getCourseName());
-        Picasso.with(this).load(course.getVideoUrl() + "?vframe/png/offset/10")
-                .into(mVideoDetailPlayer.thumbImageView);
+        //设置封面图
+        if (course.getImageUrl() != null && !course.getImageUrl().isEmpty()) {
+            Picasso.with(this).load(course.getImageUrl() + "?imageMogr2/thumbnail/480x240")
+                    .resize(ScreenUtil.getScreenWidth(this), DensityUtil.dp2px(this, 200))
+                    .into(mVideoDetailPlayer.thumbImageView);
+        }
         mVideoDetailPlayer.setOnCompleteListener(this);
         mVideoDetailPlayer.setOnPlayListener(this);
     }

@@ -334,7 +334,7 @@ public class CustomerActivity extends BaseActivity implements TitleView.TitleBar
         mCustomerAll.setChecked(false);
         //列表显示
         mCustomerMyCustomer.setVisibility(View.VISIBLE);
-        if (mUserCdcList.size() == 0) {
+        if (mUserCdcList == null || mUserCdcList.size() == 0) {
             //显示空白页
             mEmptyView.setVisibility(View.VISIBLE);
         } else {

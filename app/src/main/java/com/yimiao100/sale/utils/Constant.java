@@ -7,8 +7,8 @@ import java.util.HashMap;
  * Created by 亿苗通 on 2016/8/9.
  */
 public interface Constant {
-    String BASE_URL = "http://161p3p2316.iask.in/ymt";
-//    String BASE_URL = "http://123.56.203.55/ymt";
+//    String BASE_URL = "http://161p3p2316.iask.in/ymt";
+    String BASE_URL = "http://123.56.203.55/ymt";
     String SHARE_URL = "http://www.yimiaoquan100.com/ymt";
     /**
      * Mob-AppKey
@@ -97,6 +97,8 @@ public interface Constant {
             put(149, "轮播类型无效");
             put(150, "积分兑换商品无效");
             put(151, "提交对公账户信息无效");
+            put(152, "支付无效");
+            put(153, "获取协议文件无效");
         }
     };
     String CNNAME = "cnName";

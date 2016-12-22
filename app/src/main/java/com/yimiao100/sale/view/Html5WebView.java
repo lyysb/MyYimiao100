@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Message;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.webkit.GeolocationPermissions;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceError;
@@ -13,6 +12,7 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import com.yimiao100.sale.utils.LogUtil;
 import com.yimiao100.sale.utils.NetStatusUtil;
 import com.yimiao100.sale.utils.ToastUtil;
 
@@ -95,7 +95,7 @@ public class Html5WebView extends WebView {
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             view.loadUrl(url);
-            Log.d("Url:", url);
+            LogUtil.d(url);
             return true;
         }
 

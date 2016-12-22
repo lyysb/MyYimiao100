@@ -60,9 +60,11 @@ public class PublicClassAdapter extends BaseAdapter {
         TextView integralType = ViewHolderUtil.get(convertView, R.id.public_integral_type);
 
         //视频缩略图
-        Picasso.with(parent.getContext()).load(openClass.getVideoUrl() +
-                "?vframe/png/offset/10/w/96/h/86").placeholder(R.mipmap
-                .ico_default_short_picture).into(frame);
+        if (openClass.getImageUrl() != null && !openClass.getImageUrl().isEmpty()) {
+            Picasso.with(parent.getContext()).load(openClass.getImageUrl() +
+                    "?imageMogr2/thumbnail/96x86").placeholder(R.mipmap
+                    .ico_default_short_picture).into(frame);
+        }
         //课程名字
         className.setText(openClass.getCourseName());
         //视频时长

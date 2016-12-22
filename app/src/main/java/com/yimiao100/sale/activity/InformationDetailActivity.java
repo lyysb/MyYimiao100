@@ -109,7 +109,6 @@ public class InformationDetailActivity extends BaseActivity implements View.OnCl
     private TextView mInformationDetailType;
     private TagGroup mInformationTagGroup;
     private TextView mInformationDetailCheck;
-    private String mAccessToken;
     private int mUserId;
     private List<CommentListBean> mCommentList;
     private TextView mCommentUserScore;
@@ -144,9 +143,6 @@ public class InformationDetailActivity extends BaseActivity implements View.OnCl
         LogUtil.d("newsId：" + mNewsId);
         //获取图片Url-用于分享
         mImageUrl = intent.getStringExtra("imageUrl");
-        //获得Token
-        mAccessToken = (String) SharePreferenceUtil.get(this, Constant.ACCESSTOKEN, " ");
-        LogUtil.d("accessToken：" + mAccessToken);
         //获取用户id
         mUserId = (int) SharePreferenceUtil.get(this, Constant.USERID, -1);
         //获取用户当前积分
@@ -279,7 +275,17 @@ public class InformationDetailActivity extends BaseActivity implements View.OnCl
 
                     @Override
                     public void onResponse(String response, int id) {
-                        LogUtil.d("资讯详情：" + response);
+                        if (response.length() > 4000) {
+                            for (int i = 0; i < response.length(); i += 4000) {
+                                if (i + 4000 < response.length()) {
+                                    LogUtil.d(i + "资讯详情：" + response.substring(i, i + 4000));
+                                } else {
+                                    LogUtil.d(i + "资讯详情：" + response.substring(i, response.length()));
+                                }
+                            }
+                        } else {
+                            LogUtil.d("资讯详情：" + response);
+                        }
                         ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                         switch (errorBean.getStatus()) {
                             case "success":

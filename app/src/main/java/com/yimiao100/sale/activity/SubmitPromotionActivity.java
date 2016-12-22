@@ -10,12 +10,14 @@ import android.support.v7.app.AlertDialog;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSON;
 import com.tencent.mm.sdk.constants.Build;
 import com.tencent.mm.sdk.modelpay.PayReq;
 import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.tencent.mm.sdk.openapi.WXAPIFactory;
 import com.yimiao100.sale.R;
 import com.yimiao100.sale.base.BaseActivity;
+import com.yimiao100.sale.bean.ErrorBean;
 import com.yimiao100.sale.bean.ResourceListBean;
 import com.yimiao100.sale.utils.Constant;
 import com.yimiao100.sale.utils.FormatUtils;
@@ -95,7 +97,7 @@ public class SubmitPromotionActivity extends BaseActivity implements TitleView.T
         LogUtil.d("mark_" + mMark);
         switch (mMark) {
             case "resource":
-                URL_PAY = Constant.BASE_URL + "/api/wepay/pay_order";
+                URL_PAY = Constant.BASE_URL + "/api/order/pay_order";
                 //资源
                 ResourceListBean resourceInfo = intent.getParcelableExtra("resourceInfo");
                 mResourceId = resourceInfo.getId() + "";
@@ -109,7 +111,7 @@ public class SubmitPromotionActivity extends BaseActivity implements TitleView.T
                 mParams.put(BID_QTY, mBidQty);
                 break;
             case "order":
-                URL_PAY = Constant.BASE_URL + "/api/wepay/pay_bid_deposit";
+                URL_PAY = Constant.BASE_URL + "/api/order/pay_bid_deposit";
                 ResourceListBean order = intent.getParcelableExtra("order");
                 mAmount.setText("实付款：￥" + order.getBidDeposit());
                 mOrderId = order.getId() + "";
@@ -170,25 +172,34 @@ public class SubmitPromotionActivity extends BaseActivity implements TitleView.T
                 @Override
                 public void onResponse(String response, int id) {
                     LogUtil.d(response);
-                    //从服务端获取返回信息
-                    JSONObject jsonObject;
-                    try {
-                        jsonObject = new JSONObject(response);
-                        if (null != jsonObject && jsonObject.has("payRequest")) {
-                            JSONObject payRequest = jsonObject.getJSONObject("payRequest");
-                            PayReq req = new PayReq();
-                            req.appId = payRequest.getString("appid");
-                            req.partnerId = payRequest.getString("partnerid");
-                            req.prepayId = payRequest.getString("prepayid");
-                            req.nonceStr = payRequest.getString("noncestr");
-                            req.timeStamp = payRequest.getString("timestamp");
-                            req.packageValue = payRequest.getString("package");
-                            req.sign = payRequest.getString("sign");
-                            //去WXPayEntry做回调
-                            weChatId.sendReq(req);
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
+                    ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
+                    switch (errorBean.getStatus()) {
+                        case "success":
+                            //从服务端获取返回信息
+                            JSONObject jsonObject;
+                            try {
+                                jsonObject = new JSONObject(response);
+                                if (null != jsonObject && jsonObject.has("payRequest")) {
+                                    JSONObject payRequest = jsonObject.getJSONObject("payRequest");
+                                    PayReq req = new PayReq();
+                                    req.appId = payRequest.getString("appid");
+                                    req.partnerId = payRequest.getString("partnerid");
+                                    req.prepayId = payRequest.getString("prepayid");
+                                    req.nonceStr = payRequest.getString("noncestr");
+                                    req.timeStamp = payRequest.getString("timestamp");
+                                    req.packageValue = payRequest.getString("package");
+                                    req.sign = payRequest.getString("sign");
+                                    //去WXPayEntry做回调
+                                    weChatId.sendReq(req);
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                                ToastUtil.showShort(currentContext, "支付异常，请稍后再试");
+                            }
+                            break;
+                        case "failure":
+                            Util.showError(currentContext, errorBean.getReason());
+                            break;
                     }
                 }
             });

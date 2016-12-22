@@ -24,6 +24,7 @@ public class Course implements Parcelable {
     private int integralValue;
     private String videoPath;
     private String videoUrl;
+    private String imageUrl;
     private int isExam;
     private int isPublish;
     private int examDuration;
@@ -40,6 +41,13 @@ public class Course implements Parcelable {
     private int examStatus;
     private int examScore;
 
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
 
     public int getIntegralStatus() {
         return integralStatus;

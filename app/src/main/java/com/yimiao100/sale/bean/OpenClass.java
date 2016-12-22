@@ -15,6 +15,7 @@ public class OpenClass {
     private String integralType;
     private String integralTypeName;
     private int integralValue;
+    private String imageUrl;
     private String videoUrl;
     private int examDuration;
     private int playCount;
@@ -28,6 +29,14 @@ public class OpenClass {
     private int collectCount;
     private int examStatus;
     private int videoDuration;
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
 
     public int getVideoDuration() {
         return videoDuration;

@@ -61,9 +61,11 @@ public class VideoClassAdapter extends BaseAdapter {
         TextView classStatus = ViewHolderUtil.get(convertView, R.id.exam_course_status);
 
         //课程缩略图
-        Picasso.with(parent.getContext()).load(examClass.getVideoUrl() +
-                "?vframe/png/offset/10/w/96/h/86")
-                .placeholder(R.mipmap.ico_default_short_picture).into(logo);
+        if (examClass.getImageUrl() != null && examClass.getImageUrl().length() != 0) {
+            Picasso.with(parent.getContext()).load(examClass.getImageUrl() +
+                    "?imageMogr2/thumbnail/96x86")
+                    .placeholder(R.mipmap.ico_default_short_picture).into(logo);
+        }
         //课程名称
         name.setText(examClass.getCourseName());
         //课程时长

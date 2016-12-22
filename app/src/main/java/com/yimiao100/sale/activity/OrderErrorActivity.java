@@ -44,10 +44,12 @@ public class OrderErrorActivity extends BaseActivity implements TitleView.TitleB
     private void initData() {
         Intent intent = getIntent();
         ResourceListBean order = intent.getParcelableExtra("order");
-        String orderStatusName = order.getOrderStatusName();
-        mOrderStatusName.setText(orderStatusName);
-        String invalidReason = order.getInvalidReason();
-        mOrderErrorReason.setText(invalidReason);
+        if (order != null) {
+            String orderStatusName = order.getOrderStatusName();
+            mOrderStatusName.setText(orderStatusName);
+            String invalidReason = order.getInvalidReason();
+            mOrderErrorReason.setText(invalidReason);
+        }
     }
 
     @Override

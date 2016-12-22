@@ -53,9 +53,7 @@ public class MineAchievementActivity extends BaseActivity implements TitleView
 
 
     private final String URL_EXAM_STAT = Constant.BASE_URL + "/api/course/exam_stat";
-    private final String ACCESS_TOKEN = "X-Authorization-Token";
 
-    private String mAccessToken;
     private String mImageUrl;
     private String mUserName;
 

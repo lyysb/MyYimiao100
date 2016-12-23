@@ -3,11 +3,8 @@ package com.yimiao100.sale.activity;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
-import android.provider.MediaStore;
 import android.support.v7.app.AlertDialog;
 import android.text.Html;
 import android.text.Spanned;
@@ -24,9 +21,8 @@ import com.yimiao100.sale.base.BaseActivity;
 import com.yimiao100.sale.bean.ErrorBean;
 import com.yimiao100.sale.bean.ResourceListBean;
 import com.yimiao100.sale.callback.ProtocolFileCallBack;
-import com.yimiao100.sale.utils.BitmapUtil;
+import com.yimiao100.sale.utils.CompressUtil;
 import com.yimiao100.sale.utils.Constant;
-import com.yimiao100.sale.utils.DensityUtil;
 import com.yimiao100.sale.utils.FormatUtils;
 import com.yimiao100.sale.utils.LogUtil;
 import com.yimiao100.sale.utils.TimeUtil;
@@ -37,11 +33,13 @@ import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
 import java.io.File;
-import java.io.IOException;
+import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import me.iwf.photopicker.PhotoPicker;
+import me.iwf.photopicker.PhotoPreview;
 import okhttp3.Call;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -80,23 +78,22 @@ public class OrderAlreadyActivity extends BaseActivity implements TitleView
     TextView mOrderAlreadyNo;
     private AlertDialog mDialog;
     private ProgressDialog mProgressDownloadDialog;
-    private String mFileName = "agreement.jpg";
-    private File mFile;
-    private Uri mUri;
-    private ProgressDialog mProgressDialog;
+    private ProgressDialog mProgressUploadDialog;
 
-    private final String URL_UPLOAD_FILE = Constant.BASE_URL + "/api/order/upload_protocol_file";
+    private final String URL_UPLOAD_FILE = Constant.BASE_URL + "/api/order/batch_upload_protocol_file";
     private final String URL_DOWNLOAD_FILE = Constant.BASE_URL + "/api/order/fetch_protocol";
     private final String ORDER_ID = "orderId";
+    private final String ZIP_FILE = "zipFile";
     private String mOrderId;
     private ResourceListBean mOrder;
+    private File mFile;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order_already);
         ButterKnife.bind(this);
-
 
         initView();
 
@@ -357,110 +354,96 @@ public class OrderAlreadyActivity extends BaseActivity implements TitleView
     }
 
     /**
-     * 上传
+     * 选择多张图片上传
      */
     private void uploadAgreement() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        CharSequence[] items = {"拍照", "从相册选择"};
-        builder.setItems(items, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                switch (which) {
-                    case 0:
-                        //打开相机
-                        //拍照返回
-                        Intent intentCapture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                        mFile = new File(Environment.getExternalStorageDirectory(), mFileName);
-                        mUri = Uri.fromFile(mFile);
-                        intentCapture.putExtra(MediaStore.EXTRA_OUTPUT, mUri);
-                        startActivityForResult(intentCapture, 100);
-                        break;
-                    case 1:
-                        //打开相册
-                        //激活系统图库，选择一张图片
-                        Intent intentPick = new Intent(Intent.ACTION_PICK);
-                        intentPick.setType("image/*");
-                        // 开启一个带有返回值的Activity，请求码为PHOTO_REQUEST_GALLERY
-                        startActivityForResult(intentPick, 200);
-                        break;
-                }
-            }
-        });
-        AlertDialog dialog = builder.create();
-        dialog.show();
+        PhotoPicker.builder()
+                .setPhotoCount(9)
+                .setShowCamera(false)
+                .setPreviewEnabled(false)
+                .start(this);
     }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK) {
-            if (requestCode == 100) {
-                //压缩显示
-                Bitmap bitmap = BitmapUtil.decodeSampledBitmapFromFile(mFile, DensityUtil.dp2px
-                        (this, 338), DensityUtil.dp2px(this, 150));
-                try {
-                    //质量压缩上传
-                    BitmapUtil.compressAndGenImage(bitmap, mFile.getAbsolutePath(), 1024);
-                } catch (IOException e) {
-                    e.printStackTrace();
+        if (resultCode == RESULT_OK &&
+                (requestCode == PhotoPicker.REQUEST_CODE || requestCode == PhotoPreview
+                        .REQUEST_CODE)) {
+            //图片选择完成
+            ArrayList<String> photos;
+            if (data != null) {
+                photos = data.getStringArrayListExtra(PhotoPicker.KEY_SELECTED_PHOTOS);
+                for (String photo : photos) {
+                    LogUtil.d(photo);
                 }
-            } else if (requestCode == 200) {
-                if (data != null) {
-                    Uri uri = data.getData();
-                    //根据uri获取图片的真实路径
-                    String path = BitmapUtil.getRealPathFromURI(this, uri);
-                    mFile = new File(path);
+                String fileName = "order" + System.currentTimeMillis() + ".zip";
+                //将文件压缩到本地
+                mFile = CompressUtil.zipANDSave(photos, fileName);
+                if (mFile != null) {
+                    upload(mFile, fileName);
+                } else {
+                    //提示获取文件失败
+                    ToastUtil.showShort(currentContext, "文件获取失败，请稍后重试");
                 }
             }
-            submitCorporateAccount();
         }
     }
 
-    private void submitCorporateAccount() {
-        String filename = mFile.getName();
+    /**
+     * 上传压缩文件
+     * @param file
+     * @param fileName
+     */
+    private void upload(File file, String fileName) {
         //上传进度条显示
-        mProgressDialog = new ProgressDialog(this);
-        mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-        mProgressDialog.setCancelable(false);
-        mProgressDialog.setTitle("正在上传，请稍后...");
+        mProgressUploadDialog = new ProgressDialog(this);
+        mProgressUploadDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        mProgressUploadDialog.setCancelable(false);
+        mProgressUploadDialog.setTitle("正在上传，请稍后...");
         OkHttpUtils.post().url(URL_UPLOAD_FILE)
                 .addHeader(ACCESS_TOKEN, mAccessToken)
-                .addParams(ORDER_ID, mOrderId)
-                .addFile("protocolFile", filename, mFile)
-                .build().execute(new StringCallback() {
+                .addFile(ZIP_FILE, fileName, file)
+                .addParams(ORDER_ID, mOrderId).build()
+                .connTimeOut(1000 * 60 * 10)
+                .readTimeOut(1000 * 60 * 10)
+                .writeTimeOut(1000 * 60 * 10).execute(new StringCallback() {
             @Override
-            public void onBefore(Request request, int id) {
-                super.onBefore(request, id);
-                mProgressDialog.show();
+            public void onError(Call call, Exception e, int id) {
+                e.printStackTrace();
+                Util.showTimeOutNotice(currentContext);
             }
 
             @Override
-            public void onAfter(int id) {
-                super.onAfter(id);
-                mProgressDialog.dismiss();
+            public void onBefore(Request request, int id) {
+                super.onBefore(request, id);
+                mProgressUploadDialog.show();
             }
 
             @Override
             public void inProgress(float progress, long total, int id) {
                 super.inProgress(progress, total, id);
-                mProgressDialog.setProgress((int) (100 * progress + 0.5));
-                LogUtil.d("progress--" + progress + "--total--" + total);
+                LogUtil.d("progress" + progress);
+                mProgressUploadDialog.setProgress((int) (100 * progress - 0.5));
             }
 
             @Override
-            public void onError(Call call, Exception e, int id) {
-                ToastUtil.showLong(getApplicationContext(), e.getMessage());
-                LogUtil.d("已竞标E：" + e.getMessage());
-                Util.showTimeOutNotice(currentContext);
+            public void onAfter(int id) {
+                super.onAfter(id);
+                mProgressUploadDialog.dismiss();
             }
 
             @Override
             public void onResponse(String response, int id) {
-                LogUtil.d("已竞标：" + response);
+                LogUtil.d(response);
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":
-                        ToastUtil.showLong(getApplicationContext(), "提交成功");
+                        if (mFile != null) {
+                            mFile.delete();
+                        }
+                        ToastUtil.showShort(currentContext, "上传成功");
                         break;
                     case "failure":
                         Util.showError(currentContext, errorBean.getReason());
@@ -469,6 +452,10 @@ public class OrderAlreadyActivity extends BaseActivity implements TitleView
             }
         });
     }
+
+
+
+
 
     @Override
     public void leftOnClick() {

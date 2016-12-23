@@ -69,7 +69,7 @@ public class OrderActivity extends BaseActivitySingleList{
         getBuild(1).execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.d("业务列表E：" + e.getMessage());
+                e.printStackTrace();
                 Util.showTimeOutNotice(currentContext);
             }
 

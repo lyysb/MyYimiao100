@@ -98,9 +98,9 @@ public class OrderUnpaidActivity extends BaseActivity implements TitleView.Title
         //竞标保证金提示
         String bidDeposit = mOrder.getBidDeposit() + "";
         mHint.setText("本次推广资源的竞标保证金为￥" + bidDeposit + "元，请于竞标截止日前尽快提交。");
-        //竞标截止时间
-        long bidExpiredAt = mOrder.getBidExpiredAt();
-        String expire = TimeUtil.timeStamp2Date(bidExpiredAt + "", "yyyy年MM月dd日");
+        //竞标有效提示日期
+        long bidExpiredTipAt = mOrder.getBidExpiredTipAt();
+        String expire = TimeUtil.timeStamp2Date(bidExpiredTipAt + "", "yyyy年MM月dd日");
         mExpiredAt.setText(Html.fromHtml("（<font color=\"#4188d2\">注意：</font>本资源竞标时间截止日为\t" + expire + "）"));
     }
 

@@ -9,6 +9,9 @@ import com.yimiao100.sale.base.BaseActivity;
 import com.yimiao100.sale.view.Html5WebView;
 
 
+/**
+ * H5直播界面
+ */
 public class LiveActivity extends BaseActivity {
 
     private LinearLayout mLayout;
@@ -24,8 +27,7 @@ public class LiveActivity extends BaseActivity {
         mWebView = new Html5WebView(this);
         mWebView.setLayoutParams(params);
         mLayout.addView(mWebView);
-
-         mWebView.loadUrl("http://www.yimiaoquan100.com/ymt/api/live/show");
+        mWebView.loadUrl("http://www.yimiaoquan100.com/ymt/api/live/show");
     }
 
     @Override

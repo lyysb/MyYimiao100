@@ -3,7 +3,6 @@ package com.yimiao100.sale.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Html;
-import android.text.Spanned;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -61,8 +60,6 @@ public class ResourcesDetailActivity extends BaseActivity implements TitleView.T
     TextView mResourceDetailTotalDeposit;
     @BindView(R.id.resource_detail_policy_content)
     TextViewExpandableAnimation mResourceDetailPolicyContent;
-    @BindView(R.id.resource_detail_percent)
-    TextView mResourceDetailPercent;
     @BindView(R.id.resource_detail_expired_at)
     TextView mResourceDetailExpiredAt;
     @BindView(R.id.resource_detail_image)
@@ -98,13 +95,11 @@ public class ResourcesDetailActivity extends BaseActivity implements TitleView.T
     }
 
     private void initData() {
-
         loadDetail();
     }
 
     private void loadDetail() {
-        OkHttpUtils
-                .post()
+        OkHttpUtils.post()
                 .url(URL_RESOURCE_INFO)
                 .addHeader(ACCESS_TOKEN, mAccessToken)
                 .addParams("resourceId", mResourceID + "")
@@ -112,7 +107,7 @@ public class ResourcesDetailActivity extends BaseActivity implements TitleView.T
                 .execute(new StringCallback() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
-                        LogUtil.d("资源详情E：" + e.getMessage());
+                        e.printStackTrace();
                         Util.showTimeOutNotice(currentContext);
                     }
 
@@ -170,11 +165,6 @@ public class ResourcesDetailActivity extends BaseActivity implements TitleView.T
         //推广政策
         String policyContent = resourceInfo.getPolicyContent();
         mResourceDetailPolicyContent.setText(policyContent);
-        //标注---------暂时不显示
-        int incompletePercent = resourceInfo.getIncompletePercent();
-        int reducePercent = resourceInfo.getReducePercent();
-        Spanned expired = Html.fromHtml("注：未完成" + "<font color=\"#4188d2\">" + incompletePercent + "%</font>" + "指标，扣除推广保证金" + "<font color=\"#4188d2\">" + reducePercent + "%</font>");
-        mResourceDetailPercent.setText(expired);
         //截止日期
         long expiredTipAt = resourceInfo.getBidExpiredTipAt();
         String expire = TimeUtil.timeStamp2Date(expiredTipAt + "", "yyyy年MM月dd日");

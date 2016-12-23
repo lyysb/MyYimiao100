@@ -97,7 +97,7 @@ public class SubmitPromotionActivity extends BaseActivity implements TitleView.T
         LogUtil.d("mark_" + mMark);
         switch (mMark) {
             case "resource":
-                URL_PAY = Constant.BASE_URL + "/api/order/pay_order";
+                URL_PAY = Constant.BASE_URL + "/api/order/place_order";
                 //资源
                 ResourceListBean resourceInfo = intent.getParcelableExtra("resourceInfo");
                 mResourceId = resourceInfo.getId() + "";

@@ -315,14 +315,6 @@
                     app:tvea_textShrink="@string/shrink"
                     app:tvea_textStateColor="@color/color999"
                     />
-                <TextView
-                    android:id="@+id/resource_detail_percent"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:visibility="gone"
-                    android:textColor="@color/color666"
-                    android:textSize="12sp"/>
             </LinearLayout>
 
             <LinearLayout

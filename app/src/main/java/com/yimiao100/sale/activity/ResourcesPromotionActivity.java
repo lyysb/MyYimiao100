@@ -23,7 +23,6 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 
-
 /**
  * 资源-公司推广
  */
@@ -166,7 +165,8 @@ public class ResourcesPromotionActivity extends BaseActivity implements TitleVie
         //最终竞标数量
         mResourcePromotionTotalCount.setText(mQuota + mResourceInfo.getUnits());
         //最终提交的保证金--（ 基础指标+竞标数量）*推广保证金基数
-        mResourcePromotionTotalAmount.setText(FormatUtils.MoneyFormat(mQuota * mSaleDeposit) + "人民币");
+        mResourcePromotionTotalAmount.setText(FormatUtils.MoneyFormat(mQuota * mSaleDeposit) +
+                "人民币");
 
         mChange = mQuota * increment / 100;
     }
@@ -181,9 +181,13 @@ public class ResourcesPromotionActivity extends BaseActivity implements TitleVie
 
     }
 
-    @OnClick({R.id.promotion_subtract, R.id.promotion_add, R.id.resources_promotion_submit})
+    @OnClick({R.id.promotion_subtract, R.id.promotion_add, R.id.resources_promotion_submit, R.id.resource_promotion_bind})
     public void onClick(View view) {
         switch (view.getId()) {
+            case R.id.resource_promotion_bind:
+                //进入到推广主体界面
+                startActivity(new Intent(this, BindCompanyActivity.class));
+                break;
             case R.id.promotion_subtract:
                 //指标数减少
                 mNum = Integer.parseInt(mPromotionNum.getText().toString());
@@ -195,7 +199,8 @@ public class ResourcesPromotionActivity extends BaseActivity implements TitleVie
                 //最终竞标数量
                 mResourcePromotionTotalCount.setText((mQuota + mNum) + mResourceInfo.getUnits());
                 //最终提交的保证金--（ 基础指标+竞标数量）*推广保证金基数
-                mResourcePromotionTotalAmount.setText(FormatUtils.MoneyFormat((mQuota + mNum) * mSaleDeposit) + "人民币");
+                mResourcePromotionTotalAmount.setText(FormatUtils.MoneyFormat((mQuota + mNum) *
+                        mSaleDeposit) + "人民币");
                 break;
             case R.id.promotion_add:
                 //指标数增加
@@ -206,7 +211,8 @@ public class ResourcesPromotionActivity extends BaseActivity implements TitleVie
                 //最终竞标数量
                 mResourcePromotionTotalCount.setText((mQuota + mNum) + mResourceInfo.getUnits());
                 //最终提交的保证金--（ 基础指标+竞标数量）*推广保证金基数-只是作为显示
-                mResourcePromotionTotalAmount.setText(FormatUtils.MoneyFormat((mQuota + mNum) * mSaleDeposit) + "人民币");
+                mResourcePromotionTotalAmount.setText(FormatUtils.MoneyFormat((mQuota + mNum) *
+                        mSaleDeposit) + "人民币");
                 break;
             case R.id.resources_promotion_submit:
                 //提交
@@ -223,7 +229,6 @@ public class ResourcesPromotionActivity extends BaseActivity implements TitleVie
                 break;
         }
     }
-
 
 
     /**

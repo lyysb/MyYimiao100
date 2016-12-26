@@ -25,6 +25,7 @@ import com.yimiao100.sale.utils.CompressUtil;
 import com.yimiao100.sale.utils.Constant;
 import com.yimiao100.sale.utils.FormatUtils;
 import com.yimiao100.sale.utils.LogUtil;
+import com.yimiao100.sale.utils.SharePreferenceUtil;
 import com.yimiao100.sale.utils.TimeUtil;
 import com.yimiao100.sale.utils.ToastUtil;
 import com.yimiao100.sale.utils.Util;
@@ -147,7 +148,7 @@ public class OrderAlreadyActivity extends BaseActivity implements TitleView
         //订单id
         mOrderId = mOrder.getId() + "";
         //获取是否已经阅读过免责信息
-        boolean isRead = mOrder.isRead();
+        boolean isRead = (boolean) SharePreferenceUtil.get(currentContext, mOrder.getVendorName() + mOrderId , false);
         LogUtil.d("isRead?" + isRead);
         if (!isRead) {
             //没有阅读过，弹窗显示
@@ -179,8 +180,8 @@ public class OrderAlreadyActivity extends BaseActivity implements TitleView
                     order_agree.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            mOrder.setRead(true);
-                            LogUtil.d("isRead?" + mOrder.isRead());
+                            //设置记录
+                            SharePreferenceUtil.put(currentContext, mOrder.getVendorName() + mOrderId, true);
                             mDialog.dismiss();
                         }
                     });
@@ -236,9 +237,10 @@ public class OrderAlreadyActivity extends BaseActivity implements TitleView
         mProgressDownloadDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         mProgressDownloadDialog.setTitle("下载中，请稍后");
         mProgressDownloadDialog.setCancelable(false);
+        String fileHead = "推广协议" + mOrder.getProductName();
         OkHttpUtils.post().url(URL_DOWNLOAD_FILE).addHeader(ACCESS_TOKEN, mAccessToken)
                 .addParams(ORDER_ID, mOrderId).build()      //使用私人定制版FileCallBack
-                .connTimeOut(1000 * 60 * 10).readTimeOut(1000 * 60 * 10).execute(new ProtocolFileCallBack() {
+                .connTimeOut(1000 * 60 * 10).readTimeOut(1000 * 60 * 10).execute(new ProtocolFileCallBack(fileHead) {
 
             @Override
             public void onBefore(Request request, int id) {

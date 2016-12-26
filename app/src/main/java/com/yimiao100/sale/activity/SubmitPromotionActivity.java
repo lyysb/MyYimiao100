@@ -218,7 +218,7 @@ public class SubmitPromotionActivity extends BaseActivity implements TitleView.T
         }
     };
 
-    private void handleResult(int code) {
+    private void handleResult(final int code) {
         //0 支付成功
         //-1 发生错误 可能的原因：签名错误、未注册APPID、项目设置APPID不正确、注册的APPID与设置的不匹配、其他异常等。
         //-2 用户取消 发生场景：用户不支付了，点击取消，返回APP。
@@ -242,17 +242,21 @@ public class SubmitPromotionActivity extends BaseActivity implements TitleView.T
         builder.setPositiveButton("ok", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Class clz = null;
-                switch (mMark) {
-                    case "resource":
-                        clz = ResourcesActivity.class;
-                        break;
-                    case "order":
-                        clz = OrderActivity.class;
-                        break;
+                if (0 == code) {
+                    //支付成功，返回列表页
+                    Class clz = null;
+                    switch (mMark) {
+                        case "resource":
+                            clz = ResourcesActivity.class;
+                            break;
+                        case "order":
+                            clz = OrderActivity.class;
+                            break;
+                    }
+                    Intent intent1 = new Intent(SubmitPromotionActivity.this, clz);
+                    startActivity(intent1);
                 }
-                Intent intent1 = new Intent(SubmitPromotionActivity.this, clz);
-                startActivity(intent1);
+                //支付出现问题（取消，失败），不需要做任何操作。停留在支付页面
                 dialog.dismiss();
             }
         });

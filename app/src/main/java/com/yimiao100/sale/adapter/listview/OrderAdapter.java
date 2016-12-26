@@ -92,7 +92,7 @@ public class OrderAdapter extends BaseAdapter {
         switch (orderStatus) {
             case "unpaid":
                 //最初状态-未支付
-                order_status.setTextColor(mContext.getResources().getColor(R.color.colorOrigin));
+                order_status.setTextColor(mContext.getResources().getColor(R.color.colorBrown));
                 break;
             case "bidding":
                 //第一状态-竞标中

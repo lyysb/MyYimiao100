@@ -16,6 +16,7 @@ import com.yimiao100.sale.base.BaseActivity;
 import com.yimiao100.sale.bean.ResourceListBean;
 import com.yimiao100.sale.utils.LogUtil;
 import com.yimiao100.sale.utils.TimeUtil;
+import com.yimiao100.sale.utils.ToastUtil;
 import com.yimiao100.sale.utils.Util;
 import com.yimiao100.sale.view.TitleView;
 import com.zhy.http.okhttp.OkHttpUtils;
@@ -127,7 +128,8 @@ public class OrderCompletedActivity extends BaseActivity implements TitleView.Ti
                 break;
             case R.id.order_complete_view:
                 //下载已签约协议，使用相册打开
-                downloadAlreadyAgreement(mOrderProtocolUrl);
+//                downloadAlreadyAgreement(mOrderProtocolUrl);
+                ToastUtil.showShort(currentContext, "请查看您之前所拍摄照片");
                 break;
             case R.id.order_complete_download:
                 //下载电子协议
@@ -207,6 +209,10 @@ public class OrderCompletedActivity extends BaseActivity implements TitleView.Ti
         );
     }
 
+    /**
+     * 下载电子协议
+     * @param resourceProtocolUrl
+     */
     private void downloadAgreement(String resourceProtocolUrl) {
         mProgressDownloadDialog = new ProgressDialog(this);
         mProgressDownloadDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);

@@ -9,7 +9,8 @@
 
     <com.yimiao100.sale.view.TitleView
         app:title_text="直播"
-        android:id="@+id/ware_house_title"
+        android:id="@+id/live_title"
+        app:left_isShow="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
     <LinearLayout

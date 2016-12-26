@@ -145,13 +145,16 @@
                 android:layout_marginTop="25dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
-            <ImageView
+            <Button
                 android:id="@+id/order_already_upload"
+                android:text="上传电子协议"
                 android:layout_marginBottom="20dp"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="30dp"
-                android:src="@drawable/selector_order_upload"
-                android:layout_width="wrap_content"
+                android:background="@drawable/selector_confirm_pay"
+                android:layout_marginLeft="40dp"
+                android:layout_marginRight="40dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
         </LinearLayout>
     </ScrollView>

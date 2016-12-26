@@ -143,7 +143,6 @@ public class BindCompanyActivity extends BaseActivity implements TitleView.Title
 
         initView();
 
-        mAccessToken = (String) SharePreferenceUtil.get(this, Constant.ACCESSTOKEN, "");
 
         initData();
     }

@@ -44,7 +44,7 @@
                     style="@style/view_horizontal"/>
                 <TextView
                     android:id="@+id/order_error_reason"
-                    android:text="{reason}"
+                    android:text="\t\t{reason}"
                     android:textSize="14sp"
                     android:textColor="@color/color666"
                     android:lineSpacingMultiplier="1.2"

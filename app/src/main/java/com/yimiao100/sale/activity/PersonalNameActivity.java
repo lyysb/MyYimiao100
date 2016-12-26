@@ -32,7 +32,6 @@ public class PersonalNameActivity extends BaseActivity implements TitleView.Titl
     ImageView mNameClear;
 
     private final String UPDATE_CN_NAME = "/api/user/update_cn_name";
-    private String mAccessToken;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +41,6 @@ public class PersonalNameActivity extends BaseActivity implements TitleView.Titl
 
         mNameTitle.setOnTitleBarClick(this);
 
-        mAccessToken = (String) SharePreferenceUtil.get(this, Constant.ACCESSTOKEN, "");
 
         //获取用户姓名
         String user_name = (String) SharePreferenceUtil.get(this, Constant.CNNAME, "请输入用户姓名");

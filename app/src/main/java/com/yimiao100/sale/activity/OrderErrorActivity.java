@@ -48,7 +48,7 @@ public class OrderErrorActivity extends BaseActivity implements TitleView.TitleB
             String orderStatusName = order.getOrderStatusName();
             mOrderStatusName.setText(orderStatusName);
             String invalidReason = order.getInvalidReason();
-            mOrderErrorReason.setText(invalidReason);
+            mOrderErrorReason.setText("\t\t" + invalidReason);
         }
     }
 

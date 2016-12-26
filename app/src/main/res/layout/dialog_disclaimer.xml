@@ -34,8 +34,7 @@
             android:textStyle="bold"
             style="@style/style57"/>
         <TextView
-            android:text="1、 按照要求在规定截止日前，将推广产品保证金转账到规定账户。
-2、 上传签署正确、完整的推广协议扫描件。"
+            android:text="1、 按照要求在规定截止日前，将推广产品保证金转账到规定账户。\n2、 上传签署正确、完整的推广协议扫描件。"
             android:padding="12dp"
             style="@style/style57"/>
 
@@ -48,8 +47,7 @@
             android:textStyle="bold"
             style="@style/style57"/>
         <TextView
-            android:text="1、 填写推广主体必须与申请资源推广的主体信息一致。
-2、 扫描件必须清晰、摆正。"
+            android:text="1、 填写推广主体必须与申请资源推广的主体信息一致。\n2、 扫描件必须清晰、摆正。"
             android:layout_weight="1"
             android:padding="12dp"
             style="@style/style57"/>

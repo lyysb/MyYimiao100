@@ -18,9 +18,9 @@ import okhttp3.Response;
  */
 
 public abstract class ProtocolFileCallBack extends Callback<File> {
-
-    public ProtocolFileCallBack() {
-
+    private String fileHead;
+    public ProtocolFileCallBack(String fileHead) {
+        this.fileHead = fileHead;
     }
 
     @Override
@@ -32,7 +32,7 @@ public abstract class ProtocolFileCallBack extends Callback<File> {
 
         String fileDir = Environment.getExternalStorageDirectory().getAbsolutePath();
         String header = response.header("Content-Disposition");
-        String fileName = header.substring(header.lastIndexOf("=") + 1);
+        String fileName = fileHead + header.substring(header.lastIndexOf("=") + 1);
         InputStream is = null;
         byte[] buf = new byte[2048];
         int len = 0;

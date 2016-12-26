@@ -41,6 +41,7 @@
                     style="@style/view_horizontal"/>
 
                 <LinearLayout
+                    android:id="@+id/resource_promotion_bind"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
@@ -178,7 +179,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
                     <TextView
-                        android:text="推广周期            ："
+                        android:text="推广周期：            "
                         style="@style/style4"/>
                     <TextView
                         android:id="@+id/resource_promotion_time"
@@ -191,7 +192,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
                     <TextView
-                        android:text="基础指标            ："
+                        android:text="基础指标：            "
                         style="@style/style4"/>
                     <TextView
                         android:id="@+id/resource_promotion_quota"
@@ -295,7 +296,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
                 <TextView
-                    android:layout_weight="1"
                     android:text="您最终需要提交的推广保证金："
                     android:textSize="12sp"
                     android:textColor="@color/colorMain"
@@ -303,12 +303,12 @@
                     android:layout_height="wrap_content"/>
                 <TextView
                     android:id="@+id/resource_promotion_total_amount"
-                    android:text="{total_amount}"
+                    android:text="{total_amount}人民币"
                     android:textSize="14sp"
+                    android:gravity="center"
+                    android:layout_weight="1"
                     android:textColor="@color/colorRed"
-                    android:paddingRight="40dp"
-                    android:paddingLeft="50dp"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"/>
             </LinearLayout>
 

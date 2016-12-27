@@ -262,7 +262,7 @@ public class VideoDetailActivity extends BaseActivity implements YMVideoPlayer
         switch (view.getId()) {
             case R.id.video_detail_play_now:
                 //播放视频
-                mVideoDetailPlayer.prepareVideo();
+                mVideoDetailPlayer.prepareMediaPlayer();
                 onPlay();
                 break;
             case R.id.video_detail_collection:

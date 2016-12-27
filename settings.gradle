@@ -1,1 +1,1 @@
-include ':app', ':CharacterPickerViewLibrary', ':MPChartLib', ':AndroidTagGrouplibrary', ':jcvideoplayer-lib'
+include ':app', ':CharacterPickerViewLibrary', ':MPChartLib', ':AndroidTagGrouplibrary'

@@ -13,7 +13,6 @@
             <option value="$PROJECT_DIR$/CharacterPickerViewLibrary" />
             <option value="$PROJECT_DIR$/MPChartLib" />
             <option value="$PROJECT_DIR$/app" />
-            <option value="$PROJECT_DIR$/jcvideoplayer-lib" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />

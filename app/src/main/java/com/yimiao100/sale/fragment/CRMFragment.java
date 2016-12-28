@@ -42,6 +42,7 @@ import com.yimiao100.sale.view.DynamicWave;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 
 import okhttp3.Call;
@@ -328,6 +329,23 @@ public class CRMFragment extends Fragment implements View.OnClickListener, Carou
         // 把position位置的点设置为selected状态
         for (int i = 0; i < mCrmDots.getChildCount(); i++) {
             mCrmDots.getChildAt(i).setSelected(i == position);
+        }
+    }
+    /**
+     * 解决如下问题
+     * java.lang.IllegalStateException: No host
+     */
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        try {
+            Field childFragmentManager = Fragment.class.getDeclaredField("mChildFragmentManager");
+            childFragmentManager.setAccessible(true);
+            childFragmentManager.set(this, null);
+        } catch (NoSuchFieldException e) {
+            throw new RuntimeException(e);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
         }
     }
 }

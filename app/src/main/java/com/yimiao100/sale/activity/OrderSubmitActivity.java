@@ -42,8 +42,6 @@ public class OrderSubmitActivity extends BaseActivity implements TitleView.Title
     TextView mOrderSubmitMoney;
     @BindView(R.id.order_submit_no)
     TextView mOrderSubmitNo;
-    @BindView(R.id.order_submit_hint)
-    TextView mOrderSubmitHint;
     @BindView(R.id.order_submit_confirm)
     ImageButton mOrderSubmitConfirm;
 
@@ -65,7 +63,7 @@ public class OrderSubmitActivity extends BaseActivity implements TitleView.Title
         ResourceListBean order = intent.getParcelableExtra("order");
         //提交日期
         String submit_time = TimeUtil.timeStamp2Date(order.getCreatedAt() + "", "yyyy年MM月dd日");
-        mOrderSubmitSubmitTime.setText(submit_time + "提交的申请推广已经提交成功，\n请您尽快提交竞标保证金。");
+        mOrderSubmitSubmitTime.setText(submit_time + "您提交的申请推广,已经收到提交的竞标保证金,目前正在审核中,请耐心等待。");
         //厂家名称
         String vendorName = order.getVendorName();
         mOrderSubmitVendorName.setText(vendorName);
@@ -91,9 +89,6 @@ public class OrderSubmitActivity extends BaseActivity implements TitleView.Title
         //协议单号
         String serialNo = order.getSerialNo();
         mOrderSubmitNo.setText("协议单号：" + serialNo);
-        //竞标保证金提示
-        String bidDeposit = order.getBidDeposit() + "";
-        mOrderSubmitHint.setText("本次推广资源的竞标保证金为￥" + bidDeposit + "元，请于竞标截止日前转到如下账户。\n汇款转账时,必须在备注处填写协议单号。");
     }
 
 

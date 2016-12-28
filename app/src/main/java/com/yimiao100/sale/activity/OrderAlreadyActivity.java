@@ -10,6 +10,7 @@ import android.text.Html;
 import android.text.Spanned;
 import android.view.KeyEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
@@ -74,7 +75,7 @@ public class OrderAlreadyActivity extends BaseActivity implements TitleView
     @BindView(R.id.order_already_re)
     TextView mOrderAlreadyRe;
     @BindView(R.id.order_already_upload)
-    ImageView mOrderAlreadyUpload;
+    Button mOrderAlreadyUpload;
     @BindView(R.id.order_already_no)
     TextView mOrderAlreadyNo;
     private AlertDialog mDialog;

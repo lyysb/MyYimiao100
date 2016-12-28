@@ -63,7 +63,7 @@ public class VideoClassAdapter extends BaseAdapter {
         //课程缩略图
         if (examClass.getImageUrl() != null && examClass.getImageUrl().length() != 0) {
             Picasso.with(parent.getContext()).load(examClass.getImageUrl() +
-                    "?imageMogr2/thumbnail/96x86")
+                    "?imageMogr2/thumbnail/240x215")
                     .placeholder(R.mipmap.ico_default_short_picture).into(logo);
         }
         //课程名称

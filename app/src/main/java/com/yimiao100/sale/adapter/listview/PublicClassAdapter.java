@@ -62,7 +62,7 @@ public class PublicClassAdapter extends BaseAdapter {
         //视频缩略图
         if (openClass.getImageUrl() != null && !openClass.getImageUrl().isEmpty()) {
             Picasso.with(parent.getContext()).load(openClass.getImageUrl() +
-                    "?imageMogr2/thumbnail/96x86").placeholder(R.mipmap
+                    "?imageMogr2/thumbnail/240x215").placeholder(R.mipmap
                     .ico_default_short_picture).into(frame);
         }
         //课程名字

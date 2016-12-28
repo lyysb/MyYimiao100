@@ -82,7 +82,17 @@ public class OrderActivity extends BaseActivitySingleList{
                         mSwipeRefreshLayout.setRefreshing(false);
                     }
                 }, 300);
-                LogUtil.d("业务列表：" + response);
+                if (response.length() > 4000) {
+                    for (int i = 0; i < response.length(); i += 4000) {
+                        if (i + 4000 < response.length()) {
+                            LogUtil.d(i + "业务列表：" + response.substring(i, i + 4000));
+                        } else {
+                            LogUtil.d(i + "业务列表：" + response.substring(i, response.length()));
+                        }
+                    }
+                } else {
+                    LogUtil.d("业务列表：" + response);
+                }
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":
@@ -137,7 +147,7 @@ public class OrderActivity extends BaseActivitySingleList{
     protected void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
         //获得条目数据，携带到详细界面
         ResourceListBean order = mOrderList.get(position);
-        Class clz;
+        Class clz = null;
         //获取订单状态Key
         String orderStatus = order.getOrderStatus();
         //根据订单状态名，选择打开不同的Activity
@@ -162,7 +172,8 @@ public class OrderActivity extends BaseActivitySingleList{
                 //第四状态-已签约
                 clz = OrderCompletedActivity.class;
                 break;
-            default:
+            case "not_passed":
+            case "defaulted":
                 //进入错误界面--已违约|未通过
                 clz = OrderErrorActivity.class;
                 break;

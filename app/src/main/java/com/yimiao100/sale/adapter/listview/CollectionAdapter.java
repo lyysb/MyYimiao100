@@ -104,6 +104,8 @@ public class CollectionAdapter extends BaseAdapter {
                     Picasso.with(context).load(imageUrl_1)
                             .placeholder(R.mipmap.ico_default_short_picture).into(mType1_image);
                 }
+                ImageView type1_top = ViewHolderUtil.get(convertView, R.id.type1_top);
+                type1_top.setVisibility(pagedListBean.getIsTop() == 1 ? View.VISIBLE : View.GONE);
                 break;
             case TYPE_2:
                 if (convertView == null){
@@ -146,6 +148,8 @@ public class CollectionAdapter extends BaseAdapter {
                     Picasso.with(context).load(imageUrl_2_3)
                             .placeholder(R.mipmap.ico_default_short_picture).into(mType2_image3);
                 }
+                ImageView type2_top = ViewHolderUtil.get(convertView, R.id.type2_top);
+                type2_top.setVisibility(pagedListBean.getIsTop() == 1 ? View.VISIBLE : View.GONE);
                 break;
             case TYPE_3:
                 if (convertView == null){
@@ -160,6 +164,8 @@ public class CollectionAdapter extends BaseAdapter {
                     Picasso.with(context).load(imageUrl_3)
                             .placeholder(R.mipmap.ico_default_short_picture).into(mType3_image);
                 }
+                ImageView type3_top = ViewHolderUtil.get(convertView, R.id.type3_top);
+                type3_top.setVisibility(pagedListBean.getIsTop() == 1 ? View.VISIBLE : View.GONE);
                 break;
         }
         return convertView;

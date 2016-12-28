@@ -36,6 +36,7 @@ import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 import com.zhy.http.okhttp.request.RequestCall;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 
 import butterknife.BindView;
@@ -337,5 +338,22 @@ public class StudyFragment extends Fragment implements View.OnClickListener, Ada
     public void onStop() {
         super.onStop();
         mHandler.removeMessages(SHOW_NEXT_PAGE);
+    }
+    /**
+     * 解决如下问题
+     * java.lang.IllegalStateException: No host
+     */
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        try {
+            Field childFragmentManager = Fragment.class.getDeclaredField("mChildFragmentManager");
+            childFragmentManager.setAccessible(true);
+            childFragmentManager.set(this, null);
+        } catch (NoSuchFieldException e) {
+            throw new RuntimeException(e);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

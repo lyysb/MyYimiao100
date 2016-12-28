@@ -1,19 +1,25 @@
 package com.yimiao100.sale.activity;
 
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.v7.app.AlertDialog;
 import android.text.Html;
 import android.text.Spanned;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSON;
 import com.yimiao100.sale.R;
 import com.yimiao100.sale.base.BaseActivity;
+import com.yimiao100.sale.bean.ErrorBean;
 import com.yimiao100.sale.bean.ResourceListBean;
+import com.yimiao100.sale.callback.ProtocolFileCallBack;
+import com.yimiao100.sale.utils.Constant;
 import com.yimiao100.sale.utils.LogUtil;
 import com.yimiao100.sale.utils.TimeUtil;
 import com.yimiao100.sale.utils.ToastUtil;
@@ -29,6 +35,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import okhttp3.Call;
 import okhttp3.Request;
+import okhttp3.Response;
 
 /**
  * 我的业务-第四状态-已签约
@@ -61,7 +68,6 @@ public class OrderCompletedActivity extends BaseActivity implements TitleView.Ti
     TextView mOrderCompleteView;
     @BindView(R.id.order_complete_download)
     ImageView mOrderCompleteDownload;
-    private String mResourceProtocolUrl;
     private ProgressDialog mProgressDownloadDialog;
     private String mOrderProtocolUrl;
     private ProgressDialog mProgressDialog;
@@ -73,6 +79,11 @@ public class OrderCompletedActivity extends BaseActivity implements TitleView.Ti
     private String mOrderId;
     private String mProductName;
     private String mCustomerName;
+    private ResourceListBean mOrder;
+
+
+    private final String URL_DOWNLOAD_FILE = Constant.BASE_URL + "/api/order/fetch_protocol";
+    private final String ORDER_ID = "orderId";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,32 +101,31 @@ public class OrderCompletedActivity extends BaseActivity implements TitleView.Ti
     }
 
     private void initData() {
-        ResourceListBean order = getIntent().getParcelableExtra("order");
-        mOrderId = order.getId() + "";
-        String submit_time = TimeUtil.timeStamp2Date(order.getCreatedAt() + "", "yyyy年MM月dd日");
+        mOrder = getIntent().getParcelableExtra("order");
+        mOrderId = mOrder.getId() + "";
+        String submit_time = TimeUtil.timeStamp2Date(mOrder.getCreatedAt() + "", "yyyy年MM月dd日");
         mOrderCompleteSubmitTime.setText(submit_time + "提交的申请推广已经正式签约，\n请按照推广协议尽快完成推广任务。");
-        mVendorName = order.getVendorName();
+        mVendorName = mOrder.getVendorName();
         mOrderCompleteVendorName.setText(mVendorName);
-        mCategoryName = order.getCategoryName();
+        mCategoryName = mOrder.getCategoryName();
         mOrderCompleteCommonName.setText(mCategoryName);
-        mSpec = order.getSpec();
+        mSpec = mOrder.getSpec();
         mOrderCompleteSpec.setText("规格：" + mSpec);
-        mDosageForm = order.getDosageForm();
+        mDosageForm = mOrder.getDosageForm();
         mOrderCompleteDosageForm.setText("剂型：" + mDosageForm);
-        String region = order.getProvinceName() + "\t" + order.getCityName() + "\t" + order.getAreaName();
+        String region = mOrder.getProvinceName() + "\t" + mOrder.getCityName() + "\t" + mOrder.getAreaName();
         mOrderCompleteRegion.setText("区域：" + region);
-        String time = TimeUtil.timeStamp2Date(order.getCreatedAt() + "", "yyyy.MM.dd");
+        String time = TimeUtil.timeStamp2Date(mOrder.getCreatedAt() + "", "yyyy.MM.dd");
         mOrderCompleteTime.setText("时间：" + time);
-        String totalDeposit = order.getSaleDeposit() + "";
+        String totalDeposit = mOrder.getSaleDeposit() + "";
         Spanned totalMoney = Html.fromHtml("推广保证金：" + "<font color=\"#4188d2\">" + totalDeposit + "</font>" + "(人民币)");
         mOrderCompleteTotalMoney.setText(totalMoney);
-        mSerialNo = order.getSerialNo();
+        mSerialNo = mOrder.getSerialNo();
         mOrderCompleteSerialNo.setText("协议单号：" + mSerialNo);
-        mOrderProtocolUrl = order.getOrderProtocolUrl();
-        mResourceProtocolUrl = order.getResourceProtocolUrl();
+        mOrderProtocolUrl = mOrder.getOrderProtocolUrl();
 
-        mProductName = order.getProductName();
-        mCustomerName = order.getCustomerName();
+        mProductName = mOrder.getProductName();
+        mCustomerName = mOrder.getCustomerName();
 
     }
 
@@ -133,7 +143,7 @@ public class OrderCompletedActivity extends BaseActivity implements TitleView.Ti
                 break;
             case R.id.order_complete_download:
                 //下载电子协议
-                downloadAgreement(mResourceProtocolUrl);
+                downloadAgreement();
                 break;
         }
     }
@@ -211,63 +221,108 @@ public class OrderCompletedActivity extends BaseActivity implements TitleView.Ti
 
     /**
      * 下载电子协议
-     * @param resourceProtocolUrl
      */
-    private void downloadAgreement(String resourceProtocolUrl) {
+    private void downloadAgreement() {
         mProgressDownloadDialog = new ProgressDialog(this);
-        mProgressDownloadDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-        mProgressDownloadDialog.setTitle("当前下载进度");
+        mProgressDownloadDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        mProgressDownloadDialog.setTitle("下载中，请稍后");
         mProgressDownloadDialog.setCancelable(false);
-        String fileName = resourceProtocolUrl.substring(resourceProtocolUrl.lastIndexOf("/") + 1);
-        LogUtil.d("电子协议fileName：" + fileName);
-        OkHttpUtils.get().url(resourceProtocolUrl)
-                .build().execute(
-                new FileCallBack(Environment.getExternalStorageDirectory().getAbsolutePath(), fileName) {
-                    @Override
-                    public void onBefore(Request request, int id) {
-                        super.onBefore(request, id);
-                        mProgressDownloadDialog.show();
-                    }
+        String fileHead = "推广协议" + mOrder.getProductName();
+        OkHttpUtils.post().url(URL_DOWNLOAD_FILE).addHeader(ACCESS_TOKEN, mAccessToken)
+                .addParams(ORDER_ID, mOrderId).build().connTimeOut(1000 * 60 * 10)
+                .readTimeOut(1000 * 60 * 10).execute(new ProtocolFileCallBack(fileHead) {
+            @Override
+            public void onBefore(Request request, int id) {
+                super.onBefore(request, id);
+                mProgressDownloadDialog.show();
+            }
 
-                    @Override
-                    public void onAfter(int id) {
-                        super.onAfter(id);
-                        mProgressDownloadDialog.dismiss();
-                    }
+            @Override
+            public void onAfter(int id) {
+                super.onAfter(id);
+                mProgressDownloadDialog.dismiss();
+            }
 
-                    @Override
-                    public void inProgress(float progress, long total, int id) {
-                        super.inProgress(progress, total, id);
-                        mProgressDownloadDialog.setProgress((int) (100 * progress + 0.5));
-                    }
 
-                    @Override
-                    public void onError(Call call, Exception e, int id) {
-                        LogUtil.d("onError：" + e.getMessage().toString());
-                        Util.showTimeOutNotice(currentContext);
-                    }
+            @Override
+            public void onError(Call call, Exception e, int id) {
+                Util.showTimeOutNotice(currentContext);
+            }
 
-                    @Override
-                    public void onResponse(File response, int id) {
-                        LogUtil.d("onResponse：" + response.getAbsolutePath());
-                        LogUtil.d("response.name：" + response.getName());
-
-                        //打开邮箱
-                        Intent intent = new Intent(Intent.ACTION_SEND);
-                        intent.putExtra("subject", response.getName()); //
-                        intent.putExtra("body", "Email from CodePad"); //正文
-                        intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(response)); //添加附件，附件为file对象
-                        if (response.getName().endsWith(".gz")) {
-                            intent.setType("application/x-gzip"); //如果是gz使用gzip的mime
-                        } else if (response.getName().endsWith(".txt")) {
-                            intent.setType("text/plain"); //纯文本则用text/plain的mime
-                        } else {
-                            intent.setType("application/octet-stream"); //其他的均使用流当做二进制数据来发送
-                        }
-                        startActivity(intent); //调用系统的mail客户端进行发送}
-                    }
+            @Override
+            public File parseNetworkResponse(Response response, int id) throws Exception {
+                if (200 == response.code()) {
+                    //协议下载成功
+                    LogUtil.d("下载成功");
+                    return super.parseNetworkResponse(response, id);
+                } else if (400 == response.code()) {
+                    //解析显示错误信息
+                    LogUtil.d("下载失败");
+                    ErrorBean errorBean = JSON.parseObject(response.body().toString(),
+                            ErrorBean.class);
+                    Util.showError(currentContext, errorBean.getReason());
+                    return null;
                 }
-        );
+                return super.parseNetworkResponse(response, id);
+            }
+
+            @Override
+            public void onResponse(File response, int id) {
+                if (response == null) {
+                    //如果返回来null证明下载错误
+                    return;
+                }
+                LogUtil.d("onResponse：" + response.getAbsolutePath());
+                LogUtil.d("response.name：" + response.getName());
+                //下载成功，显示分享或者发送出去对话框
+                showSuccessDialog(response);
+            }
+        });
+    }
+    /**
+     * 文件下载成功，选择文件处理方式
+     *
+     * @param response
+     */
+    private void showSuccessDialog(final File response) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("下载成功");
+        builder.setMessage("下载完成，请选择文件处理方式");
+        builder.setCancelable(false);
+        builder.setPositiveButton("发送出去", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                //打开邮箱
+                Intent intent = new Intent(Intent.ACTION_SEND);
+                intent.putExtra("subject", response.getName()); //
+                intent.putExtra("body", "Email from CodePad"); //正文
+                intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(response));
+                //添加附件，附件为file对象
+                if (response.getName().endsWith(".gz")) {
+                    intent.setType("application/x-gzip"); //如果是gz使用gzip的mime
+                } else if (response.getName().endsWith(".txt")) {
+                    intent.setType("text/plain"); //纯文本则用text/plain的mime
+                } else {
+                    intent.setType("application/octet-stream"); //其他的均使用流当做二进制数据来发送
+                }
+                startActivity(intent); //调用系统的mail客户端进行发送
+                dialog.dismiss();
+            }
+        });
+        builder.setNegativeButton("本地打开", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Intent intent = new Intent("android.intent.action.VIEW");
+                intent.addCategory("android.intent.category.DEFAULT");
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                Uri uri = Uri.fromFile(response);
+                intent.setDataAndType(uri, "application/msword");
+                startActivity(intent);
+                dialog.dismiss();
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
     @Override

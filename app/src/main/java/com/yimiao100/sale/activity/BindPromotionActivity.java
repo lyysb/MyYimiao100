@@ -78,9 +78,7 @@ public class BindPromotionActivity extends BaseActivity implements TitleView
         mPromotionCompanyBankNumber.setVisibility(corporate_exit ? View.VISIBLE : View.INVISIBLE);
         //重新请求网络，获取推广账户信息
         OkHttpUtils.post().url(Constant.BASE_URL + "/api/user/get_user_account")
-                .addHeader("X-Authorization-Token",
-                        (String) SharePreferenceUtil.get(getApplicationContext(), Constant
-                                .ACCESSTOKEN, ""))
+                .addHeader(ACCESS_TOKEN, mAccessToken)
                 .build().execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {

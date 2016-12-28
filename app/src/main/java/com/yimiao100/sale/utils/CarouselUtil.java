@@ -50,7 +50,7 @@ public class CarouselUtil {
                         if (listener != null && carouselList != null) {
 
                             if (carouselList.size() == 0) {
-                                //没有数据，设置截数据
+                                //没有数据，设置假数据
                                 Carousel carousel = new Carousel();
                                 carousel.setMediaUrl("http://oduhua0b1.bkt.clouddn.com/banner_placeholder.png");
                                 carouselList.add(carousel);

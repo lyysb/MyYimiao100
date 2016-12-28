@@ -272,6 +272,12 @@ public class InformationFragment extends Fragment implements SwipeRefreshLayout
      * 轮播图-初始化轮播图小圆点
      */
     private void initDots() {
+        if (mCarouselList == null) {
+            return;
+        }
+        if (mCarouselList.size() == 0) {
+            return;
+        }
         for (int i = 0; i < mCarouselList.size(); i++) {
             View dot = new View(getContext());
 

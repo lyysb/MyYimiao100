@@ -3,6 +3,7 @@ package com.yimiao100.sale.utils;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.support.v7.app.AlertDialog;
 
 import com.yimiao100.sale.activity.BindPersonalActivity;
@@ -57,6 +58,11 @@ public class Util {
         if (reason == 116) {
             AlertDialog dialog = ActivityAlertDialogManager.getDialog(activity);
             LogUtil.d("dialog:" + dialog.toString());
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                if (activity.isDestroyed()) {
+                    return;
+                }
+            }
             dialog.show();
         } else {
             ToastUtil.showLong(activity, Constant.ERROR_INFORMATION.get(reason));

@@ -35,6 +35,7 @@ import com.yimiao100.sale.activity.StudyTaskActivity;
 import com.yimiao100.sale.activity.VendorListActivity;
 import com.yimiao100.sale.bean.ErrorBean;
 import com.yimiao100.sale.bean.ImageBean;
+import com.yimiao100.sale.utils.AppUtil;
 import com.yimiao100.sale.utils.BitmapUtil;
 import com.yimiao100.sale.utils.Constant;
 import com.yimiao100.sale.utils.FormatUtils;
@@ -49,6 +50,7 @@ import java.io.File;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import okhttp3.Call;
+
 
 /**
  * 我的界面
@@ -149,6 +151,14 @@ public class MineFragment extends Fragment implements View.OnClickListener {
         //更多
         mLlMore = (LinearLayout) mView.findViewById(R.id.ll_more);
         mLlMore.setOnClickListener(this);
+        mLlMore.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                String versionName = AppUtil.getVersionName(getContext());
+                ToastUtil.showShort(getContext(), "当前应用版本：V" + versionName);
+                return false;
+            }
+        });
 
         //退出
         mLl_mine_exit = (LinearLayout) mView.findViewById(R.id.ll_mine_exit);

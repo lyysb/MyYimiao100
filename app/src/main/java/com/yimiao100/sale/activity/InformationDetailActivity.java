@@ -8,7 +8,6 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.EditText;
@@ -245,6 +244,8 @@ public class InformationDetailActivity extends BaseActivity implements View.OnCl
         mActivationScore = getResources().getDrawable(R.mipmap.ico_information_activation_zambia);
         //未赞图片
         mDefaultScore = getResources().getDrawable(R.mipmap.ico_information_default_zambia);
+
+        //这是JPush
     }
 
     private void initData() {
@@ -388,14 +389,6 @@ public class InformationDetailActivity extends BaseActivity implements View.OnCl
         //自适应屏幕
         settings.setLoadWithOverviewMode(true);
         mWebView.loadUrl(CONTENT_URL + "?newsId=" + mNewsId);
-        mWebView.setWebChromeClient(new WebChromeClient() {
-            @Override
-            public void onProgressChanged(WebView view, int newProgress) {
-                super.onProgressChanged(view, newProgress);
-                LogUtil.d("newProgress：" + newProgress);
-            }
-
-        });
     }
 
     /**
@@ -403,7 +396,7 @@ public class InformationDetailActivity extends BaseActivity implements View.OnCl
      */
     private void showInformationComment() {
         OkHttpUtils.post().url(NEWS_COMMENT_LIST)
-                .addHeader("X-Authorization-Token", mAccessToken)
+                .addHeader(ACCESS_TOKEN, mAccessToken)
                 .addParams("objectId", mNewsId + "")
                 .addParams("userId", mUserId + "")
                 .addParams("page", "1")

@@ -43,7 +43,6 @@ public class LiveActivity extends BaseActivity implements TitleView.TitleBarOnCl
     @Override
     public void leftOnClick() {
         finish();
-        onDestroy();
     }
 
     @Override

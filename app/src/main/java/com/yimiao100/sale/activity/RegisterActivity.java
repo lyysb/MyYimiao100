@@ -39,7 +39,8 @@ import cn.smssdk.EventHandler;
 import cn.smssdk.SMSSDK;
 import okhttp3.Call;
 
-public class RegisterActivity extends BaseActivity implements CompoundButton.OnCheckedChangeListener {
+public class RegisterActivity extends BaseActivity implements CompoundButton
+        .OnCheckedChangeListener {
 
     @BindView(R.id.register_phone)
     EditText mRegisterPhone;
@@ -66,19 +67,19 @@ public class RegisterActivity extends BaseActivity implements CompoundButton.OnC
     private boolean pwdIsShow = false;
     private TimeCount time;
 
-    private final String SIGN_UP_URL = "/api/user/signup";
+    private final String URL_SIGN_UP = Constant.BASE_URL + "/api/user/signup";
 
-    private Handler mHandler = new Handler(){
+    private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            switch (msg.what){
+            switch (msg.what) {
                 case 1:
                     String detail = msg.getData().getString("detail");
                     ToastUtil.showLong(RegisterActivity.this, detail);
                     break;
                 case 2:
-                    Util.showTimeOutNotice(currentContext);
+                    ToastUtil.showShort(getApplicationContext(), "亲可以换个手机号试试");
                     break;
             }
         }
@@ -108,13 +109,16 @@ public class RegisterActivity extends BaseActivity implements CompoundButton.OnC
             public void afterEvent(int event, int result, Object data) {
                 super.afterEvent(event, result, data);
                 if (result == SMSSDK.RESULT_COMPLETE) {
+                    LogUtil.d("短信验证回调完成");
                     //回调完成
                     if (event == SMSSDK.EVENT_SUBMIT_VERIFICATION_CODE) {
+                        LogUtil.d("验证码验证通过");
                         //提交验证码成功
                         //发送数据到服务器
                         sendMsg();
                     }
                 } else if (result == SMSSDK.RESULT_ERROR) {
+                    LogUtil.d("短信验证回调出错");
                     //错误情况
                     Throwable throwable = (Throwable) data;
                     throwable.printStackTrace();
@@ -150,44 +154,48 @@ public class RegisterActivity extends BaseActivity implements CompoundButton.OnC
      */
     private void sendMsg() {
         //提交验证码成功, 将注册信息提交到服务器
-        String url = Constant.BASE_URL + SIGN_UP_URL;
-        OkHttpUtils
-                .post()
-                .url(url)
+        OkHttpUtils.post().url(URL_SIGN_UP)
                 .addParams("accountNumber", mRegisterPhone.getText().toString().trim())
                 .addParams("password", mRegisterPassword.getText().toString().trim())
-                .build()
-                .execute(new StringCallback() {
+                .build().execute(new StringCallback() {
 
-                    @Override
-                    public void onError(Call call, Exception e, int id) {
-                        e.printStackTrace();
-                        Util.showTimeOutNotice(currentContext);
-                    }
+            @Override
+            public void onError(Call call, Exception e, int id) {
+                e.printStackTrace();
+                Util.showTimeOutNotice(currentContext);
+                LogUtil.d("网络请求失败");
+            }
 
-                    @Override
-                    public void onResponse(String response, int id) {
-                        LogUtil.d("注册账号：" + response);
-                        SignUpBean signUpBean = JSON.parseObject(response, SignUpBean.class);
-                        LogUtil.d(signUpBean.getStatus());
-                        switch (signUpBean.getStatus()){
-                            case "success":
-                                //保存Token
-                                SharePreferenceUtil.put(RegisterActivity.this, Constant.ACCESSTOKEN, signUpBean.getTokenInfo().getAccessToken());
-                                //注册成功，进入主界面
-                                startActivity(new Intent(RegisterActivity.this, MainActivity.class));
-                                finish();
-                                break;
-                            case "failure":
-                                //注册失败，显示失败原因
-                                Util.showError(currentContext, signUpBean.getReason());
-                                break;
-                        }
-                    }
-                });
+            @Override
+            public void onResponse(String response, int id) {
+                LogUtil.d("服务器返回--" + response);
+                SignUpBean signUpBean = JSON.parseObject(response, SignUpBean.class);
+                LogUtil.d(signUpBean.getStatus());
+                switch (signUpBean.getStatus()) {
+                    case "success":
+                        //保存Token
+                        SharePreferenceUtil.put(RegisterActivity.this, Constant.ACCESSTOKEN,
+                                signUpBean.getTokenInfo().getAccessToken());
+                        //注册成功，发送设置别名通知
+                        Intent intent = new Intent();
+                        intent.setAction("com.yimiao100.sale.ALIAS");
+                        sendBroadcast(intent);
+                        //注册成功，进入主界面
+                        startActivity(new Intent(RegisterActivity.this, MainActivity.class));
+                        finish();
+                        break;
+                    case "failure":
+                        LogUtil.d("服务器验证失败");
+                        //注册失败，显示失败原因
+                        Util.showError(currentContext, signUpBean.getReason());
+                        break;
+                }
+            }
+        });
     }
 
-    @OnClick({R.id.show_password_parent, R.id.register_register, R.id.return_login, R.id.register_getcode})
+    @OnClick({R.id.show_password_parent, R.id.register_register, R.id.return_login, R.id
+            .register_getcode})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.show_password_parent:
@@ -203,7 +211,7 @@ public class RegisterActivity extends BaseActivity implements CompoundButton.OnC
                 finish();
                 break;
             case R.id.register_getcode:
-                if (TextUtils.isEmpty(mRegisterPhone.getText().toString().trim())){
+                if (TextUtils.isEmpty(mRegisterPhone.getText().toString().trim())) {
                     ToastUtil.showLong(this, "请输入手机号");
                     return;
                 }
@@ -243,6 +251,7 @@ public class RegisterActivity extends BaseActivity implements CompoundButton.OnC
             ToastUtil.showShort(this, "密码长度不得少于6位");
             return;
         }
+        LogUtil.d("提交短信验证码");
         //提交短信验证码，触发短信操作回调，验证短信验证码是否正确，然后和服务器进行交互
         SMSSDK.submitVerificationCode("86", phone, code);
 
@@ -255,7 +264,8 @@ public class RegisterActivity extends BaseActivity implements CompoundButton.OnC
         if (pwdIsShow) {
             pwdIsShow = false;
             mShowPassword.setChecked(true);
-            mRegisterPassword.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+            mRegisterPassword.setTransformationMethod(HideReturnsTransformationMethod.getInstance
+                    ());
         } else {
             pwdIsShow = true;
             mShowPassword.setChecked(false);
@@ -273,7 +283,8 @@ public class RegisterActivity extends BaseActivity implements CompoundButton.OnC
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         if (isChecked) {
             //如果选中，显示密码
-            mRegisterPassword.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+            mRegisterPassword.setTransformationMethod(HideReturnsTransformationMethod.getInstance
+                    ());
             //设置光标移动到最后
             mRegisterPassword.setSelection(mRegisterPassword.getText().length());
         } else {

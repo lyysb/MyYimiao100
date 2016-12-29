@@ -413,6 +413,10 @@ public class MineFragment extends Fragment implements View.OnClickListener {
             SharePreferenceUtil.clear(getContext());
             //记录不是第一次登录
             SharePreferenceUtil.put(getContext(), Constant.IS_FIRST, false);
+            //发送广播，置空别名
+            Intent intent = new Intent();
+            intent.setAction("com.yimiao100.sale.ALIAS");
+            getActivity().sendBroadcast(intent);
             startActivity(new Intent(getActivity(), LoginActivity.class));
             getActivity().finish();
             return;
@@ -434,6 +438,10 @@ public class MineFragment extends Fragment implements View.OnClickListener {
                             case "success":
                                 //退出成功，Token自然失效
                                 SharePreferenceUtil.clear(getContext());
+                                //发送广播，置空别名
+                                Intent intent = new Intent();
+                                intent.setAction("com.yimiao100.sale.ALIAS");
+                                getActivity().sendBroadcast(intent);
                                 //记录不是第一次登录
                                 SharePreferenceUtil.put(getContext(), Constant.IS_FIRST, false);
                                 startActivity(new Intent(getActivity(), LoginActivity.class));

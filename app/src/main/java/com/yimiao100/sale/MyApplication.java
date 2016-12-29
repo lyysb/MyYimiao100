@@ -12,6 +12,7 @@ import com.zhy.http.okhttp.OkHttpUtils;
 
 import java.util.concurrent.TimeUnit;
 
+import cn.jpush.android.api.JPushInterface;
 import okhttp3.OkHttpClient;
 
 /**
@@ -32,10 +33,27 @@ public class MyApplication extends Application{
     public void onCreate() {
         super.onCreate();
 
+        initUMShare();
+        initOkHttpUtils();
+        initBugly();
+        initFastJson();
+        initJPush();
+
+    }
+
+    /**
+     * 友盟分享
+     */
+    private void initUMShare() {
         UMShareAPI.get(this);
         //设置微博分享url
         Config.REDIRECT_URL = Constant.SINA_SHARE_URL;
+    }
 
+    /**
+     * OkHttp
+     */
+    private void initOkHttpUtils() {
         //初始化OKHttp
         OkHttpClient okHttpClient = new OkHttpClient.Builder()
                 .connectTimeout(10000L, TimeUnit.MILLISECONDS)
@@ -43,13 +61,30 @@ public class MyApplication extends Application{
                 //其他配置
                 .build();
         OkHttpUtils.initClient(okHttpClient);
+    }
 
+    /**
+     * 腾讯bugly
+     */
+    private void initBugly() {
         //腾讯bugly设置
         CrashReport.initCrashReport(getApplicationContext(), "900059080", true);
+    }
 
+    /**
+     *
+     */
+    private void initFastJson() {
         //解决FastJson报错？？待测试--米5
         ParserConfig.getGlobalInstance().setAsmEnable(false);
+    }
 
+    /**
+     * 极光推送
+     */
+    private void initJPush() {
+        JPushInterface.setDebugMode(true);
+        JPushInterface.init(this);
     }
 
 }

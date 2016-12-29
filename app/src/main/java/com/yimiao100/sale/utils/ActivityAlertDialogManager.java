@@ -69,8 +69,7 @@ public class ActivityAlertDialogManager {
 
     private static void setBuilder(@NonNull final Activity activity, AlertDialog.Builder builder) {
         builder.setTitle("下线通知");
-        builder.setMessage("您的账号于" + TimeUtil.timeStamp2Date(System.currentTimeMillis() + "", "HH:mm")
-                + "在另一台设备登录。如非本人操作，则密码可能已经泄露，建议修改密码。");
+        builder.setMessage("您的账号已在另一台设备登录。如非本人操作，则密码可能已经泄露，建议修改密码。");
         builder.setCancelable(false);
         builder.setNegativeButton("退出应用", new DialogInterface.OnClickListener() {
             @Override
@@ -79,6 +78,10 @@ public class ActivityAlertDialogManager {
                 SharePreferenceUtil.clear(activity);
                 //记录不是第一次登录
                 SharePreferenceUtil.put(activity, Constant.IS_FIRST, false);
+                //发送广播，置空别名
+                Intent intent = new Intent();
+                intent.setAction("com.yimiao100.sale.ALIAS");
+                activity.sendBroadcast(intent);
                 ActivityCollector.finishAll();
             }
         });
@@ -89,6 +92,10 @@ public class ActivityAlertDialogManager {
                 SharePreferenceUtil.clear(activity);
                 //记录不是第一次登录
                 SharePreferenceUtil.put(activity, Constant.IS_FIRST, false);
+                //发送广播，置空别名
+                Intent intent = new Intent();
+                intent.setAction("com.yimiao100.sale.ALIAS");
+                activity.sendBroadcast(intent);
                 ActivityCollector.finishAll();
                 activity.startActivity(new Intent(activity, LoginActivity.class));
             }

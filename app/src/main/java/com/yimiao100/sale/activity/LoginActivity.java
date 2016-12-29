@@ -187,6 +187,10 @@ public class LoginActivity extends BaseActivity implements CompoundButton.OnChec
                                 } else {
                                     SharePreferenceUtil.remove(getApplicationContext(), Constant.PROFILEIMAGEURL);
                                 }
+                                //登录成功，发送广播，启动服务，设置别名
+                                Intent intent = new Intent();
+                                intent.setAction("com.yimiao100.sale.ALIAS");
+                                sendBroadcast(intent);
                                 //登录成功，进入主界面
                                 startActivity(new Intent(LoginActivity.this, MainActivity.class));
                                 finish();

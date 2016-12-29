@@ -298,6 +298,28 @@
 
         <activity android:name="me.iwf.photopicker.PhotoPagerActivity"
                   android:theme="@style/Theme.AppCompat.NoActionBar"/>
+
+        <receiver android:name=".receiver.JPushReceiver">
+            <intent-filter>
+                <action android:name="cn.jpush.android.intent.REGISTRATION"/>
+                <action android:name="cn.jpush.android.intent.MESSAGE_RECEIVED"/>
+                <action android:name="cn.jpush.android.intent.NOTIFICATION_RECEIVED"/>
+                <action android:name="cn.jpush.android.intent.NOTIFICATION_OPENED"/>
+
+                <category android:name="com.yimiao100.sale"/>
+            </intent-filter>
+        </receiver>
+        <receiver android:name=".receiver.AliasReceiver">
+            <intent-filter>
+                <action android:name="com.yimiao100.sale.ALIAS"/>
+            </intent-filter>
+        </receiver>
+
+        <service
+            android:name=".service.AliasService"
+            android:enabled="true"
+            android:exported="true">
+        </service>
     </application>
 
 </manifest>

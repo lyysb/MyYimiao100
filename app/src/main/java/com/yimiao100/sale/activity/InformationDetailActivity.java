@@ -245,7 +245,6 @@ public class InformationDetailActivity extends BaseActivity implements View.OnCl
         //未赞图片
         mDefaultScore = getResources().getDrawable(R.mipmap.ico_information_default_zambia);
 
-        //这是JPush
     }
 
     private void initData() {

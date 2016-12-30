@@ -58,7 +58,7 @@ public class NoticeActivity extends BaseActivitySingleList {
         getBuild(1).execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.d("通知E：" + e.getMessage());
+                LogUtil.Companion.d("通知E：" + e.getMessage());
                 Util.showTimeOutNotice(currentContext);
             }
 
@@ -74,7 +74,7 @@ public class NoticeActivity extends BaseActivitySingleList {
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":
-                        LogUtil.d("通知：" + response);
+                        LogUtil.Companion.d("通知：" + response);
                         mPage = 2;
                         NoticedResultBean pagedResult = JSON.parseObject(response, NoticeBean.class).getPagedResult();
                         mTotalPage = pagedResult.getTotalPage();
@@ -99,7 +99,7 @@ public class NoticeActivity extends BaseActivitySingleList {
                 .execute(new StringCallback() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
-                        LogUtil.d("通知E：" + e.getMessage());
+                        LogUtil.Companion.d("通知E：" + e.getMessage());
                         Util.showTimeOutNotice(currentContext);
                     }
 
@@ -137,12 +137,12 @@ public class NoticeActivity extends BaseActivitySingleList {
                 .execute(new StringCallback() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
-                        LogUtil.d("提交网络阅读状态E: " + e.getMessage());
+                        LogUtil.Companion.d("提交网络阅读状态E: " + e.getMessage());
                     }
 
                     @Override
                     public void onResponse(String response, int id) {
-                        LogUtil.d("提交网络阅读状态：" + response);
+                        LogUtil.Companion.d("提交网络阅读状态：" + response);
                         ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                         switch (errorBean.getStatus()) {
                             case "success":

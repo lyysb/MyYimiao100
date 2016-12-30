@@ -71,7 +71,7 @@ public class PersonalNameActivity extends BaseActivity implements TitleView.Titl
                 .execute(new StringCallback() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
-                        LogUtil.d("姓名设置： " + e.getMessage());
+                        LogUtil.Companion.d("姓名设置： " + e.getMessage());
                         Util.showTimeOutNotice(currentContext);
                     }
 

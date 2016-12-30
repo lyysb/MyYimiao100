@@ -102,7 +102,7 @@ public class ShipActivity extends BaseActivity implements TitleView.TitleBarOnCl
         getBuild(1).execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.d("发货累计E：" + e.getLocalizedMessage());
+                LogUtil.Companion.d("发货累计E：" + e.getLocalizedMessage());
                 Util.showTimeOutNotice(currentContext);
             }
 
@@ -115,7 +115,7 @@ public class ShipActivity extends BaseActivity implements TitleView.TitleBarOnCl
                         mShipRefresh.setRefreshing(false);
                     }
                 }, 300);
-                LogUtil.d("发货累计：" + response);
+                LogUtil.Companion.d("发货累计：" + response);
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":
@@ -189,13 +189,13 @@ public class ShipActivity extends BaseActivity implements TitleView.TitleBarOnCl
             getBuild(mPage).execute(new StringCallback() {
                 @Override
                 public void onError(Call call, Exception e, int id) {
-                    LogUtil.d("发货累计E：" + e.getLocalizedMessage());
+                    LogUtil.Companion.d("发货累计E：" + e.getLocalizedMessage());
                     Util.showTimeOutNotice(currentContext);
                 }
 
                 @Override
                 public void onResponse(String response, int id) {
-                    LogUtil.d("发货累计：" + response);
+                    LogUtil.Companion.d("发货累计：" + response);
                     ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                     switch (errorBean.getStatus()) {
                         case "success":

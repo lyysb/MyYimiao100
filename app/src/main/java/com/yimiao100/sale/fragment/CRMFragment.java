@@ -92,7 +92,7 @@ public class CRMFragment extends Fragment implements View.OnClickListener, Carou
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle
             savedInstanceState) {
         mView = View.inflate(getContext(), R.layout.fragment_crm, null);
-        LogUtil.d("onCreateView");
+        LogUtil.Companion.d("onCreateView");
         initContentView();
         return mView;
     }
@@ -163,7 +163,7 @@ public class CRMFragment extends Fragment implements View.OnClickListener, Carou
 
             @Override
             public void onResponse(String response, int id) {
-                LogUtil.d("CRM-Wave：" + response);
+                LogUtil.Companion.d("CRM-Wave：" + response);
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":
@@ -287,7 +287,7 @@ public class CRMFragment extends Fragment implements View.OnClickListener, Carou
 
             @Override
             public void onPageSelected(int position) {
-                LogUtil.d("CRM-position---" + position);
+                LogUtil.Companion.d("CRM-position---" + position);
                 changeDescAndDot(position % mCarouselList.size());
             }
 

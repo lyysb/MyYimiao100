@@ -181,7 +181,7 @@ public class PromotionActivity extends BaseActivity implements TitleView.TitleBa
         getBuild(1).execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.d("推广费可提现E：" + e.getMessage());
+                LogUtil.Companion.d("推广费可提现E：" + e.getMessage());
                 Util.showTimeOutNotice(currentContext);
             }
 
@@ -194,7 +194,7 @@ public class PromotionActivity extends BaseActivity implements TitleView.TitleBa
                         mPromotionRichRefresh.setRefreshing(false);
                     }
                 }, 2000);
-                LogUtil.d("推广费提现：" + response);
+                LogUtil.Companion.d("推广费提现：" + response);
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":
@@ -293,12 +293,12 @@ public class PromotionActivity extends BaseActivity implements TitleView.TitleBa
             getBuild(mPage).execute(new StringCallback() {
                 @Override
                 public void onError(Call call, Exception e, int id) {
-                    LogUtil.d("推广费提现E：" + e.getMessage());
+                    LogUtil.Companion.d("推广费提现E：" + e.getMessage());
                 }
 
                 @Override
                 public void onResponse(String response, int id) {
-                    LogUtil.d("推广费提现：" + response);
+                    LogUtil.Companion.d("推广费提现：" + response);
                     ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                     mPromotionRichCompanyListView.onLoadMoreComplete();
                     switch (errorBean.getStatus()) {

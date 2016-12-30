@@ -139,7 +139,7 @@ public class StudyFragment extends Fragment implements View.OnClickListener, Ada
                 .execute(new StringCallback() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
-                        LogUtil.d("视频轮播图E：" + e.getLocalizedMessage());
+                        LogUtil.Companion.d("视频轮播图E：" + e.getLocalizedMessage());
                         if (StudyFragment.this.isAdded()) {
                             //防止Fragment点击报空指针
                             Util.showTimeOutNotice(getActivity());
@@ -148,7 +148,7 @@ public class StudyFragment extends Fragment implements View.OnClickListener, Ada
 
                     @Override
                     public void onResponse(String response, int id) {
-                        LogUtil.d("视频轮播图：" + response);
+                        LogUtil.Companion.d("视频轮播图：" + response);
                         ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                         switch (errorBean.getStatus()) {
                             case "success":
@@ -176,13 +176,13 @@ public class StudyFragment extends Fragment implements View.OnClickListener, Ada
 
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.d("公开课列表E：" + e.getLocalizedMessage());
+                LogUtil.Companion.d("公开课列表E：" + e.getLocalizedMessage());
 
             }
 
             @Override
             public void onResponse(String response, int id) {
-                LogUtil.d("公开课列表：" + response);
+                LogUtil.Companion.d("公开课列表：" + response);
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":
@@ -297,12 +297,12 @@ public class StudyFragment extends Fragment implements View.OnClickListener, Ada
 
                 @Override
                 public void onError(Call call, Exception e, int id) {
-                    LogUtil.d("公开课列表E：" + e.getLocalizedMessage());
+                    LogUtil.Companion.d("公开课列表E：" + e.getLocalizedMessage());
                 }
 
                 @Override
                 public void onResponse(String response, int id) {
-                    LogUtil.d("公开课列表：" + response);
+                    LogUtil.Companion.d("公开课列表：" + response);
                     mStudyClassListView.onLoadMoreComplete();
                     ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                     switch (errorBean.getStatus()) {

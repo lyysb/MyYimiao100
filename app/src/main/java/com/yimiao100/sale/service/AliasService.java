@@ -30,12 +30,12 @@ public class AliasService extends Service {
             switch (msg.what) {
                 case MSG_SET_ALIAS:
                     String alias = (String) msg.obj;
-                    LogUtil.d("通过Handler设置别名--" + alias);
+                    LogUtil.Companion.d("通过Handler设置别名--" + alias);
                     //调用JPush接口来设置别名
                     JPushInterface.setAlias(getApplicationContext(), alias, mAliasCallback);
                     break;
                 default:
-                    LogUtil.d("Unhandled msg - " + msg.what);
+                    LogUtil.Companion.d("Unhandled msg - " + msg.what);
                     break;
             }
         }
@@ -53,7 +53,7 @@ public class AliasService extends Service {
         if (loginStatus) {
             //如果登录成功，设置别名。别名= “jpush_user_alias_加上用户id”
             int userId = (int) SharePreferenceUtil.get(this, Constant.USERID, -1);
-            LogUtil.d("设置别名" + userId);
+            LogUtil.Companion.d("设置别名" + userId);
             alias = "jpush_user_alias_" + userId;
         }
         //如果是已下线状态（默认），别名置空
@@ -76,17 +76,17 @@ public class AliasService extends Service {
             switch (code) {
                 case 0:
                     //成功
-                    LogUtil.d("设置别名成功");
+                    LogUtil.Companion.d("设置别名成功");
                     //停止服务
                     stopService(new Intent(getApplicationContext(), AliasService.class));
                     break;
                 case 6002:
-                    LogUtil.d("设置别名超时，将在60s后重试");
+                    LogUtil.Companion.d("设置别名超时，将在60s后重试");
                     // 延迟 60 秒来调用 Handler 设置别名
                     mHandler.sendMessageDelayed(mHandler.obtainMessage(MSG_SET_ALIAS, alias), 1000 * 60);
                     break;
                 default:
-                    LogUtil.d("设置失败errorCode = " + code);
+                    LogUtil.Companion.d("设置失败errorCode = " + code);
                     break;
             }
         }

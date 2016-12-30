@@ -95,7 +95,7 @@ public class Html5WebView extends WebView {
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             view.loadUrl(url);
-            LogUtil.d(url);
+            LogUtil.Companion.d(url);
             return true;
         }
 

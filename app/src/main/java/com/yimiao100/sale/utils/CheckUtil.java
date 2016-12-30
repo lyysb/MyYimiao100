@@ -40,13 +40,13 @@ public class CheckUtil {
 
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.d("检查对公账户状态E：" + e.toString());
+                LogUtil.Companion.d("检查对公账户状态E：" + e.toString());
                 e.printStackTrace();
             }
 
             @Override
             public void onResponse(String response, int id) {
-                LogUtil.d("检查对公账户状态：" + response);
+                LogUtil.Companion.d("检查对公账户状态：" + response);
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":

@@ -125,13 +125,13 @@ public class CommodityConfirmActivity extends BaseActivity implements TitleView
                 .build().execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.d("获取地址列表E：" + e.getLocalizedMessage());
+                LogUtil.Companion.d("获取地址列表E：" + e.getLocalizedMessage());
                 Util.showTimeOutNotice(currentContext);
             }
 
             @Override
             public void onResponse(String response, int id) {
-                LogUtil.d("获取地址列表：" + response);
+                LogUtil.Companion.d("获取地址列表：" + response);
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":
@@ -183,7 +183,7 @@ public class CommodityConfirmActivity extends BaseActivity implements TitleView
                 Intent intent = new Intent(this, PersonalAddressActivity.class);
                 intent.putExtra("from", "integral");        //标识来自积分商城
                 intent.putExtra("addressId", mAddressId);   //发给下一个界面，校验是否对该地址进行操作
-                LogUtil.d("确定订单传给下一个界面的地址id：" + mAddressId);
+                LogUtil.Companion.d("确定订单传给下一个界面的地址id：" + mAddressId);
                 startActivityForResult(intent, FROM_ITEM_OK);
                 break;
         }
@@ -198,14 +198,14 @@ public class CommodityConfirmActivity extends BaseActivity implements TitleView
                 .build().execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.d("提交积分兑换商品E：" + e.getLocalizedMessage());
+                LogUtil.Companion.d("提交积分兑换商品E：" + e.getLocalizedMessage());
                 Util.showTimeOutNotice(currentContext);
                 e.printStackTrace();
             }
 
             @Override
             public void onResponse(String response, int id) {
-                LogUtil.d("提交积分兑换商品：" + response);
+                LogUtil.Companion.d("提交积分兑换商品：" + response);
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":
@@ -252,7 +252,7 @@ public class CommodityConfirmActivity extends BaseActivity implements TitleView
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        LogUtil.d("resultCode:" + resultCode);
+        LogUtil.Companion.d("resultCode:" + resultCode);
         switch (resultCode) {
             case FROM_ITEM_OK:
                 //打开地址列表返回本界面

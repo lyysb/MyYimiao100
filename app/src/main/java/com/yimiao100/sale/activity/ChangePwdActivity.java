@@ -74,13 +74,13 @@ public class ChangePwdActivity extends BaseActivity implements TextWatcher, Titl
                 .execute(new StringCallback() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
-                        LogUtil.d("修改密码：" + e.getMessage());
+                        LogUtil.Companion.d("修改密码：" + e.getMessage());
                         Util.showTimeOutNotice(currentContext);
                     }
 
                     @Override
                     public void onResponse(String response, int id) {
-                        LogUtil.d("提交修改密码：" + response);
+                        LogUtil.Companion.d("提交修改密码：" + response);
                         ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                         switch (errorBean.getStatus()){
                             case "success":

@@ -75,12 +75,12 @@ public class MainActivity extends BaseActivity {
                 .build().execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.d("用户账户信息E：" + e.getLocalizedMessage());
+                LogUtil.Companion.d("用户账户信息E：" + e.getLocalizedMessage());
             }
 
             @Override
             public void onResponse(String response, int id) {
-                LogUtil.d("用户账户信息：" + response);
+                LogUtil.Companion.d("用户账户信息：" + response);
                 UserBean userBean = JSON.parseObject(response, UserBean.class);
                 switch (userBean.getStatus()) {
                     case "success":
@@ -151,12 +151,12 @@ public class MainActivity extends BaseActivity {
                 .build().execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.d("获取用户资金信息E：" + e.getLocalizedMessage());
+                LogUtil.Companion.d("获取用户资金信息E：" + e.getLocalizedMessage());
             }
 
             @Override
             public void onResponse(String response, int id) {
-                LogUtil.d("获取用户资金信息：" + response);
+                LogUtil.Companion.d("获取用户资金信息：" + response);
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":

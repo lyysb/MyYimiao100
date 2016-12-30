@@ -261,13 +261,13 @@ public class ExamActivity extends BaseActivity implements ViewPager.OnPageChange
                 .execute(new StringCallback() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
-                        LogUtil.d("提交考试成绩E：" + e.getLocalizedMessage());
+                        LogUtil.Companion.d("提交考试成绩E：" + e.getLocalizedMessage());
                         Util.showTimeOutNotice(currentContext);
                     }
 
                     @Override
                     public void onResponse(String response, int id) {
-                        LogUtil.d("提交考试成绩：" + response);
+                        LogUtil.Companion.d("提交考试成绩：" + response);
                         ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                         switch (errorBean.getStatus()) {
                             case "success":
@@ -298,7 +298,7 @@ public class ExamActivity extends BaseActivity implements ViewPager.OnPageChange
                 mScore += question.getScore();
             }
         }
-        LogUtil.d("score:" + mScore);
+        LogUtil.Companion.d("score:" + mScore);
     }
 
     /**

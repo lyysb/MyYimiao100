@@ -69,7 +69,7 @@ public class PersonalAddressActivity extends BaseActivity implements AddressAdap
 
         mFrom = getIntent().getStringExtra("from");
         mAddressId = getIntent().getIntExtra("addressId", -1);
-        LogUtil.d("确定订单返回的地址id：" + mAddressId);
+        LogUtil.Companion.d("确定订单返回的地址id：" + mAddressId);
 
 
 
@@ -98,13 +98,13 @@ public class PersonalAddressActivity extends BaseActivity implements AddressAdap
         getBuild().execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.d("常用地址列表E：" + e.getLocalizedMessage());
+                LogUtil.Companion.d("常用地址列表E：" + e.getLocalizedMessage());
                 Util.showTimeOutNotice(currentContext);
             }
 
             @Override
             public void onResponse(String response, int id) {
-                LogUtil.d("常用地址列表：" + response);
+                LogUtil.Companion.d("常用地址列表：" + response);
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":
@@ -135,7 +135,7 @@ public class PersonalAddressActivity extends BaseActivity implements AddressAdap
      */
     @Override
     public void editAddress(int position) {
-        LogUtil.d("editAddress" + position);
+        LogUtil.Companion.d("editAddress" + position);
         Address address = mAddressList.get(position);
 
         Bundle bundle = new Bundle();
@@ -179,18 +179,18 @@ public class PersonalAddressActivity extends BaseActivity implements AddressAdap
                 .build().execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.d("删除地址E：" + e.getLocalizedMessage());
+                LogUtil.Companion.d("删除地址E：" + e.getLocalizedMessage());
                 Util.showTimeOutNotice(currentContext);
             }
 
             @Override
             public void onResponse(String response, int id) {
-                LogUtil.d("删除地址：" + response);
+                LogUtil.Companion.d("删除地址：" + response);
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":
                         //如果是从确定订单进入的界面，执行了删除操作
-                        LogUtil.d("被删除的地址ID：" + mAddressList.get(position).getId());
+                        LogUtil.Companion.d("被删除的地址ID：" + mAddressList.get(position).getId());
                         if (TextUtils.equals(mFrom, "integral")) {
                             //-比对删除的地址id和上个界面传进来的id
                             if (mAddressList.get(position).getId() == mAddressId) {
@@ -223,13 +223,13 @@ public class PersonalAddressActivity extends BaseActivity implements AddressAdap
                 .build().execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.d("设置地址为默认地址E：" + e.getLocalizedMessage());
+                LogUtil.Companion.d("设置地址为默认地址E：" + e.getLocalizedMessage());
                 Util.showTimeOutNotice(currentContext);
             }
 
             @Override
             public void onResponse(String response, int id) {
-                LogUtil.d("设置地址为默认地址：" + response);
+                LogUtil.Companion.d("设置地址为默认地址：" + response);
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":
@@ -262,13 +262,13 @@ public class PersonalAddressActivity extends BaseActivity implements AddressAdap
         getBuild().execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.d("常用地址列表E：" + e.getLocalizedMessage());
+                LogUtil.Companion.d("常用地址列表E：" + e.getLocalizedMessage());
                 Util.showTimeOutNotice(currentContext);
             }
 
             @Override
             public void onResponse(String response, int id) {
-                LogUtil.d("常用地址列表：" + response);
+                LogUtil.Companion.d("常用地址列表：" + response);
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":
@@ -297,7 +297,7 @@ public class PersonalAddressActivity extends BaseActivity implements AddressAdap
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK || resultCode == FROM_NEW_OK) {
-            LogUtil.d("OK");
+            LogUtil.Companion.d("OK");
             //重新刷新数据
             onRefresh();
         }

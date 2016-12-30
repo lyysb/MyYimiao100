@@ -80,7 +80,7 @@ public class PersonalEmailActivity extends BaseActivity implements TitleView.Tit
                 .execute(new StringCallback() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
-                        LogUtil.d("邮箱设置： " + e.getMessage());
+                        LogUtil.Companion.d("邮箱设置： " + e.getMessage());
                         Util.showTimeOutNotice(currentContext);
                     }
 

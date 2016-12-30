@@ -111,13 +111,13 @@ public class VideoDetailActivity extends BaseActivity implements YMVideoPlayer
                 (COURSE_ID, mCourseId + "").build().execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.d("课程详情E：" + e.getLocalizedMessage());
+                LogUtil.Companion.d("课程详情E：" + e.getLocalizedMessage());
                 Util.showTimeOutNotice(currentContext);
             }
 
             @Override
             public void onResponse(String response, int id) {
-                LogUtil.d("课程详情：" + response);
+                LogUtil.Companion.d("课程详情：" + response);
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":
@@ -143,7 +143,7 @@ public class VideoDetailActivity extends BaseActivity implements YMVideoPlayer
      */
     private void initVideoData(Course course) {
         if (course.getVideoUrl() != null) {
-            LogUtil.d("视频链接：" + course.getVideoUrl());
+            LogUtil.Companion.d("视频链接：" + course.getVideoUrl());
         }
         mVideoDetailPlayer.setUp(course.getVideoUrl() != null ? course.getVideoUrl() :
                         "http://oduhua0b1.bkt.clouddn.com/default_video.mp4",
@@ -284,13 +284,13 @@ public class VideoDetailActivity extends BaseActivity implements YMVideoPlayer
 
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.d("收藏课程E：" + e.getLocalizedMessage());
+                LogUtil.Companion.d("收藏课程E：" + e.getLocalizedMessage());
                 Util.showTimeOutNotice(currentContext);
             }
 
             @Override
             public void onResponse(String response, int id) {
-                LogUtil.d("收藏课程：" + response);
+                LogUtil.Companion.d("收藏课程：" + response);
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":
@@ -422,13 +422,13 @@ public class VideoDetailActivity extends BaseActivity implements YMVideoPlayer
                 .build().execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.d("积分计算E：" + e.getLocalizedMessage());
+                LogUtil.Companion.d("积分计算E：" + e.getLocalizedMessage());
                 Util.showTimeOutNotice(currentContext);
             }
 
             @Override
             public void onResponse(String response, int id) {
-                LogUtil.d("积分计算：" + response);
+                LogUtil.Companion.d("积分计算：" + response);
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":
@@ -466,14 +466,14 @@ public class VideoDetailActivity extends BaseActivity implements YMVideoPlayer
 
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.d("增加播放次数E：" + e.getLocalizedMessage());
+                LogUtil.Companion.d("增加播放次数E：" + e.getLocalizedMessage());
                 e.printStackTrace();
                 Util.showTimeOutNotice(currentContext);
             }
 
             @Override
             public void onResponse(String response, int id) {
-                LogUtil.d("增加播放次数：" + response);
+                LogUtil.Companion.d("增加播放次数：" + response);
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":

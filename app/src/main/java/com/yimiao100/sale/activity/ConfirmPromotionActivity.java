@@ -89,7 +89,7 @@ public class ConfirmPromotionActivity extends BaseActivity implements TitleView.
         switch (view.getId()) {
             case R.id.confirm_promotion_confirm:
                 //确认-提交订单-弹出Dialog
-                LogUtil.d("ResourceID：" + mResourceInfo.getId());
+                LogUtil.Companion.d("ResourceID：" + mResourceInfo.getId());
                 submitPromotion();
                 break;
             case R.id.dialog_confirm_promotion:
@@ -115,14 +115,14 @@ public class ConfirmPromotionActivity extends BaseActivity implements TitleView.
                 .execute(new StringCallback() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
-                        LogUtil.d("确认推广E：" + e.getMessage());
+                        LogUtil.Companion.d("确认推广E：" + e.getMessage());
                         Util.showTimeOutNotice(currentContext);
                     }
 
                     @Override
                     public void onResponse(String response, int id) {
                         mConfirmPromotionConfirm.setEnabled(true);
-                        LogUtil.d("确认推广：" + response);
+                        LogUtil.Companion.d("确认推广：" + response);
                         ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                         switch (errorBean.getStatus()) {
                             case "success":

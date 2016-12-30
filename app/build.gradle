@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
 /*解决butterknife点击事件无效问题*/
 apply plugin: 'com.neenbedankt.android-apt'
 
@@ -50,14 +51,19 @@ android {
     dexOptions{
         javaMaxHeapSize "4g"
     }
+    sourceSets {
+        main.java.srcDirs += 'src/main/kotlin'
+    }
 
 }
 repositories{
     flatDir{
         dirs 'libs' //就是你放aar的目录地址
     }
+    mavenCentral()
 }
 dependencies {
+    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
     /*解决butterKnife点击事件无效问题*/

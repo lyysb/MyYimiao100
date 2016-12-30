@@ -134,13 +134,13 @@ public class PromotionCashConfirmActivity extends BaseActivity implements TitleV
 
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.d("推广费申请提现确认E：" + e.getLocalizedMessage());
+                LogUtil.Companion.d("推广费申请提现确认E：" + e.getLocalizedMessage());
                 Util.showTimeOutNotice(currentContext);
             }
 
             @Override
             public void onResponse(String response, int id) {
-                LogUtil.d("推广费申请提现：" + response);
+                LogUtil.Companion.d("推广费申请提现：" + response);
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":

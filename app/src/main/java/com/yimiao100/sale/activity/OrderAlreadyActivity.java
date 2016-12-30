@@ -150,7 +150,7 @@ public class OrderAlreadyActivity extends BaseActivity implements TitleView
         mOrderId = mOrder.getId() + "";
         //获取是否已经阅读过免责信息
         boolean isRead = (boolean) SharePreferenceUtil.get(currentContext, mOrder.getVendorName() + mOrderId , false);
-        LogUtil.d("isRead?" + isRead);
+        LogUtil.Companion.d("isRead?" + isRead);
         if (!isRead) {
             //没有阅读过，弹窗显示
             //弹窗
@@ -252,8 +252,8 @@ public class OrderAlreadyActivity extends BaseActivity implements TitleView
             @Override
             public void inProgress(float progress, long total, int id) {
                 super.inProgress(progress, total, id);
-                LogUtil.d("progress：" + progress);
-                LogUtil.d("total：" + total);
+                LogUtil.Companion.d("progress：" + progress);
+                LogUtil.Companion.d("total：" + total);
             }
 
             @Override
@@ -271,11 +271,11 @@ public class OrderAlreadyActivity extends BaseActivity implements TitleView
             public File parseNetworkResponse(Response response, int id) throws Exception {
                 if (200 == response.code()) {
                     //协议下载成功
-                    LogUtil.d("下载成功");
+                    LogUtil.Companion.d("下载成功");
                     return super.parseNetworkResponse(response, id);
                 } else if (400 == response.code()) {
                     //解析显示错误信息
-                    LogUtil.d("下载失败");
+                    LogUtil.Companion.d("下载失败");
                     ErrorBean errorBean = JSON.parseObject(response.body().toString(),
                             ErrorBean.class);
                     Util.showError(currentContext, errorBean.getReason());
@@ -290,8 +290,8 @@ public class OrderAlreadyActivity extends BaseActivity implements TitleView
                     //如果返回来null证明下载错误
                     return;
                 }
-                LogUtil.d("onResponse：" + response.getAbsolutePath());
-                LogUtil.d("response.name：" + response.getName());
+                LogUtil.Companion.d("onResponse：" + response.getAbsolutePath());
+                LogUtil.Companion.d("response.name：" + response.getName());
                 //下载成功，显示分享或者发送出去对话框
                 showSuccessDialog(response);
             }
@@ -379,7 +379,7 @@ public class OrderAlreadyActivity extends BaseActivity implements TitleView
             if (data != null) {
                 photos = data.getStringArrayListExtra(PhotoPicker.KEY_SELECTED_PHOTOS);
                 for (String photo : photos) {
-                    LogUtil.d(photo);
+                    LogUtil.Companion.d(photo);
                 }
                 String fileName = "order" + System.currentTimeMillis() + ".zip";
                 //将文件压缩到本地
@@ -427,7 +427,7 @@ public class OrderAlreadyActivity extends BaseActivity implements TitleView
             @Override
             public void inProgress(float progress, long total, int id) {
                 super.inProgress(progress, total, id);
-                LogUtil.d("progress" + progress);
+                LogUtil.Companion.d("progress" + progress);
                 mProgressUploadDialog.setProgress((int) (100 * progress - 0.5));
             }
 
@@ -439,7 +439,7 @@ public class OrderAlreadyActivity extends BaseActivity implements TitleView
 
             @Override
             public void onResponse(String response, int id) {
-                LogUtil.d(response);
+                LogUtil.Companion.d(response);
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":

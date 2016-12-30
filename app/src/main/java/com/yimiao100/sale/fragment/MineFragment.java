@@ -155,7 +155,8 @@ public class MineFragment extends Fragment implements View.OnClickListener {
         mLlMore.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                String versionName = AppUtil.getVersionName(getContext());
+                //获取当前版本号
+                String versionName = AppUtil.Companion.getVersionName(getContext());
                 ToastUtil.showShort(getContext(), "当前应用版本：V" + versionName);
                 return false;
             }
@@ -352,7 +353,7 @@ public class MineFragment extends Fragment implements View.OnClickListener {
                     String UPLOAD_PROFILE_IMAGE = "/api/user/upload_profile_image";
                     String url = Constant.BASE_URL + UPLOAD_PROFILE_IMAGE;
                     String accessToken = (String) SharePreferenceUtil.get(getActivity(), "accessToken", "");
-                    LogUtil.d("头像设置：" + accessToken);
+                    LogUtil.Companion.d("头像设置：" + accessToken);
 
                     OkHttpUtils
                             .post()
@@ -368,7 +369,7 @@ public class MineFragment extends Fragment implements View.OnClickListener {
 
                                 @Override
                                 public void onResponse(String response, int id) {
-                                    LogUtil.d("更新头像" + response);
+                                    LogUtil.Companion.d("更新头像" + response);
                                     ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                                     switch (errorBean.getStatus()) {
                                         case "success":
@@ -432,7 +433,7 @@ public class MineFragment extends Fragment implements View.OnClickListener {
 
                     @Override
                     public void onResponse(String response, int id) {
-                        LogUtil.d("退出" + response);
+                        LogUtil.Companion.d("退出" + response);
                         ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                         switch (errorBean.getStatus()) {
                             case "success":

@@ -213,13 +213,13 @@ public class BindCompanyActivity extends BaseActivity implements TitleView.Title
                 .build().execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.d("推广主体E：" + e.getLocalizedMessage());
+                LogUtil.Companion.d("推广主体E：" + e.getLocalizedMessage());
                 Util.showTimeOutNotice(currentContext);
             }
 
             @Override
             public void onResponse(String response, int id) {
-                LogUtil.d("推广主体：" + response);
+                LogUtil.Companion.d("推广主体：" + response);
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":
@@ -270,11 +270,11 @@ public class BindCompanyActivity extends BaseActivity implements TitleView.Title
             mPromotionAdvantage.setText(corporate.getAdvantage());
             //三张图片url
             String bizUrl = corporate.getBizLicenceUrl();
-            LogUtil.d("bizUrl-" + bizUrl);
+            LogUtil.Companion.d("bizUrl-" + bizUrl);
             String personalUrl = corporate.getPersonalPhotoUrl();
-            LogUtil.d("personalUrl-" + personalUrl);
+            LogUtil.Companion.d("personalUrl-" + personalUrl);
             String idUrl = corporate.getIdPhotoUrl();
-            LogUtil.d("idUrl-" + idUrl);
+            LogUtil.Companion.d("idUrl-" + idUrl);
 
             Picasso.with(getApplicationContext()).load(bizUrl).resize(86, 108).centerCrop()
                     .placeholder(R.mipmap.ico_binding_account_add_photos)
@@ -573,7 +573,7 @@ public class BindCompanyActivity extends BaseActivity implements TitleView.Title
         mIdNumber = mBindCompanyCorporationIdNumber.getText().toString().trim();
         //推广经历
         mExperienceList = JSON.toJSONString(mList);
-        LogUtil.d("推广经历：" + mExperienceList);
+        LogUtil.Companion.d("推广经历：" + mExperienceList);
         //工作经历
         mExperience = mCompanyEver.getText().toString().trim();
         //推广优势
@@ -583,9 +583,9 @@ public class BindCompanyActivity extends BaseActivity implements TitleView.Title
         mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
         mProgressDialog.setCancelable(false);
         mProgressDialog.setTitle("正在上传，请稍后...");
-        LogUtil.d("mBizLicenceName___" + mBizLicenceName);
-        LogUtil.d("mPersonalPhotoName___" + mPersonalPhotoName);
-        LogUtil.d("mIdPhotoName___" + mIdPhotoName);
+        LogUtil.Companion.d("mBizLicenceName___" + mBizLicenceName);
+        LogUtil.Companion.d("mPersonalPhotoName___" + mPersonalPhotoName);
+        LogUtil.Companion.d("mIdPhotoName___" + mIdPhotoName);
         //请求网络发送数据
         OkHttpUtils.post().url(URL_CORPORATE_USER_ACCOUNT).addHeader(ACCESS_TOKEN, mAccessToken)
                 .addParams(ACCOUNT_NAME, mAccountName)
@@ -609,21 +609,21 @@ public class BindCompanyActivity extends BaseActivity implements TitleView.Title
                     public void onBefore(Request request, int id) {
                         super.onBefore(request, id);
                         mProgressDialog.show();
-                        LogUtil.d("onBefore");
+                        LogUtil.Companion.d("onBefore");
                     }
 
                     @Override
                     public void onAfter(int id) {
                         super.onAfter(id);
                         mProgressDialog.dismiss();
-                        LogUtil.d("onAfter");
+                        LogUtil.Companion.d("onAfter");
                     }
 
                     @Override
                     public void inProgress(float progress, long total, int id) {
                         super.inProgress(progress, total, id);
                         mProgressDialog.setProgress((int) (100 * progress + 0.5));
-                        LogUtil.d("inProgress");
+                        LogUtil.Companion.d("inProgress");
                     }
 
                     @Override
@@ -634,8 +634,8 @@ public class BindCompanyActivity extends BaseActivity implements TitleView.Title
 
                     @Override
                     public void onResponse(String response, int id) {
-                        LogUtil.d("onResponse");
-                        LogUtil.d("绑定对公主体：" + response);
+                        LogUtil.Companion.d("onResponse");
+                        LogUtil.Companion.d("绑定对公主体：" + response);
                         ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                         switch (errorBean.getStatus()) {
                             case "success":
@@ -734,7 +734,7 @@ public class BindCompanyActivity extends BaseActivity implements TitleView.Title
                 if (resultCode == ADD_EXPERIENCE) {
                     //添加经历条目，刷新数据
                     Experience experience = data.getParcelableExtra("experience");
-                    LogUtil.d(experience.toString());
+                    LogUtil.Companion.d(experience.toString());
                     mList.add(experience);
                     mAdapter.notifyDataSetChanged();
                 }

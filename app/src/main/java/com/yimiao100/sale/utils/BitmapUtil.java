@@ -72,10 +72,10 @@ public class BitmapUtil {
     private static Uri getFileUri(Uri uri, Context context){
         if (uri.getScheme().equals("file")) {
             String path = uri.getEncodedPath();
-            LogUtil.d("path1 is " + path);
+            LogUtil.Companion.d("path1 is " + path);
             if (path != null) {
                 path = Uri.decode(path);
-                LogUtil.d("path2 is " + path);
+                LogUtil.Companion.d("path2 is " + path);
                 ContentResolver cr = context.getContentResolver();
                 StringBuffer buff = new StringBuffer();
                 buff.append("(")
@@ -98,7 +98,7 @@ public class BitmapUtil {
                     //do nothing
                 } else {
                     Uri uri_temp = Uri.parse("content://media/external/images/media/" + index);
-                    LogUtil.d("uri_temp is " + uri_temp);
+                    LogUtil.Companion.d("uri_temp is " + uri_temp);
                     if (uri_temp != null) {
                         uri = uri_temp;
                     }

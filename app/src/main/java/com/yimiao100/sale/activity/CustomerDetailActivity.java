@@ -141,7 +141,7 @@ public class CustomerDetailActivity extends BaseActivity implements TitleView.Ti
         mCustomerDetailPhone.setText(phoneNumber);
         //和用户关系0-未收藏，1-已收藏
         mUserAddStatus = cdc.getUserAddStatus();
-        LogUtil.d("mUserAddStatus-init：" + mUserAddStatus);
+        LogUtil.Companion.d("mUserAddStatus-init：" + mUserAddStatus);
         if (mUserAddStatus == 1) {
             //表示是用户已经收藏的客户，更换图标显示
             mCustomerDetailCollection.setImageResource(R.mipmap.ico_customer_details_cancel_collection);
@@ -174,8 +174,8 @@ public class CustomerDetailActivity extends BaseActivity implements TitleView.Ti
                 LatLng location = geoCodeResult.getLocation();
                 double latitude = location.latitude;    //纬度
                 double longitude = location.longitude;  //经度
-                LogUtil.d("纬度:" + latitude);
-                LogUtil.d("经度:" + longitude);
+                LogUtil.Companion.d("纬度:" + latitude);
+                LogUtil.Companion.d("经度:" + longitude);
                 //设置标注物
                 LatLng point = new LatLng(latitude, longitude);
                 BitmapDescriptor bitmapDescriptor =
@@ -237,20 +237,20 @@ public class CustomerDetailActivity extends BaseActivity implements TitleView.Ti
                 .build().execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.d("客户详情E：" + e.getMessage());
+                LogUtil.Companion.d("客户详情E：" + e.getMessage());
                 Util.showTimeOutNotice(currentContext);
             }
 
             @Override
             public void onResponse(String response, int id) {
-                LogUtil.d("客户详情：" + response);
+                LogUtil.Companion.d("客户详情：" + response);
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":
                         //收藏成功
                         //更换收藏状态值
                         mUserAddStatus = mUserAddStatus == 0 ? 1 : 0;
-                        LogUtil.d("mUserAddStatus:" + mUserAddStatus);
+                        LogUtil.Companion.d("mUserAddStatus:" + mUserAddStatus);
                         //更换收藏图标
                         mCustomerDetailCollection.setImageResource(mUserAddStatus == 0 ? R.mipmap.ico_customer_details_collection : R.mipmap.ico_customer_details_cancel_collection);
                         ToastUtil.showShort(getApplicationContext(), mUserAddStatus == 0 ? "取消收藏成功" : "收藏成功");

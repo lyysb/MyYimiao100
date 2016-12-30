@@ -106,12 +106,12 @@ public class PromotionDetailActivity extends BaseActivity implements TitleView
                 (ORDER_ID, orderId).build().execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.d("推广费提现详情E：" + e.getLocalizedMessage());
+                LogUtil.Companion.d("推广费提现详情E：" + e.getLocalizedMessage());
             }
 
             @Override
             public void onResponse(String response, int id) {
-                LogUtil.d("推广费提现详情：" + response);
+                LogUtil.Companion.d("推广费提现详情：" + response);
                 ReconciliationDetailBean promotionDetailBean = JSON.parseObject(response,
                         ReconciliationDetailBean.class);
                 switch (promotionDetailBean.getStatus()) {

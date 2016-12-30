@@ -115,9 +115,9 @@ public class BindPersonalActivity extends BaseActivity implements TitleView.Titl
                         bundle.putString("detail", detail);
                         message.setData(bundle);
                         mHandler.sendMessage(message);
-                        LogUtil.d(detail);
+                        LogUtil.Companion.d(detail);
                         //打印错误码
-                        LogUtil.d(object.getString("status"));
+                        LogUtil.Companion.d(object.getString("status"));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -199,12 +199,12 @@ public class BindPersonalActivity extends BaseActivity implements TitleView.Titl
                 .execute(new StringCallback() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
-                        LogUtil.d("绑定银行卡E：" + e.getMessage());
+                        LogUtil.Companion.d("绑定银行卡E：" + e.getMessage());
                     }
 
                     @Override
                     public void onResponse(String response, int id) {
-                        LogUtil.d("绑定银行卡：" + response);
+                        LogUtil.Companion.d("绑定银行卡：" + response);
                         ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                         switch (errorBean.getStatus()) {
                             case "success":

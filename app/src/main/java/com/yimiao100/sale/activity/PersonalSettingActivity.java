@@ -184,13 +184,13 @@ public class PersonalSettingActivity extends BaseActivity implements TitleView
         OkHttpUtils.get().url(URL_REGION_LIST).build().execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.d("获取地域信息E：" + e.getLocalizedMessage());
+                LogUtil.Companion.d("获取地域信息E：" + e.getLocalizedMessage());
                 e.printStackTrace();
             }
 
             @Override
             public void onResponse(String response, int id) {
-                LogUtil.d("获取地域信息：" + response);
+                LogUtil.Companion.d("获取地域信息：" + response);
                 ErrorBean errorBean = parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":
@@ -332,7 +332,7 @@ public class PersonalSettingActivity extends BaseActivity implements TitleView
                 String UPLOAD_PROFILE_IMAGE = "/api/user/upload_profile_image";
                 String url = Constant.BASE_URL + UPLOAD_PROFILE_IMAGE;
                 String accessToken = (String) SharePreferenceUtil.get(this, "accessToken", "");
-                LogUtil.d("头像设置：" + accessToken);
+                LogUtil.Companion.d("头像设置：" + accessToken);
 
                 OkHttpUtils
                         .post()
@@ -348,7 +348,7 @@ public class PersonalSettingActivity extends BaseActivity implements TitleView
 
                             @Override
                             public void onResponse(String response, int id) {
-                                LogUtil.d("更新头像" + response);
+                                LogUtil.Companion.d("更新头像" + response);
                                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                                 switch (errorBean.getStatus()) {
                                     case "success":
@@ -483,13 +483,13 @@ public class PersonalSettingActivity extends BaseActivity implements TitleView
                         .execute(new StringCallback() {
                             @Override
                             public void onError(Call call, Exception e, int id) {
-                                LogUtil.d("更新用户区域信息E：" + e.getMessage());
+                                LogUtil.Companion.d("更新用户区域信息E：" + e.getMessage());
                                 Util.showTimeOutNotice(currentContext);
                             }
 
                             @Override
                             public void onResponse(String response, int id) {
-                                LogUtil.d("更新用户区域信息：" + response);
+                                LogUtil.Companion.d("更新用户区域信息：" + response);
                                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                                 switch (errorBean.getStatus()) {
                                     case "success":
@@ -529,7 +529,7 @@ public class PersonalSettingActivity extends BaseActivity implements TitleView
 
     @Override
     public void leftOnClick() {
-        LogUtil.d("leftOnClick???" + mOptions.isShowing());
+        LogUtil.Companion.d("leftOnClick???" + mOptions.isShowing());
         finish();
     }
 

@@ -127,14 +127,14 @@ public class LoginActivity extends BaseActivity implements CompoundButton.OnChec
                 .execute(new StringCallback() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
-                        LogUtil.d("用户登录E：" + e.getLocalizedMessage());
+                        LogUtil.Companion.d("用户登录E：" + e.getLocalizedMessage());
                         Util.showTimeOutNotice(currentContext);
                     }
 
                     @Override
                     public void onResponse(String response, int id) {
                         //获得返回的json字符串
-                        LogUtil.d("用户登录：" + response);
+                        LogUtil.Companion.d("用户登录：" + response);
                         //解析json字符串
                         SignUpBean signUpBean = JSON.parseObject(response, SignUpBean.class);
                         //判断成功还是失败

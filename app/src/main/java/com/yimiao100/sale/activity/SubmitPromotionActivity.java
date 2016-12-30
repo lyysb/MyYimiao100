@@ -94,7 +94,7 @@ public class SubmitPromotionActivity extends BaseActivity implements TitleView.T
         Intent intent = getIntent();
         //根据不同的来源添加不同的参数，显示不同的数据
         mMark = intent.getStringExtra("mark");
-        LogUtil.d("mark_" + mMark);
+        LogUtil.Companion.d("mark_" + mMark);
         switch (mMark) {
             case "resource":
                 URL_PAY = Constant.BASE_URL + "/api/order/place_order";
@@ -115,7 +115,7 @@ public class SubmitPromotionActivity extends BaseActivity implements TitleView.T
                 ResourceListBean order = intent.getParcelableExtra("order");
                 mAmount.setText("实付款：￥" + order.getBidDeposit());
                 mOrderId = order.getId() + "";
-                LogUtil.d(mOrderId);
+                LogUtil.Companion.d(mOrderId);
                 //添加参数
                 mParams.put(ORDER_ID, mOrderId);
                 break;
@@ -171,7 +171,7 @@ public class SubmitPromotionActivity extends BaseActivity implements TitleView.T
 
                 @Override
                 public void onResponse(String response, int id) {
-                    LogUtil.d(response);
+                    LogUtil.Companion.d(response);
                     ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                     switch (errorBean.getStatus()) {
                         case "success":

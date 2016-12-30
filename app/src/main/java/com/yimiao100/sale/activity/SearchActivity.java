@@ -120,7 +120,7 @@ public class SearchActivity extends BaseActivity implements PullToRefreshListVie
         Intent intent = getIntent();
         String tag = intent.getStringExtra("TAG");
         if (tag != null) {
-            LogUtil.d("tag:" , tag);
+            LogUtil.Companion.d("tag:" , tag);
             mSearchInputText.setText(tag);
             mSearchInputText.setSelection(tag.length());
             search();
@@ -136,13 +136,13 @@ public class SearchActivity extends BaseActivity implements PullToRefreshListVie
                 .build().execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.d("资讯搜索-标签E：" + e.getLocalizedMessage());
+                LogUtil.Companion.d("资讯搜索-标签E：" + e.getLocalizedMessage());
                 Util.showTimeOutNotice(currentContext);
             }
 
             @Override
             public void onResponse(String response, int id) {
-                LogUtil.d("资讯搜索-标签：" + response);
+                LogUtil.Companion.d("资讯搜索-标签：" + response);
                 TagsBean tagsBean = JSON.parseObject(response, TagsBean.class);
                 switch (tagsBean.getStatus()) {
                     case "success":
@@ -213,14 +213,14 @@ public class SearchActivity extends BaseActivity implements PullToRefreshListVie
         getBuild(1).execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.d("资讯搜索E：" + e.getLocalizedMessage());
+                LogUtil.Companion.d("资讯搜索E：" + e.getLocalizedMessage());
                 Util.showTimeOutNotice(currentContext);
             }
 
             @Override
             public void onResponse(String response, int id) {
                 mSearchResult.onLoadMoreComplete();
-                LogUtil.d("资讯搜索：" + response);
+                LogUtil.Companion.d("资讯搜索：" + response);
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":
@@ -296,13 +296,13 @@ public class SearchActivity extends BaseActivity implements PullToRefreshListVie
         getBuild(PAGE).execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.d("资讯搜索E：" + e.getLocalizedMessage());
+                LogUtil.Companion.d("资讯搜索E：" + e.getLocalizedMessage());
             }
 
             @Override
             public void onResponse(String response, int id) {
                 mSearchResult.onLoadMoreComplete();
-                LogUtil.d("资讯搜索：" + response);
+                LogUtil.Companion.d("资讯搜索：" + response);
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":
@@ -326,13 +326,13 @@ public class SearchActivity extends BaseActivity implements PullToRefreshListVie
         getBuild(TAG, PAGE).execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.d("资讯搜索E：" + e.getLocalizedMessage());
+                LogUtil.Companion.d("资讯搜索E：" + e.getLocalizedMessage());
             }
 
             @Override
             public void onResponse(String response, int id) {
                 mSearchResult.onLoadMoreComplete();
-                LogUtil.d("资讯搜索：" + response);
+                LogUtil.Companion.d("资讯搜索：" + response);
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":
@@ -372,13 +372,13 @@ public class SearchActivity extends BaseActivity implements PullToRefreshListVie
         getBuild(tag, 1).execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.d("资讯搜索E：" + e.getLocalizedMessage());
+                LogUtil.Companion.d("资讯搜索E：" + e.getLocalizedMessage());
             }
 
             @Override
             public void onResponse(String response, int id) {
                 mSearchResult.onLoadMoreComplete();
-                LogUtil.d("资讯搜索：" + response);
+                LogUtil.Companion.d("资讯搜索：" + response);
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":

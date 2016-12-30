@@ -51,7 +51,7 @@ public class ClinicActivity extends BaseActivitySingleList{
         getBuild(1).execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.d("辖区门诊E：" + e.getLocalizedMessage());
+                LogUtil.Companion.d("辖区门诊E：" + e.getLocalizedMessage());
                 Util.showTimeOutNotice(currentContext);
             }
 
@@ -64,7 +64,7 @@ public class ClinicActivity extends BaseActivitySingleList{
                         mSwipeRefreshLayout.setRefreshing(false);
                     }
                 }, 300); // 5秒后发送消息，停止刷新
-                LogUtil.d("辖区门诊：" + response);
+                LogUtil.Companion.d("辖区门诊：" + response);
                 //暂定直接用CDC的JavaBean，后期有需求再重新写
                 CDCBean cdcBean = JSON.parseObject(response, CDCBean.class);
                 switch (cdcBean.getStatus()) {
@@ -118,13 +118,13 @@ public class ClinicActivity extends BaseActivitySingleList{
         getBuild(mPage).execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.d("辖区门诊E：" + e.getLocalizedMessage());
+                LogUtil.Companion.d("辖区门诊E：" + e.getLocalizedMessage());
                 Util.showTimeOutNotice(currentContext);
             }
 
             @Override
             public void onResponse(String response, int id) {
-                LogUtil.d("辖区门诊：" + response);
+                LogUtil.Companion.d("辖区门诊：" + response);
                 mListView.onLoadMoreComplete();
                 //暂定直接用CDC的JavaBean，后期有需求再重新写
                 CDCBean cdcBean = JSON.parseObject(response, CDCBean.class);

@@ -116,13 +116,13 @@ public class ReconciliationDetailActivity extends BaseActivity implements TitleV
                 .build().execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.d("对账详情E：" + e.getMessage());
+                LogUtil.Companion.d("对账详情E：" + e.getMessage());
                 Util.showTimeOutNotice(currentContext);
             }
 
             @Override
             public void onResponse(String response, int id) {
-                LogUtil.d("对账详情：" + response);
+                LogUtil.Companion.d("对账详情：" + response);
                 ReconciliationDetailBean reconciliationDetailBean = JSON.parseObject(response, ReconciliationDetailBean.class);
                 switch (reconciliationDetailBean.getStatus()) {
                     case "success":
@@ -188,13 +188,13 @@ public class ReconciliationDetailActivity extends BaseActivity implements TitleV
                         .build().execute(new StringCallback() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
-                        LogUtil.d("订单条目发货确认E：" + e.getMessage());
+                        LogUtil.Companion.d("订单条目发货确认E：" + e.getMessage());
                         Util.showTimeOutNotice(currentContext);
                     }
 
                     @Override
                     public void onResponse(String response, int id) {
-                        LogUtil.d("订单条目发货确认：" + response);
+                        LogUtil.Companion.d("订单条目发货确认：" + response);
                         ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                         switch (errorBean.getStatus()) {
                             case "success":
@@ -250,13 +250,13 @@ public class ReconciliationDetailActivity extends BaseActivity implements TitleV
                         .build().execute(new StringCallback() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
-                        LogUtil.d("订单条目回款确认E：" + e.getMessage());
+                        LogUtil.Companion.d("订单条目回款确认E：" + e.getMessage());
                         Util.showTimeOutNotice(currentContext);
                     }
 
                     @Override
                     public void onResponse(String response, int id) {
-                        LogUtil.d("订单条目回款确认：" + response);
+                        LogUtil.Companion.d("订单条目回款确认：" + response);
                         ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                         switch (errorBean.getStatus()) {
                             case "success":

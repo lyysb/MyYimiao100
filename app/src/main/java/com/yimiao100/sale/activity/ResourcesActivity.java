@@ -400,7 +400,7 @@ public class ResourcesActivity extends BaseActivitySingleList implements Carouse
                 .execute(new StringCallback() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
-                        LogUtil.d("资源列表E：" + e.getMessage());
+                        LogUtil.Companion.d("资源列表E：" + e.getMessage());
                         Util.showTimeOutNotice(currentContext);
                     }
 
@@ -413,7 +413,7 @@ public class ResourcesActivity extends BaseActivitySingleList implements Carouse
                                 mSwipeRefreshLayout.setRefreshing(false);
                             }
                         }, 1000);
-                        LogUtil.d("资源列表：" + response);
+                        LogUtil.Companion.d("资源列表：" + response);
                         ErrorBean errorBean = parseObject(response, ErrorBean.class);
                         switch (errorBean.getStatus()) {
                             case "success":
@@ -452,13 +452,13 @@ public class ResourcesActivity extends BaseActivitySingleList implements Carouse
                 .execute(new StringCallback() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
-                        LogUtil.d("资源列表E：" + e.getMessage());
+                        LogUtil.Companion.d("资源列表E：" + e.getMessage());
                         Util.showTimeOutNotice(currentContext);
                     }
 
                     @Override
                     public void onResponse(String response, int id) {
-                        LogUtil.d("资源列表：" + response);
+                        LogUtil.Companion.d("资源列表：" + response);
                         ErrorBean errorBean = parseObject(response, ErrorBean.class);
                         switch (errorBean.getStatus()) {
                             case "success":
@@ -494,7 +494,7 @@ public class ResourcesActivity extends BaseActivitySingleList implements Carouse
 
             @Override
             public void onPageSelected(int position) {
-                LogUtil.d("资源position------" + position);
+                LogUtil.Companion.d("资源position------" + position);
             }
 
             @Override

@@ -190,14 +190,14 @@ public class ScholarshipActivity extends BaseActivity implements SwipeRefreshLay
         getBuild().execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.d("奖学金提现E：" + e.getMessage());
+                LogUtil.Companion.d("奖学金提现E：" + e.getMessage());
                 Util.showTimeOutNotice(currentContext);
             }
 
             @Override
             public void onResponse(String response, int id) {
                 mScholarshipListRefresh.setRefreshing(false);
-                LogUtil.d("奖学金提现：" + response);
+                LogUtil.Companion.d("奖学金提现：" + response);
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":

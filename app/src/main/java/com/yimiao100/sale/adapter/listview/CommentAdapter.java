@@ -89,7 +89,7 @@ public class CommentAdapter extends BaseAdapter  {
         });
         //根据评分状态设置图标显示
         int userScoreStatus = commentListBean.getUserScoreStatus();
-        LogUtil.d(position + "-userScoreStatus-" + userScoreStatus);
+        LogUtil.Companion.d(position + "-userScoreStatus-" + userScoreStatus);
         Drawable activationScore = mContext.getResources().getDrawable(R.mipmap.ico_information_activation_zambia);          //已赞图片
         Drawable defaultScore = mContext.getResources().getDrawable(R.mipmap.ico_information_default_zambia);                //未赞图片
         if (userScoreStatus == 0 ){

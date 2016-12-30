@@ -239,7 +239,7 @@ public class InformationFragment extends Fragment implements SwipeRefreshLayout
             @Override
             public void onError(Call call, Exception e, int id) {
                 e.printStackTrace();
-                LogUtil.d("资讯列表E：" + e.getMessage());
+                LogUtil.Companion.d("资讯列表E：" + e.getMessage());
                 if (InformationFragment.this.isAdded()) {
                     //防止Fragment点击报空指针
                     Util.showTimeOutNotice(getActivity());
@@ -248,7 +248,7 @@ public class InformationFragment extends Fragment implements SwipeRefreshLayout
 
             @Override
             public void onResponse(String response, int id) {
-                LogUtil.d("资讯列表：" + response);
+                LogUtil.Companion.d("资讯列表：" + response);
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":
@@ -331,7 +331,7 @@ public class InformationFragment extends Fragment implements SwipeRefreshLayout
         getBuild(1).execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.d("刷新资讯E：" + e.getMessage());
+                LogUtil.Companion.d("刷新资讯E：" + e.getMessage());
                 if (InformationFragment.this.isAdded()) {
                     //防止Fragment点击报空指针
                     Util.showTimeOutNotice(getActivity());
@@ -347,7 +347,7 @@ public class InformationFragment extends Fragment implements SwipeRefreshLayout
                         mSwipeRefreshLayout.setRefreshing(false);
                     }
                 }, 1000);
-                LogUtil.d("刷新资讯：" + response);
+                LogUtil.Companion.d("刷新资讯：" + response);
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":
@@ -430,7 +430,7 @@ public class InformationFragment extends Fragment implements SwipeRefreshLayout
             getBuild(mPage).execute(new StringCallback() {
                 @Override
                 public void onError(Call call, Exception e, int id) {
-                    LogUtil.d("资讯列表E：" + e.getMessage());
+                    LogUtil.Companion.d("资讯列表E：" + e.getMessage());
                     if (InformationFragment.this.isAdded()) {
                         //防止Fragment点击报空指针
                         Util.showTimeOutNotice(getActivity());
@@ -439,7 +439,7 @@ public class InformationFragment extends Fragment implements SwipeRefreshLayout
 
                 @Override
                 public void onResponse(String response, int id) {
-                    LogUtil.d("资讯列表：" + response);
+                    LogUtil.Companion.d("资讯列表：" + response);
                     ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                     switch (errorBean.getStatus()) {
                         case "success":
@@ -475,7 +475,7 @@ public class InformationFragment extends Fragment implements SwipeRefreshLayout
 
     @Override
     public void onPageSelected(int position) {
-        LogUtil.d("Information-position---" + position);
+        LogUtil.Companion.d("Information-position---" + position);
         changeDescAndDot(position % mCarouselList.size());
     }
 

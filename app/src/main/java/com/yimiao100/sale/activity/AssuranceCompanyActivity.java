@@ -68,11 +68,11 @@ public class AssuranceCompanyActivity extends BaseActivity implements TitleView
         double applyNum = intent.getDoubleExtra("applyNum", -1);
         mAssuranceCompanyAccount.setText("申请推广保证金提现：" + FormatUtils.MoneyFormat(applyNum) + "元");
         String phone = (String) SharePreferenceUtil.get(this, Constant.CORPORATION_PERSONAL_PHONE_NUMBER, "");
-        LogUtil.d(phone);
+        LogUtil.Companion.d(phone);
         mAssuranceCompanyPhone.setText("联系方式：" + phone);
 
         mOrderIds = intent.getStringExtra("orderIds");
-        LogUtil.d("mOrderIds:" + mOrderIds);
+        LogUtil.Companion.d("mOrderIds:" + mOrderIds);
     }
 
     @OnClick({R.id.assurance_apply_cash, R.id.assurance_apply_service})
@@ -116,13 +116,13 @@ public class AssuranceCompanyActivity extends BaseActivity implements TitleView
                 .addParams(ORDER_ID, mOrderIds).build().execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.d("保证金提现E：" + e.getMessage() + e.getLocalizedMessage());
+                LogUtil.Companion.d("保证金提现E：" + e.getMessage() + e.getLocalizedMessage());
                 Util.showTimeOutNotice(currentContext);
             }
 
             @Override
             public void onResponse(String response, int id) {
-                LogUtil.d("保证金提现：" + response);
+                LogUtil.Companion.d("保证金提现：" + response);
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":

@@ -77,13 +77,13 @@ public class RichesActivity extends BaseActivity implements TitleView.TitleBarOn
                 .build().execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.d("财富E：" + e.getMessage());
+                LogUtil.Companion.d("财富E：" + e.getMessage());
                 Util.showTimeOutNotice(currentContext);
             }
 
             @Override
             public void onResponse(String response, int id) {
-                LogUtil.d("财富：" + response);
+                LogUtil.Companion.d("财富：" + response);
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":

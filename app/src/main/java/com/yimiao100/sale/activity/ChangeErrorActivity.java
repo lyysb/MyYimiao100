@@ -77,7 +77,7 @@ public class ChangeErrorActivity extends BaseActivity implements TitleView.Title
                 .execute(new StringCallback() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
-                        LogUtil.d("资讯详情-纠错E：" + e.getMessage());
+                        LogUtil.Companion.d("资讯详情-纠错E：" + e.getMessage());
                         Util.showTimeOutNotice(currentContext);
                     }
 
@@ -87,7 +87,7 @@ public class ChangeErrorActivity extends BaseActivity implements TitleView.Title
                         switch (errorBean.getStatus()){
                             case "success":
                                 //解析json，填充Adapter
-                                LogUtil.d("纠错列表json：" + response);
+                                LogUtil.Companion.d("纠错列表json：" + response);
                                 List<ErrorReasonListBean> errorReasonList = JSON.parseObject(response, ErrorReasonBean.class).getErrorReasonList();
                                 //动态添加RadioButton
                                 addRadioBottom(errorReasonList);
@@ -136,13 +136,13 @@ public class ChangeErrorActivity extends BaseActivity implements TitleView.Title
                 .execute(new StringCallback() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
-                        LogUtil.d("提交纠错E：" + e.getMessage());
+                        LogUtil.Companion.d("提交纠错E：" + e.getMessage());
                         Util.showTimeOutNotice(currentContext);
                     }
 
                     @Override
                     public void onResponse(String response, int id) {
-                        LogUtil.d("提交纠错：" + response);
+                        LogUtil.Companion.d("提交纠错：" + response);
                         //解析JSON
                         ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                         switch (errorBean.getStatus()){

@@ -99,14 +99,14 @@ public class VendorListActivity extends BaseActivitySingleList {
 
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.d("厂家列表E：" + e.getLocalizedMessage());
+                LogUtil.Companion.d("厂家列表E：" + e.getLocalizedMessage());
                 Util.showTimeOutNotice(currentContext);
             }
 
             @Override
             public void onResponse(String response, int id) {
                 mSwipeRefreshLayout.setRefreshing(false);
-                LogUtil.d("厂家列表：" + response);
+                LogUtil.Companion.d("厂家列表：" + response);
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":

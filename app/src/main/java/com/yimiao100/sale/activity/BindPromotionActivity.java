@@ -82,13 +82,13 @@ public class BindPromotionActivity extends BaseActivity implements TitleView
                 .build().execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.d("推广主体E：" + e.getLocalizedMessage());
+                LogUtil.Companion.d("推广主体E：" + e.getLocalizedMessage());
                 Util.showTimeOutNotice(currentContext);
             }
 
             @Override
             public void onResponse(String response, int id) {
-                LogUtil.d("推广主体E：" + response);
+                LogUtil.Companion.d("推广主体E：" + response);
                 UserBean userBean = JSON.parseObject(response, UserBean.class);
                 switch (userBean.getStatus()) {
                     case "success":

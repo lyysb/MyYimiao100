@@ -139,7 +139,7 @@ public class InformationDetailActivity extends BaseActivity implements View.OnCl
         Intent intent = getIntent();
         //获取资讯id
         mNewsId = intent.getIntExtra("newsId", -1);
-        LogUtil.d("newsId：" + mNewsId);
+        LogUtil.Companion.d("newsId：" + mNewsId);
         //获取图片Url-用于分享
         mImageUrl = intent.getStringExtra("imageUrl");
         //获取用户id
@@ -269,7 +269,7 @@ public class InformationDetailActivity extends BaseActivity implements View.OnCl
                 .execute(new StringCallback() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
-                        LogUtil.d("资讯详情E：" + e.getMessage());
+                        LogUtil.Companion.d("资讯详情E：" + e.getMessage());
                         Util.showTimeOutNotice(currentContext);
                     }
 
@@ -278,13 +278,13 @@ public class InformationDetailActivity extends BaseActivity implements View.OnCl
                         if (response.length() > 4000) {
                             for (int i = 0; i < response.length(); i += 4000) {
                                 if (i + 4000 < response.length()) {
-                                    LogUtil.d(i + "资讯详情：" + response.substring(i, i + 4000));
+                                    LogUtil.Companion.d(i + "资讯详情：" + response.substring(i, i + 4000));
                                 } else {
-                                    LogUtil.d(i + "资讯详情：" + response.substring(i, response.length()));
+                                    LogUtil.Companion.d(i + "资讯详情：" + response.substring(i, response.length()));
                                 }
                             }
                         } else {
-                            LogUtil.d("资讯详情：" + response);
+                            LogUtil.Companion.d("资讯详情：" + response);
                         }
                         ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                         switch (errorBean.getStatus()) {
@@ -404,12 +404,12 @@ public class InformationDetailActivity extends BaseActivity implements View.OnCl
                 .execute(new StringCallback() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
-                        LogUtil.d("评论列表E：" + e.getMessage());
+                        LogUtil.Companion.d("评论列表E：" + e.getMessage());
                     }
 
                     @Override
                     public void onResponse(String response, int id) {
-                        LogUtil.d("评论列表：" + response);
+                        LogUtil.Companion.d("评论列表：" + response);
                         ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                         switch (errorBean.getStatus()) {
                             case "success":
@@ -473,7 +473,7 @@ public class InformationDetailActivity extends BaseActivity implements View.OnCl
                 break;
             case R.id.information_detail_collection:
                 //收藏或者取消收藏
-                LogUtil.d(mNews.getUserCollectionStatus() + "");
+                LogUtil.Companion.d(mNews.getUserCollectionStatus() + "");
                 if (mNews.getUserCollectionStatus() == 0) {
                     //未收藏，去收藏
                     collection();
@@ -568,7 +568,7 @@ public class InformationDetailActivity extends BaseActivity implements View.OnCl
         public void onError(SHARE_MEDIA platform, Throwable t) {
             ToastUtil.showShort(getApplicationContext(), "分享失败");
             if (t != null) {
-                LogUtil.d("分享失败E：" + t.getMessage());
+                LogUtil.Companion.d("分享失败E：" + t.getMessage());
             }
         }
 
@@ -589,12 +589,12 @@ public class InformationDetailActivity extends BaseActivity implements View.OnCl
                 .build().execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.d("分享增加积分E：" + e.getLocalizedMessage());
+                LogUtil.Companion.d("分享增加积分E：" + e.getLocalizedMessage());
             }
 
             @Override
             public void onResponse(String response, int id) {
-                LogUtil.d("分享增加积分：" + response);
+                LogUtil.Companion.d("分享增加积分：" + response);
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":
@@ -620,13 +620,13 @@ public class InformationDetailActivity extends BaseActivity implements View.OnCl
                 .execute(new StringCallback() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
-                        LogUtil.d("收藏资讯E：" + e.getMessage());
+                        LogUtil.Companion.d("收藏资讯E：" + e.getMessage());
                         Util.showTimeOutNotice(currentContext);
                     }
 
                     @Override
                     public void onResponse(String response, int id) {
-                        LogUtil.d("收藏资讯：" + response);
+                        LogUtil.Companion.d("收藏资讯：" + response);
                         ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                         switch (errorBean.getStatus()) {
                             case "success":
@@ -653,13 +653,13 @@ public class InformationDetailActivity extends BaseActivity implements View.OnCl
                 .execute(new StringCallback() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
-                        LogUtil.d("取消收藏E：" + e.getLocalizedMessage());
+                        LogUtil.Companion.d("取消收藏E：" + e.getLocalizedMessage());
                         Util.showTimeOutNotice(currentContext);
                     }
 
                     @Override
                     public void onResponse(String response, int id) {
-                        LogUtil.d("取消收藏：" + response);
+                        LogUtil.Companion.d("取消收藏：" + response);
                         ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                         switch (errorBean.getStatus()) {
                             case "success":
@@ -719,13 +719,13 @@ public class InformationDetailActivity extends BaseActivity implements View.OnCl
                 .execute(new StringCallback() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
-                        LogUtil.d("资讯点赞E：" + e.getMessage());
+                        LogUtil.Companion.d("资讯点赞E：" + e.getMessage());
                         Util.showTimeOutNotice(currentContext);
                     }
 
                     @Override
                     public void onResponse(String response, int id) {
-                        LogUtil.d("资讯点赞" + response);
+                        LogUtil.Companion.d("资讯点赞" + response);
                         ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                         switch (errorBean.getStatus()) {
                             case "success":
@@ -770,13 +770,13 @@ public class InformationDetailActivity extends BaseActivity implements View.OnCl
                 .execute(new StringCallback() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
-                        LogUtil.d("评论点赞E：" + e.getMessage());
+                        LogUtil.Companion.d("评论点赞E：" + e.getMessage());
                         Util.showTimeOutNotice(currentContext);
                     }
 
                     @Override
                     public void onResponse(String response, int id) {
-                        LogUtil.d("评论点赞" + response);
+                        LogUtil.Companion.d("评论点赞" + response);
                         ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                         switch (errorBean.getStatus()) {
                             case "success":
@@ -809,7 +809,7 @@ public class InformationDetailActivity extends BaseActivity implements View.OnCl
                 .execute(new StringCallback() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
-                        LogUtil.d("提交评论E：" + e.getMessage());
+                        LogUtil.Companion.d("提交评论E：" + e.getMessage());
                         Util.showTimeOutNotice(currentContext);
                     }
 
@@ -858,12 +858,12 @@ public class InformationDetailActivity extends BaseActivity implements View.OnCl
                     .execute(new StringCallback() {
                         @Override
                         public void onError(Call call, Exception e, int id) {
-                            LogUtil.d("评论列表E：" + e.getMessage());
+                            LogUtil.Companion.d("评论列表E：" + e.getMessage());
                         }
 
                         @Override
                         public void onResponse(String response, int id) {
-                            LogUtil.d("评论列表：" + response);
+                            LogUtil.Companion.d("评论列表：" + response);
                             ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                             switch (errorBean.getStatus()) {
                                 case "success":

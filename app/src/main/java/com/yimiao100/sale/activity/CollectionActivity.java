@@ -112,7 +112,7 @@ public class CollectionActivity extends BaseActivity implements TitleView.TitleB
         getBuild().execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.d("收藏列表E：" + e.getMessage());
+                LogUtil.Companion.d("收藏列表E：" + e.getMessage());
                 Util.showTimeOutNotice(currentContext);
             }
 
@@ -125,7 +125,7 @@ public class CollectionActivity extends BaseActivity implements TitleView.TitleB
                         mCollectionSwipe.setRefreshing(false);
                     }
                 }, 300);
-                LogUtil.d("收藏列表：" + response);
+                LogUtil.Companion.d("收藏列表：" + response);
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()){
                     case "success":
@@ -136,7 +136,7 @@ public class CollectionActivity extends BaseActivity implements TitleView.TitleB
                         } else {
                             mEmptyView.setVisibility(View.GONE);
                         }
-                        LogUtil.d(mPagedList.size() + "");
+                        LogUtil.Companion.d(mPagedList.size() + "");
                         mCollectionAdapter = new CollectionAdapter(getApplicationContext(), mPagedList);
                         mCollectionListView.setAdapter(mCollectionAdapter);
                         break;
@@ -194,13 +194,13 @@ public class CollectionActivity extends BaseActivity implements TitleView.TitleB
                 .build().execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.d("取消收藏E：" + e.getMessage());
+                LogUtil.Companion.d("取消收藏E：" + e.getMessage());
                 Util.showTimeOutNotice(currentContext);
             }
 
             @Override
             public void onResponse(String response, int id) {
-                LogUtil.d("取消收藏：" + response);
+                LogUtil.Companion.d("取消收藏：" + response);
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":

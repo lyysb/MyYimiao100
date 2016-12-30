@@ -51,13 +51,13 @@ public class RegionUtil {
         OkHttpUtils.get().url(URL_REGION_LIST).build().execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.d("获取地域信息E：" + e.getLocalizedMessage());
+                LogUtil.Companion.d("获取地域信息E：" + e.getLocalizedMessage());
                 e.printStackTrace();
             }
 
             @Override
             public void onResponse(String response, int id) {
-                LogUtil.d("获取地域信息：" + response);
+                LogUtil.Companion.d("获取地域信息：" + response);
                 ErrorBean errorBean = parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":

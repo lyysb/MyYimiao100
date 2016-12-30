@@ -80,7 +80,7 @@ public class PersonalIDCardActivity extends BaseActivity implements TitleView.Ti
                 .execute(new StringCallback() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
-                        LogUtil.d("身份证号设置： " + e.getMessage());
+                        LogUtil.Companion.d("身份证号设置： " + e.getMessage());
                         Util.showTimeOutNotice(currentContext);
                     }
 

@@ -256,20 +256,20 @@ public class PersonalAddressAddActivity extends BaseActivity implements TitleVie
                 .build().execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.d("编辑收货地址E：" + e.getLocalizedMessage());
+                LogUtil.Companion.d("编辑收货地址E：" + e.getLocalizedMessage());
                 Util.showTimeOutNotice(currentContext);
             }
 
             @Override
             public void onResponse(String response, int id) {
-                LogUtil.d("编辑收货地址：" + response);
-                LogUtil.d("provinceId：" + mProvinceId + "");
-                LogUtil.d("cityId：" + mCityId + "");
-                LogUtil.d("areaId：" + mCountyId + "");
-                LogUtil.d("cnName：" + mAddressName.getText().toString().trim());
-                LogUtil.d("phoneNumber：" + mAddressPhone.getText().toString().trim());
-                LogUtil.d("zipCode：" + mAddressCode.getText().toString().trim());
-                LogUtil.d("fullAddress：" + mAddressDetail.getText().toString().trim());
+                LogUtil.Companion.d("编辑收货地址：" + response);
+                LogUtil.Companion.d("provinceId：" + mProvinceId + "");
+                LogUtil.Companion.d("cityId：" + mCityId + "");
+                LogUtil.Companion.d("areaId：" + mCountyId + "");
+                LogUtil.Companion.d("cnName：" + mAddressName.getText().toString().trim());
+                LogUtil.Companion.d("phoneNumber：" + mAddressPhone.getText().toString().trim());
+                LogUtil.Companion.d("zipCode：" + mAddressCode.getText().toString().trim());
+                LogUtil.Companion.d("fullAddress：" + mAddressDetail.getText().toString().trim());
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":
@@ -299,20 +299,20 @@ public class PersonalAddressAddActivity extends BaseActivity implements TitleVie
                 .build().execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.d("提交收货地址E：" + e.getLocalizedMessage());
+                LogUtil.Companion.d("提交收货地址E：" + e.getLocalizedMessage());
                 Util.showTimeOutNotice(currentContext);
             }
 
             @Override
             public void onResponse(String response, int id) {
-                LogUtil.d("提交收货地址：" + response);
-                LogUtil.d("provinceId：" + mProvinceId + "");
-                LogUtil.d("cityId：" + mCityId + "");
-                LogUtil.d("areaId：" + mCountyId + "");
-                LogUtil.d("cnName：" + mAddressName.getText().toString().trim());
-                LogUtil.d("phoneNumber：" + mAddressPhone.getText().toString().trim());
-                LogUtil.d("zipCode：" + mAddressCode.getText().toString().trim());
-                LogUtil.d("fullAddress：" + mAddressDetail.getText().toString().trim());
+                LogUtil.Companion.d("提交收货地址：" + response);
+                LogUtil.Companion.d("provinceId：" + mProvinceId + "");
+                LogUtil.Companion.d("cityId：" + mCityId + "");
+                LogUtil.Companion.d("areaId：" + mCountyId + "");
+                LogUtil.Companion.d("cnName：" + mAddressName.getText().toString().trim());
+                LogUtil.Companion.d("phoneNumber：" + mAddressPhone.getText().toString().trim());
+                LogUtil.Companion.d("zipCode：" + mAddressCode.getText().toString().trim());
+                LogUtil.Companion.d("fullAddress：" + mAddressDetail.getText().toString().trim());
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":

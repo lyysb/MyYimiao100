@@ -82,7 +82,7 @@ public class ResourcesDetailActivity extends BaseActivity implements TitleView.T
 
         mResourceID = getIntent().getIntExtra("resourceID", -1);
 
-        LogUtil.d("mResourceId-" + mResourceID);
+        LogUtil.Companion.d("mResourceId-" + mResourceID);
 
         initView();
 
@@ -113,7 +113,7 @@ public class ResourcesDetailActivity extends BaseActivity implements TitleView.T
 
                     @Override
                     public void onResponse(String response, int id) {
-                        LogUtil.d("资源详情：" + response);
+                        LogUtil.Companion.d("资源详情：" + response);
                         ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                         switch (errorBean.getStatus()) {
                             case "success":

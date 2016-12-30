@@ -63,14 +63,14 @@ public class ReconciliationActivity extends BaseActivitySingleList {
         getBuild(1).execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.d("对账列表E：" + e.getMessage());
+                LogUtil.Companion.d("对账列表E：" + e.getMessage());
                 Util.showTimeOutNotice(currentContext);
             }
 
             @Override
             public void onResponse(String response, int id) {
                 mSwipeRefreshLayout.setRefreshing(false);
-                LogUtil.d("对账列表：" + response);
+                LogUtil.Companion.d("对账列表：" + response);
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":
@@ -134,13 +134,13 @@ public class ReconciliationActivity extends BaseActivitySingleList {
         getBuild(mPage).execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.d("对账列表E：" + e.getMessage());
+                LogUtil.Companion.d("对账列表E：" + e.getMessage());
             }
 
             @Override
             public void onResponse(String response, int id) {
                 mListView.onLoadMoreComplete();
-                LogUtil.d("对账列表：" + response);
+                LogUtil.Companion.d("对账列表：" + response);
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":

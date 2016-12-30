@@ -51,13 +51,13 @@ public class ExchangeNoteActivity extends BaseActivitySingleList {
         getBuild(1).execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.d("兑换列表E：" + e.getLocalizedMessage());
+                LogUtil.Companion.d("兑换列表E：" + e.getLocalizedMessage());
                 Util.showTimeOutNotice(currentContext);
             }
 
             @Override
             public void onResponse(String response, int id) {
-                LogUtil.d("兑换列表：" + response);
+                LogUtil.Companion.d("兑换列表：" + response);
                 mSwipeRefreshLayout.setRefreshing(false);
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
@@ -84,13 +84,13 @@ public class ExchangeNoteActivity extends BaseActivitySingleList {
         getBuild(mPage).execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.d("兑换列表E：" + e.getLocalizedMessage());
+                LogUtil.Companion.d("兑换列表E：" + e.getLocalizedMessage());
                 Util.showTimeOutNotice(currentContext);
             }
 
             @Override
             public void onResponse(String response, int id) {
-                LogUtil.d("兑换列表：" + response);
+                LogUtil.Companion.d("兑换列表：" + response);
                 mListView.onLoadMoreComplete();
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {

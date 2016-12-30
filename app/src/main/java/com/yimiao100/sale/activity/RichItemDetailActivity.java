@@ -93,12 +93,12 @@ public class RichItemDetailActivity extends BaseActivity implements TitleView
                 .addParams(ID, mId + "").build().execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.d("提现明细详情E：" + e.getLocalizedMessage());
+                LogUtil.Companion.d("提现明细详情E：" + e.getLocalizedMessage());
             }
 
             @Override
             public void onResponse(String response, int id) {
-                LogUtil.d("提现明细详情：" + response);
+                LogUtil.Companion.d("提现明细详情：" + response);
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":

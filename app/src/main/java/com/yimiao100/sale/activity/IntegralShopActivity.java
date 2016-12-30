@@ -60,13 +60,13 @@ public class IntegralShopActivity extends BaseActivitySingleList {
 
                     @Override
                     public void onError(Call call, Exception e, int id) {
-                        LogUtil.d("积分商城列表E：" + e.getLocalizedMessage());
+                        LogUtil.Companion.d("积分商城列表E：" + e.getLocalizedMessage());
                         Util.showTimeOutNotice(currentContext);
                     }
 
                     @Override
                     public void onResponse(String response, int id) {
-                        LogUtil.d("积分商城列表：" + response);
+                        LogUtil.Companion.d("积分商城列表：" + response);
                         mSwipeRefreshLayout.setRefreshing(false);
                         ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                         switch (errorBean.getStatus()) {

@@ -77,14 +77,14 @@ public class IntegralGoodsListActivity extends BaseActivitySingleList {
         getPostFormBuilder(1).build().execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.d("商品列表E：" + e.getLocalizedMessage());
+                LogUtil.Companion.d("商品列表E：" + e.getLocalizedMessage());
                 Util.showTimeOutNotice(currentContext);
             }
 
             @Override
             public void onResponse(String response, int id) {
                 mSwipeRefreshLayout.setRefreshing(false);
-                LogUtil.d("商品列表：" + response);
+                LogUtil.Companion.d("商品列表：" + response);
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":

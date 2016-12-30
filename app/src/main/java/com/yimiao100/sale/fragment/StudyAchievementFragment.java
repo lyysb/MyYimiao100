@@ -68,7 +68,7 @@ public class StudyAchievementFragment extends BaseFragmentSingleList {
         getBuild(1).execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.d("学习任务-已完成E：" + e.getLocalizedMessage());
+                LogUtil.Companion.d("学习任务-已完成E：" + e.getLocalizedMessage());
                 if (StudyAchievementFragment.this.isAdded()) {
                     //防止Fragment点击报空指针
                     Util.showTimeOutNotice(getActivity());
@@ -77,7 +77,7 @@ public class StudyAchievementFragment extends BaseFragmentSingleList {
 
             @Override
             public void onResponse(String response, int id) {
-                LogUtil.d("学习任务-已完成：" + response);
+                LogUtil.Companion.d("学习任务-已完成：" + response);
                 mSwipeRefreshLayout.setRefreshing(false);
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
@@ -105,12 +105,12 @@ public class StudyAchievementFragment extends BaseFragmentSingleList {
         getBuild(mPage).execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.d("学习任务-已完成E：" + e.getLocalizedMessage());
+                LogUtil.Companion.d("学习任务-已完成E：" + e.getLocalizedMessage());
             }
 
             @Override
             public void onResponse(String response, int id) {
-                LogUtil.d("学习任务-已完成：" + response);
+                LogUtil.Companion.d("学习任务-已完成：" + response);
                 mListView.onLoadMoreComplete();
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {

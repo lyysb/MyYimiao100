@@ -241,7 +241,7 @@ public class AssuranceActivity extends BaseActivity implements TitleView.TitleBa
         getBuild(1).execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.d("保证金提现账户E：" + e.getMessage());
+                LogUtil.Companion.d("保证金提现账户E：" + e.getMessage());
                 Util.showTimeOutNotice(currentContext);
             }
 
@@ -254,7 +254,7 @@ public class AssuranceActivity extends BaseActivity implements TitleView.TitleBa
                         mAssuranceRefresh.setRefreshing(false);
                     }
                 }, 2000);
-                LogUtil.d("保证金提现账户：" + response);
+                LogUtil.Companion.d("保证金提现账户：" + response);
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":
@@ -297,13 +297,13 @@ public class AssuranceActivity extends BaseActivity implements TitleView.TitleBa
             getBuild(mPage).execute(new StringCallback() {
                 @Override
                 public void onError(Call call, Exception e, int id) {
-                    LogUtil.d("保证金可提现-对公账户E：" + e.getMessage());
+                    LogUtil.Companion.d("保证金可提现-对公账户E：" + e.getMessage());
                     Util.showTimeOutNotice(currentContext);
                 }
 
                 @Override
                 public void onResponse(String response, int id) {
-                    LogUtil.d("保证金可提现-对公账户：" + response);
+                    LogUtil.Companion.d("保证金可提现-对公账户：" + response);
                     ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                     mAssuranceCompanyListView.onLoadMoreComplete();
                     switch (errorBean.getStatus()) {

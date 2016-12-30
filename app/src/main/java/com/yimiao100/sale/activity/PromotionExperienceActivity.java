@@ -263,8 +263,8 @@ public class PromotionExperienceActivity extends BaseActivity implements TitleVi
 
     @Override
     public void leftOnClick() {
-        LogUtil.d("mTimePickerView-isShowing???" + mTimePickerView.isShowing() );
-        LogUtil.d("mCharacterPickerView-isShowing???" + mCharacterPickerView.isShowing() );
+        LogUtil.Companion.d("mTimePickerView-isShowing???" + mTimePickerView.isShowing() );
+        LogUtil.Companion.d("mCharacterPickerView-isShowing???" + mCharacterPickerView.isShowing() );
         finish();
     }
 }

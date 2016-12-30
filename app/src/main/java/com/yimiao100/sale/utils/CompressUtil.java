@@ -44,7 +44,7 @@ public class CompressUtil {
             }
             out.close();
             fos.close();
-            LogUtil.d("success");
+            LogUtil.Companion.d("success");
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -85,13 +85,13 @@ public class OrderActivity extends BaseActivitySingleList{
                 if (response.length() > 4000) {
                     for (int i = 0; i < response.length(); i += 4000) {
                         if (i + 4000 < response.length()) {
-                            LogUtil.d(i + "业务列表：" + response.substring(i, i + 4000));
+                            LogUtil.Companion.d(i + "业务列表：" + response.substring(i, i + 4000));
                         } else {
-                            LogUtil.d(i + "业务列表：" + response.substring(i, response.length()));
+                            LogUtil.Companion.d(i + "业务列表：" + response.substring(i, response.length()));
                         }
                     }
                 } else {
-                    LogUtil.d("业务列表：" + response);
+                    LogUtil.Companion.d("业务列表：" + response);
                 }
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
@@ -118,13 +118,13 @@ public class OrderActivity extends BaseActivitySingleList{
         getBuild(mPage).execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.d("业务列表E：" + e.getMessage());
+                LogUtil.Companion.d("业务列表E：" + e.getMessage());
                 Util.showTimeOutNotice(currentContext);
             }
 
             @Override
             public void onResponse(String response, int id) {
-                LogUtil.d("业务列表：" + response);
+                LogUtil.Companion.d("业务列表：" + response);
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":

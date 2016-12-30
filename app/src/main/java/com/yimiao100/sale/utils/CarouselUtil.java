@@ -36,12 +36,12 @@ public class CarouselUtil {
             @Override
             public void onError(Call call, Exception e, int id) {
                 e.printStackTrace();
-                LogUtil.d("获取轮播图E：" + e.toString() );
+                LogUtil.Companion.d("获取轮播图E：" + e.toString() );
             }
 
             @Override
             public void onResponse(String response, int id) {
-                LogUtil.d("获取轮播图：" + response);
+                LogUtil.Companion.d("获取轮播图：" + response);
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":

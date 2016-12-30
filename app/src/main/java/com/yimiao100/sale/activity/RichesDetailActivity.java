@@ -60,13 +60,13 @@ public class RichesDetailActivity extends BaseActivitySingleList {
         getBuild(1).execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.d("财富明细列表E：" + e.getLocalizedMessage());
+                LogUtil.Companion.d("财富明细列表E：" + e.getLocalizedMessage());
             }
 
             @Override
             public void onResponse(String response, int id) {
                 mSwipeRefreshLayout.setRefreshing(false);
-                LogUtil.d("财富明细列表：" + response);
+                LogUtil.Companion.d("财富明细列表：" + response);
                 RichesDetailBean richesDetail = JSON.parseObject(response, RichesDetailBean.class);
                 switch (richesDetail.getStatus()) {
                     case "success":
@@ -98,12 +98,12 @@ public class RichesDetailActivity extends BaseActivitySingleList {
         getBuild(mPage).execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.d("财富明细列表E：" + e.getLocalizedMessage());
+                LogUtil.Companion.d("财富明细列表E：" + e.getLocalizedMessage());
             }
 
             @Override
             public void onResponse(String response, int id) {
-                LogUtil.d("财富明细列表：" + response);
+                LogUtil.Companion.d("财富明细列表：" + response);
                 RichesDetailBean richesDetail = JSON.parseObject(response, RichesDetailBean.class);
                 switch (richesDetail.getStatus()) {
                     case "success":

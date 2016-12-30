@@ -120,13 +120,13 @@ public class ScoreDetailActivity extends BaseActivity implements SwipeRefreshLay
                 .addParams(VENDOR_ID, mVendorId + "").build().execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.d("课程考试结果E：" + e.getLocalizedMessage());
+                LogUtil.Companion.d("课程考试结果E：" + e.getLocalizedMessage());
                 Util.showTimeOutNotice(currentContext);
             }
 
             @Override
             public void onResponse(String response, int id) {
-                LogUtil.d("课程考试结果：" + response);
+                LogUtil.Companion.d("课程考试结果：" + response);
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":
@@ -154,13 +154,13 @@ public class ScoreDetailActivity extends BaseActivity implements SwipeRefreshLay
                 .addParams(VENDOR_ID, mVendorId + "").build().execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.d("课程考试结果E：" + e.getLocalizedMessage());
+                LogUtil.Companion.d("课程考试结果E：" + e.getLocalizedMessage());
                 Util.showTimeOutNotice(currentContext);
             }
 
             @Override
             public void onResponse(String response, int id) {
-                LogUtil.d("课程考试结果：" + response);
+                LogUtil.Companion.d("课程考试结果：" + response);
                 mScoreSwipe.setRefreshing(false);
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {

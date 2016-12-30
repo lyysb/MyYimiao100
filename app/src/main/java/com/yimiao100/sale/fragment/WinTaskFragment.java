@@ -76,7 +76,7 @@ public class WinTaskFragment extends BaseFragmentSingleList {
 
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.d("全部任务E：" + e.getLocalizedMessage());
+                LogUtil.Companion.d("全部任务E：" + e.getLocalizedMessage());
                 if (WinTaskFragment.this.isAdded()) {
                     //防止Fragment点击报空指针
                     Util.showTimeOutNotice(getActivity());
@@ -86,7 +86,7 @@ public class WinTaskFragment extends BaseFragmentSingleList {
             @Override
             public void onResponse(String response, int id) {
                 mSwipeRefreshLayout.setRefreshing(false);
-                LogUtil.d("全部任务：" + response);
+                LogUtil.Companion.d("全部任务：" + response);
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":
@@ -113,7 +113,7 @@ public class WinTaskFragment extends BaseFragmentSingleList {
 
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.d("全部任务E：" + e.getLocalizedMessage());
+                LogUtil.Companion.d("全部任务E：" + e.getLocalizedMessage());
                 if (WinTaskFragment.this.isAdded()) {
                     //防止Fragment点击报空指针
                     Util.showTimeOutNotice(getActivity());
@@ -122,7 +122,7 @@ public class WinTaskFragment extends BaseFragmentSingleList {
 
             @Override
             public void onResponse(String response, int id) {
-                LogUtil.d("全部任务：" + response);
+                LogUtil.Companion.d("全部任务：" + response);
                 mListView.onLoadMoreComplete();
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {

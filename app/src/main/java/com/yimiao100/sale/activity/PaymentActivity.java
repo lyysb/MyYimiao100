@@ -104,7 +104,7 @@ public class PaymentActivity extends BaseActivity implements TitleView.TitleBarO
         getBuild(1).execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.d("回款累计E：" + e.getLocalizedMessage());
+                LogUtil.Companion.d("回款累计E：" + e.getLocalizedMessage());
                 Util.showTimeOutNotice(currentContext);
             }
 
@@ -117,7 +117,7 @@ public class PaymentActivity extends BaseActivity implements TitleView.TitleBarO
                         mPaymentRefresh.setRefreshing(false);
                     }
                 }, 300);
-                LogUtil.d("回款累计：" + response);
+                LogUtil.Companion.d("回款累计：" + response);
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":
@@ -172,13 +172,13 @@ public class PaymentActivity extends BaseActivity implements TitleView.TitleBarO
             getBuild(mPage).execute(new StringCallback() {
                 @Override
                 public void onError(Call call, Exception e, int id) {
-                    LogUtil.d("回款累计E：" + e.getLocalizedMessage());
+                    LogUtil.Companion.d("回款累计E：" + e.getLocalizedMessage());
                     Util.showTimeOutNotice(currentContext);
                 }
 
                 @Override
                 public void onResponse(String response, int id) {
-                    LogUtil.d("回款累计：" + response);
+                    LogUtil.Companion.d("回款累计：" + response);
                     ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                     switch (errorBean.getStatus()) {
                         case "success":

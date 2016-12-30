@@ -176,7 +176,7 @@ public class OrderCompletedActivity extends BaseActivity implements TitleView.Ti
         mProgressDialog.setCancelable(false);
         mProgressDialog.setTitle("正在下载，请稍后...");
         String fileName = orderProtocolUrl.substring(orderProtocolUrl.lastIndexOf("/") + 1);
-        LogUtil.d("已签约协议fileName：" + fileName);
+        LogUtil.Companion.d("已签约协议fileName：" + fileName);
         OkHttpUtils.get().url(orderProtocolUrl)
                 .build().execute(
                 new FileCallBack(Environment.getExternalStorageDirectory().getAbsolutePath(), fileName) {
@@ -200,14 +200,14 @@ public class OrderCompletedActivity extends BaseActivity implements TitleView.Ti
 
                     @Override
                     public void onError(Call call, Exception e, int id) {
-                        LogUtil.d("onError：" + e.getMessage().toString());
+                        LogUtil.Companion.d("onError：" + e.getMessage().toString());
                         Util.showTimeOutNotice(currentContext);
                     }
 
                     @Override
                     public void onResponse(File response, int id) {
-                        LogUtil.d("已签约协议：onResponse：" + response.getAbsolutePath());
-                        LogUtil.d("已签约协议：response.name：" + response.getName());
+                        LogUtil.Companion.d("已签约协议：onResponse：" + response.getAbsolutePath());
+                        LogUtil.Companion.d("已签约协议：response.name：" + response.getName());
                         if (response != null && response.isFile() == true) {
                             Intent intent = new Intent();
                             intent.setAction(android.content.Intent.ACTION_VIEW);
@@ -253,11 +253,11 @@ public class OrderCompletedActivity extends BaseActivity implements TitleView.Ti
             public File parseNetworkResponse(Response response, int id) throws Exception {
                 if (200 == response.code()) {
                     //协议下载成功
-                    LogUtil.d("下载成功");
+                    LogUtil.Companion.d("下载成功");
                     return super.parseNetworkResponse(response, id);
                 } else if (400 == response.code()) {
                     //解析显示错误信息
-                    LogUtil.d("下载失败");
+                    LogUtil.Companion.d("下载失败");
                     ErrorBean errorBean = JSON.parseObject(response.body().toString(),
                             ErrorBean.class);
                     Util.showError(currentContext, errorBean.getReason());
@@ -272,8 +272,8 @@ public class OrderCompletedActivity extends BaseActivity implements TitleView.Ti
                     //如果返回来null证明下载错误
                     return;
                 }
-                LogUtil.d("onResponse：" + response.getAbsolutePath());
-                LogUtil.d("response.name：" + response.getName());
+                LogUtil.Companion.d("onResponse：" + response.getAbsolutePath());
+                LogUtil.Companion.d("response.name：" + response.getName());
                 //下载成功，显示分享或者发送出去对话框
                 showSuccessDialog(response);
             }

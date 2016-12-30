@@ -94,13 +94,13 @@ public class MineAchievementActivity extends BaseActivity implements TitleView
 
                     @Override
                     public void onError(Call call, Exception e, int id) {
-                        LogUtil.d("课程考试统计：" + e.getLocalizedMessage());
+                        LogUtil.Companion.d("课程考试统计：" + e.getLocalizedMessage());
                         Util.showTimeOutNotice(currentContext);
                     }
 
                     @Override
                     public void onResponse(String response, int id) {
-                        LogUtil.d("课程考试统计：" + response);
+                        LogUtil.Companion.d("课程考试统计：" + response);
                         ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                         switch (errorBean.getStatus()) {
                             case "success":

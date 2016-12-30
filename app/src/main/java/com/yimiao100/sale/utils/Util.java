@@ -57,7 +57,7 @@ public class Util {
     public static void showError(final Activity activity, int reason) {
         if (reason == 116) {
             AlertDialog dialog = ActivityAlertDialogManager.getDialog(activity);
-            LogUtil.d("dialog:" + dialog.toString());
+            LogUtil.Companion.d("dialog:" + dialog.toString());
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
                 if (activity.isDestroyed()) {
                     return;

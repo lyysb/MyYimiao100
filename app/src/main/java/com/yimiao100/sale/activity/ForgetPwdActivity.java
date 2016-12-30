@@ -108,9 +108,9 @@ public class ForgetPwdActivity extends BaseActivity {
                         message.setData(bundle);
                         mHandler.sendMessage(message);
 
-                        LogUtil.d(detail);
+                        LogUtil.Companion.d(detail);
                         //打印错误码
-                        LogUtil.d(object.getString("status"));
+                        LogUtil.Companion.d(object.getString("status"));
                     } catch (JSONException e) {
                         e.printStackTrace();
                         mHandler.sendEmptyMessage(2);
@@ -148,7 +148,7 @@ public class ForgetPwdActivity extends BaseActivity {
                         .execute(new StringCallback() {
                             @Override
                             public void onError(Call call, Exception e, int id) {
-                                LogUtil.d("忘记密码：" + e.getMessage());
+                                LogUtil.Companion.d("忘记密码：" + e.getMessage());
                                 Util.showTimeOutNotice(currentContext);
                             }
 

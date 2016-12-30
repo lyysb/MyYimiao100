@@ -86,7 +86,7 @@ public class ResourcesPromotionActivity extends BaseActivity implements TitleVie
         Intent intent = getIntent();
         //资源
         mResourceInfo = intent.getParcelableExtra("resourceInfo");
-        LogUtil.d("resourceId-" + mResourceInfo.getId());
+        LogUtil.Companion.d("resourceId-" + mResourceInfo.getId());
 
         initData();
 

@@ -162,13 +162,13 @@ public class StudyCollectionActivity extends BaseActivity implements SwipeRefres
 
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.d("取消收藏E：" + e.getLocalizedMessage());
+                LogUtil.Companion.d("取消收藏E：" + e.getLocalizedMessage());
                 Util.showTimeOutNotice(currentContext);
             }
 
             @Override
             public void onResponse(String response, int id) {
-                LogUtil.d("取消收藏：" + response);
+                LogUtil.Companion.d("取消收藏：" + response);
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":
@@ -190,13 +190,13 @@ public class StudyCollectionActivity extends BaseActivity implements SwipeRefres
 
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.d("学习课程收藏列表E：" + e.getLocalizedMessage());
+                LogUtil.Companion.d("学习课程收藏列表E：" + e.getLocalizedMessage());
                 Util.showTimeOutNotice(currentContext);
             }
 
             @Override
             public void onResponse(String response, int id) {
-                LogUtil.d("学习课程收藏列表：" + response);
+                LogUtil.Companion.d("学习课程收藏列表：" + response);
                 mStudyCollectionSwipe.setRefreshing(false);
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {

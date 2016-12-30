@@ -149,13 +149,13 @@ public class CustomerActivity extends BaseActivity implements TitleView.TitleBar
         getBuild(URL_USER_CDC_LIST, 1).execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.d("用户CDC列表E：" + e.getMessage());
+                LogUtil.Companion.d("用户CDC列表E：" + e.getMessage());
                 Util.showTimeOutNotice(currentContext);
             }
 
             @Override
             public void onResponse(String response, int id) {
-                LogUtil.d("用户CDC列表：" + response);
+                LogUtil.Companion.d("用户CDC列表：" + response);
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":
@@ -188,12 +188,12 @@ public class CustomerActivity extends BaseActivity implements TitleView.TitleBar
         getBuild(URL_CDC_LIST, 1).execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.d("CDC列表E：" + e.getMessage());
+                LogUtil.Companion.d("CDC列表E：" + e.getMessage());
             }
 
             @Override
             public void onResponse(String response, int id) {
-                LogUtil.d("CDC列表：" + response);
+                LogUtil.Companion.d("CDC列表：" + response);
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":
@@ -222,13 +222,13 @@ public class CustomerActivity extends BaseActivity implements TitleView.TitleBar
             getBuild(URL_USER_CDC_LIST, 1).execute(new StringCallback() {
                 @Override
                 public void onError(Call call, Exception e, int id) {
-                    LogUtil.d("用户CDC列表E：" + e.getMessage());
+                    LogUtil.Companion.d("用户CDC列表E：" + e.getMessage());
                     Util.showTimeOutNotice(currentContext);
                 }
 
                 @Override
                 public void onResponse(String response, int id) {
-                    LogUtil.d("用户CDC列表：" + response);
+                    LogUtil.Companion.d("用户CDC列表：" + response);
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
@@ -267,13 +267,13 @@ public class CustomerActivity extends BaseActivity implements TitleView.TitleBar
             getBuild(URL_CDC_LIST, 1).execute(new StringCallback() {
                 @Override
                 public void onError(Call call, Exception e, int id) {
-                    LogUtil.d("CDC列表E：" + e.getMessage());
+                    LogUtil.Companion.d("CDC列表E：" + e.getMessage());
                     Util.showTimeOutNotice(currentContext);
                 }
 
                 @Override
                 public void onResponse(String response, int id) {
-                    LogUtil.d("CDC列表：" + response);
+                    LogUtil.Companion.d("CDC列表：" + response);
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
@@ -408,13 +408,13 @@ public class CustomerActivity extends BaseActivity implements TitleView.TitleBar
         getBuild(URL_USER_CDC_LIST, mPageMine).execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.d("用户CDC列表E：" + e.getMessage());
+                LogUtil.Companion.d("用户CDC列表E：" + e.getMessage());
                 Util.showTimeOutNotice(currentContext);
             }
 
             @Override
             public void onResponse(String response, int id) {
-                LogUtil.d("用户CDC列表：" + response);
+                LogUtil.Companion.d("用户CDC列表：" + response);
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":
@@ -436,18 +436,18 @@ public class CustomerActivity extends BaseActivity implements TitleView.TitleBar
         getBuild(URL_CDC_LIST, mPageAll).execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.d("CDC列表E：" + e.getMessage());
+                LogUtil.Companion.d("CDC列表E：" + e.getMessage());
                 Util.showTimeOutNotice(currentContext);
             }
 
             @Override
             public void onResponse(String response, int id) {
-                LogUtil.d("CDC列表：" + response);
+                LogUtil.Companion.d("CDC列表：" + response);
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":
                         mPageAll++;
-                        LogUtil.d(mPageAll + "");
+                        LogUtil.Companion.d(mPageAll + "");
                         mCdcAllList.addAll(JSON.parseObject(response, CDCBean.class).getPagedResult().getPagedList());
                         mCdcAllAdapter.notifyDataSetChanged();
                         break;

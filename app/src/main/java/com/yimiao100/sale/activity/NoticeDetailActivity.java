@@ -68,7 +68,7 @@ public class NoticeDetailActivity extends BaseActivity implements TitleView
                 .build().execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.d("通知详情E：" + e.getMessage());
+                LogUtil.Companion.d("通知详情E：" + e.getMessage());
                 Util.showTimeOutNotice(currentContext);
             }
 
@@ -77,7 +77,7 @@ public class NoticeDetailActivity extends BaseActivity implements TitleView
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":
-                        LogUtil.d("通知详情：" + response);
+                        LogUtil.Companion.d("通知详情：" + response);
                         //解析JSON
                         NoticedListBean userNotice = JSON.parseObject(response, NoticeDetailBean
                                 .class).getUserNotice();

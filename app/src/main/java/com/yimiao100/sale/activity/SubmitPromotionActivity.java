@@ -56,7 +56,7 @@ public class SubmitPromotionActivity extends BaseActivity implements TitleView.T
     private final String USER_ACCOUNT_TYPE = "userAccountType";
     private final String CHANNEL = "channel";
     private final String ORDER_ID = "orderId";
-    private String URL_PAY;
+    private String  URL_PAY;
 
 
     private HashMap<String, String> mParams;

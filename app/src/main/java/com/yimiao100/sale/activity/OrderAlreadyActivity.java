@@ -82,7 +82,8 @@ public class OrderAlreadyActivity extends BaseActivity implements TitleView
     private ProgressDialog mProgressDownloadDialog;
     private ProgressDialog mProgressUploadDialog;
 
-    private final String URL_UPLOAD_FILE = Constant.BASE_URL + "/api/order/batch_upload_protocol_file";
+    private final String URL_UPLOAD_FILE = Constant.BASE_URL +
+            "/api/order/batch_upload_protocol_file";
     private final String URL_DOWNLOAD_FILE = Constant.BASE_URL + "/api/order/fetch_protocol";
     private final String ORDER_ID = "orderId";
     private final String ZIP_FILE = "zipFile";
@@ -132,7 +133,7 @@ public class OrderAlreadyActivity extends BaseActivity implements TitleView
         String time = TimeUtil.timeStamp2Date(mOrder.getCreatedAt() + "", "yyyy.MM.dd");
         mOrderAlreadyTime.setText("时间：" + time);
         //保证金
-        String totalDeposit = mOrder.getSaleDeposit() + "";
+        String totalDeposit = FormatUtils.MoneyFormat(mOrder.getSaleDeposit());
         Spanned totalMoney = Html.fromHtml("推广保证金：" + "<font color=\"#4188d2\">" + totalDeposit +
                 "</font>" + "(人民币)");
         mOrderAlreadyTotalMoney.setText(totalMoney);
@@ -144,12 +145,14 @@ public class OrderAlreadyActivity extends BaseActivity implements TitleView
         //竞标有效时间
         String defaultExpiredAt = TimeUtil.timeStamp2Date(mOrder.getDefaultExpiredAt() + "",
                 "yyyy年MM月dd日");
-        mOrderAlreadyRe.setText("请在" + defaultExpiredAt
-                + "之前尽快将本次推广资源的保证金" + orderTotalDeposit + "转到如下账户，并按照要求下载上传电子协议。");
+        mOrderAlreadyRe.setText("\t\t请在" + defaultExpiredAt
+                + "之前，通过贵公司的对公账户将产品推广保证金" + orderTotalDeposit +
+                "不接受个人或其他公司转账。按照要求下载打印电子协议，认真阅读，确定无误后盖章签字，并将协议扫描后，按照顺序上传JPG格式文件");
         //订单id
         mOrderId = mOrder.getId() + "";
         //获取是否已经阅读过免责信息
-        boolean isRead = (boolean) SharePreferenceUtil.get(currentContext, mOrder.getVendorName() + mOrderId , false);
+        boolean isRead = (boolean) SharePreferenceUtil.get(currentContext, mOrder.getVendorName()
+                + mOrderId, false);
         LogUtil.Companion.d("isRead?" + isRead);
         if (!isRead) {
             //没有阅读过，弹窗显示
@@ -182,7 +185,8 @@ public class OrderAlreadyActivity extends BaseActivity implements TitleView
                         @Override
                         public void onClick(View v) {
                             //设置记录
-                            SharePreferenceUtil.put(currentContext, mOrder.getVendorName() + mOrderId, true);
+                            SharePreferenceUtil.put(currentContext, mOrder.getVendorName() +
+                                    mOrderId, true);
                             mDialog.dismiss();
                         }
                     });
@@ -396,6 +400,7 @@ public class OrderAlreadyActivity extends BaseActivity implements TitleView
 
     /**
      * 上传压缩文件
+     *
      * @param file
      * @param fileName
      */
@@ -455,9 +460,6 @@ public class OrderAlreadyActivity extends BaseActivity implements TitleView
             }
         });
     }
-
-
-
 
 
     @Override

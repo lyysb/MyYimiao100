@@ -796,6 +796,13 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
     </style>
+    <style name="style66">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/color333</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
 
 
 

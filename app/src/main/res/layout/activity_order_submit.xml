@@ -51,7 +51,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="9dp"
                     android:layout_marginTop="25dp"
-                    android:text="请再次核对您要推广的资源"
+                    android:text="请您再次核对您要推广的资源信息"
                     android:textColor="@color/color999"
                     android:textSize="12sp"/>
             </LinearLayout>

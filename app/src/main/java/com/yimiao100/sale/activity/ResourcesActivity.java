@@ -120,7 +120,7 @@ public class ResourcesActivity extends BaseActivitySingleList implements Carouse
         mListView.addHeaderView(view);
         mResources_view_pager = (ViewPager) view.findViewById(R.id.resources_view_pager);
         //获取轮播图数据
-        CarouselUtil.getCarouselList(this, "resource", this);
+        CarouselUtil.Companion.getCarouselList(this, "resource", this);
 
         //省份信息
         mResourcesProvince = (TextView) view.findViewById(R.id.resources_province);

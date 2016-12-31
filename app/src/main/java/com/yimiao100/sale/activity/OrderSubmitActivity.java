@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.yimiao100.sale.R;
 import com.yimiao100.sale.base.BaseActivity;
 import com.yimiao100.sale.bean.ResourceListBean;
+import com.yimiao100.sale.utils.FormatUtils;
 import com.yimiao100.sale.utils.TimeUtil;
 import com.yimiao100.sale.view.TitleView;
 
@@ -83,7 +84,7 @@ public class OrderSubmitActivity extends BaseActivity implements TitleView.Title
         String time = TimeUtil.timeStamp2Date(order.getCreatedAt() + "", "yyyy.MM.dd");
         mOrderSubmitTime.setText("时间：" + time);
         //保证金
-        String totalDeposit = order.getSaleDeposit() + "";
+        String totalDeposit = FormatUtils.MoneyFormat(order.getSaleDeposit());
         Spanned totalMoney = Html.fromHtml("推广保证金：" + "<font color=\"#4188d2\">" + totalDeposit + "</font>" + " (人民币)");
         mOrderSubmitMoney.setText(totalMoney);
         //协议单号

@@ -414,7 +414,7 @@ public class MineFragment extends Fragment implements View.OnClickListener {
             SharePreferenceUtil.clear(getContext());
             //记录不是第一次登录
             SharePreferenceUtil.put(getContext(), Constant.IS_FIRST, false);
-            //发送广播，置空别名
+            //发送广播
             Intent intent = new Intent();
             intent.setAction("com.yimiao100.sale.ALIAS");
             getActivity().sendBroadcast(intent);
@@ -423,8 +423,7 @@ public class MineFragment extends Fragment implements View.OnClickListener {
             return;
         }
         //如果联网，登出系统
-        OkHttpUtils.post()
-                .url(URL_LOGOUT).addHeader("X-Authorization-Token", accessToken)
+        OkHttpUtils.post().url(URL_LOGOUT).addHeader("X-Authorization-Token", accessToken)
                 .build().execute(new StringCallback() {
                     @Override
                     public void onError(Call call, Exception e, int id) {

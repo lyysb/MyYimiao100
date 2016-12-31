@@ -21,7 +21,6 @@ import cn.jpush.android.api.TagAliasCallback;
  */
 public class AliasService extends Service {
 
-
     private static final int MSG_SET_ALIAS = 1001;
     private final Handler mHandler = new Handler() {
         @Override
@@ -44,20 +43,37 @@ public class AliasService extends Service {
     public AliasService() {
     }
 
+
     @Override
-    public void onCreate() {
-        super.onCreate();
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        LogUtil.Companion.d("onStartCommand");
         String alias = "";
-        // 根据登录状态判断是设置别名还是置空别名
+        // 根据登录状态判断启动推送？停止推送？
         boolean loginStatus = (boolean) SharePreferenceUtil.get(this, Constant.LOGIN_STATUS, false);
         if (loginStatus) {
-            //如果登录成功，设置别名。别名= “jpush_user_alias_加上用户id”
+            LogUtil.Companion.d("已登录");
+            //恢复推送
+            boolean pushStopped = JPushInterface.isPushStopped(this);
+            if (pushStopped) {
+                //启动服务设置别名
+                LogUtil.Companion.d("推送服务被停止，启动推送服务");
+                JPushInterface.resumePush(this);
+            }
+            // 别名= “jpush_user_alias_加上用户id”
             int userId = (int) SharePreferenceUtil.get(this, Constant.USERID, -1);
-            LogUtil.Companion.d("设置别名" + userId);
             alias = "jpush_user_alias_" + userId;
+            //设置别名
+            setAlias(alias);
+        } else {
+            //退出应用
+            //如果服务没有被停止，则停止推送
+            if (!JPushInterface.isPushStopped(this)) {
+                LogUtil.Companion.d("推送服务运行中，停止推送服务");
+                //停止推送
+                JPushInterface.stopPush(this);
+            }
         }
-        //如果是已下线状态（默认），别名置空
-        setAlias(alias);
+        return super.onStartCommand(intent, flags, startId);
     }
 
     /**
@@ -76,7 +92,7 @@ public class AliasService extends Service {
             switch (code) {
                 case 0:
                     //成功
-                    LogUtil.Companion.d("设置别名成功");
+                    LogUtil.Companion.d("设置别名成功，停止别名设置服务");
                     //停止服务
                     stopService(new Intent(getApplicationContext(), AliasService.class));
                     break;

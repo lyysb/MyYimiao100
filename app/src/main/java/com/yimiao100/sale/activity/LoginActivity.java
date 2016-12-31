@@ -140,9 +140,8 @@ public class LoginActivity extends BaseActivity implements CompoundButton.OnChec
                         //判断成功还是失败
                         switch (signUpBean.getStatus()){
                             case "success":
-                                //成功，将数据保存到本地，跳转到主界面
                                 //保存登录状态
-                                SharePreferenceUtil.put(getApplicationContext(), Constant.LOGIN_STATUS, true);
+                                SharePreferenceUtil.put(currentContext, Constant.LOGIN_STATUS, true);
                                 //保存Token
                                 SharePreferenceUtil.put(LoginActivity.this, Constant.ACCESSTOKEN, signUpBean.getTokenInfo().getAccessToken());
                                 //保存用户id
@@ -191,6 +190,7 @@ public class LoginActivity extends BaseActivity implements CompoundButton.OnChec
                                 Intent intent = new Intent();
                                 intent.setAction("com.yimiao100.sale.ALIAS");
                                 sendBroadcast(intent);
+                                LogUtil.Companion.d("登录成功，发送广播，启动服务，设置别名");
                                 //登录成功，进入主界面
                                 startActivity(new Intent(LoginActivity.this, MainActivity.class));
                                 finish();

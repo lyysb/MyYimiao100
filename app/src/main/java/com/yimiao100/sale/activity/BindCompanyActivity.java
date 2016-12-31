@@ -310,12 +310,18 @@ public class BindCompanyActivity extends BaseActivity implements TitleView.Title
         mBindCompanyName.setKeyListener(null);
         mBindCompanyBankCard.setKeyListener(null);
         mBindCompanyBankName.setKeyListener(null);
+        mBindCompanyPhone.setKeyListener(null);
         mBindCompanyCorporation.setKeyListener(null);
-        mBindCompanyCorporationIdNumber.setKeyListener(null);
+        mBindCompanyCorporationPhoneNumber.setKeyListener(null);
         mBindCompanyCorporationQQ.setKeyListener(null);
+        mBindCompanyCorporationEmail.setKeyListener(null);
+        mBindCompanyCorporationIdNumber.setKeyListener(null);
+        mCompanyEver.setKeyListener(null);
+        mPromotionAdvantage.setKeyListener(null);
         mBindCompanyTakePhoto.setEnabled(false);
         mBindCompanyCardPhoto1.setEnabled(false);
         mBindCompanyCardPhoto2.setEnabled(false);
+        mAddExperience.setEnabled(false);
     }
 
     /**

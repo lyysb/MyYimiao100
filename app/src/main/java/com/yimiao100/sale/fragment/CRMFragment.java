@@ -115,7 +115,7 @@ public class CRMFragment extends Fragment implements View.OnClickListener, Carou
         //广告小圆点
         mCrmDots = (LinearLayout) mView.findViewById(R.id.crm_ll_dots);
         //获取广告轮播图
-        CarouselUtil.getCarouselList(getActivity(), "biz", this);
+        CarouselUtil.Companion.getCarouselList(getActivity(), "biz", this);
         //水波纹统计
         mWaveGoods = (DynamicWave) mView.findViewById(R.id.wave_goods);
         mCrmGoodsEd = (TextView) mView.findViewById(R.id.crm_goods_ed);

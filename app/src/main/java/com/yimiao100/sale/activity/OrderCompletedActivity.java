@@ -20,6 +20,7 @@ import com.yimiao100.sale.bean.ErrorBean;
 import com.yimiao100.sale.bean.ResourceListBean;
 import com.yimiao100.sale.callback.ProtocolFileCallBack;
 import com.yimiao100.sale.utils.Constant;
+import com.yimiao100.sale.utils.FormatUtils;
 import com.yimiao100.sale.utils.LogUtil;
 import com.yimiao100.sale.utils.TimeUtil;
 import com.yimiao100.sale.utils.ToastUtil;
@@ -117,7 +118,7 @@ public class OrderCompletedActivity extends BaseActivity implements TitleView.Ti
         mOrderCompleteRegion.setText("区域：" + region);
         String time = TimeUtil.timeStamp2Date(mOrder.getCreatedAt() + "", "yyyy.MM.dd");
         mOrderCompleteTime.setText("时间：" + time);
-        String totalDeposit = mOrder.getSaleDeposit() + "";
+        String totalDeposit = FormatUtils.MoneyFormat(mOrder.getSaleDeposit());
         Spanned totalMoney = Html.fromHtml("推广保证金：" + "<font color=\"#4188d2\">" + totalDeposit + "</font>" + "(人民币)");
         mOrderCompleteTotalMoney.setText(totalMoney);
         mSerialNo = mOrder.getSerialNo();

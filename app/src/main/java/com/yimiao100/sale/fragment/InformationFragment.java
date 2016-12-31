@@ -196,7 +196,7 @@ public class InformationFragment extends Fragment implements SwipeRefreshLayout
      */
     private void initAdContent() {
         //请求获取轮播图
-        CarouselUtil.getCarouselList(getActivity(), "news", this);
+        CarouselUtil.Companion.getCarouselList(getActivity(), "news", this);
     }
 
     /**

@@ -153,15 +153,16 @@ public class OrderActivity extends BaseActivitySingleList{
         //根据订单状态名，选择打开不同的Activity
         switch (orderStatus) {
             case "unpaid":
-                //最初状态-未付款
+                //最初状态-待支付
                 clz = OrderUnpaidActivity.class;
                 break;
             case "bidding":
                 //第一状态-竞标中
                 clz = OrderSubmitActivity.class;
                 break;
-//            case "auditing":
-//                //第二状态-审核中-作废
+            case "auditing":
+                //第二状态-审核中-作废
+                return;
 //                clz = OrderLaterActivity.class;
 //                break;
             case "to_be_signed":

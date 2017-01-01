@@ -291,11 +291,11 @@ public class BindCompanyActivity extends BaseActivity implements TitleView.Title
             //通过url将图片下载下来，本地保存
             cacheCorporatePic(bizUrl, personalUrl, idUrl);
 
-            //如果审核通过，则不再允许修改数据
+            //如果审核通过，则不再允许修任何改数据
             String accountStatus = (String) SharePreferenceUtil.get(this, Constant
                     .CORPORATE_ACCOUNT_STATUS, "");
             if (TextUtils.equals("passed", accountStatus)) {
-                //禁止部分修改数据
+                //禁止修改数据
                 forbidChange();
             }
         }
@@ -322,6 +322,8 @@ public class BindCompanyActivity extends BaseActivity implements TitleView.Title
         mBindCompanyCardPhoto1.setEnabled(false);
         mBindCompanyCardPhoto2.setEnabled(false);
         mAddExperience.setEnabled(false);
+        mBindCompanySubmit.setEnabled(false);
+
     }
 
     /**

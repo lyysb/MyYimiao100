@@ -88,7 +88,7 @@ public class BindPromotionActivity extends BaseActivity implements TitleView
 
             @Override
             public void onResponse(String response, int id) {
-                LogUtil.Companion.d("推广主体E：" + response);
+                LogUtil.Companion.d("推广主体：" + response);
                 UserBean userBean = JSON.parseObject(response, UserBean.class);
                 switch (userBean.getStatus()) {
                     case "success":

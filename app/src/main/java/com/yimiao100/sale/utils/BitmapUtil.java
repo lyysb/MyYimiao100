@@ -61,12 +61,14 @@ public class BitmapUtil {
             cursor = contentResolver.query(getFileUri(contentUri, context), proj, null, null, null);//红色字体判断地址如果以file开头
         }
 
-        if(cursor.moveToFirst()){
+        if (cursor != null && cursor.moveToFirst()) {
             //这是获取的图片保存在sdcard中的位置
             int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
             res = cursor.getString(column_index);
         }
-        cursor.close();
+        if (cursor != null) {
+            cursor.close();
+        }
         return res;
     }
     private static Uri getFileUri(Uri uri, Context context){

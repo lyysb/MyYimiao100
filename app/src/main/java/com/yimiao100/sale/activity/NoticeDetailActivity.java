@@ -81,11 +81,17 @@ public class NoticeDetailActivity extends BaseActivity implements TitleView
                         //解析JSON
                         NoticedListBean userNotice = JSON.parseObject(response, NoticeDetailBean
                                 .class).getUserNotice();
-                        mNoticeDetailTitle.setText(userNotice.getNoticeTitle());
-                        mNoticeDetailFrom.setText("来源：" + userNotice.getNoticeSource());
+                        if (userNotice.getNoticeTitle() != null) {
+                            mNoticeDetailTitle.setText(userNotice.getNoticeTitle());
+                        }
+                        if (userNotice.getNoticeSource() != null) {
+                            mNoticeDetailFrom.setText("来源：" + userNotice.getNoticeSource());
+                        }
                         mNoticeDetailTime.setText(TimeUtil.timeStamp2Date(userNotice.getCreatedAt()
                                 + "", "yyyy年MM月dd日 HH:mm:ss"));
-                        mNoticeDetailContent.setText(userNotice.getNoticeContent());
+                        if (userNotice.getNoticeContent() != null) {
+                            mNoticeDetailContent.setText(userNotice.getNoticeContent());
+                        }
                         break;
                     case "failure":
                         Util.showError(currentContext, errorBean.getReason());

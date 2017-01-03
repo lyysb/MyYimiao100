@@ -187,7 +187,7 @@ public class ResourcesDetailActivity extends BaseActivity implements TitleView.T
                     .load(productVideoUrl + "?vframe/png/offset/10")
                     .into(mResourceDetailVideo.thumbImageView);
         } else {
-            //视频链接为空
+            //视频链接为空，显示图片
             mResourceDetailVideo.setVisibility(View.GONE);
             mResourceDetailImage.setVisibility(View.VISIBLE);
             if (!productImageUrl.isEmpty()) {

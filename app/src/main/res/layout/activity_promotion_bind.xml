@@ -32,8 +32,12 @@
             <TextView
                 android:id="@+id/promotion_company_bank_name"
                 android:text="{companyName}"
+                android:maxLines="2"
+                android:ellipsize="end"
                 android:layout_marginTop="20dp"
                 android:layout_marginLeft="25dp"
+                android:layout_alignParentLeft="true"
+                android:layout_toLeftOf="@+id/promotion_company"
                 android:textSize="16sp"
                 android:textColor="@color/color333"
                 android:layout_width="wrap_content"

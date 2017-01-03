@@ -129,6 +129,7 @@ public class InformationDetailActivity extends BaseActivity implements View.OnCl
     private TextView mInformationDetailRemarks;
     private View mInformationHead;
     private LinearLayout mLayout;
+    private int mScore;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -191,7 +192,8 @@ public class InformationDetailActivity extends BaseActivity implements View.OnCl
                 .information_detail_time);        //时间
         //资讯网页内容
         mLayout = (LinearLayout) mInformationHead.findViewById(R.id.information_detail_content);
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams
+                .MATCH_PARENT, ViewGroup.LayoutParams
                 .WRAP_CONTENT);
         mWebView = new Html5WebView(this);
         mWebView.setLayoutParams(params);
@@ -278,9 +280,11 @@ public class InformationDetailActivity extends BaseActivity implements View.OnCl
                         if (response.length() > 4000) {
                             for (int i = 0; i < response.length(); i += 4000) {
                                 if (i + 4000 < response.length()) {
-                                    LogUtil.Companion.d(i + "资讯详情：" + response.substring(i, i + 4000));
+                                    LogUtil.Companion.d(i + "资讯详情：" + response.substring(i, i +
+                                            4000));
                                 } else {
-                                    LogUtil.Companion.d(i + "资讯详情：" + response.substring(i, response.length()));
+                                    LogUtil.Companion.d(i + "资讯详情：" + response.substring(i,
+                                            response.length()));
                                 }
                             }
                         } else {
@@ -328,7 +332,8 @@ public class InformationDetailActivity extends BaseActivity implements View.OnCl
                 break;
             case 3:
                 //广告
-                mInformationDetailType.setBackgroundResource(R.drawable.shape_information_advertisement);
+                mInformationDetailType.setBackgroundResource(R.drawable
+                        .shape_information_advertisement);
                 mInformationDetailType.setTextColor(Color.parseColor("#22ac38"));
                 break;
             case 4:
@@ -356,7 +361,8 @@ public class InformationDetailActivity extends BaseActivity implements View.OnCl
         mInformationTagGroup.setOnTagClickListener(this);
 
         //设置点赞数量
-        mInformationDetailScore.setText(news.getScore() + "人点赞");
+        mScore = news.getScore();
+        mInformationDetailScore.setText(mScore + "人点赞");
         //根据用户收藏状态，设置收藏图标显示
         if (news.getUserCollectionStatus() == 0) {
             mInformationDetailCollection.setImageResource(R.mipmap
@@ -583,7 +589,7 @@ public class InformationDetailActivity extends BaseActivity implements View.OnCl
      */
     private void addIntegral() {
         OkHttpUtils.post().url(Constant.BASE_URL + "/api/integral/calculate")
-                .addHeader("X-Authorization-Token", mAccessToken)
+                .addHeader(ACCESS_TOKEN, mAccessToken)
                 .addParams("objectId", mNewsId + "")
                 .addParams("objectType", "news")
                 .build().execute(new StringCallback() {
@@ -715,35 +721,28 @@ public class InformationDetailActivity extends BaseActivity implements View.OnCl
      * 给资讯点赞
      */
     private void postScore() {
-        getBuild(POST_SCORE)
-                .execute(new StringCallback() {
-                    @Override
-                    public void onError(Call call, Exception e, int id) {
-                        LogUtil.Companion.d("资讯点赞E：" + e.getMessage());
-                        Util.showTimeOutNotice(currentContext);
-                    }
+        getBuild(POST_SCORE).execute(new StringCallback() {
+            @Override
+            public void onError(Call call, Exception e, int id) {
+                LogUtil.Companion.d("资讯点赞E：" + e.getMessage());
+                Util.showTimeOutNotice(currentContext);
+            }
 
-                    @Override
-                    public void onResponse(String response, int id) {
-                        LogUtil.Companion.d("资讯点赞" + response);
-                        ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
-                        switch (errorBean.getStatus()) {
-                            case "success":
-                                //资讯点赞数加1
-                                int score_new = Integer.parseInt(mInformationDetailScore.getText()
-                                        .toString()
-                                        .substring(0, mInformationDetailScore.getText()
-                                                .toString().trim().length() - 3)) + 1;
-
-                                mInformationDetailScore.setText(score_new + "人点赞");
-                                break;
-                            case "failure":
-                                Util.showError(InformationDetailActivity.this, errorBean
-                                        .getReason());
-                                break;
-                        }
-                    }
-                });
+            @Override
+            public void onResponse(String response, int id) {
+                LogUtil.Companion.d("资讯点赞" + response);
+                ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
+                switch (errorBean.getStatus()) {
+                    case "success":
+                        //资讯点赞数加1
+                        mInformationDetailScore.setText((mScore + 1) + "人点赞");
+                        break;
+                    case "failure":
+                        Util.showError(currentContext, errorBean.getReason());
+                        break;
+                }
+            }
+        });
     }
 
     private RequestCall getBuild(String url) {

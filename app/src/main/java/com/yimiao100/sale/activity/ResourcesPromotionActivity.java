@@ -42,12 +42,6 @@ public class ResourcesPromotionActivity extends BaseActivity implements TitleVie
     TextView mPromotionNum;
     @BindView(R.id.promotion_add)
     Button mPromotionAdd;
-    @BindView(R.id.resources_promotion_re_names)
-    TextView mResourcesPromotionReNames;
-    @BindView(R.id.resources_promotion_re_phone)
-    TextView mResourcesPromotionRePhone;
-    @BindView(R.id.resources_promotion_re_bank)
-    TextView mResourcesPromotionReBank;
     @BindView(R.id.resource_promotion_vendor_name)
     TextView mResourcePromotionVendorName;
     @BindView(R.id.resource_promotion_product_formal_name)
@@ -66,6 +60,12 @@ public class ResourcesPromotionActivity extends BaseActivity implements TitleVie
     TextView mResourcePromotionTotalCount;
     @BindView(R.id.resource_promotion_total_amount)
     TextView mResourcePromotionTotalAmount;
+    @BindView(R.id.resources_promotion_company_name)
+    TextView mCompanyName;
+    @BindView(R.id.resources_promotion_company_account)
+    TextView mCompanyAccount;
+    @BindView(R.id.resources_promotion_promoter)
+    TextView mPromoter;
     private int mNum;
     private AlertDialog mDialog;
 
@@ -110,15 +110,15 @@ public class ResourcesPromotionActivity extends BaseActivity implements TitleVie
      */
     @Override
     public void handleCorporate(CorporateBean corporate) {
-        //公司账号名称
+        //公司名称
         String bankAccountName = corporate.getAccountName();
-        mResourcesPromotionReNames.setText(bankAccountName);
+        mCompanyName.setText(bankAccountName);
         //公司账号
         String bankAccountNumber = corporate.getCorporateAccount();
-        mResourcesPromotionReBank.setText(bankAccountNumber);
-        //联系人
+        mCompanyAccount.setText(bankAccountNumber);
+        //推广人
         String cnName = corporate.getCnName();
-        mResourcesPromotionRePhone.setText(cnName);
+        mPromoter.setText(cnName);
     }
 
     private void initView() {
@@ -132,9 +132,9 @@ public class ResourcesPromotionActivity extends BaseActivity implements TitleVie
         mResourcesPromotionBody.setCompoundDrawablesWithIntrinsicBounds(
                 getResources().getDrawable(R.mipmap.ico_company_promotion_details), null, null,
                 null);
-        mResourcesPromotionReNames.setHint("请绑定对公信息");
-        mResourcesPromotionRePhone.setHint("请绑定对公信息");
-        mResourcesPromotionReBank.setHint("请绑定对公信息");
+        mCompanyName.setHint("请绑定对公信息");
+        mCompanyAccount.setHint("请绑定对公信息");
+        mPromoter.setHint("请绑定对公信息");
         //厂家名称
         String vendorName = mResourceInfo.getVendorName();
         mResourcePromotionVendorName.setText(vendorName);
@@ -183,7 +183,8 @@ public class ResourcesPromotionActivity extends BaseActivity implements TitleVie
 
     }
 
-    @OnClick({R.id.promotion_subtract, R.id.promotion_add, R.id.resources_promotion_submit, R.id.resource_promotion_bind})
+    @OnClick({R.id.promotion_subtract, R.id.promotion_add, R.id.resources_promotion_submit, R.id
+            .resource_promotion_bind})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.resource_promotion_bind:

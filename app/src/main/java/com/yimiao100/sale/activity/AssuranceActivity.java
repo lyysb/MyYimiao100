@@ -206,6 +206,11 @@ public class AssuranceActivity extends BaseActivity implements TitleView.TitleBa
     }
 
 
+    /**
+     * 记录当前选中的内容
+     * @param position
+     * @param isChecked
+     */
     private void companyCount(int position, boolean isChecked) {
         AssuranceList temp;
         temp = mAssuranceAdapter.getItem(position);

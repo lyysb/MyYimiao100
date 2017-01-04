@@ -174,12 +174,11 @@ public class RegisterActivity extends BaseActivity implements CompoundButton
                 switch (signUpBean.getStatus()) {
                     case "success":
                         //保存Token
-                        SharePreferenceUtil.put(RegisterActivity.this, Constant.ACCESSTOKEN,
-                                signUpBean.getTokenInfo().getAccessToken());
+                        SharePreferenceUtil.put(currentContext, Constant.ACCESSTOKEN, signUpBean.getTokenInfo().getAccessToken());
                         //注册成功，发送设置别名通知
-                        Intent intent = new Intent();
-                        intent.setAction("com.yimiao100.sale.ALIAS");
-                        sendBroadcast(intent);
+//                        Intent intent = new Intent();
+//                        intent.setAction("com.yimiao100.sale.ALIAS");
+//                        sendBroadcast(intent);
                         //注册成功，进入主界面
                         startActivity(new Intent(RegisterActivity.this, MainActivity.class));
                         finish();

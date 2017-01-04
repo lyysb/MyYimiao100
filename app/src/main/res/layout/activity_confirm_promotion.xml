@@ -82,7 +82,7 @@
                             android:text="开户行    ："
                             style="@style/style6"/>
                         <TextView
-                            android:text="中国银行北京西直门支行"
+                            android:text="中国银行北京西直门外支行"
                             style="@style/style7"/>
 
                     </LinearLayout>

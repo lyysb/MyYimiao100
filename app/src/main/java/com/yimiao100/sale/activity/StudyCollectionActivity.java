@@ -1,10 +1,12 @@
 package com.yimiao100.sale.activity;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSON;
@@ -39,7 +41,7 @@ import okhttp3.Call;
  * 学习界面-我的收藏
  */
 public class StudyCollectionActivity extends BaseActivity implements SwipeRefreshLayout
-        .OnRefreshListener, TitleView.TitleBarOnClickListener {
+        .OnRefreshListener, TitleView.TitleBarOnClickListener, AdapterView.OnItemClickListener {
 
     @BindView(R.id.study_collection_title)
     TitleView mStudyCollectionTitle;
@@ -85,11 +87,6 @@ public class StudyCollectionActivity extends BaseActivity implements SwipeRefres
         emptyText.setCompoundDrawablesWithIntrinsicBounds(null, getResources().getDrawable(R.mipmap.ico_my_collection_empty), null, null);
     }
 
-
-    private RequestCall getBuild() {
-        return OkHttpUtils.post().url(URL_COLLECTION_LIST).addHeader(ACCESS_TOKEN, mAccessToken)
-                .build();
-    }
 
     private void initRefresh() {
         //设置刷新监听
@@ -150,6 +147,12 @@ public class StudyCollectionActivity extends BaseActivity implements SwipeRefres
                 return false;
             }
         });
+        mStudyCollectionList.setOnItemClickListener(this);
+    }
+
+    private RequestCall getBuild() {
+        return OkHttpUtils.post().url(URL_COLLECTION_LIST).addHeader(ACCESS_TOKEN, mAccessToken)
+                .build();
     }
 
 
@@ -182,6 +185,21 @@ public class StudyCollectionActivity extends BaseActivity implements SwipeRefres
                 }
             }
         });
+    }
+
+    /**
+     * 进入视频详情
+     * @param parent
+     * @param view
+     * @param position
+     * @param id
+     */
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        int courseId = mCollectClasses.get(position).getId();
+        Intent intent = new Intent(this, VideoDetailActivity.class);
+        intent.putExtra("courseId", courseId);
+        startActivity(intent);
     }
 
     @Override

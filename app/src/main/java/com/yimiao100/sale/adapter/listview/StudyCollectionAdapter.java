@@ -62,7 +62,7 @@ public class StudyCollectionAdapter extends BaseAdapter {
         //视频缩略图
         if (collectClass.getImageUrl() != null && !collectClass.getImageUrl().isEmpty()) {
             Picasso.with(parent.getContext()).load(collectClass.getImageUrl()
-                    + "?imageMogr2/thumbnail/96x86").placeholder(R.mipmap.ico_default_short_picture)
+                    + "?imageMogr2/thumbnail/240x215").placeholder(R.mipmap.ico_default_short_picture)
                     .into(frame);
         }
         //课程名称

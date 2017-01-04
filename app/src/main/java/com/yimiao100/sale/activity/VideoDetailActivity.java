@@ -172,12 +172,13 @@ public class VideoDetailActivity extends BaseActivity implements YMVideoPlayer
                 mVideoDetailCollection.setVisibility(View.GONE);
                 //显示提示
                 mVideoDetailNotice.setVisibility(View.VISIBLE);
-                //考试课程，读取是否弹窗提示
+                // 如果该课程设置 不在提示 或者 已经考完 则不显示弹窗
+                // 即，只有 没有点击不在提示并且没有考过试，才显示弹窗
                 boolean isNotice = (boolean) SharePreferenceUtil.get(this, Constant
-                        .EXAM_IS_NOTICE, true);
+                        .EXAM_IS_NOTICE + mCourse.getId(), true);
                 //读取是否考过
                 int examStatus = mCourse.getExamStatus();
-                if (isNotice || examStatus != 1) {
+                if (isNotice && examStatus != 1) {
                     //提示
                     showNoticeDialog();
                 }
@@ -247,9 +248,9 @@ public class VideoDetailActivity extends BaseActivity implements YMVideoPlayer
         checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                //记录是否被选中，选中-不提示，不选中-提示
-                SharePreferenceUtil.put(getApplicationContext(), Constant.EXAM_IS_NOTICE,
-                        !isChecked);
+                // 选中之后设置成false
+                // 没有选中则设置true
+                SharePreferenceUtil.put(currentContext, Constant.EXAM_IS_NOTICE + mCourse.getId(), !isChecked);
             }
         });
         builder.setView(dialogView);

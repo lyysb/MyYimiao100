@@ -33,7 +33,7 @@
                     style="@style/style64"/>
 
                 <TextView
-                    android:text="329 8634 3119"
+                    android:text="3298 6341 3119"
                     style="@style/style65"/>
 
             </LinearLayout>
@@ -55,7 +55,7 @@
                     style="@style/style64"/>
 
                 <TextView
-                    android:text="中国银行北京西直门支行"
+                    android:text="中国银行北京西直门外支行"
                     style="@style/style65"/>
 
             </LinearLayout>

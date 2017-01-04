@@ -31,6 +31,7 @@ import java.io.File;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import cn.jpush.android.api.JPushInterface;
 import okhttp3.Call;
 import okhttp3.Request;
 
@@ -50,6 +51,11 @@ public class SplashActivity extends BaseActivity {
         setContentView(R.layout.activity_splash);
         ButterKnife.bind(this);
 
+        if (!JPushInterface.isPushStopped(this)) {
+            LogUtil.Companion.d("推送服务运行中，停止推送服务");
+            //停止推送
+            JPushInterface.stopPush(this);
+        }
 
         //让界面停留2s
         new Handler().postDelayed(new Runnable() {

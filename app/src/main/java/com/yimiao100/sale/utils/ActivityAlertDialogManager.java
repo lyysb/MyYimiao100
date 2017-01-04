@@ -79,9 +79,9 @@ public class ActivityAlertDialogManager {
                 //记录不是第一次登录
                 SharePreferenceUtil.put(activity, Constant.IS_FIRST, false);
                 //发送广播，置空别名
-                Intent intent = new Intent();
-                intent.setAction("com.yimiao100.sale.ALIAS");
-                activity.sendBroadcast(intent);
+//                Intent intent = new Intent();
+//                intent.setAction("com.yimiao100.sale.ALIAS");
+//                activity.sendBroadcast(intent);
                 ActivityCollector.finishAll();
             }
         });
@@ -93,9 +93,9 @@ public class ActivityAlertDialogManager {
                 //记录不是第一次登录
                 SharePreferenceUtil.put(activity, Constant.IS_FIRST, false);
                 //发送广播，置空别名
-                Intent intent = new Intent();
-                intent.setAction("com.yimiao100.sale.ALIAS");
-                activity.sendBroadcast(intent);
+//                Intent intent = new Intent();
+//                intent.setAction("com.yimiao100.sale.ALIAS");
+//                activity.sendBroadcast(intent);
                 ActivityCollector.finishAll();
                 activity.startActivity(new Intent(activity, LoginActivity.class));
             }

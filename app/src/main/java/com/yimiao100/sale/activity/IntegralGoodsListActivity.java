@@ -40,6 +40,7 @@ public class IntegralGoodsListActivity extends BaseActivitySingleList {
     private String mIntegralEnd;
     private ArrayList<Goods> mGoodsList;
     private String mCategoryName;
+    private GoodsListAdapter mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,11 +57,43 @@ public class IntegralGoodsListActivity extends BaseActivitySingleList {
 
     @Override
     protected void onLoadMore() {
+        AllDataLoadMore();
         if (FILTER) {
             // TODO: 2016/11/10 筛选之后的加载更多
         } else {
-            // TODO: 2016/11/10 全部加载更多
+            //todo 全部加载更多
         }
+    }
+
+    /**
+     * 全部数据加载更多
+     */
+    private void AllDataLoadMore() {
+        getPostFormBuilder(mPage).build().execute(new StringCallback() {
+            @Override
+            public void onError(Call call, Exception e, int id) {
+                Util.showTimeOutNotice(currentContext);
+            }
+
+            @Override
+            public void onResponse(String response, int id) {
+                LogUtil.Companion.d("商品列表：" + response);
+                mListView.onLoadMoreComplete();
+                ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
+                switch (errorBean.getStatus()) {
+                    case "success":
+                        GoodsResult pagedResult = JSON.parseObject(response, GoodsBean.class)
+                                .getPagedResult();
+                        mPage ++;
+                        mGoodsList.addAll(pagedResult.getPagedList());
+                        mAdapter.notifyDataSetChanged();
+                        break;
+                    case "failure":
+                        Util.showError(IntegralGoodsListActivity.this, errorBean.getReason());
+                        break;
+                }
+            }
+        });
     }
 
     @Override
@@ -95,7 +128,8 @@ public class IntegralGoodsListActivity extends BaseActivitySingleList {
                         mGoodsList = pagedResult.getPagedList();
                         //处理空数据
                         handleEmptyData(mGoodsList);
-                        mListView.setAdapter(new GoodsListAdapter(mGoodsList));
+                        mAdapter = new GoodsListAdapter(mGoodsList);
+                        mListView.setAdapter(mAdapter);
                         break;
                     case "failure":
                         Util.showError(IntegralGoodsListActivity.this, errorBean.getReason());

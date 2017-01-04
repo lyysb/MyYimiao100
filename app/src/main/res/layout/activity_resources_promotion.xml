@@ -72,17 +72,17 @@
                         android:orientation="vertical">
 
                         <TextView
-                            android:id="@+id/resources_promotion_re_names"
+                            android:id="@+id/resources_promotion_company_name"
                             style="@style/style2"
                             android:hint="请绑定公司信息"/>
 
                         <TextView
-                            android:id="@+id/resources_promotion_re_phone"
+                            android:id="@+id/resources_promotion_company_account"
                             style="@style/style2"
                             android:hint="请绑定公司信息"/>
 
                         <TextView
-                            android:id="@+id/resources_promotion_re_bank"
+                            android:id="@+id/resources_promotion_promoter"
                             style="@style/style2"
                             android:hint="请绑定公司信息"/>
 

@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
@@ -42,7 +43,8 @@ import okhttp3.Call;
  * 提交竞标保证金
  * Created by Michel
  */
-public class SubmitPromotionActivity extends BaseActivity implements TitleView.TitleBarOnClickListener {
+public class SubmitPromotionActivity extends BaseActivity implements TitleView
+        .TitleBarOnClickListener {
 
     @BindView(R.id.submit_promotion_title)
     TitleView mTitle;
@@ -50,13 +52,15 @@ public class SubmitPromotionActivity extends BaseActivity implements TitleView.T
     TextView mAmount;
     @BindView(R.id.submit_promotion_wx)
     CheckBox mWx;
+    @BindView(R.id.submit_promotion_pay)
+    Button mSubmitPromotionPay;
 
     private final String RESOURCE_ID = "resourceId";
     private final String BID_QTY = "bidQty";
     private final String USER_ACCOUNT_TYPE = "userAccountType";
     private final String CHANNEL = "channel";
     private final String ORDER_ID = "orderId";
-    private String  URL_PAY;
+    private String URL_PAY;
 
 
     private HashMap<String, String> mParams;
@@ -131,6 +135,8 @@ public class SubmitPromotionActivity extends BaseActivity implements TitleView.T
 
     @OnClick(R.id.submit_promotion_pay)
     public void onClick() {
+        //按钮禁止点击
+        mSubmitPromotionPay.setEnabled(false);
         //判断选中的支付方式
         if (mWx.isChecked()) {
             mChannel = "wx";
@@ -152,6 +158,7 @@ public class SubmitPromotionActivity extends BaseActivity implements TitleView.T
         if (!wxAppInstalled) {
             //提示用户安装微信
             ToastUtil.showShort(currentContext, "请先安装微信");
+            mSubmitPromotionPay.setEnabled(true);
             return;
         }
         //如果安装微信，检查微信版本是否支持支付
@@ -165,12 +172,15 @@ public class SubmitPromotionActivity extends BaseActivity implements TitleView.T
                     .build().execute(new StringCallback() {
                 @Override
                 public void onError(Call call, Exception e, int id) {
+                    mSubmitPromotionPay.setEnabled(true);
                     e.printStackTrace();
                     Util.showTimeOutNotice(currentContext);
                 }
 
+
                 @Override
                 public void onResponse(String response, int id) {
+                    mSubmitPromotionPay.setEnabled(true);
                     LogUtil.Companion.d(response);
                     ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                     switch (errorBean.getStatus()) {
@@ -205,10 +215,11 @@ public class SubmitPromotionActivity extends BaseActivity implements TitleView.T
             });
         } else {
             ToastUtil.showShort(currentContext, "您目前微信版本不支持支付，请先升级微信");
+            mSubmitPromotionPay.setEnabled(true);
         }
     }
 
-    private BroadcastReceiver mReceiver = new BroadcastReceiver(){
+    private BroadcastReceiver mReceiver = new BroadcastReceiver() {
 
         @Override
         public void onReceive(Context context, Intent intent) {

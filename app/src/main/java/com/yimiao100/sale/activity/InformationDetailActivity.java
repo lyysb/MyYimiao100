@@ -156,6 +156,8 @@ public class InformationDetailActivity extends BaseActivity implements View.OnCl
 
     private void initView() {
         initTitleView();
+
+
         //评论列表
         mComment_list = (PullToRefreshListView) findViewById(R.id.information_detail_comments);
         //分享按钮

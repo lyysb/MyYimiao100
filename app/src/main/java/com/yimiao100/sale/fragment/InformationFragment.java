@@ -1,5 +1,6 @@
 package com.yimiao100.sale.fragment;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -8,6 +9,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -116,6 +118,9 @@ public class InformationFragment extends Fragment implements SwipeRefreshLayout
 
     private void initView() {
         mHeadView = View.inflate(getContext(), R.layout.head_information, null);
+
+
+
         initAdView();
 
         initSearchView();
@@ -127,6 +132,7 @@ public class InformationFragment extends Fragment implements SwipeRefreshLayout
 
         initListView();
     }
+
 
     /**
      * 直播按钮
@@ -248,6 +254,7 @@ public class InformationFragment extends Fragment implements SwipeRefreshLayout
 
             @Override
             public void onResponse(String response, int id) {
+
                 LogUtil.Companion.d("资讯列表：" + response);
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {

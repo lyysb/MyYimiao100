@@ -396,46 +396,55 @@ public class ResourcesActivity extends BaseActivitySingleList implements Carouse
     @Override
     public void onRefresh() {
         //刷新列表
-        getBuild(1)
-                .execute(new StringCallback() {
-                    @Override
-                    public void onError(Call call, Exception e, int id) {
-                        LogUtil.Companion.d("资源列表E：" + e.getMessage());
-                        Util.showTimeOutNotice(currentContext);
-                    }
+        getBuild(1).execute(new StringCallback() {
+            @Override
+            public void onError(Call call, Exception e, int id) {
+                LogUtil.Companion.d("资源列表E：" + e.getMessage());
+                Util.showTimeOutNotice(currentContext);
+            }
 
+            @Override
+            public void onResponse(String response, int id) {
+                new Handler().postDelayed(new Runnable() {
                     @Override
-                    public void onResponse(String response, int id) {
-                        new Handler().postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                // 停止刷新
-                                mSwipeRefreshLayout.setRefreshing(false);
-                            }
-                        }, 1000);
-                        LogUtil.Companion.d("资源列表：" + response);
-                        ErrorBean errorBean = parseObject(response, ErrorBean.class);
-                        switch (errorBean.getStatus()) {
-                            case "success":
-                                mPage = 2;
-                                ResourceResultBean resourceResult = parseObject(response,
-                                        ResourceBean.class).getResourceResult();
-                                mTotalPage = resourceResult.getTotalPage();
-                                //解析JSON，填充Adapter
-                                //获取资源列表
-                                mResourcesList = resourceResult.getResourcesList();
-                                handleEmptyData(mResourcesList);
-                                //填充Adapter
-                                mResourcesAdapter = new ResourcesAdapter(getApplicationContext(),
-                                        mResourcesList);
-                                mListView.setAdapter(mResourcesAdapter);
-                                break;
-                            case "failure":
-                                Util.showError(currentContext, errorBean.getReason());
-                                break;
+                    public void run() {
+                        // 停止刷新
+                        mSwipeRefreshLayout.setRefreshing(false);
+                    }
+                }, 1000);
+                if (response.length() > 4000) {
+                    for (int i = 0; i < response.length(); i += 4000) {
+                        if (i + 4000 < response.length()) {
+                            LogUtil.Companion.d(i + "资源列表：" + response.substring(i, i + 4000));
+                        } else {
+                            LogUtil.Companion.d(i + "资源列表：" + response.substring(i, response.length()));
                         }
                     }
-                });
+                } else {
+                    LogUtil.Companion.d("资源列表：" + response);
+                }
+                ErrorBean errorBean = parseObject(response, ErrorBean.class);
+                switch (errorBean.getStatus()) {
+                    case "success":
+                        mPage = 2;
+                        ResourceResultBean resourceResult = parseObject(response,
+                                ResourceBean.class).getResourceResult();
+                        mTotalPage = resourceResult.getTotalPage();
+                        //解析JSON，填充Adapter
+                        //获取资源列表
+                        mResourcesList = resourceResult.getResourcesList();
+                        handleEmptyData(mResourcesList);
+                        //填充Adapter
+                        mResourcesAdapter = new ResourcesAdapter(getApplicationContext(),
+                                mResourcesList);
+                        mListView.setAdapter(mResourcesAdapter);
+                        break;
+                    case "failure":
+                        Util.showError(currentContext, errorBean.getReason());
+                        break;
+                }
+            }
+        });
     }
 
 

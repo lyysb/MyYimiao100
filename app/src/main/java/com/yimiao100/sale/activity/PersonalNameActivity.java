@@ -22,7 +22,8 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import okhttp3.Call;
 
-public class PersonalNameActivity extends BaseActivity implements TitleView.TitleBarOnClickListener {
+public class PersonalNameActivity extends BaseActivity implements TitleView
+        .TitleBarOnClickListener {
 
     @BindView(R.id.name_title)
     TitleView mNameTitle;
@@ -67,33 +68,33 @@ public class PersonalNameActivity extends BaseActivity implements TitleView.Titl
                 .url(user_name_url)
                 .addHeader("X-Authorization-Token", mAccessToken)
                 .addParams("cnName", mPersonalName.getText().toString().trim())
-                .build()
-                .execute(new StringCallback() {
-                    @Override
-                    public void onError(Call call, Exception e, int id) {
-                        LogUtil.Companion.d("姓名设置： " + e.getMessage());
-                        Util.showTimeOutNotice(currentContext);
-                    }
+                .build().execute(new StringCallback() {
+            @Override
+            public void onError(Call call, Exception e, int id) {
+                LogUtil.Companion.d("姓名设置： " + e.getMessage());
+                Util.showTimeOutNotice(currentContext);
+            }
 
-                    @Override
-                    public void onResponse(String response, int id) {
-                        ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
-                        switch (errorBean.getStatus()){
-                            case "success":
-                                //更新本地数据
-                                SharePreferenceUtil.put(getApplicationContext(), Constant.CNNAME, mPersonalName.getText().toString().trim());
-                                //返回到上一层
-                                Intent intent=new Intent();
-                                intent.putExtra("name", mPersonalName.getText().toString().trim());
-                                setResult(1, intent);
-                                finish();
-                                break;
-                            case "failure":
-                                Util.showError(currentContext, errorBean.getReason());
-                                break;
-                        }
-                    }
-                });
+            @Override
+            public void onResponse(String response, int id) {
+                ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
+                switch (errorBean.getStatus()) {
+                    case "success":
+                        //更新本地数据
+                        SharePreferenceUtil.put(getApplicationContext(), Constant.CNNAME,
+                                mPersonalName.getText().toString().trim());
+                        //返回到上一层
+                        Intent intent = new Intent();
+                        intent.putExtra("name", mPersonalName.getText().toString().trim());
+                        setResult(1, intent);
+                        finish();
+                        break;
+                    case "failure":
+                        Util.showError(currentContext, errorBean.getReason());
+                        break;
+                }
+            }
+        });
 
     }
 }

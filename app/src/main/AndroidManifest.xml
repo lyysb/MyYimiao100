@@ -30,7 +30,7 @@
     <uses-permission android:name="android.permission.REORDER_TASKS"/>
     <!-- 银联需要的权限 -->
     <uses-permission android:name="android.permission.NFC"/>
-    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.CAMERA"/>
 
     <application
         android:name=".MyApplication"
@@ -176,13 +176,14 @@
         </activity>
         <activity android:name=".activity.CollectionActivity">
         </activity>
-        <activity android:name=".activity.ResourcesDetailActivity">
+        <activity android:name=".activity.ResourcesDetailActivity"
+                  android:configChanges="orientation|screenSize|keyboardHidden"
+                  android:screenOrientation="portrait" >
         </activity>
         <activity android:name=".activity.ResourcesPromotionActivity">
         </activity>
-        <activity android:name=".activity.ConfirmPromotionActivity">
-        </activity>
-        <activity android:name=".activity.OrderActivity"
+        <activity
+            android:name=".activity.OrderActivity"
             android:launchMode="singleTask">
         </activity>
         <activity android:name=".activity.OrderErrorActivity">
@@ -239,7 +240,9 @@
         </activity>
         <activity android:name=".activity.StudyTaskActivity">
         </activity>
-        <activity android:name=".activity.VideoDetailActivity">
+        <activity android:name=".activity.VideoDetailActivity"
+                  android:configChanges="orientation|screenSize|keyboardHidden"
+                  android:screenOrientation="portrait" >
         </activity>
         <activity android:name=".activity.StudyCollectionActivity">
         </activity>
@@ -292,12 +295,12 @@
         </activity>
         <activity android:name=".activity.OrderUnpaidActivity">
         </activity>
-        <activity android:name="me.iwf.photopicker.PhotoPickerActivity"
-                  android:theme="@style/Theme.AppCompat.NoActionBar"
-        />
-
-        <activity android:name="me.iwf.photopicker.PhotoPagerActivity"
-                  android:theme="@style/Theme.AppCompat.NoActionBar"/>
+        <activity
+            android:name="me.iwf.photopicker.PhotoPickerActivity"
+            android:theme="@style/Theme.AppCompat.NoActionBar"/>
+        <activity
+            android:name="me.iwf.photopicker.PhotoPagerActivity"
+            android:theme="@style/Theme.AppCompat.NoActionBar"/>
 
         <receiver android:name=".receiver.JPushReceiver">
             <intent-filter>
@@ -309,14 +312,14 @@
                 <category android:name="com.yimiao100.sale"/>
             </intent-filter>
         </receiver>
-        <receiver android:name=".receiver.AliasReceiver">
-            <intent-filter>
-                <action android:name="com.yimiao100.sale.ALIAS"/>
-            </intent-filter>
-        </receiver>
 
         <service
             android:name=".service.AliasService"
+            android:enabled="true"
+            android:exported="true">
+        </service>
+        <service
+            android:name=".service.DataVersionService"
             android:enabled="true"
             android:exported="true">
         </service>

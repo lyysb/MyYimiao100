@@ -60,9 +60,9 @@ public class BindPromotionActivity extends BaseActivity implements TitleView
 
         boolean corporate_exit = (boolean) SharePreferenceUtil.get(getApplicationContext(),
                 Constant.CORPORATE_EXIT, false);
-        String accountName = (String) SharePreferenceUtil.get(getApplicationContext(),
+        String accountName = (String) SharePreferenceUtil.get(currentContext,
                 Constant.CORPORATE_ACCOUNT_NAME, "");
-        String corporate_bank_number = (String) SharePreferenceUtil.get(getApplicationContext(),
+        String corporate_bank_number = (String) SharePreferenceUtil.get(currentContext,
                 Constant.CORPORATE_ACCOUNT_NUMBER, "");
         if (corporate_exit) {
             //如果已经存在对公账户

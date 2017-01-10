@@ -16,7 +16,7 @@ import com.yimiao100.sale.R;
 import com.yimiao100.sale.base.ActivityCollector;
 import com.yimiao100.sale.base.BaseActivity;
 import com.yimiao100.sale.bean.AppKeyBean;
-import com.yimiao100.sale.bean.ErrorBean;
+import com.yimiao100.sale.service.DataVersionService;
 import com.yimiao100.sale.utils.AppUtil;
 import com.yimiao100.sale.utils.Constant;
 import com.yimiao100.sale.utils.LogUtil;
@@ -66,48 +66,54 @@ public class SplashActivity extends BaseActivity {
             }
         }, 2000);
 
-        //刷新地域信息
-        refreshRegion();
+        //开启服务，检查相关数据（区域信息）版本信息
+        checkDataVersion();
+    }
 
+    /**
+     * 开启服务，检查相关数据（区域信息）版本信息
+     */
+    private void checkDataVersion() {
+        startService(new Intent(this, DataVersionService.class));
     }
 
     /**
      * 刷新region信息
      */
-    private void refreshRegion() {
-        OkHttpUtils.get().url(Constant.BASE_URL + "/api/region/all").build()
-                .execute(new StringCallback() {
-                    @Override
-                    public void onError(Call call, Exception e, int id) {
-                        e.printStackTrace();
-                    }
-
-                    @Override
-                    public void onResponse(String response, int id) {
-                        if (response.length() > 4000) {
-                            for (int i = 0; i < response.length(); i += 4000) {
-                                if (i + 4000 < response.length()) {
-                                    LogUtil.Companion.d(i + "获取地域信息：" + response.substring(i, i + 4000));
-                                } else {
-                                    LogUtil.Companion.d(i + "获取地域信息：" + response.substring(i, response.length()));
-                                }
-                            }
-                        } else {
-                            LogUtil.Companion.d("获取地域信息：" + response);
-                        }
-                        ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
-                        switch (errorBean.getStatus()) {
-                            case "success":
-                                //保存地域信息列表
-                                SharePreferenceUtil.put(currentContext, Constant.REGION_LIST, response);
-                                break;
-                            case "failure":
-                                Util.showError(currentContext, errorBean.getReason());
-                                break;
-                        }
-                    }
-                });
-    }
+//    private void refreshRegion() {
+//        OkHttpUtils.get().url(Constant.BASE_URL + "/api/region/all").build()
+//                .execute(new StringCallback() {
+//                    @Override
+//                    public void onError(Call call, Exception e, int id) {
+//                        e.printStackTrace();
+//                    }
+//
+//                    @Override
+//                    public void onResponse(String response, int id) {
+//                        if (response.length() > 4000) {
+//                            for (int i = 0; i < response.length(); i += 4000) {
+//                                if (i + 4000 < response.length()) {
+//                                    LogUtil.Companion.d(i + "获取地域信息：" + response.substring(i, i + 4000));
+//                                } else {
+//                                    LogUtil.Companion.d(i + "获取地域信息：" + response.substring(i, response.length()));
+//                                }
+//                            }
+//                        } else {
+//                            LogUtil.Companion.d("获取地域信息：" + response);
+//                        }
+//                        ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
+//                        switch (errorBean.getStatus()) {
+//                            case "success":
+//                                //保存地域信息列表
+//                                SharePreferenceUtil.put(currentContext, Constant.REGION_LIST, response);
+//                                break;
+//                            case "failure":
+//                                Util.showError(currentContext, errorBean.getReason());
+//                                break;
+//                        }
+//                    }
+//                });
+//    }
 
 
     /**
@@ -132,6 +138,7 @@ public class SplashActivity extends BaseActivity {
                 LogUtil.Companion.d("验证App短链接：" + response);
                 AppKeyBean.DataBean data = JSON.parseObject(response, AppKeyBean.class).getData();
                 if (data != null) {
+                    //获取服务器版本号
                     int appVersionNo = data.getAppVersionNo();
                     //获取当前版本号
                     int versionCode = AppUtil.Companion.getVersionCode(SplashActivity.this);

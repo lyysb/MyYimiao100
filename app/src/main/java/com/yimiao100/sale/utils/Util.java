@@ -1,13 +1,20 @@
 package com.yimiao100.sale.utils;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.support.v7.app.AlertDialog;
+import android.widget.Toast;
 
+import com.meiqia.core.callback.OnInitCallback;
+import com.meiqia.meiqiasdk.util.MQConfig;
+import com.meiqia.meiqiasdk.util.MQIntentBuilder;
 import com.yimiao100.sale.activity.BindPersonalActivity;
 import com.yimiao100.sale.activity.PersonalAddressAddActivity;
+
+import java.util.HashMap;
 
 /**
  * 纯工具
@@ -122,6 +129,38 @@ public class Util {
         builder.setCancelable(false);
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
+    }
+
+    /**
+     * 进入客服界面
+     */
+    public static void enterCustomerService(final Context context) {
+
+        String userName = (String) SharePreferenceUtil.get(context, Constant.CNNAME, "未知");
+        String userIcon = (String) SharePreferenceUtil.get(context, Constant.PROFILEIMAGEURL,
+                "http://oduhua0b1.bkt.clouddn.com/default_avatar.png");
+        String accountNumber = (String) SharePreferenceUtil.get(context, Constant.ACCOUNT_NUMBER, "未知");
+        HashMap<String, String> info = new HashMap<>();
+        info.put("name", userName);
+        info.put("avatar", userIcon);
+        info.put("tel", accountNumber);
+
+        MQConfig.init(context, Constant.MEI_QIA_APP_KEY, new OnInitCallback() {
+            @Override
+            public void onSuccess(String clientId) {
+                Toast.makeText(context, "init success", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onFailure(int code, String message) {
+                Toast.makeText(context, "int failure", Toast.LENGTH_SHORT).show();
+            }
+        });
+        Intent intent = new MQIntentBuilder(context)
+                .setClientInfo(info)
+                .build();
+        context.startActivity(intent);
+
     }
 
 }

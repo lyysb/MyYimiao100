@@ -71,6 +71,7 @@ public class ResourcesDetailActivity extends BaseActivity implements TitleView.T
 
     private final String URL_RESOURCE_INFO = Constant.BASE_URL + "/api/resource/resource_info";
     private ResourceListBean mResourceInfo;
+    private String mImageUrl;
 
 
     @Override
@@ -171,7 +172,7 @@ public class ResourcesDetailActivity extends BaseActivity implements TitleView.T
         mResourceDetailExpiredAt.setText(Html.fromHtml("（<font color=\"#4188d2\">注意：</font>本资源竞标时间截止日为\t" + expire + "）"));
         //完成设置视频
         //图片url
-        String productImageUrl = resourceInfo.getProductImageUrl();
+        mImageUrl = resourceInfo.getProductImageUrl();
         //视频url
         String productVideoUrl = resourceInfo.getProductVideoUrl();
         //先判断视频链接是否为空
@@ -190,9 +191,10 @@ public class ResourcesDetailActivity extends BaseActivity implements TitleView.T
             //视频链接为空，显示图片
             mResourceDetailVideo.setVisibility(View.GONE);
             mResourceDetailImage.setVisibility(View.VISIBLE);
-            if (!productImageUrl.isEmpty()) {
+            mResourceDetailImage.setOnClickListener(this);
+            if (!mImageUrl.isEmpty()) {
                 //图片链接不为空，则加载网络图片
-                Picasso.with(this).load(productImageUrl)
+                Picasso.with(this).load(mImageUrl)
                         .placeholder(R.mipmap.ico_default_bannner).into(mResourceDetailImage);
             }
         }
@@ -201,9 +203,18 @@ public class ResourcesDetailActivity extends BaseActivity implements TitleView.T
 
     @Override
     public void onClick(View v) {
+        Intent intent = new Intent();
         switch (v.getId()) {
+            case R.id.resource_detail_image:
+                intent.putExtra("image", mImageUrl);
+                intent.setClass(this, ShowWebImageActivity.class);
+                startActivity(intent);
+                break;
             case R.id.resources_promotion:
-                Intent intent = new Intent(getApplicationContext(), ResourcesPromotionActivity.class);
+                if (mResourceInfo == null) {
+                    return;
+                }
+                intent.setClass(this, ResourcesPromotionActivity.class);
                 intent.putExtra("resourceInfo", mResourceInfo);
                 startActivity(intent);
                 break;

@@ -8,6 +8,7 @@ import android.support.v7.app.AlertDialog;
 
 import com.yimiao100.sale.activity.LoginActivity;
 import com.yimiao100.sale.base.ActivityCollector;
+import com.yimiao100.sale.service.AliasService;
 
 /**
  * Activity单一AlertDialog管理工具类---专用于重新登录
@@ -78,10 +79,9 @@ public class ActivityAlertDialogManager {
                 SharePreferenceUtil.clear(activity);
                 //记录不是第一次登录
                 SharePreferenceUtil.put(activity, Constant.IS_FIRST, false);
-                //发送广播，置空别名
-//                Intent intent = new Intent();
-//                intent.setAction("com.yimiao100.sale.ALIAS");
-//                activity.sendBroadcast(intent);
+
+                //启动服务，设置别名
+                activity.startService(new Intent(activity, AliasService.class));
                 ActivityCollector.finishAll();
             }
         });
@@ -92,10 +92,8 @@ public class ActivityAlertDialogManager {
                 SharePreferenceUtil.clear(activity);
                 //记录不是第一次登录
                 SharePreferenceUtil.put(activity, Constant.IS_FIRST, false);
-                //发送广播，置空别名
-//                Intent intent = new Intent();
-//                intent.setAction("com.yimiao100.sale.ALIAS");
-//                activity.sendBroadcast(intent);
+                //启动服务，设置别名
+                activity.startService(new Intent(activity, AliasService.class));
                 ActivityCollector.finishAll();
                 activity.startActivity(new Intent(activity, LoginActivity.class));
             }

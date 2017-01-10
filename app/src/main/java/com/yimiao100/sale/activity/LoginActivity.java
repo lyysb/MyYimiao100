@@ -1,5 +1,6 @@
 package com.yimiao100.sale.activity;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -18,8 +19,10 @@ import com.yimiao100.sale.R;
 import com.yimiao100.sale.base.BaseActivity;
 import com.yimiao100.sale.bean.ErrorBean;
 import com.yimiao100.sale.bean.SignUpBean;
+import com.yimiao100.sale.service.AliasService;
 import com.yimiao100.sale.utils.Constant;
 import com.yimiao100.sale.utils.LogUtil;
+import com.yimiao100.sale.utils.ProgressDialogUtil;
 import com.yimiao100.sale.utils.SharePreferenceUtil;
 import com.yimiao100.sale.utils.ToastUtil;
 import com.yimiao100.sale.utils.Util;
@@ -52,11 +55,14 @@ public class LoginActivity extends BaseActivity implements CompoundButton.OnChec
     @BindView(R.id.login_login)
     Button mLoginLogin;
 
-    /** 是否显示密码*/
+    /**
+     * 是否显示密码
+     */
     private boolean pwdIsShow = false;
 
-    private final String LOGIN_URL = "/api/user/login";
-
+    private final String URL_LOGIN = Constant.BASE_URL + "/api/user/login";
+    private String mAccountNumber;
+    private ProgressDialog mProgressDialog;
 
 
     @Override
@@ -69,7 +75,8 @@ public class LoginActivity extends BaseActivity implements CompoundButton.OnChec
     }
 
 
-    @OnClick({R.id.show_password_parent, R.id.login_forget_password, R.id.login_register, R.id.login_login})
+    @OnClick({R.id.show_password_parent, R.id.login_forget_password, R.id.login_register, R.id
+            .login_login})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.show_password_parent:
@@ -95,11 +102,11 @@ public class LoginActivity extends BaseActivity implements CompoundButton.OnChec
      * 却换密码的显示状态
      */
     private void ShowPwd() {
-        if (pwdIsShow){
+        if (pwdIsShow) {
             pwdIsShow = false;
             mShowPassword.setChecked(true);
             mLoginPassword.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
-        }else {
+        } else {
             pwdIsShow = true;
             mShowPassword.setChecked(false);
             mLoginPassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
@@ -110,114 +117,127 @@ public class LoginActivity extends BaseActivity implements CompoundButton.OnChec
      * 登录
      */
     private void Login() {
-        String username = mLoginPhone.getText().toString().trim();
+        mAccountNumber = mLoginPhone.getText().toString().trim();
         String password = mLoginPassword.getText().toString().trim();
-        if (TextUtils.isEmpty(username) || TextUtils.isEmpty(password)){
+        if (TextUtils.isEmpty(mAccountNumber) || TextUtils.isEmpty(password)) {
             ToastUtil.showShort(this, "账号密码不能为空");
             return;
         }
+        mProgressDialog = ProgressDialogUtil.getLoadingProgress(this, "登录中");
+        mProgressDialog.show();
         //向提交账号密码，根据返回结果判断是否允许进入主界面
-        String url = Constant.BASE_URL + LOGIN_URL;
-        OkHttpUtils
-                .post()
-                .url(url)
-                .addParams("accountNumber", username)
+        OkHttpUtils.post().url(URL_LOGIN)
+                .addParams("accountNumber", mAccountNumber)
                 .addParams("password", password)
-                .build()
-                .execute(new StringCallback() {
-                    @Override
-                    public void onError(Call call, Exception e, int id) {
-                        LogUtil.Companion.d("用户登录E：" + e.getLocalizedMessage());
-                        Util.showTimeOutNotice(currentContext);
-                    }
+                .build().execute(new StringCallback() {
+            @Override
+            public void onError(Call call, Exception e, int id) {
+                mProgressDialog.dismiss();
+                LogUtil.Companion.d("用户登录E：" + e.getLocalizedMessage());
+                Util.showTimeOutNotice(currentContext);
+            }
 
-                    @Override
-                    public void onResponse(String response, int id) {
-                        //获得返回的json字符串
-                        LogUtil.Companion.d("用户登录：" + response);
-                        //解析json字符串
-                        SignUpBean signUpBean = JSON.parseObject(response, SignUpBean.class);
-                        //判断成功还是失败
-                        switch (signUpBean.getStatus()){
-                            case "success":
-                                //保存登录状态
-                                SharePreferenceUtil.put(currentContext, Constant.LOGIN_STATUS, true);
-                                //保存Token
-                                SharePreferenceUtil.put(LoginActivity.this, Constant.ACCESSTOKEN, signUpBean.getTokenInfo().getAccessToken());
-                                //保存用户id
-                                SharePreferenceUtil.put(LoginActivity.this, Constant.USERID, signUpBean.getUserInfo().getId());
+            @Override
+            public void onResponse(String response, int id) {
+                mProgressDialog.dismiss();
+                //获得返回的json字符串
+                LogUtil.Companion.d("用户登录：" + response);
+                //解析json字符串
+                SignUpBean signUpBean = JSON.parseObject(response, SignUpBean.class);
+                //判断成功还是失败
+                switch (signUpBean.getStatus()) {
+                    case "success":
+                        //保存登录状态
+                        SharePreferenceUtil.put(currentContext, Constant.LOGIN_STATUS, true);
+                        //保存Token
+                        SharePreferenceUtil.put(LoginActivity.this, Constant.ACCESSTOKEN,
+                                signUpBean.getTokenInfo().getAccessToken());
+                        //保存用户id
+                        SharePreferenceUtil.put(LoginActivity.this, Constant.USERID, signUpBean
+                                .getUserInfo().getId());
+                        //保存用户账号
+                        SharePreferenceUtil.put(currentContext, Constant.ACCOUNT_NUMBER, mAccountNumber);
 
-                                //保存或移除本地用户姓名
-                                if (signUpBean.getUserInfo().getCnName() != null) {
-                                    SharePreferenceUtil.put(getApplicationContext(), Constant.CNNAME, signUpBean.getUserInfo().getCnName());
-                                } else {
-                                    SharePreferenceUtil.remove(getApplicationContext(), Constant.CNNAME);
-                                }
-                                //保存或移除本地用户电话
-                                if (signUpBean.getUserInfo().getPhoneNumber() != null) {
-                                    SharePreferenceUtil.put(getApplicationContext(), Constant.PHONENUMBER, signUpBean.getUserInfo().getPhoneNumber());
-                                } else {
-                                    SharePreferenceUtil.remove(getApplicationContext(), Constant.PHONENUMBER);
-                                }
-                                //保存或移除本地用户邮箱
-                                if (signUpBean.getUserInfo().getEmail() != null) {
-                                    SharePreferenceUtil.put(getApplicationContext(), Constant.EMAIL, signUpBean.getUserInfo().getEmail());
-                                } else {
-                                    SharePreferenceUtil.remove(getApplicationContext(), Constant.EMAIL);
-                                }
-                                //保存或移除本地用户地域信息
-                                if (signUpBean.getUserInfo().getProvinceName() != null && signUpBean.getUserInfo().getCityName() != null
-                                        && signUpBean.getUserInfo().getAreaName() != null) {
-                                    SharePreferenceUtil.put(getApplicationContext(), Constant.REGION, signUpBean.getUserInfo().getProvinceName()
-                                            + "\t" + signUpBean.getUserInfo().getCityName()
-                                            + "\t" + signUpBean.getUserInfo().getAreaName());
-                                } else {
-                                    SharePreferenceUtil.remove(getApplicationContext(), Constant.REGION);
-                                }
-                                //保存或移除本地用户身份证号
-                                if (signUpBean.getUserInfo().getIdNumber() != null) {
-                                    SharePreferenceUtil.put(getApplicationContext(), Constant.IDNUMBER, signUpBean.getUserInfo().getIdNumber());
-                                } else {
-                                    SharePreferenceUtil.remove(getApplicationContext(), Constant.IDNUMBER);
-                                }
-                                //保存或移除本地用户头像地址
-                                if (signUpBean.getUserInfo().getProfileImageUrl() != null) {
-                                    SharePreferenceUtil.put(getApplicationContext(), Constant.PROFILEIMAGEURL, signUpBean.getUserInfo().getProfileImageUrl());
-                                } else {
-                                    SharePreferenceUtil.remove(getApplicationContext(), Constant.PROFILEIMAGEURL);
-                                }
-                                //登录成功，发送广播，启动服务，设置别名
-//                                Intent intent = new Intent();
-//                                intent.setAction("com.yimiao100.sale.ALIAS");
-//                                sendBroadcast(intent);
-//                                LogUtil.Companion.d("登录成功，发送广播，启动服务，设置别名");
-                                //登录成功，进入主界面
-                                startActivity(new Intent(LoginActivity.this, MainActivity.class));
-                                finish();
-                                break;
-                            case "failure":
-                                //失败,显示错误原因
-                                ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
-                                Util.showError(currentContext, errorBean.getReason());
-                                break;
+                        //保存或移除本地用户姓名
+                        if (signUpBean.getUserInfo().getCnName() != null) {
+                            SharePreferenceUtil.put(getApplicationContext(), Constant.CNNAME,
+                                    signUpBean.getUserInfo().getCnName());
+                        } else {
+                            SharePreferenceUtil.remove(getApplicationContext(), Constant.CNNAME);
                         }
-                    }
-                });
+                        //保存或移除本地用户电话
+                        if (signUpBean.getUserInfo().getPhoneNumber() != null) {
+                            SharePreferenceUtil.put(getApplicationContext(), Constant
+                                    .PHONENUMBER, signUpBean.getUserInfo().getPhoneNumber());
+                        } else {
+                            SharePreferenceUtil.remove(getApplicationContext(), Constant
+                                    .PHONENUMBER);
+                        }
+                        //保存或移除本地用户邮箱
+                        if (signUpBean.getUserInfo().getEmail() != null) {
+                            SharePreferenceUtil.put(getApplicationContext(), Constant.EMAIL,
+                                    signUpBean.getUserInfo().getEmail());
+                        } else {
+                            SharePreferenceUtil.remove(getApplicationContext(), Constant.EMAIL);
+                        }
+                        //保存或移除本地用户地域信息
+                        if (signUpBean.getUserInfo().getProvinceName() != null && signUpBean
+                                .getUserInfo().getCityName() != null
+                                && signUpBean.getUserInfo().getAreaName() != null) {
+                            SharePreferenceUtil.put(getApplicationContext(), Constant.REGION,
+                                    signUpBean.getUserInfo().getProvinceName()
+                                    + "\t" + signUpBean.getUserInfo().getCityName()
+                                    + "\t" + signUpBean.getUserInfo().getAreaName());
+                        } else {
+                            SharePreferenceUtil.remove(getApplicationContext(), Constant.REGION);
+                        }
+                        //保存或移除本地用户身份证号
+                        if (signUpBean.getUserInfo().getIdNumber() != null) {
+                            SharePreferenceUtil.put(getApplicationContext(), Constant.IDNUMBER,
+                                    signUpBean.getUserInfo().getIdNumber());
+                        } else {
+                            SharePreferenceUtil.remove(getApplicationContext(), Constant.IDNUMBER);
+                        }
+                        //保存或移除本地用户头像地址
+                        if (signUpBean.getUserInfo().getProfileImageUrl() != null) {
+                            SharePreferenceUtil.put(getApplicationContext(), Constant
+                                    .PROFILEIMAGEURL, signUpBean.getUserInfo().getProfileImageUrl
+                                    ());
+                        } else {
+                            SharePreferenceUtil.remove(getApplicationContext(), Constant
+                                    .PROFILEIMAGEURL);
+                        }
+                        //登录成功，启动服务，设置别名
+                        startService(new Intent(currentContext, AliasService.class));
+                        LogUtil.Companion.d("登录成功，启动服务，设置别名");
+                        //登录成功，进入主界面
+                        startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                        finish();
+                        break;
+                    case "failure":
+                        //失败,显示错误原因
+                        ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
+                        Util.showError(currentContext, errorBean.getReason());
+                        break;
+                }
+            }
+        });
     }
 
     /**
      * 设置显示或者隐藏密码
+     *
      * @param buttonView
      * @param isChecked
      */
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        if(isChecked){
+        if (isChecked) {
             //如果选中，显示密码
             mLoginPassword.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
             //设置光标移动到最后
             mLoginPassword.setSelection(mLoginPassword.getText().length());
-        }else{
+        } else {
             //否则隐藏密码
             mLoginPassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
             //设置光标移动到最后

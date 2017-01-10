@@ -98,8 +98,8 @@ public class PersonalAddressAddActivity extends BaseActivity implements TitleVie
 
     private void initData() {
         Intent intent = getIntent();
-        mBundle = intent.getExtras();
-        if (mBundle != null) {
+        if (intent.getExtras() != null) {
+            mBundle = intent.getExtras();
             String name = mBundle.getString("name");
             mAddressName.setText(name);
             String phone = mBundle.getString("phone");

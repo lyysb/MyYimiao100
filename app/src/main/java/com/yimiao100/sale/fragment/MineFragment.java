@@ -35,6 +35,7 @@ import com.yimiao100.sale.activity.StudyTaskActivity;
 import com.yimiao100.sale.activity.VendorListActivity;
 import com.yimiao100.sale.bean.ErrorBean;
 import com.yimiao100.sale.bean.ImageBean;
+import com.yimiao100.sale.service.AliasService;
 import com.yimiao100.sale.utils.AppUtil;
 import com.yimiao100.sale.utils.BitmapUtil;
 import com.yimiao100.sale.utils.Constant;
@@ -414,10 +415,9 @@ public class MineFragment extends Fragment implements View.OnClickListener {
             SharePreferenceUtil.clear(getContext());
             //记录不是第一次登录
             SharePreferenceUtil.put(getContext(), Constant.IS_FIRST, false);
-            //发送广播
-//            Intent intent = new Intent();
-//            intent.setAction("com.yimiao100.sale.ALIAS");
-//            getActivity().sendBroadcast(intent);
+            //启动服务，设置别名
+            getActivity().startService(new Intent(getActivity(), AliasService.class));
+            //跳回到登录界面
             startActivity(new Intent(getActivity(), LoginActivity.class));
             getActivity().finish();
             return;
@@ -438,10 +438,8 @@ public class MineFragment extends Fragment implements View.OnClickListener {
                             case "success":
                                 //退出成功，Token自然失效
                                 SharePreferenceUtil.clear(getContext());
-                                //发送广播，置空别名
-//                                Intent intent = new Intent();
-//                                intent.setAction("com.yimiao100.sale.ALIAS");
-//                                getActivity().sendBroadcast(intent);
+                                //启动服务，设置别名
+                                getActivity().startService(new Intent(getActivity(), AliasService.class));
                                 //记录不是第一次登录
                                 SharePreferenceUtil.put(getContext(), Constant.IS_FIRST, false);
                                 startActivity(new Intent(getActivity(), LoginActivity.class));

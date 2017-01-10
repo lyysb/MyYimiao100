@@ -11,15 +11,12 @@ import android.provider.MediaStore;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
-import com.meiqia.core.callback.OnInitCallback;
-import com.meiqia.meiqiasdk.util.MQConfig;
-import com.meiqia.meiqiasdk.util.MQIntentBuilder;
 import com.squareup.picasso.Picasso;
 import com.yimiao100.sale.R;
 import com.yimiao100.sale.adapter.listview.ExperienceAdapter;
@@ -54,7 +51,8 @@ import okhttp3.Request;
 /**
  * 推广主体-绑定对公主体界面
  */
-public class BindCompanyActivity extends BaseActivity implements TitleView.TitleBarOnClickListener, View.OnClickListener {
+public class BindCompanyActivity extends BaseActivity implements TitleView
+        .TitleBarOnClickListener, View.OnClickListener {
 
     @BindView(R.id.bind_company_title)
     TitleView mBindCompanyTitle;
@@ -75,12 +73,13 @@ public class BindCompanyActivity extends BaseActivity implements TitleView.Title
     ImageView mAddExperience;                               //添加经历
     EditText mCompanyEver;                                  //曾经所在公司及职位
     EditText mPromotionAdvantage;                           //推广优势
-    ImageView mBindCompanySubmit;
+    Button mBindCompanySubmit;
 
 
     private final String URL_CORPORATE_USER_ACCOUNT = Constant.BASE_URL +
             "/api/user/post_corporate_user_account";
-    private final String ULR_GET_CORPORATE_ACCOUNT =  Constant.BASE_URL + "/api/user/get_user_account";
+    private final String ULR_GET_CORPORATE_ACCOUNT = Constant.BASE_URL +
+            "/api/user/get_user_account";
     private final String ACCOUNT_NAME = "accountName";                      //账户名称
     private final String CORPORATE_ACCOUNT = "corporateAccount";            //公司账号
     private final String BANK_NAME = "bankName";                            //开户银行
@@ -96,6 +95,12 @@ public class BindCompanyActivity extends BaseActivity implements TitleView.Title
     private final String EXPERIENCE = "experience";                         //工作经历
     private final String ADVANTAGE = "advantage";                           //推广优势
     private final String EXPERIENCE_LIST = "experienceList";                //推广经历
+//    private final String PROVINCE_ID = "provinceId";
+//    private final String CITY_ID = "cityId";
+//    private final String START_AT_FORMAT = "startAtFormat";
+//    private final String END_AT_FORMAT = "endAtFormat";
+//    private final String PRODUCT_NAME = "productName";
+
 
     private static final int BIZ_FROM_CAMERA = 100;
     private static final int PERSONAL_FROM_CAMERA = 101;
@@ -122,6 +127,11 @@ public class BindCompanyActivity extends BaseActivity implements TitleView.Title
     private String mExperience;
     private String mAdvantage;
     private String mExperienceList;
+//    private String mProvinceId;
+//    private String mCityId;
+//    private String mStartAtFormat;
+//    private String mEndAtFormat;
+//    private String mProductName;
 
     private File mBizLicence;
     private File mPersonalPhoto;
@@ -134,6 +144,7 @@ public class BindCompanyActivity extends BaseActivity implements TitleView.Title
     private ProgressDialog mProgressDialog;
     private ArrayList<Experience> mList;
     private ExperienceAdapter mAdapter;
+    private AlertDialog mDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -153,7 +164,7 @@ public class BindCompanyActivity extends BaseActivity implements TitleView.Title
         initFooterView();
 
         mList = new ArrayList<>();
-        mAdapter= new ExperienceAdapter(mList);
+        mAdapter = new ExperienceAdapter(mList);
         mBindCompanyListView.setAdapter(mAdapter);
 
         mBindCompanyTitle.setOnTitleBarClick(this);
@@ -172,13 +183,17 @@ public class BindCompanyActivity extends BaseActivity implements TitleView.Title
         //姓名
         mBindCompanyCorporation = (EditText) headerView.findViewById(R.id.bind_company_corporation);
         //电话
-        mBindCompanyCorporationPhoneNumber = (EditText) headerView.findViewById(R.id.bind_company_corporation_phone_number);
+        mBindCompanyCorporationPhoneNumber = (EditText) headerView.findViewById(R.id
+                .bind_company_corporation_phone_number);
         //QQ
-        mBindCompanyCorporationQQ = (EditText) headerView.findViewById(R.id.bind_company_corporation_qq);
+        mBindCompanyCorporationQQ = (EditText) headerView.findViewById(R.id
+                .bind_company_corporation_qq);
         //邮箱
-        mBindCompanyCorporationEmail = (EditText) headerView.findViewById(R.id.bind_company_corporation_email);
+        mBindCompanyCorporationEmail = (EditText) headerView.findViewById(R.id
+                .bind_company_corporation_email);
         //身份证号
-        mBindCompanyCorporationIdNumber = (EditText) headerView.findViewById(R.id.bind_company_corporation_Id_number);
+        mBindCompanyCorporationIdNumber = (EditText) headerView.findViewById(R.id
+                .bind_company_corporation_Id_number);
         //营业执照
         mBindCompanyTakePhoto = (ImageView) headerView.findViewById(R.id.bind_company_take_photo);
         mBindCompanyTakePhoto.setOnClickListener(this);
@@ -202,7 +217,7 @@ public class BindCompanyActivity extends BaseActivity implements TitleView.Title
         //推广优势
         mPromotionAdvantage = (EditText) footerView.findViewById(R.id.bind_company_advantage);
         //提交
-        mBindCompanySubmit = (ImageView) footerView.findViewById(R.id.bind_company_submit);
+        mBindCompanySubmit = (Button) footerView.findViewById(R.id.bind_company_submit);
         mBindCompanySubmit.setOnClickListener(this);
 
         mBindCompanyListView.addFooterView(footerView);
@@ -224,7 +239,8 @@ public class BindCompanyActivity extends BaseActivity implements TitleView.Title
                 switch (errorBean.getStatus()) {
                     case "success":
                         //回显网络数据
-                        echoData(JSON.parseObject(response, UserBean.class).getUserAccount().getCorporate());
+                        echoData(JSON.parseObject(response, UserBean.class).getUserAccount()
+                                .getCorporate());
                         break;
                     case "failure":
                         Util.showError(currentContext, errorBean.getReason());
@@ -236,6 +252,7 @@ public class BindCompanyActivity extends BaseActivity implements TitleView.Title
 
     /**
      * 回显网络数据
+     *
      * @param corporate
      */
     private void echoData(CorporateBean corporate) {
@@ -381,7 +398,7 @@ public class BindCompanyActivity extends BaseActivity implements TitleView.Title
         switch (view.getId()) {
             case R.id.bind_company_service:
                 //联系客服
-                enterCustomerService();
+                Util.enterCustomerService(this);
                 break;
             case R.id.bind_company_take_photo:
                 //拍摄营业执照
@@ -397,7 +414,8 @@ public class BindCompanyActivity extends BaseActivity implements TitleView.Title
                 break;
             case R.id.bind_company_add:
                 //添加经历
-                startActivityForResult(new Intent(this, PromotionExperienceActivity.class), ADD_EXPERIENCE);
+                startActivityForResult(new Intent(this, PromotionExperienceActivity.class),
+                        ADD_EXPERIENCE);
                 break;
             case R.id.bind_company_submit:
                 if (mBindCompanyName.getText().toString().trim().isEmpty() ||
@@ -424,30 +442,39 @@ public class BindCompanyActivity extends BaseActivity implements TitleView.Title
                     ToastUtil.showLong(getApplicationContext(), "请拍摄证件照");
                     return;
                 }
-                //提交
+                if (mList.size() == 0) {
+                    ToastUtil.showShort(currentContext, "请填写推广经历");
+                    return;
+                }
+                //显示提交确定弹窗
+                showConfirmDialog();
+                break;
+            case R.id.dialog_check:
+                //Dialog消失
+                mDialog.dismiss();
+                break;
+            case R.id.dialog_confirm:
+                //Dialog消失
+                mDialog.dismiss();
+                //提交数据
                 submitCorporateAccount();
                 break;
         }
     }
 
     /**
-     * 打开客服界面
+     * 显示提交确定弹窗
      */
-    private void enterCustomerService() {
-        MQConfig.init(this, Constant.MEI_QIA_APP_KEY, new OnInitCallback() {
-            @Override
-            public void onSuccess(String clientId) {
-                Toast.makeText(getApplicationContext(), "init success", Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onFailure(int code, String message) {
-                Toast.makeText(getApplicationContext(), "int failure", Toast.LENGTH_SHORT).show();
-            }
-        });
-        Intent intent = new MQIntentBuilder(this)
-                .build();
-        startActivity(intent);
+    private void showConfirmDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.dialog);
+        View view = View.inflate(this, R.layout.dialog_confirm_submit, null);
+        builder.setView(view);
+        mDialog = builder.create();
+        mDialog.show();
+        Button check = (Button) view.findViewById(R.id.dialog_check);
+        check.setOnClickListener(this);
+        Button submit = (Button) view.findViewById(R.id.dialog_confirm);
+        submit.setOnClickListener(this);
     }
 
     /**
@@ -558,8 +585,8 @@ public class BindCompanyActivity extends BaseActivity implements TitleView.Title
      * 提交数据
      */
     private void submitCorporateAccount() {
-
-
+        //禁止重复点击
+        mBindCompanySubmit.setEnabled(false);
         //获取参数
         //账户名称
         mAccountName = mBindCompanyName.getText().toString().trim();
@@ -611,80 +638,83 @@ public class BindCompanyActivity extends BaseActivity implements TitleView.Title
                 .addFile(BIZ_LICENCE, mBizLicenceName, mBizLicence)
                 .addFile(PERSONAL_PHOTO, mPersonalPhotoName, mPersonalPhoto)
                 .addFile(ID_PHOTO, mIdPhotoName, mIdPhoto)
-                .build()
-                .execute(new StringCallback() {
-                    @Override
-                    public void onBefore(Request request, int id) {
-                        super.onBefore(request, id);
-                        mProgressDialog.show();
-                        LogUtil.Companion.d("onBefore");
-                    }
+                .build().execute(new StringCallback() {
+            @Override
+            public void onBefore(Request request, int id) {
+                super.onBefore(request, id);
+                mProgressDialog.show();
+                LogUtil.Companion.d("onBefore");
+            }
 
-                    @Override
-                    public void onAfter(int id) {
-                        super.onAfter(id);
-                        mProgressDialog.dismiss();
-                        LogUtil.Companion.d("onAfter");
-                    }
+            @Override
+            public void onAfter(int id) {
+                super.onAfter(id);
+                mProgressDialog.dismiss();
+                LogUtil.Companion.d("onAfter");
+            }
 
-                    @Override
-                    public void inProgress(float progress, long total, int id) {
-                        super.inProgress(progress, total, id);
-                        mProgressDialog.setProgress((int) (100 * progress + 0.5));
-                        LogUtil.Companion.d("inProgress");
-                    }
+            @Override
+            public void inProgress(float progress, long total, int id) {
+                super.inProgress(progress, total, id);
+                mProgressDialog.setProgress((int) (100 * progress + 0.5));
+                LogUtil.Companion.d("inProgress");
+            }
 
-                    @Override
-                    public void onError(Call call, Exception e, int id) {
-                        e.printStackTrace();
-                        Util.showTimeOutNotice(currentContext);
-                    }
+            @Override
+            public void onError(Call call, Exception e, int id) {
+                //允许按钮点击
+                mBindCompanySubmit.setEnabled(true);
+                e.printStackTrace();
+                Util.showTimeOutNotice(currentContext);
+            }
 
-                    @Override
-                    public void onResponse(String response, int id) {
-                        LogUtil.Companion.d("onResponse");
-                        LogUtil.Companion.d("绑定对公主体：" + response);
-                        ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
-                        switch (errorBean.getStatus()) {
-                            case "success":
-                                //记录对公账户数据
-                                //账户存在
-                                SharePreferenceUtil.put(getApplicationContext(),
-                                        Constant.CORPORATE_EXIT, true);
-                                //账户名称
-                                SharePreferenceUtil.put(getApplicationContext(), Constant
-                                        .CORPORATE_ACCOUNT_NAME, mAccountName);
-                                //公司账号
-                                SharePreferenceUtil.put(getApplicationContext(), Constant
-                                        .CORPORATE_ACCOUNT_NUMBER, mCorporateAccount);
-                                //开户银行
-                                SharePreferenceUtil.put(getApplicationContext(), Constant
-                                        .CORPORATE_BANK_NAME, mBankName);
-                                //公司电话号码
-                                SharePreferenceUtil.put(getApplicationContext(), Constant
-                                        .CORPORATE_PHONE_NUMBER, mCorporatePhoneNumber);
-                                //个人姓名
-                                SharePreferenceUtil.put(getApplicationContext(), Constant
-                                        .CORPORATE_CN_NAME, mCnName);
-                                //个人电话号码
-                                SharePreferenceUtil.put(getApplicationContext(), Constant
-                                        .CORPORATION_PERSONAL_PHONE_NUMBER, mPersonalPhoneNumber);
-                                //邮箱
-                                SharePreferenceUtil.put(getApplicationContext(), Constant
-                                        .CORPORATE_EMAIL, mEmail);
-                                //身份证号
-                                SharePreferenceUtil.put(getApplicationContext(), Constant
-                                        .CORPORATE_ID_NUMBER, mIdNumber);
+            @Override
+            public void onResponse(String response, int id) {
+                //允许按钮点击
+                mBindCompanySubmit.setEnabled(true);
+                LogUtil.Companion.d("onResponse");
+                LogUtil.Companion.d("绑定对公主体：" + response);
+                ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
+                switch (errorBean.getStatus()) {
+                    case "success":
+                        //记录对公账户数据
+                        //账户存在
+                        SharePreferenceUtil.put(getApplicationContext(),
+                                Constant.CORPORATE_EXIT, true);
+                        //账户名称
+                        SharePreferenceUtil.put(getApplicationContext(), Constant
+                                .CORPORATE_ACCOUNT_NAME, mAccountName);
+                        //公司账号
+                        SharePreferenceUtil.put(getApplicationContext(), Constant
+                                .CORPORATE_ACCOUNT_NUMBER, mCorporateAccount);
+                        //开户银行
+                        SharePreferenceUtil.put(getApplicationContext(), Constant
+                                .CORPORATE_BANK_NAME, mBankName);
+                        //公司电话号码
+                        SharePreferenceUtil.put(getApplicationContext(), Constant
+                                .CORPORATE_PHONE_NUMBER, mCorporatePhoneNumber);
+                        //个人姓名
+                        SharePreferenceUtil.put(getApplicationContext(), Constant
+                                .CORPORATE_CN_NAME, mCnName);
+                        //个人电话号码
+                        SharePreferenceUtil.put(getApplicationContext(), Constant
+                                .CORPORATION_PERSONAL_PHONE_NUMBER, mPersonalPhoneNumber);
+                        //邮箱
+                        SharePreferenceUtil.put(getApplicationContext(), Constant
+                                .CORPORATE_EMAIL, mEmail);
+                        //身份证号
+                        SharePreferenceUtil.put(getApplicationContext(), Constant
+                                .CORPORATE_ID_NUMBER, mIdNumber);
 
-                                ToastUtil.showLong(getApplicationContext(), "提交成功，请等待审核");
-                                finish();
-                                break;
-                            case "failure":
-                                Util.showError(currentContext, errorBean.getReason());
-                                break;
-                        }
-                    }
-                });
+                        ToastUtil.showLong(getApplicationContext(), "提交成功，请等待审核");
+                        finish();
+                        break;
+                    case "failure":
+                        Util.showError(currentContext, errorBean.getReason());
+                        break;
+                }
+            }
+        });
     }
 
     /**

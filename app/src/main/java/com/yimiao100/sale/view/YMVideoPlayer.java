@@ -4,6 +4,8 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
 
+import com.yimiao100.sale.utils.LogUtil;
+
 import fm.jiecao.jcvideoplayer_lib.JCVideoPlayerStandard;
 
 /**
@@ -32,12 +34,14 @@ public class YMVideoPlayer extends JCVideoPlayerStandard {
     }
 
     @Override
-    public void onCompletion() {
-        super.onCompletion();
+    public void onAutoCompletion() {
+        super.onAutoCompletion();
         if (mListener != null) {
+            LogUtil.Companion.d("视频播放完成");
             mListener.onComplete();
         }
     }
+
 
     @Override
     public void onClick(View v) {

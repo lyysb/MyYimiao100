@@ -36,7 +36,8 @@ import butterknife.OnClick;
 import okhttp3.Call;
 
 /**
- * 客户界面
+ * 客户界面--
+ * todo 待优化
  */
 public class CustomerActivity extends BaseActivity implements TitleView.TitleBarOnClickListener, SwipeRefreshLayout.OnRefreshListener,  AdapterView.OnItemClickListener, PullToRefreshListView.OnRefreshingListener {
 

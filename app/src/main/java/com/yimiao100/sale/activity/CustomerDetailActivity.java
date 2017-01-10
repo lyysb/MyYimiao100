@@ -86,8 +86,8 @@ public class CustomerDetailActivity extends BaseActivity implements TitleView.Ti
     private int mUserAddStatus;
 
     private final int RESULT_CDC_COLLECTION = 111;
-    private final String ADD_USER_CDC = "/api/cdc/add_user_cdc";
-    private final String CANCEL_USER_CDC = "/api/cdc/cancel_user_cdc";
+    private final String URL_ADD_USER_CDC = Constant.BASE_URL + "/api/cdc/add_user_cdc";
+    private final String URL_CANCEL_USER_CDC = Constant.BASE_URL + "/api/cdc/cancel_user_cdc";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -206,6 +206,7 @@ public class CustomerDetailActivity extends BaseActivity implements TitleView.Ti
             case R.id.customer_detail_collection:
                 //收藏CDC
                 collectCustomer();
+                //告诉列表页我这一页进行了刷新操作--我就是不用event_bus
                 setResult(RESULT_CDC_COLLECTION);
                 break;
             case R.id.customer_detail_map_toggle:
@@ -229,20 +230,21 @@ public class CustomerDetailActivity extends BaseActivity implements TitleView.Ti
      * 收藏CDC
      */
     private void collectCustomer() {
-        String add_user_cdc_url = Constant.BASE_URL + ADD_USER_CDC;
-        String cancel_user_cdc_url = Constant.BASE_URL + CANCEL_USER_CDC;
+        mCustomerDetailCollection.setClickable(false);
         //根据状态值不同，请求不同接口
-        OkHttpUtils.post().url(mUserAddStatus == 0 ? add_user_cdc_url : cancel_user_cdc_url)
+        OkHttpUtils.post().url(mUserAddStatus == 0 ? URL_ADD_USER_CDC : URL_CANCEL_USER_CDC)
                 .addHeader(ACCESS_TOKEN, mAccessToken).addParams("cdcId", mCdcId)
                 .build().execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
+                mCustomerDetailCollection.setClickable(true);
                 LogUtil.Companion.d("客户详情E：" + e.getMessage());
                 Util.showTimeOutNotice(currentContext);
             }
 
             @Override
             public void onResponse(String response, int id) {
+                mCustomerDetailCollection.setClickable(true);
                 LogUtil.Companion.d("客户详情：" + response);
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {

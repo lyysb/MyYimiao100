@@ -21,6 +21,7 @@ import com.alibaba.fastjson.JSON;
 import com.yimiao100.sale.R;
 import com.yimiao100.sale.base.BaseActivity;
 import com.yimiao100.sale.bean.SignUpBean;
+import com.yimiao100.sale.service.AliasService;
 import com.yimiao100.sale.utils.Constant;
 import com.yimiao100.sale.utils.LogUtil;
 import com.yimiao100.sale.utils.SharePreferenceUtil;
@@ -175,10 +176,8 @@ public class RegisterActivity extends BaseActivity implements CompoundButton
                     case "success":
                         //保存Token
                         SharePreferenceUtil.put(currentContext, Constant.ACCESSTOKEN, signUpBean.getTokenInfo().getAccessToken());
-                        //注册成功，发送设置别名通知
-//                        Intent intent = new Intent();
-//                        intent.setAction("com.yimiao100.sale.ALIAS");
-//                        sendBroadcast(intent);
+                        //启动服务，设置别名
+                        startService(new Intent(currentContext, AliasService.class));
                         //注册成功，进入主界面
                         startActivity(new Intent(RegisterActivity.this, MainActivity.class));
                         finish();

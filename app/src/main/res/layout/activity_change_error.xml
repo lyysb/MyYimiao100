@@ -47,13 +47,18 @@
                 android:textSize="12sp"
                 android:textColor="@color/color999"
                 />
-            <ImageView
+            <Button
                 android:id="@+id/error_submit"
-                android:layout_width="wrap_content"
+                android:text="提交"
+                android:textColor="@android:color/white"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
                 android:layout_gravity="center_horizontal"
-                android:src="@drawable/selector_submit"
+                style="?android:attr/borderlessButtonStyle"
+                android:background="@drawable/selector_button"
                 />
         </LinearLayout>
     </ScrollView>

@@ -4,14 +4,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
-import com.meiqia.core.callback.OnInitCallback;
-import com.meiqia.meiqiasdk.util.MQConfig;
-import com.meiqia.meiqiasdk.util.MQIntentBuilder;
 import com.yimiao100.sale.activity.RichesActivity;
 import com.yimiao100.sale.base.BaseActivity;
 import com.yimiao100.sale.bean.ErrorBean;
@@ -46,7 +41,7 @@ public class ScholarshipCashConfirmActivity extends BaseActivity implements Titl
     TextView mScholarshipCashPhone;
 
     private final String URL_APPLY_CASH = Constant.BASE_URL + "/api/fund/exam_reward_cash_withdrawal";
-    private final String ORDER_IDS = "orderIds";
+    private final String ORDER_IDS = "courseExamItemIds";
 
     private String mOrderIds;
     @Override
@@ -80,10 +75,10 @@ public class ScholarshipCashConfirmActivity extends BaseActivity implements Titl
         mScholarshipCashTitle.setOnTitleBarClick(this);
     }
     private void initData() {
-        mAccessToken = (String) SharePreferenceUtil.get(this, Constant.ACCESSTOKEN, "");
         Intent intent = getIntent();
         //获取订单号串
         mOrderIds = intent.getStringExtra("orderIds");
+        LogUtil.Companion.d("mOrderIds:" + mOrderIds);
         //获取提现金额
         double amount = intent.getDoubleExtra("amount", -1);
         mScholarshipCashMoney.setText("￥" + FormatUtils.MoneyFormat(amount));
@@ -93,32 +88,13 @@ public class ScholarshipCashConfirmActivity extends BaseActivity implements Titl
         switch (view.getId()) {
             case R.id.scholarship_cash_apply_service:
                 //打开客服
-                enterCustomerService();
+                Util.enterCustomerService(this);
                 break;
             case R.id.scholarship_cash_apply_cash:
                 //申请提现
                 applyCash();
                 break;
         }
-    }
-    /**
-     * 打开客服界面
-     */
-    private void enterCustomerService() {
-        MQConfig.init(this, Constant.MEI_QIA_APP_KEY, new OnInitCallback() {
-            @Override
-            public void onSuccess(String clientId) {
-                Toast.makeText(getApplicationContext(), "init success", Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onFailure(int code, String message) {
-                Toast.makeText(getApplicationContext(), "int failure", Toast.LENGTH_SHORT).show();
-            }
-        });
-        Intent intent = new MQIntentBuilder(this)
-                .build();
-        startActivity(intent);
     }
     /**
      * 申请提现
@@ -156,12 +132,16 @@ public class ScholarshipCashConfirmActivity extends BaseActivity implements Titl
     private void showDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(ScholarshipCashConfirmActivity.this,
                 R.style.dialog);
-        View v = View.inflate(this, R.layout.dialog_image_text, null);
+        View v = View.inflate(this, R.layout.dialog_confirm_promotion, null);
         builder.setView(v);
         builder.setCancelable(false);
-        ImageView head = (ImageView) v.findViewById(R.id.dialog_head);
-        head.setImageResource(R.mipmap.ico_company_rich);
-        TextView submit = (TextView) v.findViewById(R.id.dialog_text);
+        TextView tv1 = (TextView) v.findViewById(R.id.dialog_tv1);
+        TextView tv2 = (TextView) v.findViewById(R.id.dialog_tv2);
+
+        tv1.setText("温馨提示");
+        tv2.setText("您申请的提现金额，将在工作人员\n收到对应金额发票后5个工作日内，\n支付到您绑定推广主体对公账号里，\n请注意查收。");
+
+        TextView submit = (TextView) v.findViewById(R.id.dialog_confirm_promotion);
         submit.setText("好的");
         final AlertDialog dialog = builder.create();
         submit.setOnClickListener(new View.OnClickListener() {

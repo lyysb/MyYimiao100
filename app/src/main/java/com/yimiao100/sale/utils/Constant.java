@@ -46,7 +46,7 @@ public interface Constant {
      */
     HashMap<Integer, String> ERROR_INFORMATION = new HashMap<Integer, String>(){
         {
-            put(101, "网络异常，请检查网络");
+            put(101, "网络状况异常，请检查网络");
             put(102, "账号无效");
             put(103, "密码无效");
             put(104, "验证码无效");
@@ -68,7 +68,7 @@ public interface Constant {
             put(120, "企业营业执照无效");
             put(121, "区域信息无效");
             put(122, "评论内容无效");
-            put(123, "已评分");
+            put(123, "已点赞");
             put(124, "订单信息无效");
             put(125, "订单协议文件无效");
             put(126, "对账确认状态无效");
@@ -99,6 +99,7 @@ public interface Constant {
             put(151, "提交对公账户信息无效");
             put(152, "支付无效");
             put(153, "获取协议文件无效");
+            put(154, "操作过于频繁");
         }
     };
     String CNNAME = "cnName";
@@ -140,4 +141,6 @@ public interface Constant {
     String CORPORATE_ACCOUNT_STATUS = "corporate_account_status";
     String CORPORATE_QQ = "corporate_qq";
     String IS_FIRST = "is_first";
+    String DATA_VERSION_ = "data_version_";
+    String ACCOUNT_NUMBER = "account_number";
 }

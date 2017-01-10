@@ -55,6 +55,8 @@ public class CommodityConfirmActivity extends BaseActivity implements TitleView
     TextView mCommodityConfirmIntegral;
     @BindView(R.id.commodity_confirm_unit_price)
     TextView mCommodityConfirmUnitPrice;
+    @BindView(R.id.commodity_confirm_exchange)
+    ImageView mCommodityConfirmExchange;
 
     private final String URL_ADDRESS_LIST = Constant.BASE_URL + "/api/user/address_list";
     private final int FROM_NEW_OK = 100;
@@ -120,17 +122,22 @@ public class CommodityConfirmActivity extends BaseActivity implements TitleView
      * 初始化地址数据
      */
     private void initAddressData() {
-
+        //获取用户收货地址之前不允许提交订单
+        mCommodityConfirmExchange.setClickable(false);
+        //获取用户收货地址数据
         OkHttpUtils.post().url(URL_ADDRESS_LIST).addHeader(ACCESS_TOKEN, mAccessToken)
                 .build().execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
+                //获取用户地址列表失败的话，也不会允许点击提交订单
                 LogUtil.Companion.d("获取地址列表E：" + e.getLocalizedMessage());
                 Util.showTimeOutNotice(currentContext);
             }
 
             @Override
             public void onResponse(String response, int id) {
+                //返回数据之后才允许点击
+                mCommodityConfirmExchange.setClickable(true);
                 LogUtil.Companion.d("获取地址列表：" + response);
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {

@@ -20,7 +20,6 @@ import com.yimiao100.sale.bean.ErrorBean;
 import com.yimiao100.sale.bean.QuestionList;
 import com.yimiao100.sale.utils.Constant;
 import com.yimiao100.sale.utils.LogUtil;
-import com.yimiao100.sale.utils.SharePreferenceUtil;
 import com.yimiao100.sale.utils.TimeUtil;
 import com.yimiao100.sale.utils.ToastUtil;
 import com.yimiao100.sale.utils.Util;
@@ -61,11 +60,9 @@ public class ExamActivity extends BaseActivity implements ViewPager.OnPageChange
     private ArrayList<QuestionList> mQuestionList;
 
     private final String URL_SUBMIT_COURSE = Constant.BASE_URL + "/api/course/exam";
-    private final String ACCESS_TOKEN = "X-Authorization-Token";
     private final String COURSE_ID = "courseId";
     private final String SCORE = "score";
 
-    private String mAccessToken;
     private int mCourseId;
     private int mScore = 0;
 
@@ -90,7 +87,6 @@ public class ExamActivity extends BaseActivity implements ViewPager.OnPageChange
     }
 
     private void initData() {
-        mAccessToken = (String) SharePreferenceUtil.get(this, Constant.ACCESSTOKEN, "");
         //获取考试信息
         Course course = getIntent().getParcelableExtra("course");
         //初始化考试信息
@@ -166,7 +162,8 @@ public class ExamActivity extends BaseActivity implements ViewPager.OnPageChange
         //记录该题被选中的位置
         question.setChooseAt(choose);
         //记录该题正确与否
-        boolean isRight = TextUtils.equals(question.getAnswer(), question.getOptionList().get(choose).getId());
+        boolean isRight = TextUtils.equals(question.getAnswer(), question.getOptionList().get
+                (choose).getId());
         question.setRight(isRight);
 
         //自动切换到下一界面
@@ -189,6 +186,7 @@ public class ExamActivity extends BaseActivity implements ViewPager.OnPageChange
                 submit();
                 break;
             case R.id.exam_submit:
+                //提交成绩
                 submit();
                 break;
             case R.id.exam_left:
@@ -257,34 +255,36 @@ public class ExamActivity extends BaseActivity implements ViewPager.OnPageChange
      */
     private void submitScore() {
         OkHttpUtils.post().url(URL_SUBMIT_COURSE).addHeader(ACCESS_TOKEN, mAccessToken)
-                .addParams(COURSE_ID, mCourseId + "").addParams(SCORE, mScore + "").build()
-                .execute(new StringCallback() {
-                    @Override
-                    public void onError(Call call, Exception e, int id) {
-                        LogUtil.Companion.d("提交考试成绩E：" + e.getLocalizedMessage());
-                        Util.showTimeOutNotice(currentContext);
-                    }
+                .addParams(COURSE_ID, mCourseId + "").addParams(SCORE, mScore + "")
+                .build().execute(new StringCallback() {
+            @Override
+            public void onError(Call call, Exception e, int id) {
+                LogUtil.Companion.d("提交考试成绩E：" + e.getLocalizedMessage());
+                Util.showTimeOutNotice(currentContext);
+            }
 
-                    @Override
-                    public void onResponse(String response, int id) {
-                        LogUtil.Companion.d("提交考试成绩：" + response);
-                        ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
-                        switch (errorBean.getStatus()) {
-                            case "success":
-                                if (mRemainingTime >= 1000) {
-                                    //主动提交的成绩，显示最终成绩
-                                    showScore();
-                                } else {
-                                    //由于时间到提交的成绩，显示最终结果
-                                    forceSubmit();
-                                }
-                                break;
-                            case "failure":
-                                Util.showError(currentContext, errorBean.getReason());
-                                break;
+            @Override
+            public void onResponse(String response, int id) {
+                LogUtil.Companion.d("提交考试成绩：" + response);
+                ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
+                switch (errorBean.getStatus()) {
+                    case "success":
+                        String msg;
+                        if (mRemainingTime >= 1000) {
+                            //主动提交的成绩，显示最终成绩
+                            msg = "您最终成绩为：" + mScore + "分，感谢您参与本次考试。";
+                        } else {
+                            //由于时间到提交的成绩，显示最终结果
+                            msg = "时间到，您本次的考试成绩为：" + mScore + "分，感谢您参加本次考试";
                         }
-                    }
-                });
+                        showScore(msg);
+                        break;
+                    case "failure":
+                        Util.showError(currentContext, errorBean.getReason());
+                        break;
+                }
+            }
+        });
     }
 
     /**
@@ -301,32 +301,13 @@ public class ExamActivity extends BaseActivity implements ViewPager.OnPageChange
         LogUtil.Companion.d("score:" + mScore);
     }
 
-    /**
-     * 时间到，强制交卷
-     */
-    private void forceSubmit() {
-        //显示最终成绩
-        AlertDialog.Builder builder = new AlertDialog.Builder(ExamActivity.this);
-        builder.setMessage("时间到，您本次的考试成绩为：" + mScore + "分，欢迎您参加本次考试");
-        builder.setCancelable(false);
-        builder.setPositiveButton("退出本次考试", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-                ExamActivity.this.finish();
-            }
-        });
-        AlertDialog dialog = builder.create();
-        dialog.show();
-
-    }
 
     /**
      * 计算并显示成绩
      */
-    private void showScore() {
+    private void showScore(String message) {
         AlertDialog.Builder builder = new AlertDialog.Builder(ExamActivity.this);
-        builder.setMessage("您最终成绩为：" + mScore + "分，感谢您参与本次考试。");
+        builder.setMessage(message);
         builder.setCancelable(false);
         builder.setPositiveButton("退出本次考试", new DialogInterface.OnClickListener() {
             @Override

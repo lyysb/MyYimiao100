@@ -62,9 +62,8 @@ public class RichesActivity extends BaseActivity implements TitleView.TitleBarOn
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-
+    protected void onResume() {
+        super.onResume();
         initData();
     }
 

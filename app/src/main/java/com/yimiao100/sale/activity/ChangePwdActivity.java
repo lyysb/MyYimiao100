@@ -28,7 +28,8 @@ import okhttp3.Call;
  * 个人设置-修改密码
  * TODO 判断密码是否符合规则
  */
-public class ChangePwdActivity extends BaseActivity implements TextWatcher, TitleView.TitleBarOnClickListener {
+public class ChangePwdActivity extends BaseActivity implements TextWatcher, TitleView
+        .TitleBarOnClickListener {
 
     @BindView(R.id.change_back)
     TitleView mChangeBack;              //标题栏返回上一层
@@ -41,7 +42,7 @@ public class ChangePwdActivity extends BaseActivity implements TextWatcher, Titl
     @BindView(R.id.change_submit)
     Button mChangeSubmit;               //提交
 
-    private final String UPDATE_PASSWORD = "/api/user/update_password";
+    private final String URL_UPDATE_PASSWORD = Constant.BASE_URL + "/api/user/update_password";
 
     private boolean isSame = false;
 
@@ -57,43 +58,42 @@ public class ChangePwdActivity extends BaseActivity implements TextWatcher, Titl
         mChangePwdConfirm.addTextChangedListener(this);
 
 
-
         mChangeBack.setOnTitleBarClick(this);
     }
 
     @OnClick(R.id.change_submit)
     public void onClick() {
-        String update_password_url = Constant.BASE_URL + UPDATE_PASSWORD;
-        OkHttpUtils
-                .post()
-                .url(update_password_url)
-                .addHeader("X-Authorization-Token", mAccessToken)
+        mChangeSubmit.setEnabled(false);
+        OkHttpUtils.post().url(URL_UPDATE_PASSWORD)
+                .addHeader(ACCESS_TOKEN, mAccessToken)
                 .addParams("oldPass", mChangeNowPwd.getText().toString().trim())
                 .addParams("newPass", mChangePwdNew.getText().toString().trim())
-                .build()
-                .execute(new StringCallback() {
-                    @Override
-                    public void onError(Call call, Exception e, int id) {
-                        LogUtil.Companion.d("修改密码：" + e.getMessage());
-                        Util.showTimeOutNotice(currentContext);
-                    }
+                .build().execute(new StringCallback() {
+            @Override
+            public void onError(Call call, Exception e, int id) {
+                mChangeSubmit.setEnabled(true);
+                LogUtil.Companion.d("修改密码：" + e.getMessage());
+                Util.showTimeOutNotice(currentContext);
+            }
 
-                    @Override
-                    public void onResponse(String response, int id) {
-                        LogUtil.Companion.d("提交修改密码：" + response);
-                        ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
-                        switch (errorBean.getStatus()){
-                            case "success":
-                                //成功将新密码提交到服务器，进入修改成功界面
-                                startActivity(new Intent(getApplicationContext(), ChangeFinishedActivity.class));
-                                finish();
-                                break;
-                            case "failure":
-                                Util.showError(currentContext, errorBean.getReason());
-                                break;
-                        }
-                    }
-                });
+            @Override
+            public void onResponse(String response, int id) {
+                mChangeSubmit.setEnabled(true);
+                LogUtil.Companion.d("提交修改密码：" + response);
+                ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
+                switch (errorBean.getStatus()) {
+                    case "success":
+                        //成功将新密码提交到服务器，进入修改成功界面
+                        startActivity(new Intent(getApplicationContext(), ChangeFinishedActivity
+                                .class));
+                        finish();
+                        break;
+                    case "failure":
+                        Util.showError(currentContext, errorBean.getReason());
+                        break;
+                }
+            }
+        });
     }
 
     @Override
@@ -109,14 +109,18 @@ public class ChangePwdActivity extends BaseActivity implements TextWatcher, Titl
     @Override
     public void afterTextChanged(Editable s) {
         //判断两个输入框内容是否一致，并且输入框非空
-        if (TextUtils.isEmpty(mChangeNowPwd.getText().toString()) || TextUtils.isEmpty(mChangePwdNew.getText().toString()) ||TextUtils.isEmpty(mChangePwdConfirm.getText().toString())){
+        if (TextUtils.isEmpty(mChangeNowPwd.getText().toString()) || TextUtils.isEmpty
+                (mChangePwdNew.getText().toString()) || TextUtils.isEmpty(mChangePwdConfirm
+                .getText().toString())) {
             isSame = false;
-        }else {
-            isSame = TextUtils.equals(mChangePwdNew.getText().toString(), mChangePwdConfirm.getText().toString());
+        } else {
+            isSame = TextUtils.equals(mChangePwdNew.getText().toString(), mChangePwdConfirm
+                    .getText().toString());
         }
         //设置按钮是否可点击，背景颜色的变化
         mChangeSubmit.setClickable(isSame);
-        mChangeSubmit.setBackgroundResource(isSame ? R.drawable.shape_getcode : R.drawable.shape_getcode_loading);
+        mChangeSubmit.setBackgroundResource(isSame ? R.drawable.shape_getcode : R.drawable
+                .shape_getcode_loading);
     }
 
     @Override

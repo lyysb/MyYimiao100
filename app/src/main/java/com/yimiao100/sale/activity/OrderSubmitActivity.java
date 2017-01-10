@@ -64,7 +64,7 @@ public class OrderSubmitActivity extends BaseActivity implements TitleView.Title
         ResourceListBean order = intent.getParcelableExtra("order");
         //提交日期
         String submit_time = TimeUtil.timeStamp2Date(order.getCreatedAt() + "", "yyyy年MM月dd日");
-        mOrderSubmitSubmitTime.setText(submit_time + "您提交的申请推广,已经收到提交的竞标保证金,目前正在审核中,请耐心等待。");
+        mOrderSubmitSubmitTime.setText(submit_time + "您提交的申请推广,\n已经收到提交的竞标保证金,\n目前正在审核中,请耐心等待。");
         //厂家名称
         String vendorName = order.getVendorName();
         mOrderSubmitVendorName.setText(vendorName);

@@ -46,9 +46,10 @@ public class VideoListActivity extends BaseActivitySingleList {
         titleView.setTitle("推广/考试");
     }
 
+
     @Override
-    protected void onStart() {
-        super.onStart();
+    protected void onResume() {
+        super.onResume();
         onRefresh();
     }
 

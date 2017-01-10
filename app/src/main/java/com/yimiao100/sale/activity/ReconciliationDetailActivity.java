@@ -6,12 +6,8 @@ import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
-import com.meiqia.core.callback.OnInitCallback;
-import com.meiqia.meiqiasdk.util.MQConfig;
-import com.meiqia.meiqiasdk.util.MQIntentBuilder;
 import com.yimiao100.sale.R;
 import com.yimiao100.sale.adapter.listview.ReconciliationDetailAdapter;
 import com.yimiao100.sale.base.BaseActivity;
@@ -169,7 +165,7 @@ public class ReconciliationDetailActivity extends BaseActivity implements TitleV
             @Override
             public void onClick(View v) {
                 //进入客服
-                enterCustomerService();
+                Util.enterCustomerService(getApplicationContext());
                 dialog.dismiss();
             }
         });
@@ -232,7 +228,7 @@ public class ReconciliationDetailActivity extends BaseActivity implements TitleV
             @Override
             public void onClick(View v) {
                 //进入客服
-                enterCustomerService();
+                Util.enterCustomerService(getApplicationContext());
                 dialog.dismiss();
             }
         });
@@ -277,24 +273,5 @@ public class ReconciliationDetailActivity extends BaseActivity implements TitleV
         dialog.show();
     }
 
-    /**
-     * 打开客服界面
-     */
-    private void enterCustomerService() {
-        MQConfig.init(this, Constant.MEI_QIA_APP_KEY, new OnInitCallback() {
-            @Override
-            public void onSuccess(String clientId) {
-                Toast.makeText(getApplicationContext(), "init success", Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onFailure(int code, String message) {
-                Toast.makeText(getApplicationContext(), "int failure", Toast.LENGTH_SHORT).show();
-            }
-        });
-        Intent intent = new MQIntentBuilder(this)
-                .build();
-        startActivity(intent);
-    }
 
 }

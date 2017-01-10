@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v7.app.AlertDialog;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
@@ -130,8 +131,10 @@ public class PersonalSettingActivity extends BaseActivity implements TitleView
         //从本地获取数据
         //获取用户姓名
         String user_name = (String) SharePreferenceUtil.get(this, Constant.CNNAME, "");
+        //获取用户注册账号
+        String accountNumber = (String) SharePreferenceUtil.get(this, Constant.ACCOUNT_NUMBER, "未知");
         //获取用户电话
-        String user_phone_number = (String) SharePreferenceUtil.get(this, Constant.PHONENUMBER, "");
+        String user_phone_number = (String) SharePreferenceUtil.get(this, Constant.PHONENUMBER, accountNumber);
         //获取用户邮箱
         String user_email = (String) SharePreferenceUtil.get(this, Constant.EMAIL, "");
         //获取用户推广地域并设置
@@ -163,7 +166,7 @@ public class PersonalSettingActivity extends BaseActivity implements TitleView
         //解析Json
         String region_list = (String) SharePreferenceUtil.get(getApplicationContext(), Constant
                 .REGION_LIST, "");
-        if (region_list.equals("")) {
+        if (TextUtils.isEmpty(region_list)) {
             //重新联网获取region数据
             refreshRegion();
         } else {

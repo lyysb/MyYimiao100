@@ -171,7 +171,6 @@ public class ClinicDetailActivity extends BaseActivity implements TitleView.Titl
         mClinicDetailMapToggle.setImageResource(mMapToggle ? R.mipmap.ico_customer_details_map_activation : R.mipmap.ico_customer_details_map_default);
         mClinicDetailMap.setVisibility(mMapToggle ? View.VISIBLE : View.GONE);
         //发起地理编码检索
-        //TODO 逻辑有待调整
         mGeoCoder.geocode(new GeoCodeOption()
                 .city("")
                 .address(mClinicDetailAddress.getText().toString()));

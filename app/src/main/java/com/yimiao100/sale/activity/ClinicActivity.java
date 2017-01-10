@@ -29,7 +29,7 @@ import okhttp3.Call;
 public class ClinicActivity extends BaseActivitySingleList{
 
 
-    private final String CLINIC_LIST = "/api/cdc/clinic_list";
+    private final String URL_CLINIC_LIST = Constant.BASE_URL + "/api/cdc/clinic_list";
     private String mCdcId;
     private ArrayList<CDCListBean> mClinicList;
     private ClinicAdapter mClinicAdapter;
@@ -142,7 +142,7 @@ public class ClinicActivity extends BaseActivitySingleList{
         });
     }
     private RequestCall getBuild(int page) {
-        return OkHttpUtils.post().url(Constant.BASE_URL + CLINIC_LIST)
+        return OkHttpUtils.post().url(URL_CLINIC_LIST)
                 .addHeader(ACCESS_TOKEN, mAccessToken)
                 .addParams(PAGE, page + "").addParams(PAGE_SIZE, mPageSize).addParams("cdcId", mCdcId)
                 .build();

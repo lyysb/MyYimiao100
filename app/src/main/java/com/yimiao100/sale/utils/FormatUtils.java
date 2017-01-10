@@ -47,6 +47,10 @@ public class FormatUtils {
         return phoneNumber.substring(0, 3) +
                 " **** " + phoneNumber.substring(7);
     }
+
+    public static String ScoreFormat(double score) {
+        return new DecimalFormat("##.#").format(score);
+    }
     /**
      * 银行卡号格式化---每四位截取
      * @param bankNumber

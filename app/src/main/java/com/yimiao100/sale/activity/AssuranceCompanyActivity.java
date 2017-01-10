@@ -4,13 +4,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
-import com.meiqia.core.callback.OnInitCallback;
-import com.meiqia.meiqiasdk.util.MQConfig;
-import com.meiqia.meiqiasdk.util.MQIntentBuilder;
 import com.yimiao100.sale.R;
 import com.yimiao100.sale.base.BaseActivity;
 import com.yimiao100.sale.bean.ErrorBean;
@@ -40,6 +37,8 @@ public class AssuranceCompanyActivity extends BaseActivity implements TitleView
     TextView mAssuranceCompanyAccount;
     @BindView(R.id.assurance_company_phone)
     TextView mAssuranceCompanyPhone;
+    @BindView(R.id.assurance_apply_cash)
+    Button mAssuranceApplyCash;
     private final String URL_CASH_WITHDRAWAL = Constant.BASE_URL +
             "/api/fund/deposit_cash_withdrawal";
 
@@ -67,7 +66,8 @@ public class AssuranceCompanyActivity extends BaseActivity implements TitleView
         Intent intent = getIntent();
         double applyNum = intent.getDoubleExtra("applyNum", -1);
         mAssuranceCompanyAccount.setText("申请推广保证金提现：" + FormatUtils.MoneyFormat(applyNum) + "元");
-        String phone = (String) SharePreferenceUtil.get(this, Constant.CORPORATION_PERSONAL_PHONE_NUMBER, "");
+        String phone = (String) SharePreferenceUtil.get(this, Constant
+                .CORPORATION_PERSONAL_PHONE_NUMBER, "");
         LogUtil.Companion.d(phone);
         mAssuranceCompanyPhone.setText("联系方式：" + phone);
 
@@ -83,45 +83,32 @@ public class AssuranceCompanyActivity extends BaseActivity implements TitleView
                 break;
             case R.id.assurance_apply_service:
                 //打开客服
-                enterCustomerService();
+                Util.enterCustomerService(this);
                 break;
         }
     }
 
-    /**
-     * 打开客服界面
-     */
-    private void enterCustomerService() {
-        MQConfig.init(this, Constant.MEI_QIA_APP_KEY, new OnInitCallback() {
-            @Override
-            public void onSuccess(String clientId) {
-                Toast.makeText(getApplicationContext(), "init success", Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onFailure(int code, String message) {
-                Toast.makeText(getApplicationContext(), "int failure", Toast.LENGTH_SHORT).show();
-            }
-        });
-        Intent intent = new MQIntentBuilder(this)
-                .build();
-        startActivity(intent);
-    }
 
     /**
      * 提交申请
      */
     private void showApplyDialog() {
+        //禁止点击按钮，避免重复点击造成重复请求
+        mAssuranceApplyCash.setEnabled(false);
         OkHttpUtils.post().url(URL_CASH_WITHDRAWAL).addHeader(ACCESS_TOKEN, mAccessToken)
                 .addParams(ORDER_ID, mOrderIds).build().execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
+                //再次设置按钮可以点击
+                mAssuranceApplyCash.setEnabled(true);
                 LogUtil.Companion.d("保证金提现E：" + e.getMessage() + e.getLocalizedMessage());
                 Util.showTimeOutNotice(currentContext);
             }
 
             @Override
             public void onResponse(String response, int id) {
+                //再次设置按钮可以点击
+                mAssuranceApplyCash.setEnabled(true);
                 LogUtil.Companion.d("保证金提现：" + response);
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {

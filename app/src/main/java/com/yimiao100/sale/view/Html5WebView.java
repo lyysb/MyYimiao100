@@ -1,5 +1,6 @@
 package com.yimiao100.sale.view;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Message;
@@ -12,29 +13,38 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import com.yimiao100.sale.base.ActivityCollector;
 import com.yimiao100.sale.utils.LogUtil;
 import com.yimiao100.sale.utils.NetStatusUtil;
+import com.yimiao100.sale.utils.ProgressDialogUtil;
 import com.yimiao100.sale.utils.ToastUtil;
 
 /**
  * 自定义WebView
+ * todo 不在这里控制加载进度条显示和隐藏
  */
 public class Html5WebView extends WebView {
 
     private Context mContext;
+    private ProgressDialog mLoadingProgress;
 
     public Html5WebView(Context context) {
         this(context, null);
-
     }
 
-    public Html5WebView(Context context, AttributeSet attrs) {
-        this(context, attrs, -1);
+    public Html5WebView(Context context, ProgressDialog progressDialog) {
+        this(context, progressDialog, null);
     }
 
-    public Html5WebView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public Html5WebView(Context context, ProgressDialog progressDialog, AttributeSet attrs) {
+        this(context, progressDialog, attrs, -1);
+    }
+
+    public Html5WebView(Context context, ProgressDialog progressDialog, AttributeSet attrs, int
+            defStyleAttr) {
         super(context, attrs, defStyleAttr);
         mContext = context;
+        mLoadingProgress = progressDialog;
         init();
     }
 
@@ -46,7 +56,6 @@ public class Html5WebView extends WebView {
         mWebSettings.setDefaultTextEncodingName("utf-8");
         mWebSettings.setLoadsImagesAutomatically(true);
 
-
         //调用JS方法.安卓版本大于17,加上注解 @JavascriptInterface
         mWebSettings.setJavaScriptEnabled(true);
         mWebSettings.setSupportMultipleWindows(true);
@@ -55,6 +64,7 @@ public class Html5WebView extends WebView {
         newWin(mWebSettings);
         setWebChromeClient(webChromeClient);
         setWebViewClient(webViewClient);
+
     }
 
     /**
@@ -91,6 +101,7 @@ public class Html5WebView extends WebView {
      */
     WebViewClient webViewClient = new WebViewClient() {
 
+
         // 多页面在同一个WebView中打开，就是不新建activity或者调用系统浏览器打开
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
@@ -99,9 +110,17 @@ public class Html5WebView extends WebView {
             return true;
         }
 
+
         // 网页开始加载
         @Override
         public void onPageStarted(WebView view, String url, Bitmap favicon) {
+            LogUtil.Companion.d("网页开始加载");
+            if (mLoadingProgress == null) {
+                mLoadingProgress = ProgressDialogUtil.getLoadingProgress(ActivityCollector.getTopActivity());
+            }
+            if (!mLoadingProgress.isShowing()) {
+                mLoadingProgress.show();
+            }
             view.getSettings().setJavaScriptEnabled(true);
             super.onPageStarted(view, url, favicon);
         }
@@ -109,6 +128,10 @@ public class Html5WebView extends WebView {
         // 网页加载结束
         @Override
         public void onPageFinished(WebView view, String url) {
+            LogUtil.Companion.d("网页加载结束");
+            if (mLoadingProgress.isShowing() && mLoadingProgress != null) {
+                mLoadingProgress.dismiss();
+            }
             view.getSettings().setJavaScriptEnabled(true);
             super.onPageFinished(view, url);
             // 加载完成之后，添加监听图片的点击JS函数
@@ -116,8 +139,12 @@ public class Html5WebView extends WebView {
         }
 
         @Override
-        public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
+        public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError
+                error) {
             // 出现错误界面，隐藏WebView，弹出错误提示
+            if (mLoadingProgress.isShowing() && mLoadingProgress != null) {
+                mLoadingProgress.dismiss();
+            }
             view.setVisibility(view.INVISIBLE);
             ToastUtil.showShort(mContext, "请检查您的网络设置。");
         }
@@ -156,7 +183,8 @@ public class Html5WebView extends WebView {
         }
 
         @Override
-        public void onGeolocationPermissionsShowPrompt(final String origin, final GeolocationPermissions.Callback callback) {
+        public void onGeolocationPermissionsShowPrompt(final String origin, final
+        GeolocationPermissions.Callback callback) {
             callback.invoke(origin, true, false);//注意个函数，第二个参数就是是否同意定位权限，第三个是是否希望内核记住
             super.onGeolocationPermissionsShowPrompt(origin, callback);
         }
@@ -165,7 +193,8 @@ public class Html5WebView extends WebView {
 
         //=========多窗口的问题==========================================================
         @Override
-        public boolean onCreateWindow(WebView view, boolean isDialog, boolean isUserGesture, Message resultMsg) {
+        public boolean onCreateWindow(WebView view, boolean isDialog, boolean isUserGesture,
+                                      Message resultMsg) {
             HitTestResult result = view.getHitTestResult();
             String data = result.getExtra();
             view.loadUrl(data);

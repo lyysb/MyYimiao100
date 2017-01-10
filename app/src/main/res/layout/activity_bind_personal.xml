@@ -137,7 +137,7 @@
             <EditText
                 android:id="@+id/bind_personal_bank_name"
                 style="@style/Edit_style1"
-                android:hint="请输入开户银行名称，如：中国银行"
+                android:hint="请输入开户银行名称"
                 />
         </LinearLayout>
         <RelativeLayout

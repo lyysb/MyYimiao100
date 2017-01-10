@@ -14,6 +14,7 @@ import com.yimiao100.sale.utils.Constant;
 import com.yimiao100.sale.utils.LogUtil;
 import com.yimiao100.sale.utils.SharePreferenceUtil;
 import com.yimiao100.sale.utils.TimeUtil;
+import com.yimiao100.sale.utils.ToastUtil;
 import com.yimiao100.sale.utils.Util;
 import com.yimiao100.sale.view.TitleView;
 import com.zhy.http.okhttp.OkHttpUtils;
@@ -79,19 +80,28 @@ public class NoticeDetailActivity extends BaseActivity implements TitleView
                     case "success":
                         LogUtil.Companion.d("通知详情：" + response);
                         //解析JSON
-                        NoticedListBean userNotice = JSON.parseObject(response, NoticeDetailBean
-                                .class).getUserNotice();
-                        if (userNotice.getNoticeTitle() != null) {
-                            mNoticeDetailTitle.setText(userNotice.getNoticeTitle());
+                        NoticeDetailBean noticeDetailBean = JSON.parseObject(response, NoticeDetailBean.class);
+                        if (noticeDetailBean != null && noticeDetailBean.getUserNotice() != null) {
+                            NoticedListBean userNotice = noticeDetailBean.getUserNotice();
+                            if (userNotice.getNoticeTitle() != null) {
+                                mNoticeDetailTitle.setText(userNotice.getNoticeTitle());
+                            }
+                            if (userNotice.getNoticeSource() != null) {
+                                mNoticeDetailFrom.setText("来源：" + userNotice.getNoticeSource());
+                            }
+                            mNoticeDetailTime.setText(TimeUtil.timeStamp2Date(userNotice
+                                    .getCreatedAt()
+                                    + "", "yyyy年MM月dd日 HH:mm:ss"));
+                            if (userNotice.getNoticeContent() != null) {
+                                mNoticeDetailContent.setText(userNotice.getNoticeContent());
+                            }
+                        } else {
+                            //请重新登录
+                            ToastUtil.showShort(currentContext, "账号异常，请重新登录");
+                            NoticeDetailActivity.this.finish();
+                            startActivity(new Intent(currentContext, LoginActivity.class));
                         }
-                        if (userNotice.getNoticeSource() != null) {
-                            mNoticeDetailFrom.setText("来源：" + userNotice.getNoticeSource());
-                        }
-                        mNoticeDetailTime.setText(TimeUtil.timeStamp2Date(userNotice.getCreatedAt()
-                                + "", "yyyy年MM月dd日 HH:mm:ss"));
-                        if (userNotice.getNoticeContent() != null) {
-                            mNoticeDetailContent.setText(userNotice.getNoticeContent());
-                        }
+
                         break;
                     case "failure":
                         Util.showError(currentContext, errorBean.getReason());

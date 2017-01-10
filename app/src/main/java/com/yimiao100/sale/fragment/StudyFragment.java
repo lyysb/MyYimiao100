@@ -22,11 +22,11 @@ import com.yimiao100.sale.activity.WinScoreActivity;
 import com.yimiao100.sale.adapter.listview.PublicClassAdapter;
 import com.yimiao100.sale.adapter.peger.StudyAdAdapter;
 import com.yimiao100.sale.bean.Carousel;
-import com.yimiao100.sale.bean.CarouselBean;
 import com.yimiao100.sale.bean.ErrorBean;
 import com.yimiao100.sale.bean.OpenClass;
 import com.yimiao100.sale.bean.OpenClassBean;
 import com.yimiao100.sale.bean.OpenClassResult;
+import com.yimiao100.sale.utils.CarouselUtil;
 import com.yimiao100.sale.utils.Constant;
 import com.yimiao100.sale.utils.LogUtil;
 import com.yimiao100.sale.utils.SharePreferenceUtil;
@@ -35,6 +35,8 @@ import com.yimiao100.sale.view.PullToRefreshListView;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 import com.zhy.http.okhttp.request.RequestCall;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -49,7 +51,7 @@ import okhttp3.Call;
  */
 public class StudyFragment extends Fragment implements View.OnClickListener, AdapterView
         .OnItemClickListener, ViewPager.OnPageChangeListener, StudyAdAdapter.OnClickListener,
-        PullToRefreshListView.OnRefreshingListener {
+        PullToRefreshListView.OnRefreshingListener, CarouselUtil.HandleCarouselListener {
     @BindView(R.id.study_class_list)
     PullToRefreshListView mStudyClassListView;
     private ViewPager mStudyViewPager;
@@ -135,37 +137,48 @@ public class StudyFragment extends Fragment implements View.OnClickListener, Ada
 
     private void initData() {
         //请求网络，设置轮播图
-        OkHttpUtils.post().url(URL_CAROUSEL).addParams(CAROUSEL_TYPE, mCarouselType).build()
-                .execute(new StringCallback() {
-                    @Override
-                    public void onError(Call call, Exception e, int id) {
-                        LogUtil.Companion.d("视频轮播图E：" + e.getLocalizedMessage());
-                        if (StudyFragment.this.isAdded()) {
-                            //防止Fragment点击报空指针
-                            Util.showTimeOutNotice(getActivity());
-                        }
-                    }
+        CarouselUtil.Companion.getCarouselList(getActivity(), "course", this);
+//        OkHttpUtils.post().url(URL_CAROUSEL).addParams(CAROUSEL_TYPE, mCarouselType).build()
+//                .execute(new StringCallback() {
+//                    @Override
+//                    public void onError(Call call, Exception e, int id) {
+//                        LogUtil.Companion.d("视频轮播图E：" + e.getLocalizedMessage());
+//                        if (StudyFragment.this.isAdded()) {
+//                            //防止Fragment点击报空指针
+//                            Util.showTimeOutNotice(getActivity());
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onResponse(String response, int id) {
+//                        LogUtil.Companion.d("视频轮播图：" + response);
+//                        ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
+//                        switch (errorBean.getStatus()) {
+//                            case "success":
+//                                mCarouselList = JSON.parseObject(response,
+//                                        CarouselBean.class).getCarouselList();
+//                                StudyAdAdapter adAdapter = new StudyAdAdapter(mCarouselList);
+//                                mStudyViewPager.setAdapter(adAdapter);
+//                                adAdapter.setOnClickListener(StudyFragment.this);
+//                                //显示当前选中的界面
+//                                mStudyViewPager.setCurrentItem(adAdapter.getCount() / 2);
+//                                break;
+//                            case "failure":
+//                                Util.showError(getActivity(), errorBean.getReason());
+//                                break;
+//                        }
+//                    }
+//                });
+    }
 
-                    @Override
-                    public void onResponse(String response, int id) {
-                        LogUtil.Companion.d("视频轮播图：" + response);
-                        ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
-                        switch (errorBean.getStatus()) {
-                            case "success":
-                                mCarouselList = JSON.parseObject(response,
-                                        CarouselBean.class).getCarouselList();
-                                StudyAdAdapter adAdapter = new StudyAdAdapter(mCarouselList);
-                                mStudyViewPager.setAdapter(adAdapter);
-                                adAdapter.setOnClickListener(StudyFragment.this);
-                                //显示当前选中的界面
-                                mStudyViewPager.setCurrentItem(adAdapter.getCount() / 2);
-                                break;
-                            case "failure":
-                                Util.showError(getActivity(), errorBean.getReason());
-                                break;
-                        }
-                    }
-                });
+    @Override
+    public void handleCarouselList(@NotNull ArrayList<Carousel> carouselList) {
+        mCarouselList = carouselList;
+        StudyAdAdapter adAdapter = new StudyAdAdapter(mCarouselList);
+        mStudyViewPager.setAdapter(adAdapter);
+        adAdapter.setOnClickListener(StudyFragment.this);
+        //显示当前选中的界面
+        mStudyViewPager.setCurrentItem(adAdapter.getCount() / 2);
     }
 
     /**
@@ -177,7 +190,6 @@ public class StudyFragment extends Fragment implements View.OnClickListener, Ada
             @Override
             public void onError(Call call, Exception e, int id) {
                 LogUtil.Companion.d("公开课列表E：" + e.getLocalizedMessage());
-
             }
 
             @Override
@@ -333,12 +345,13 @@ public class StudyFragment extends Fragment implements View.OnClickListener, Ada
     public void onPageScrollStateChanged(int state) {
 
     }
-
     @Override
     public void onStop() {
         super.onStop();
         mHandler.removeMessages(SHOW_NEXT_PAGE);
     }
+
+
     /**
      * 解决如下问题
      * java.lang.IllegalStateException: No host

@@ -29,6 +29,5 @@ public class WholesaleActivity extends BaseActivity {
         mLayout.addView(mWebView);
 
         mWebView.loadUrl("http://www.yimiao100.com/ymq_analyze/index.html#/query");
-
     }
 }

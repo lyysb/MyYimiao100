@@ -46,33 +46,26 @@ public class AliasService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        LogUtil.Companion.d("onStartCommand");
+        LogUtil.Companion.d("AliasService.onStartCommand");
+        //别名默认为空
         String alias = "";
-        // 根据登录状态判断启动推送？停止推送？
+        // 根据登录状态判断设置别名/别名置空
         boolean loginStatus = (boolean) SharePreferenceUtil.get(this, Constant.LOGIN_STATUS, false);
         if (loginStatus) {
-            LogUtil.Companion.d("已登录");
-            //恢复推送
-            boolean pushStopped = JPushInterface.isPushStopped(this);
-            if (pushStopped) {
-                //启动服务设置别名
-                LogUtil.Companion.d("推送服务被停止，启动推送服务");
-                JPushInterface.resumePush(this);
-            }
+            LogUtil.Companion.d("已登录账号，根据规则设置别名");
             // 别名= “jpush_user_alias_加上用户id”
             int userId = (int) SharePreferenceUtil.get(this, Constant.USERID, -1);
-            alias = "jpush_user_alias_" + userId;
-            //设置别名
-            setAlias(alias);
-        } else {
-            //退出应用
-            //如果服务没有被停止，则停止推送
-            if (!JPushInterface.isPushStopped(this)) {
-                LogUtil.Companion.d("推送服务运行中，停止推送服务");
-                //停止推送
-                JPushInterface.stopPush(this);
+            if (userId == -1) {
+                //别名有问题
+                LogUtil.Companion.d("别名出错");
             }
+            alias = "jpush_user_alias_" + userId;
+        } else {
+            //置空别名
+            LogUtil.Companion.d("未登录-置空别名");
         }
+        //设置别名
+        setAlias(alias);
         return super.onStartCommand(intent, flags, startId);
     }
 
@@ -92,7 +85,7 @@ public class AliasService extends Service {
             switch (code) {
                 case 0:
                     //成功
-                    LogUtil.Companion.d("设置别名成功，停止别名设置服务");
+                    LogUtil.Companion.d("设置别名成功，停止别名服务");
                     //停止服务
                     stopService(new Intent(getApplicationContext(), AliasService.class));
                     break;

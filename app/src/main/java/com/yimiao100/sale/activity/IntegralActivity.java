@@ -4,17 +4,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.meiqia.core.callback.OnInitCallback;
-import com.meiqia.meiqiasdk.util.MQConfig;
-import com.meiqia.meiqiasdk.util.MQIntentBuilder;
 import com.yimiao100.sale.R;
 import com.yimiao100.sale.base.BaseActivity;
 import com.yimiao100.sale.utils.Constant;
 import com.yimiao100.sale.utils.FormatUtils;
 import com.yimiao100.sale.utils.SharePreferenceUtil;
 import com.yimiao100.sale.utils.ToastUtil;
+import com.yimiao100.sale.utils.Util;
 import com.yimiao100.sale.view.TitleView;
 
 import butterknife.BindView;
@@ -77,30 +74,11 @@ public class IntegralActivity extends BaseActivity implements TitleView.TitleBar
                 ToastUtil.showShort(currentContext, "敬请期待");
                 break;
             case R.id.integral_service:
-                enterCustomerService();
+                Util.enterCustomerService(this);
                 break;
         }
     }
 
-    /**
-     * 打开客服界面
-     */
-    private void enterCustomerService() {
-        MQConfig.init(this, Constant.MEI_QIA_APP_KEY, new OnInitCallback() {
-            @Override
-            public void onSuccess(String clientId) {
-                Toast.makeText(getApplicationContext(), "init success", Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onFailure(int code, String message) {
-                Toast.makeText(getApplicationContext(), "int failure", Toast.LENGTH_SHORT).show();
-            }
-        });
-        Intent intent = new MQIntentBuilder(this)
-                .build();
-        startActivity(intent);
-    }
     @Override
     public void leftOnClick() {
         finish();

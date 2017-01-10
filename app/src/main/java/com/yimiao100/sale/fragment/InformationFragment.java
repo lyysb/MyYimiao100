@@ -119,8 +119,6 @@ public class InformationFragment extends Fragment implements SwipeRefreshLayout
     private void initView() {
         mHeadView = View.inflate(getContext(), R.layout.head_information, null);
 
-
-
         initAdView();
 
         initSearchView();
@@ -396,16 +394,9 @@ public class InformationFragment extends Fragment implements SwipeRefreshLayout
         mPagedList.get(position).setReaded(true);
         mInformationAdapter.notifyDataSetChanged();
 
-        List<ImageListBean> imageList = mPagedList.get(position).getImageList();
-        String imageUrl;
-        if (imageList.size() != 0) {
-            imageUrl = imageList.get(0).getImageUrl();
-        } else {
-            imageUrl = Constant.DEFAULT_IMAGE;
-        }
+
         Intent intent = new Intent(getContext(), InformationDetailActivity.class);
         intent.putExtra("newsId", news_id);
-        intent.putExtra("imageUrl", imageUrl);
         startActivity(intent);
     }
 
@@ -422,7 +413,6 @@ public class InformationFragment extends Fragment implements SwipeRefreshLayout
             String imageUrl = carousel.getMediaUrl();
             Intent intent = new Intent(getContext(), InformationDetailActivity.class);
             intent.putExtra("newsId", newsId);
-            intent.putExtra("imageUrl", imageUrl);
             startActivity(intent);
         }
     }

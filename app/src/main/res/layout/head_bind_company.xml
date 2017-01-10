@@ -27,7 +27,7 @@
         <TextView
             android:layout_width="120dp"
             android:layout_height="wrap_content"
-            android:text="开户名称"
+            android:text="开户名称："
         />
         <EditText
             android:id="@+id/bind_company_name"
@@ -50,7 +50,7 @@
         <TextView
             android:layout_width="120dp"
             android:layout_height="wrap_content"
-            android:text="公司账号"
+            android:text="公司账号："
         />
         <EditText
             style="@style/Edit_style1"
@@ -70,12 +70,12 @@
         <TextView
             android:layout_width="120dp"
             android:layout_height="wrap_content"
-            android:text="开户银行"
+            android:text="开户银行："
         />
         <EditText
             android:id="@+id/bind_company_bank_name"
             style="@style/Edit_style1"
-            android:hint="请输入开户银行名称，如：中国银行"
+            android:hint="请输入开户银行名称"
         />
     </LinearLayout>
 
@@ -92,7 +92,7 @@
         <TextView
             android:layout_width="120dp"
             android:layout_height="wrap_content"
-            android:text="固定电话"
+            android:text="固定电话："
         />
 
         <EditText
@@ -162,7 +162,7 @@
         <TextView
             android:layout_width="120dp"
             android:layout_height="wrap_content"
-            android:text="姓名"
+            android:text="姓名："
         />
 
         <EditText
@@ -184,8 +184,8 @@
         <TextView
             android:layout_width="120dp"
             android:layout_height="wrap_content"
-            android:text="身份证号"
-        />
+            android:text="身份证号："
+            android:id="@+id/textView"/>
 
         <EditText
             android:id="@+id/bind_company_corporation_Id_number"
@@ -206,7 +206,7 @@
         <TextView
             android:layout_width="120dp"
             android:layout_height="wrap_content"
-            android:text="电话"
+            android:text="电话："
         />
 
         <EditText
@@ -229,7 +229,7 @@
         <TextView
             android:layout_width="120dp"
             android:layout_height="wrap_content"
-            android:text="QQ号码"
+            android:text="QQ号码："
         />
 
         <EditText
@@ -251,7 +251,7 @@
         <TextView
             android:layout_width="120dp"
             android:layout_height="wrap_content"
-            android:text="邮箱"
+            android:text="邮箱："
         />
 
         <EditText

@@ -1,8 +1,11 @@
 package com.yimiao100.sale;
 
 import android.app.Application;
+import android.content.Context;
+import android.support.multidex.MultiDex;
 
 import com.alibaba.fastjson.parser.ParserConfig;
+import com.meiqia.meiqiasdk.util.MQConfig;
 import com.tencent.bugly.crashreport.CrashReport;
 import com.umeng.socialize.Config;
 import com.umeng.socialize.PlatformConfig;
@@ -37,7 +40,18 @@ public class MyApplication extends Application{
         initBugly();
         initFastJson();
         initJPush();
+        initMQ();
+    }
 
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        MultiDex.install(this);
+    }
+
+    private void initMQ() {
+        //显示客户头像
+        MQConfig.isShowClientAvatar = true;
     }
 
     /**

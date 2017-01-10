@@ -1,5 +1,6 @@
 package com.yimiao100.sale.activity;
 
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -8,7 +9,7 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.widget.Button;
-import android.widget.CheckBox;
+import android.widget.RadioButton;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSON;
@@ -51,7 +52,7 @@ public class SubmitPromotionActivity extends BaseActivity implements TitleView
     @BindView(R.id.submit_promotion_amount)
     TextView mAmount;
     @BindView(R.id.submit_promotion_wx)
-    CheckBox mWx;
+    RadioButton mWx;
     @BindView(R.id.submit_promotion_pay)
     Button mSubmitPromotionPay;
 
@@ -71,6 +72,7 @@ public class SubmitPromotionActivity extends BaseActivity implements TitleView
     private String mChannel;
     private String mOrderId;
     private String mMark;
+    private ProgressDialog mProgressDialog;
 
 
     @Override
@@ -78,6 +80,8 @@ public class SubmitPromotionActivity extends BaseActivity implements TitleView
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_submit_promotion);
         ButterKnife.bind(this);
+
+        // TODO: 2017/1/5 暂时用RadioButton，默认只能使用微信支付，以后加入其它支付方式再重构
 
         initView();
 
@@ -135,10 +139,10 @@ public class SubmitPromotionActivity extends BaseActivity implements TitleView
 
     @OnClick(R.id.submit_promotion_pay)
     public void onClick() {
-        //按钮禁止点击
-        mSubmitPromotionPay.setEnabled(false);
         //判断选中的支付方式
         if (mWx.isChecked()) {
+            //按钮禁止点击
+            mSubmitPromotionPay.setEnabled(false);
             mChannel = "wx";
             //调用微信支付接口
             weChatPay();
@@ -165,58 +169,74 @@ public class SubmitPromotionActivity extends BaseActivity implements TitleView
         boolean isPaySupported = weChatId.getWXAppSupportAPI() >= Build.PAY_SUPPORTED_SDK_INT;
         if (isPaySupported) {
             //可以发起支付
-            //链接服务器，生成支付订单
-            OkHttpUtils.post().url(URL_PAY).addHeader(ACCESS_TOKEN, mAccessToken)
-                    .params(mParams)
-                    .addParams(USER_ACCOUNT_TYPE, mUserAccountType).addParams(CHANNEL, mChannel)
-                    .build().execute(new StringCallback() {
-                @Override
-                public void onError(Call call, Exception e, int id) {
-                    mSubmitPromotionPay.setEnabled(true);
-                    e.printStackTrace();
-                    Util.showTimeOutNotice(currentContext);
-                }
-
-
-                @Override
-                public void onResponse(String response, int id) {
-                    mSubmitPromotionPay.setEnabled(true);
-                    LogUtil.Companion.d(response);
-                    ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
-                    switch (errorBean.getStatus()) {
-                        case "success":
-                            //从服务端获取返回信息
-                            JSONObject jsonObject;
-                            try {
-                                jsonObject = new JSONObject(response);
-                                if (null != jsonObject && jsonObject.has("payRequest")) {
-                                    JSONObject payRequest = jsonObject.getJSONObject("payRequest");
-                                    PayReq req = new PayReq();
-                                    req.appId = payRequest.getString("appid");
-                                    req.partnerId = payRequest.getString("partnerid");
-                                    req.prepayId = payRequest.getString("prepayid");
-                                    req.nonceStr = payRequest.getString("noncestr");
-                                    req.timeStamp = payRequest.getString("timestamp");
-                                    req.packageValue = payRequest.getString("package");
-                                    req.sign = payRequest.getString("sign");
-                                    //去WXPayEntry做回调
-                                    weChatId.sendReq(req);
-                                }
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                                ToastUtil.showShort(currentContext, "支付异常，请稍后再试");
-                            }
-                            break;
-                        case "failure":
-                            Util.showError(currentContext, errorBean.getReason());
-                            break;
-                    }
-                }
-            });
+            toWxPay(weChatId);
         } else {
             ToastUtil.showShort(currentContext, "您目前微信版本不支持支付，请先升级微信");
             mSubmitPromotionPay.setEnabled(true);
         }
+    }
+
+    /**
+     * 进行微信支付
+     *
+     * @param weChatId
+     */
+    private void toWxPay(final IWXAPI weChatId) {
+        mProgressDialog = new ProgressDialog(this);
+        mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        mProgressDialog.setMessage("请求数据中..请稍后");
+        mProgressDialog.setCancelable(false);
+        mProgressDialog.show();
+        //链接服务器，生成支付订单
+        OkHttpUtils.post().url(URL_PAY).addHeader(ACCESS_TOKEN, mAccessToken)
+                .params(mParams)
+                .addParams(USER_ACCOUNT_TYPE, mUserAccountType).addParams(CHANNEL, mChannel)
+                .build().connTimeOut(30000L).readTimeOut(30000L).execute(new StringCallback() {
+            @Override
+            public void onError(Call call, Exception e, int id) {
+                mProgressDialog.dismiss();
+                mSubmitPromotionPay.setEnabled(true);
+                e.printStackTrace();
+                Util.showTimeOutNotice(currentContext);
+            }
+
+
+            @Override
+            public void onResponse(String response, int id) {
+                mProgressDialog.dismiss();
+                mSubmitPromotionPay.setEnabled(true);
+                LogUtil.Companion.d(response);
+                ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
+                switch (errorBean.getStatus()) {
+                    case "success":
+                        //从服务端获取返回信息
+                        JSONObject jsonObject;
+                        try {
+                            jsonObject = new JSONObject(response);
+                            if (null != jsonObject && jsonObject.has("payRequest")) {
+                                JSONObject payRequest = jsonObject.getJSONObject("payRequest");
+                                PayReq req = new PayReq();
+                                req.appId = payRequest.getString("appid");
+                                req.partnerId = payRequest.getString("partnerid");
+                                req.prepayId = payRequest.getString("prepayid");
+                                req.nonceStr = payRequest.getString("noncestr");
+                                req.timeStamp = payRequest.getString("timestamp");
+                                req.packageValue = payRequest.getString("package");
+                                req.sign = payRequest.getString("sign");
+                                //去WXPayEntry做回调
+                                weChatId.sendReq(req);
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            ToastUtil.showShort(currentContext, "支付异常，请稍后再试");
+                        }
+                        break;
+                    case "failure":
+                        Util.showError(currentContext, errorBean.getReason());
+                        break;
+                }
+            }
+        });
     }
 
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {

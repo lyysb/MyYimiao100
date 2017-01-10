@@ -84,7 +84,7 @@ public class ScoreDetailAdapter extends BaseExpandableListAdapter {
         dosageForm.setText("剂型：" + examInfo.getDosageForm());
         spec.setText("规格：" + examInfo.getSpec());
 
-        avgScoreProgress.setText(examInfo.getAvgScore() + "分");
+        avgScoreProgress.setText(FormatUtils.ScoreFormat(examInfo.getAvgScore()) + "分");
         avgScoreProgress.setProgress((int) examInfo.getAvgScore());
 
         shipProgress.setMax(examInfo.getTargetQty());

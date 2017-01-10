@@ -26,6 +26,7 @@ import com.yimiao100.sale.bean.ResourceListBean;
 import com.yimiao100.sale.bean.ResourceResultBean;
 import com.yimiao100.sale.utils.CarouselUtil;
 import com.yimiao100.sale.utils.Constant;
+import com.yimiao100.sale.utils.DensityUtil;
 import com.yimiao100.sale.utils.LogUtil;
 import com.yimiao100.sale.utils.RegionUtil;
 import com.yimiao100.sale.utils.Util;
@@ -99,6 +100,13 @@ public class ResourcesActivity extends BaseActivitySingleList implements Carouse
         //初始化滚轮联动器
         mOptions = new CharacterPickerWindow(this);
         initHeadView();
+    }
+
+    @Override
+    protected void initView() {
+        super.initView();
+        //更改ListView分割线宽度
+        mListView.setDividerHeight(DensityUtil.dp2px(this, 3));
     }
 
     @Override
@@ -405,19 +413,14 @@ public class ResourcesActivity extends BaseActivitySingleList implements Carouse
 
             @Override
             public void onResponse(String response, int id) {
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        // 停止刷新
-                        mSwipeRefreshLayout.setRefreshing(false);
-                    }
-                }, 1000);
+                mSwipeRefreshLayout.setRefreshing(false);
                 if (response.length() > 4000) {
                     for (int i = 0; i < response.length(); i += 4000) {
                         if (i + 4000 < response.length()) {
                             LogUtil.Companion.d(i + "资源列表：" + response.substring(i, i + 4000));
                         } else {
-                            LogUtil.Companion.d(i + "资源列表：" + response.substring(i, response.length()));
+                            LogUtil.Companion.d(i + "资源列表：" + response.substring(i, response
+                                    .length()));
                         }
                     }
                 } else {
@@ -457,32 +460,31 @@ public class ResourcesActivity extends BaseActivitySingleList implements Carouse
 
     @Override
     protected void onLoadMore() {
-        getBuild(mPage)
-                .execute(new StringCallback() {
-                    @Override
-                    public void onError(Call call, Exception e, int id) {
-                        LogUtil.Companion.d("资源列表E：" + e.getMessage());
-                        Util.showTimeOutNotice(currentContext);
-                    }
+        getBuild(mPage).execute(new StringCallback() {
+            @Override
+            public void onError(Call call, Exception e, int id) {
+                LogUtil.Companion.d("资源列表E：" + e.getMessage());
+                Util.showTimeOutNotice(currentContext);
+            }
 
-                    @Override
-                    public void onResponse(String response, int id) {
-                        LogUtil.Companion.d("资源列表：" + response);
-                        ErrorBean errorBean = parseObject(response, ErrorBean.class);
-                        switch (errorBean.getStatus()) {
-                            case "success":
-                                mPage++;
-                                mResourcesList.addAll(parseObject(response, ResourceBean
-                                        .class).getResourceResult().getResourcesList());
-                                mResourcesAdapter.notifyDataSetChanged();
-                                break;
-                            case "failure":
-                                Util.showError(currentContext, errorBean.getReason());
-                                break;
-                        }
-                        mListView.onLoadMoreComplete();
-                    }
-                });
+            @Override
+            public void onResponse(String response, int id) {
+                LogUtil.Companion.d("资源列表：" + response);
+                ErrorBean errorBean = parseObject(response, ErrorBean.class);
+                switch (errorBean.getStatus()) {
+                    case "success":
+                        mPage++;
+                        mResourcesList.addAll(parseObject(response, ResourceBean
+                                .class).getResourceResult().getResourcesList());
+                        mResourcesAdapter.notifyDataSetChanged();
+                        break;
+                    case "failure":
+                        Util.showError(currentContext, errorBean.getReason());
+                        break;
+                }
+                mListView.onLoadMoreComplete();
+            }
+        });
     }
 
     /**

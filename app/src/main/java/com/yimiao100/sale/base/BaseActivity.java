@@ -1,12 +1,17 @@
 package com.yimiao100.sale.base;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
 import com.yimiao100.sale.utils.Constant;
+import com.yimiao100.sale.utils.LogUtil;
+import com.yimiao100.sale.utils.ProgressDialogUtil;
 import com.yimiao100.sale.utils.SharePreferenceUtil;
+
+import cn.jpush.android.api.JPushInterface;
 
 public class BaseActivity extends AppCompatActivity {
 
@@ -22,6 +27,7 @@ public class BaseActivity extends AppCompatActivity {
     protected int mPage;
     protected int mTotalPage;
     protected final String mPageSize = "10";
+    protected ProgressDialog mLoadingProgress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +38,17 @@ public class BaseActivity extends AppCompatActivity {
         mAccessToken = (String) SharePreferenceUtil.get(this, Constant.ACCESSTOKEN, "");
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        ActivityCollector.setTopActivity(this);
+        if (JPushInterface.isPushStopped(this)) {
+            LogUtil.Companion.d("极光推送服务被停止，重启中");
+            //如果极光服务被停止，则恢复服务
+            JPushInterface.resumePush(this);
+        }
+    }
+
     public static void setActivityState(Activity activity) {
         currentContext = activity;
         // 设置App只能竖屏显示
@@ -40,6 +57,16 @@ public class BaseActivity extends AppCompatActivity {
         ActivityCollector.addActivity(activity);
     }
 
+    protected void showLoadingProgress() {
+        mLoadingProgress = ProgressDialogUtil.getLoadingProgress(this);
+        mLoadingProgress.show();
+    }
+
+    protected void dismissLoadingProgress() {
+        if (mLoadingProgress.isShowing()) {
+            mLoadingProgress.dismiss();
+        }
+    }
 
     @Override
     protected void onDestroy() {

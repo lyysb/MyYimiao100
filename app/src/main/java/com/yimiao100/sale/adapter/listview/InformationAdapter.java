@@ -97,7 +97,7 @@ public class InformationAdapter extends BaseAdapter {
                 type1_commentNumber.setText("评论（" + pagedListBean.getCommentNumber() + "）");
                 //发布时间
                 long publishAt = pagedListBean.getPublishAt();
-                type1_publishAt.setText(TimeUtil.time2Date(publishAt, "MM-dd HH:mm"));
+                type1_publishAt.setText(TimeUtil.time2Date(publishAt, "yyyy年MM月dd日"));
 
                 //加载图片
                 mType1_image = ViewHolderUtil.get(convertView, R.id.type1_image);
@@ -124,7 +124,7 @@ public class InformationAdapter extends BaseAdapter {
 
                 type2_source.setText(pagedListBean.getNewsSource());
                 type2_commentNumber.setText("评论（" + pagedListBean.getCommentNumber() + "）");
-                type2_publishAt.setText(TimeUtil.time2Date(pagedListBean.getPublishAt(), "MM-dd HH:mm"));
+                type2_publishAt.setText(TimeUtil.time2Date(pagedListBean.getPublishAt(), "yyyy年MM月dd日"));
 
                 mType2_image1 = ViewHolderUtil.get(convertView, R.id.type2_image1);
                 mType2_image2 = ViewHolderUtil.get(convertView, R.id.type2_image2);
@@ -170,7 +170,7 @@ public class InformationAdapter extends BaseAdapter {
 
                 type3_source.setText(pagedListBean.getNewsSource());
                 type3_commentNumber.setText("评论（" + pagedListBean.getCommentNumber() + "）");
-                type3_publishAt.setText(TimeUtil.time2Date(pagedListBean.getPublishAt(), "MM-dd HH:mm"));
+                type3_publishAt.setText(TimeUtil.time2Date(pagedListBean.getPublishAt(), "yyyy年MM月dd日"));
 
 
                 mType3_image = ViewHolderUtil.get(convertView, R.id.type3_image);

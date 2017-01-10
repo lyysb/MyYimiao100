@@ -162,10 +162,10 @@ public class ScholarshipActivity extends BaseActivity implements SwipeRefreshLay
     private void enterPromotionCashConfirm() {
         //遍历Map，拼接订单id
         if (checkedIDs.size() != 0) {
-            StringBuffer orderIds = new StringBuffer("");
+            StringBuilder orderIds = new StringBuilder("");
             Set<Map.Entry<Integer, ArrayList<Integer>>> entries = checkedIDs.entrySet();
             for (Map.Entry<Integer, ArrayList<Integer>> entry : entries) {
-                StringBuffer temp = new StringBuffer("");
+                StringBuilder temp = new StringBuilder("");
                 for (int i = 0; i < entry.getValue().size(); i++) {
                     if (i == 0) {
                         temp.append(entry.getValue().get(i));
@@ -228,7 +228,6 @@ public class ScholarshipActivity extends BaseActivity implements SwipeRefreshLay
         ExamInfo scholarship = mScholarshipAdapter.getItem(position);
         mCheckedList.add(scholarship);
         //获得每个订单中的奖学金
-
         double totalAmount = scholarship != null ? scholarship.getTotalAmount() : 0;
         //获得每个订单id集合
         ArrayList<Integer> temp = scholarship.getCourseExamItemIdList();

@@ -50,14 +50,11 @@ public class CollectionActivity extends BaseActivity implements TitleView.TitleB
     @BindView(R.id.collection_swipe)
     SwipeRefreshLayout mCollectionSwipe;
 
-    private final String USER_COLLECTION_LIST = "/api/news/user_collection_list";
+    private final String URL_COLLECTION_LIST = Constant.BASE_URL + "/api/news/user_collection_list";
     private List<PagedListBean> mPagedList;
     private CollectionAdapter mCollectionAdapter;
 
-    private final String CANCEL_COLLECTION = "/api/news/cancel_collection";
-
-    private int PAGE;
-    private int TOTAL_PAGE;
+    private final String URL_CANCEL_COLLECTION = Constant.BASE_URL + "/api/news/cancel_collection";
     private View mEmptyView;
 
     @Override
@@ -102,8 +99,8 @@ public class CollectionActivity extends BaseActivity implements TitleView.TitleB
     }
 
     private RequestCall getBuild() {
-        return OkHttpUtils.post().url(Constant.BASE_URL + USER_COLLECTION_LIST)
-                .addHeader("X-Authorization-Token", mAccessToken)
+        return OkHttpUtils.post().url(URL_COLLECTION_LIST)
+                .addHeader(ACCESS_TOKEN, mAccessToken)
                 .build();
     }
 
@@ -187,9 +184,8 @@ public class CollectionActivity extends BaseActivity implements TitleView.TitleB
 
     private void delete(PagedListBean collectionInfo, final int position) {
         //删除收藏
-        String cancel_collection_url = Constant.BASE_URL + CANCEL_COLLECTION;
-        OkHttpUtils.post().url(cancel_collection_url)
-                .addHeader("X-Authorization-Token", mAccessToken)
+        OkHttpUtils.post().url(URL_CANCEL_COLLECTION)
+                .addHeader(ACCESS_TOKEN, mAccessToken)
                 .addParams("newsId", collectionInfo.getId() + "")
                 .build().execute(new StringCallback() {
             @Override
@@ -206,7 +202,7 @@ public class CollectionActivity extends BaseActivity implements TitleView.TitleB
                     case "success":
                         mPagedList.remove(position);
                         mCollectionAdapter.notifyDataSetChanged();
-                        ToastUtil.showLong(getApplicationContext(), "取消收藏成功");
+                        ToastUtil.showShort(getApplicationContext(), "取消收藏成功");
                         break;
                     case "failure":
                         Util.showError(currentContext, errorBean.getReason());

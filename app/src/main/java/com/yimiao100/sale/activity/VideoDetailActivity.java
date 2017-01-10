@@ -1,5 +1,6 @@
 package com.yimiao100.sale.activity;
 
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,6 +15,7 @@ import android.widget.TextView;
 import com.alibaba.fastjson.JSON;
 import com.squareup.picasso.Picasso;
 import com.yimiao100.sale.R;
+import com.yimiao100.sale.base.ActivityCollector;
 import com.yimiao100.sale.base.BaseActivity;
 import com.yimiao100.sale.bean.Course;
 import com.yimiao100.sale.bean.CourseBean;
@@ -40,8 +42,10 @@ import fm.jiecao.jcvideoplayer_lib.JCVideoPlayerStandard;
 import okhttp3.Call;
 
 
+
 /**
  * 课程详情
+ * 因为要旋转，所以不能继承BaseActivity
  */
 public class VideoDetailActivity extends BaseActivity implements YMVideoPlayer
         .OnCompleteListener, TitleView.TitleBarOnClickListener, YMVideoPlayer.OnPlayListener {
@@ -82,6 +86,16 @@ public class VideoDetailActivity extends BaseActivity implements YMVideoPlayer
     private final String OBJECT_ID = "objectId";
     private final String OBJECT_TYPE = "objectType";
 
+    protected static Activity currentContext;
+    protected final String ACCESS_TOKEN = "X-Authorization-Token";
+    protected final String PAGE = "page";
+    protected final String PAGE_SIZE = "pageSize";
+
+    protected String mAccessToken;
+    protected int mPage;
+    protected int mTotalPage;
+    protected final String mPageSize = "10";
+
     private int mCourseId;
     private Course mCourse;
     private final String mObjectType = "course";
@@ -93,11 +107,25 @@ public class VideoDetailActivity extends BaseActivity implements YMVideoPlayer
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_video_detail);
         ButterKnife.bind(this);
+        ActivityCollector.addActivity(this);
+        mAccessToken = (String) SharePreferenceUtil.get(this, Constant.ACCESSTOKEN, "");
         mIntegral = (int) SharePreferenceUtil.get(this, Constant.INTEGRAL, -1);
 
         initView();
 
         initData();
+    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        ActivityCollector.setTopActivity(this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        //将Activity从列表中移除
+        ActivityCollector.removeActivity(this);
     }
 
     private void initView() {

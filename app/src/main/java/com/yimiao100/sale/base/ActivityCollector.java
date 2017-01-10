@@ -10,7 +10,8 @@ import java.util.List;
  * Created by 亿苗通 on 2016/10/19.
  */
 public class ActivityCollector {
-    public static List<Activity> activities = new ArrayList<Activity>();
+    private static List<Activity> activities = new ArrayList<Activity>();
+    private static Activity topActivity;
 
     private ActivityCollector() {
          /* cannot be instantiated */
@@ -32,5 +33,16 @@ public class ActivityCollector {
             }
 //            System.exit(0);
         }
+    }
+
+    public static void setTopActivity(Activity activity) {
+        topActivity = activity;
+    }
+
+    public static Activity getTopActivity() {
+        if (topActivity != null) {
+            return topActivity;
+        }
+        return null;
     }
 }

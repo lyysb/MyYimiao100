@@ -109,11 +109,29 @@ public class SearchActivity extends BaseActivity implements PullToRefreshListVie
         initTags();
         //初始化历史搜索内容
         initHistoryList();
-        if (mHistoryList.isEmpty()) {
-            mSearchFoot.setText("无记录");
-        }
-
+        //填充数据
         mSearchAdapter = new SearchAdapter(mHistoryList);
+        //删除点击
+        mSearchAdapter.setOnDeleteClickListener(new SearchAdapter.OnDeleteClickListener() {
+            @Override
+            public void delete(int position) {
+                //移除数据显示
+                mHistoryList.remove(position);
+                //刷新页面
+                mSearchAdapter.notifyDataSetChanged();
+                //更新本地存储
+                StringBuilder sb = new StringBuilder();
+                if (mHistoryList.size() == 0) {
+                    //显示无记录
+                    mSearchFoot.setText("无记录");
+                } else {
+                    for (String s : mHistoryList) {
+                        sb.append(s).append(",");
+                    }
+                }
+                SharePreferenceUtil.put(currentContext, Constant.SEARCH_HISTORY, sb.toString());
+            }
+        });
         mSearchHistoryListView.setAdapter(mSearchAdapter);
 
         //如果由资讯详情进入，获取搜索内容，进行搜索
@@ -155,7 +173,7 @@ public class SearchActivity extends BaseActivity implements PullToRefreshListVie
                         mSearchHotTags.setTags(s);
                         break;
                     case "failure":
-                        Util.showError(SearchActivity.this, tagsBean.getReason());
+                        Util.showError(currentContext, tagsBean.getReason());
                         break;
                 }
             }
@@ -167,12 +185,20 @@ public class SearchActivity extends BaseActivity implements PullToRefreshListVie
      */
     private void initHistoryList() {
         String temp = (String) SharePreferenceUtil.get(getApplicationContext(), Constant.SEARCH_HISTORY, "");
+        LogUtil.Companion.d("搜索记录：" + temp);
         String[] split = temp.split(",");
-        if (split[0].length() != 0) {
+        if (split[0].length() != 0 && split.length != 1) {
             //遍历添加
             for (String s : split) {
-                mHistoryList.add(s);
+                if (!s.isEmpty()) {
+                    mHistoryList.add(s);
+                }
             }
+        }
+        LogUtil.Companion.d("list长度：" + mHistoryList.size());
+        //如果没有数据，则显示无记录
+        if (mHistoryList.isEmpty()) {
+            mSearchFoot.setText("无记录");
         }
     }
 

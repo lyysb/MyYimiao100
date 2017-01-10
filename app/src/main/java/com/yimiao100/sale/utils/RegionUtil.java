@@ -1,6 +1,7 @@
 package com.yimiao100.sale.utils;
 
 import android.app.Activity;
+import android.text.TextUtils;
 
 import com.alibaba.fastjson.JSON;
 import com.yimiao100.sale.bean.ErrorBean;
@@ -36,7 +37,7 @@ public class RegionUtil {
      */
     public static void getRegionList(final Activity activity, final HandleRegionListListener listListener) {
         String region_list = (String) SharePreferenceUtil.get(activity, Constant.REGION_LIST, "");
-        if (region_list.equals("")) {
+        if (TextUtils.isEmpty(region_list)) {
             //本地没有region数据，请求网络。重新进行本地缓存
             RefreshRegion(activity, listListener);
         } else {

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <TextView
+        android:id="@+id/dialog_fillet"
+        android:gravity="center"
+        android:text="推广主体信息一旦提交，您将会在24小时\n内收到审核结果通知，审核通过后\n将不能再次修改。"
+        android:textSize="14sp"
+        android:textColor="@color/color666"
+        android:background="@mipmap/ico_fillet"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    <Button
+        android:id="@+id/dialog_check"
+        android:gravity="center"
+        android:text="再检查一下"
+        android:textSize="15sp"
+        style="?android:attr/borderlessButtonStyle"
+        android:textColor="@color/color999"
+        android:layout_below="@id/dialog_fillet"
+        android:background="@mipmap/ico_check"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    <Button
+        android:id="@+id/dialog_confirm"
+        android:gravity="center"
+        android:text="确定"
+        android:textSize="15sp"
+        style="?android:attr/borderlessButtonStyle"
+        android:textColor="@android:color/white"
+        android:layout_toRightOf="@id/dialog_check"
+        android:layout_below="@id/dialog_fillet"
+        android:background="@mipmap/ico_ok"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+</RelativeLayout>

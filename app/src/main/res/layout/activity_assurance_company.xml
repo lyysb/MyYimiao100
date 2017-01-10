@@ -2,7 +2,8 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools" style="@style/TitleStyle"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/TitleStyle"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -102,15 +103,19 @@
 
                 </LinearLayout>
             </LinearLayout>
-            <ImageButton
+            <Button
                 android:id="@+id/assurance_apply_cash"
-                android:layout_width="wrap_content"
+                android:text="申请提现"
+                android:textColor="@android:color/white"
+                style="?android:attr/borderlessButtonStyle"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
                 android:layout_centerHorizontal="true"
                 android:layout_marginBottom="40dp"
-                android:background="@null"
-                android:src="@drawable/selector_assurance_apply_cash"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp"
+                android:background="@drawable/selector_button"
                 tools:ignore="ContentDescription"/>
             <ImageView
                 android:id="@+id/assurance_apply_service"

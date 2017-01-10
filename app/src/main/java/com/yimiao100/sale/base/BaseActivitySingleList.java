@@ -49,7 +49,9 @@ public abstract class BaseActivitySingleList extends BaseActivity implements Tit
         initRefreshView();
 
         initListView();
+
     }
+
 
     private void initEmptyView() {
         mEmptyView = findViewById(R.id.list_empty_view);

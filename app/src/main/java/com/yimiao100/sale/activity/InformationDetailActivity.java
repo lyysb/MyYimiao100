@@ -3,13 +3,13 @@ package com.yimiao100.sale.activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.webkit.WebSettings;
-import android.webkit.WebView;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -100,7 +100,7 @@ public class InformationDetailActivity extends BaseActivity implements View.OnCl
 
     private PullToRefreshListView mComment_list;
     private int mNewsId;
-    private WebView mWebView;
+    private Html5WebView mWebView;
     private TextView mInformationDetailTitle1;
     private TextView mInformationDetailFrom;
     private TextView mInformationDetailTime;
@@ -141,12 +141,12 @@ public class InformationDetailActivity extends BaseActivity implements View.OnCl
         //获取资讯id
         mNewsId = intent.getIntExtra("newsId", -1);
         LogUtil.Companion.d("newsId：" + mNewsId);
-        //获取图片Url-用于分享
-        mImageUrl = intent.getStringExtra("imageUrl");
         //获取用户id
         mUserId = (int) SharePreferenceUtil.get(this, Constant.USERID, -1);
         //获取用户当前积分
         mIntegral = (int) SharePreferenceUtil.get(this, Constant.INTEGRAL, -1);
+
+        showLoadingProgress();
 
         initView();
 
@@ -197,7 +197,9 @@ public class InformationDetailActivity extends BaseActivity implements View.OnCl
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams
                 .MATCH_PARENT, ViewGroup.LayoutParams
                 .WRAP_CONTENT);
-        mWebView = new Html5WebView(this);
+
+        LogUtil.Companion.d("new_Html5WebView_mProgressDialog" + mLoadingProgress);
+        mWebView = new Html5WebView(this, mLoadingProgress);
         mWebView.setLayoutParams(params);
         mLayout.addView(mWebView);
         //载入js--可以点击显示图片，进行放大处理
@@ -269,45 +271,43 @@ public class InformationDetailActivity extends BaseActivity implements View.OnCl
         OkHttpUtils.post().url(DETAIL_URL)
                 .addParams("newsId", mNewsId + "")
                 .addParams("userId", mUserId + "")
-                .build()
-                .execute(new StringCallback() {
-                    @Override
-                    public void onError(Call call, Exception e, int id) {
-                        LogUtil.Companion.d("资讯详情E：" + e.getMessage());
-                        Util.showTimeOutNotice(currentContext);
-                    }
+                .build().execute(new StringCallback() {
+            @Override
+            public void onError(Call call, Exception e, int id) {
+                LogUtil.Companion.d("资讯详情E：" + e.getMessage());
+                Util.showTimeOutNotice(currentContext);
+            }
 
-                    @Override
-                    public void onResponse(String response, int id) {
-                        if (response.length() > 4000) {
-                            for (int i = 0; i < response.length(); i += 4000) {
-                                if (i + 4000 < response.length()) {
-                                    LogUtil.Companion.d(i + "资讯详情：" + response.substring(i, i +
-                                            4000));
-                                } else {
-                                    LogUtil.Companion.d(i + "资讯详情：" + response.substring(i,
-                                            response.length()));
-                                }
-                            }
+            @Override
+            public void onResponse(String response, int id) {
+                if (response.length() > 4000) {
+                    for (int i = 0; i < response.length(); i += 4000) {
+                        if (i + 4000 < response.length()) {
+                            LogUtil.Companion.d(i + "资讯详情：" + response.substring(i, i + 4000));
                         } else {
-                            LogUtil.Companion.d("资讯详情：" + response);
-                        }
-                        ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
-                        switch (errorBean.getStatus()) {
-                            case "success":
-                                //解析json，设置显示
-                                mNews = JSON.parseObject(response, InformationDetailBean.class)
-                                        .getNews();
-                                //设置新闻细节
-                                setNewsDetail(mNews);
-                                break;
-                            case "failure":
-                                Util.showError(InformationDetailActivity.this, errorBean
-                                        .getReason());
-                                break;
+                            LogUtil.Companion.d(i + "资讯详情：" + response.substring(i, response
+                                    .length()));
                         }
                     }
-                });
+                } else {
+                    LogUtil.Companion.d("资讯详情：" + response);
+                }
+                ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
+                switch (errorBean.getStatus()) {
+                    case "success":
+                        //解析json，设置显示
+                        mNews = JSON.parseObject(response, InformationDetailBean.class)
+                                .getNews();
+                        //设置新闻细节
+                        setNewsDetail(mNews);
+                        break;
+                    case "failure":
+                        Util.showError(InformationDetailActivity.this, errorBean
+                                .getReason());
+                        break;
+                }
+            }
+        });
     }
 
     /**
@@ -349,8 +349,7 @@ public class InformationDetailActivity extends BaseActivity implements View.OnCl
         String newsFrom = news.getNewsSource();
         mInformationDetailFrom.setText(newsFrom);
         //发布时间
-        mInformationDetailTime.setText(TimeUtil.timeStamp2Date(news.getPublishAt() + "", "MM-dd " +
-                "HH:mm"));
+        mInformationDetailTime.setText(TimeUtil.timeStamp2Date(news.getPublishAt() + "", "MM月dd日 HH:mm"));
         //设置标签
         List<TagListBean> tagList = news.getTagList();
         List<String> TagNameList = new ArrayList<>();
@@ -385,6 +384,12 @@ public class InformationDetailActivity extends BaseActivity implements View.OnCl
                 mInformationDetailRemarks.setVisibility(View.GONE);
                 break;
         }
+        //获取分享链接
+        if (mNews.getImageList().isEmpty() || mNews.getImageList().get(0).getImageUrl().isEmpty()) {
+            mImageUrl = Constant.DEFAULT_IMAGE;
+        } else {
+            mImageUrl = mNews.getImageList().get(0).getImageUrl();
+        }
     }
 
     /**
@@ -398,6 +403,14 @@ public class InformationDetailActivity extends BaseActivity implements View.OnCl
         mWebView.loadUrl(CONTENT_URL + "?newsId=" + mNewsId);
     }
 
+    @Override
+    protected void onPause() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            mWebView.onPause(); // 暂停网页中正在播放的视频
+        }
+        super.onPause();
+    }
+
     /**
      * 显示资讯评论
      */
@@ -408,44 +421,43 @@ public class InformationDetailActivity extends BaseActivity implements View.OnCl
                 .addParams("userId", mUserId + "")
                 .addParams("page", "1")
                 .addParams("pageSize", "10")
-                .build()
-                .execute(new StringCallback() {
-                    @Override
-                    public void onError(Call call, Exception e, int id) {
-                        LogUtil.Companion.d("评论列表E：" + e.getMessage());
-                    }
+                .build().execute(new StringCallback() {
+            @Override
+            public void onError(Call call, Exception e, int id) {
+                LogUtil.Companion.d("评论列表E：" + e.getMessage());
+            }
 
-                    @Override
-                    public void onResponse(String response, int id) {
-                        LogUtil.Companion.d("评论列表：" + response);
-                        ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
-                        switch (errorBean.getStatus()) {
-                            case "success":
-                                CommentResultBean commentResult = JSON.parseObject(response,
-                                        CommentBean.class).getCommentResult();
-                                mCommentList = commentResult.getCommentList();
-                                if (mCommentList.size() != 0) {
-                                    mInformationDetailUnread.setVisibility(PAGE == TOTAL_PAGE ?
-                                            View.INVISIBLE : View.VISIBLE);
-                                } else {
-                                    mInformationDetailUnread.setVisibility(View.INVISIBLE);
-                                }
-                                TOTAL_PAGE = commentResult.getTotalPage();
-                                PAGE = 2;
-                                mCommentAdapter = new CommentAdapter(getApplicationContext(),
-                                        mCommentList);
-                                //评论
-                                mCommentAdapter.setOnScoreClickListener(InformationDetailActivity
-                                        .this);
-                                mComment_list.setAdapter(mCommentAdapter);
-                                break;
-                            case "failure":
-                                Util.showError(InformationDetailActivity.this, errorBean
-                                        .getReason());
-                                break;
+            @Override
+            public void onResponse(String response, int id) {
+                LogUtil.Companion.d("评论列表：" + response);
+                ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
+                switch (errorBean.getStatus()) {
+                    case "success":
+                        CommentResultBean commentResult = JSON.parseObject(response,
+                                CommentBean.class).getCommentResult();
+                        mCommentList = commentResult.getCommentList();
+                        if (mCommentList.size() != 0) {
+                            mInformationDetailUnread.setVisibility(PAGE == TOTAL_PAGE ?
+                                    View.INVISIBLE : View.VISIBLE);
+                        } else {
+                            mInformationDetailUnread.setVisibility(View.INVISIBLE);
                         }
-                    }
-                });
+                        TOTAL_PAGE = commentResult.getTotalPage();
+                        PAGE = 2;
+                        mCommentAdapter = new CommentAdapter(getApplicationContext(),
+                                mCommentList);
+                        //评论
+                        mCommentAdapter.setOnScoreClickListener(InformationDetailActivity
+                                .this);
+                        mComment_list.setAdapter(mCommentAdapter);
+                        break;
+                    case "failure":
+                        Util.showError(InformationDetailActivity.this, errorBean
+                                .getReason());
+                        break;
+                }
+            }
+        });
     }
 
 
@@ -610,10 +622,14 @@ public class InformationDetailActivity extends BaseActivity implements View.OnCl
                         mIntegral += mNews.getIntegralValue();
                         SharePreferenceUtil.put(getApplicationContext(), Constant.INTEGRAL,
                                 mIntegral);
-                        ToastUtil.showShort(getApplicationContext(), "积分已增加");
+                        ToastUtil.showShort(currentContext, "分享成功，增加" + mIntegral + "积分");
                         break;
                     case "failure":
-                        Util.showError(InformationDetailActivity.this, errorBean.getReason());
+                        if (errorBean.getReason() == 116) {
+                            Util.showError(InformationDetailActivity.this, errorBean.getReason());
+                        } else {
+                            ToastUtil.showShort(currentContext, "积分只能累加一次哟~");
+                        }
                         break;
                 }
             }

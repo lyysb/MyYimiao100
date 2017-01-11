@@ -199,6 +199,8 @@ public class InformationDetailActivity extends BaseActivity implements View.OnCl
                 .WRAP_CONTENT);
 
         LogUtil.Companion.d("new_Html5WebView_mProgressDialog" + mLoadingProgress);
+        //本地不处理外部链接
+        Html5WebView.shouldOverrideUrlLoading = false;
         mWebView = new Html5WebView(this, mLoadingProgress);
         mWebView.setLayoutParams(params);
         mLayout.addView(mWebView);

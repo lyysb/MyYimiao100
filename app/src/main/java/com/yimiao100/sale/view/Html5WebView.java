@@ -2,7 +2,9 @@ package com.yimiao100.sale.view;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Message;
 import android.util.AttributeSet;
 import android.webkit.GeolocationPermissions;
@@ -27,6 +29,8 @@ public class Html5WebView extends WebView {
 
     private Context mContext;
     private ProgressDialog mLoadingProgress;
+
+    public static boolean shouldOverrideUrlLoading = true;
 
     public Html5WebView(Context context) {
         this(context, null);
@@ -105,7 +109,19 @@ public class Html5WebView extends WebView {
         // 多页面在同一个WebView中打开，就是不新建activity或者调用系统浏览器打开
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
-            view.loadUrl(url);
+            //如果需要本地加载，则加载url
+            if (shouldOverrideUrlLoading) {
+                view.loadUrl(url);
+            } else {
+                Intent intent = new Intent();
+                intent.setAction("android.intent.action.VIEW");
+                Uri content_url = Uri.parse(url);
+                intent.setData(content_url);
+                ActivityCollector.getTopActivity().startActivity(intent);
+                if (Html5WebView.this.canGoBack()) {
+                    Html5WebView.this.goBack();
+                }
+            }
             LogUtil.Companion.d(url);
             return true;
         }

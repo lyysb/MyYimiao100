@@ -19,11 +19,19 @@ public class JavascriptInterface {
 
     @android.webkit.JavascriptInterface
     public void openImage(String img) {
-        System.out.println(img);
         Intent intent = new Intent();
         intent.putExtra("image", img);
         intent.setClass(context, ShowWebImageActivity.class);
         context.startActivity(intent);
-        System.out.println(img);
     }
+
+
+//    @android.webkit.JavascriptInterface
+//    public void openHref(String url) {
+//        Intent intent = new Intent();
+//        intent.setAction("android.intent.action.VIEW");
+//        Uri content_url = Uri.parse(url);
+//        intent.setData(content_url);
+//        ActivityCollector.getTopActivity().startActivity(intent);
+//    }
 }

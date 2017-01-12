@@ -73,7 +73,7 @@ public class BindCompanyActivity extends BaseActivity implements TitleView
     ImageView mAddExperience;                               //添加经历
     EditText mCompanyEver;                                  //曾经所在公司及职位
     EditText mPromotionAdvantage;                           //推广优势
-    Button mBindCompanySubmit;
+    Button mBindCompanySubmit;                              //提交按钮
 
 
     private final String URL_CORPORATE_USER_ACCOUNT = Constant.BASE_URL +
@@ -95,11 +95,6 @@ public class BindCompanyActivity extends BaseActivity implements TitleView
     private final String EXPERIENCE = "experience";                         //工作经历
     private final String ADVANTAGE = "advantage";                           //推广优势
     private final String EXPERIENCE_LIST = "experienceList";                //推广经历
-//    private final String PROVINCE_ID = "provinceId";
-//    private final String CITY_ID = "cityId";
-//    private final String START_AT_FORMAT = "startAtFormat";
-//    private final String END_AT_FORMAT = "endAtFormat";
-//    private final String PRODUCT_NAME = "productName";
 
 
     private static final int BIZ_FROM_CAMERA = 100;
@@ -127,11 +122,6 @@ public class BindCompanyActivity extends BaseActivity implements TitleView
     private String mExperience;
     private String mAdvantage;
     private String mExperienceList;
-//    private String mProvinceId;
-//    private String mCityId;
-//    private String mStartAtFormat;
-//    private String mEndAtFormat;
-//    private String mProductName;
 
     private File mBizLicence;
     private File mPersonalPhoto;
@@ -309,9 +299,8 @@ public class BindCompanyActivity extends BaseActivity implements TitleView
             cacheCorporatePic(bizUrl, personalUrl, idUrl);
 
             //如果审核通过，则不再允许修任何改数据
-            String accountStatus = (String) SharePreferenceUtil.get(this, Constant
-                    .CORPORATE_ACCOUNT_STATUS, "");
-            if (TextUtils.equals("passed", accountStatus)) {
+            if (corporate.getAccountStatus() != null && TextUtils.equals("passed", corporate
+                    .getAccountStatus())) {
                 //禁止修改数据
                 forbidChange();
             }
@@ -418,22 +407,47 @@ public class BindCompanyActivity extends BaseActivity implements TitleView
                         ADD_EXPERIENCE);
                 break;
             case R.id.bind_company_submit:
-                if (mBindCompanyName.getText().toString().trim().isEmpty() ||
-                        mBindCompanyBankCard.getText().toString().trim().isEmpty() ||
-                        mBindCompanyBankName.getText().toString().trim().isEmpty() ||
-                        mBindCompanyCorporationQQ.getText().toString().trim().isEmpty() ||
-                        mBindCompanyCorporationEmail.getText().toString().trim().isEmpty() ||
-                        mBindCompanyCorporation.getText().toString().trim().isEmpty() ||
-                        mBindCompanyCorporationPhoneNumber.getText().toString().trim().isEmpty() ||
-                        mBindCompanyCorporationIdNumber.getText().toString().trim().isEmpty() ||
-                        mCompanyEver.getText().toString().trim().isEmpty() ||
-                        mPromotionAdvantage.getText().toString().trim().isEmpty()
-
-                        ) {
-                    //提示非空
-                    ToastUtil.showLong(getApplicationContext(), "请填写完整信息");
+                if (mBindCompanyName.getText().toString().trim().isEmpty()) {
+                    ToastUtil.showShort(this, "请填写开户名称");
                     return;
                 }
+                if (mBindCompanyBankCard.getText().toString().trim().isEmpty()) {
+                    ToastUtil.showShort(this, "请填写公司账号");
+                    return;
+                }
+                if (mBindCompanyBankName.getText().toString().trim().isEmpty()) {
+                    ToastUtil.showShort(this, "请填写开户银行");
+                    return;
+                }
+                if (mBindCompanyCorporation.getText().toString().trim().isEmpty()) {
+                    ToastUtil.showShort(this, "请填写姓名");
+                    return;
+                }
+                if (mBindCompanyCorporationPhoneNumber.getText().toString().trim().isEmpty()) {
+                    ToastUtil.showShort(this, "请填写电话");
+                    return;
+                }
+                if (mBindCompanyCorporationQQ.getText().toString().trim().isEmpty()) {
+                    ToastUtil.showShort(this, "请填写QQ号码");
+                    return;
+                }
+                if (mBindCompanyCorporationEmail.getText().toString().trim().isEmpty()) {
+                    ToastUtil.showShort(this, "请填写邮箱");
+                    return;
+                }
+                if (mBindCompanyCorporationIdNumber.getText().toString().trim().isEmpty()) {
+                    ToastUtil.showShort(this, "请填写身份账号");
+                    return;
+                }
+                if (mCompanyEver.getText().toString().trim().isEmpty()) {
+                    ToastUtil.showShort(this, "曾经所在公司及职位");
+                    return;
+                }
+                if (mPromotionAdvantage.getText().toString().trim().isEmpty()) {
+                    ToastUtil.showShort(this, "请填写推广优势");
+                    return;
+                }
+
                 if (mBizLicence == null) {
                     ToastUtil.showLong(getApplicationContext(), "请拍摄营业执照");
                     return;

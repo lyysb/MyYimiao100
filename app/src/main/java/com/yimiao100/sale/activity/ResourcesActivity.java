@@ -8,8 +8,10 @@ import android.support.v4.view.ViewPager;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.yimiao100.sale.R;
@@ -97,6 +99,11 @@ public class ResourcesActivity extends BaseActivitySingleList implements Carouse
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setEmptyView("好饭不怕晚，推广资源也是。", R.mipmap.ico_resources);
+        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(ViewGroup
+                .LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        // 145是HeaderView的高度
+        layoutParams.setMargins(0, DensityUtil.dp2px(this, 145), 0, 0);
+        mEmptyView.setLayoutParams(layoutParams);
         //初始化滚轮联动器
         mOptions = new CharacterPickerWindow(this);
         initHeadView();

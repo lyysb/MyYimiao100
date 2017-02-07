@@ -46,6 +46,7 @@ public class MyApplication extends Application{
     @Override
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
+        // 如果删了此处代码程序就炸了
         MultiDex.install(this);
     }
 

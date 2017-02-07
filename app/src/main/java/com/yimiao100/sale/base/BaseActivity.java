@@ -13,6 +13,10 @@ import com.yimiao100.sale.utils.SharePreferenceUtil;
 
 import cn.jpush.android.api.JPushInterface;
 
+/**
+ * 这个公司没有年终奖的,兄弟别指望了,也别来了,我准备辞职了
+ * 另外这个项目有很多*Bug* 你坚持不了多久的,拜拜!
+ */
 public class BaseActivity extends AppCompatActivity {
 
     protected static Activity currentContext;

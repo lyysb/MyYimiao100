@@ -7,8 +7,10 @@ import java.util.HashMap;
  * Created by 亿苗通 on 2016/8/9.
  */
 public interface Constant {
-//    String BASE_URL = "http://161p3p2316.iask.in/ymt";
-    String BASE_URL = "http://123.56.203.55/ymt";
+    boolean isTest = false;     // 是否在测试环境下
+    String BASE_URL_TEST = "http://161p3p2316.iask.in/ymt";
+    String BASE_URL_OFFICAL = "http://123.56.203.55/ymt";
+    String BASE_URL = isTest ? BASE_URL_TEST : BASE_URL_OFFICAL;
     String SHARE_URL = "http://www.yimiaoquan100.com/ymt";
     /**
      * Mob-AppKey
@@ -24,7 +26,6 @@ public interface Constant {
      */
     String MEI_QIA_APP_KEY = "73b657bcb9829a51600a8f04e3f3609f";
 
-    String IMAGE = "?imageMogr2/thumbnail/100x60";
     /**
      *
      */

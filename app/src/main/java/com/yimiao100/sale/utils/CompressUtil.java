@@ -7,6 +7,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -50,4 +53,45 @@ public class CompressUtil {
         }
         return zipFile;
     }
+
+    /**
+     * @param files key-压缩在文件内的名字；val-文件真实路径
+     * @param zipFileName
+     * @return
+     */
+    public static File zipANDSave(HashMap<String, String> files, String zipFileName) {
+        File zipFile = null;
+        try {
+            zipFile= new File(Environment.getExternalStorageDirectory().getAbsolutePath(),
+                    zipFileName);
+            FileOutputStream fos = new FileOutputStream(zipFile);
+            ZipOutputStream out = new ZipOutputStream(new BufferedOutputStream(fos));
+
+            byte[] buf = new byte[BUFFER];
+            Iterator<Map.Entry<String, String>> iterator = files.entrySet().iterator();
+            while (iterator.hasNext()) {
+                Map.Entry<String, String> entry = iterator.next();
+                // 获取设置的压缩文件内的名字
+                String key = entry.getKey();
+                // 获取压缩文件内的真实路径
+                String value = entry.getValue();
+                File temp = new File(value);
+                FileInputStream in = new FileInputStream(temp);
+                out.putNextEntry(new ZipEntry(key));
+                int len;
+                while ((len = in.read(buf)) > 0) {
+                    out.write(buf, 0, len);
+                }
+                out.closeEntry();
+                in.close();
+            }
+            out.close();
+            fos.close();
+            LogUtil.Companion.d("success");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return zipFile;
+    }
+
 }

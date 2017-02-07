@@ -66,9 +66,10 @@ public class Html5WebView extends WebView {
         //缓存数据
         saveData(mWebSettings);
         newWin(mWebSettings);
+
+
         setWebChromeClient(webChromeClient);
         setWebViewClient(webViewClient);
-
     }
 
     /**

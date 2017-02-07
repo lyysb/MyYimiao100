@@ -25,9 +25,9 @@ import okhttp3.Call;
 
 /**
  * 忘记密码-2
- * TODO 密码限制判断
  */
-public class ForgetPwd2Activity extends BaseActivity implements TextWatcher, TitleView.TitleBarOnClickListener {
+public class ForgetPwd2Activity extends BaseActivity implements TextWatcher, TitleView
+        .TitleBarOnClickListener {
 
     @BindView(R.id.forget_pwd_back)
     TitleView mForgetPwdBack;           //标题栏，返回键
@@ -41,7 +41,7 @@ public class ForgetPwd2Activity extends BaseActivity implements TextWatcher, Tit
     private boolean isSame = false;
     private String mAccountNumber;
 
-    private String RESET_PASSWORD = "/api/user/reset_password";
+    private String URL_RESET_PASSWORD = Constant.BASE_URL + "/api/user/reset_password";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,36 +61,41 @@ public class ForgetPwd2Activity extends BaseActivity implements TextWatcher, Tit
 
     @OnClick(R.id.forget_submit)
     public void onClick() {
+        resetPwd();
+    }
+
+    private void resetPwd() {
         //将新密码提交到服务器，进入修改成功界面
-        String url = Constant.BASE_URL + RESET_PASSWORD;
-        OkHttpUtils
-                .post()
-                .url(url)
+        mForgetSubmit.setEnabled(false);
+        OkHttpUtils.post().url(URL_RESET_PASSWORD)
                 .addParams("accountNumber", mAccountNumber)
                 .addParams("password", mForgetPwdNew.getText().toString().trim())
-                .build()
-                .execute(new StringCallback() {
-                    @Override
-                    public void onError(Call call, Exception e, int id) {
+                .build().execute(new StringCallback() {
+            @Override
+            public void onError(Call call, Exception e, int id) {
+                mForgetSubmit.setEnabled(true);
+                e.printStackTrace();
+                Util.showTimeOutNotice(currentContext);
+            }
 
-                    }
-
-                    @Override
-                    public void onResponse(String response, int id) {
-                        ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
-                        switch (errorBean.getStatus()) {
-                            case "success":
-                                //进入完成界面
-                                startActivity(new Intent(ForgetPwd2Activity.this, ChangeFinishedActivity.class));
-                                finish();
-                                break;
-                            case "failure":
-                                //将错误信息进行显示
-                                Util.showError(ForgetPwd2Activity.this, errorBean.getReason());
-                                break;
-                        }
-                    }
-                });
+            @Override
+            public void onResponse(String response, int id) {
+                mForgetSubmit.setEnabled(true);
+                ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
+                switch (errorBean.getStatus()) {
+                    case "success":
+                        //进入完成界面
+                        startActivity(new Intent(ForgetPwd2Activity.this, ChangeFinishedActivity
+                                .class));
+                        finish();
+                        break;
+                    case "failure":
+                        //将错误信息进行显示
+                        Util.showError(currentContext, errorBean.getReason());
+                        break;
+                }
+            }
+        });
     }
 
     @Override
@@ -106,14 +111,16 @@ public class ForgetPwd2Activity extends BaseActivity implements TextWatcher, Tit
     @Override
     public void afterTextChanged(Editable s) {
         //判断两个输入框内容是否一致，并且输入框非空
-        if (TextUtils.isEmpty(mForgetPwdNew.getText().toString()) ||TextUtils.isEmpty(mForgetPwdConfirm.getText().toString())){
+        if (TextUtils.isEmpty(mForgetPwdNew.getText().toString()) || TextUtils.isEmpty
+                (mForgetPwdConfirm.getText().toString())) {
             isSame = false;
-        }else {
-            isSame = TextUtils.equals(mForgetPwdNew.getText().toString(), mForgetPwdConfirm.getText().toString());
+        } else {
+            isSame = TextUtils.equals(mForgetPwdNew.getText().toString(), mForgetPwdConfirm
+                    .getText().toString());
         }
-        //TODO 密码限制判断
         mForgetSubmit.setClickable(isSame);
-        mForgetSubmit.setBackgroundResource(isSame ? R.drawable.shape_getcode : R.drawable.shape_getcode_loading);
+        mForgetSubmit.setBackgroundResource(isSame ? R.drawable.shape_getcode : R.drawable
+                .shape_getcode_loading);
     }
 
     @Override

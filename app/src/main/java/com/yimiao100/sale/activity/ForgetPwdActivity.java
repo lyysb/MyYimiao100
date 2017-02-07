@@ -50,16 +50,17 @@ public class ForgetPwdActivity extends BaseActivity {
     /**
      * 用户账号验证
      */
-    private final String VALIDATE_ACCOUNT_NUMBER = "/api/user/validate_account_number";
+    private final String VALIDATE_ACCOUNT_NUMBER = Constant.BASE_URL +
+            "/api/user/validate_account_number";
 
-    private Handler mHandler = new Handler(){
+    private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            switch (msg.what){
+            switch (msg.what) {
                 case 1:
                     String detail = msg.getData().getString("detail");
-                    ToastUtil.showLong(ForgetPwdActivity.this, detail);
+                    ToastUtil.showShort(ForgetPwdActivity.this, detail);
                     break;
                 case 2:
                     Util.showTimeOutNotice(currentContext);
@@ -89,12 +90,16 @@ public class ForgetPwdActivity extends BaseActivity {
                     //回调完成
                     if (event == SMSSDK.EVENT_SUBMIT_VERIFICATION_CODE) {
                         //验证通过，进入下一步界面
-                        Intent intent = new Intent(ForgetPwdActivity.this, ForgetPwd2Activity.class);
-                        intent.putExtra("accountNumber", mFogetPwdPhone.getText().toString().trim());
+                        Intent intent = new Intent(ForgetPwdActivity.this, ForgetPwd2Activity
+                                .class);
+                        intent.putExtra("accountNumber", mFogetPwdPhone.getText().toString().trim
+                                ());
                         startActivity(intent);
                         finish();
+                    } else {
+                        ToastUtil.showShort(currentContext, "未知错误");
                     }
-                } else if (event == SMSSDK.RESULT_ERROR){
+                } else if (event == SMSSDK.RESULT_ERROR) {
                     Throwable throwable = (Throwable) data;
                     JSONObject object;
                     try {
@@ -115,8 +120,6 @@ public class ForgetPwdActivity extends BaseActivity {
                         e.printStackTrace();
                         mHandler.sendEmptyMessage(2);
                     }
-
-
                 }
             }
         };
@@ -129,56 +132,65 @@ public class ForgetPwdActivity extends BaseActivity {
         switch (view.getId()) {
             case R.id.forget_pwd_get_code:
                 //要求手机号不能为空
-                if (TextUtils.isEmpty(mFogetPwdPhone.getText().toString().trim())){
+                if (TextUtils.isEmpty(mFogetPwdPhone.getText().toString().trim())) {
                     ToastUtil.showLong(this, "请输入手机号");
                     return;
                 }
                 //如果手机号长度不是11位，则返回
                 if (mFogetPwdPhone.getText().toString().trim().length() != 11) {
-                    ToastUtil.showLong(getApplicationContext(), "请输入合法的手机号");
+                    ToastUtil.showShort(getApplicationContext(), "请输入合法的手机号");
                     return;
                 }
-                //联网进行账号验证
-                String check_url = Constant.BASE_URL + VALIDATE_ACCOUNT_NUMBER;
-                OkHttpUtils
-                        .post()
-                        .url(check_url)
-                        .addParams("accountNumber", mFogetPwdPhone.getText().toString().trim())
-                        .build()
-                        .execute(new StringCallback() {
-                            @Override
-                            public void onError(Call call, Exception e, int id) {
-                                LogUtil.Companion.d("忘记密码：" + e.getMessage());
-                                Util.showTimeOutNotice(currentContext);
-                            }
-
-                            @Override
-                            public void onResponse(String response, int id) {
-                                ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
-                                switch (errorBean.getStatus()){
-                                    case "success":
-                                        //验证通过，请求获取短信验证码，进入接口回调
-                                        SMSSDK.getVerificationCode("86", mFogetPwdPhone.getText().toString().trim());
-                                        //按钮倒计时
-                                        time.start();
-                                        break;
-                                    case "failure":
-                                        Util.showError(currentContext, errorBean.getReason());
-                                        break;
-                                }
-                            }
-                        });
+                //验证账号，并获取验证码
+                getSMSCode();
                 break;
             case R.id.forget_pwd_next:
                 //判空，非空才能提交
-                if (TextUtils.isEmpty(mFogetPwdPhone.getText().toString().trim()) || TextUtils.isEmpty(mForgetPwdCode.getText().toString().trim())){
-                    ToastUtil.showLong(this, "请输入完整信息");
+                if (TextUtils.isEmpty(mFogetPwdPhone.getText().toString().trim())) {
+                    ToastUtil.showShort(this, "请输入手机号");
                     return;
                 }
+                if (TextUtils.isEmpty(mForgetPwdCode.getText().toString().trim())) {
+                    ToastUtil.showShort(this, "请输入验证码");
+                }
                 //提交短信验证码，触发短信操作回调，验证短信验证码是否正确，然后和服务器进行交互
-                SMSSDK.submitVerificationCode("86", mFogetPwdPhone.getText().toString().trim(), mForgetPwdCode.getText().toString().trim());
+                SMSSDK.submitVerificationCode("86", mFogetPwdPhone.getText().toString().trim(),
+                        mForgetPwdCode.getText().toString().trim());
                 break;
         }
+    }
+
+    private void getSMSCode() {
+        mForgetPwdGetCode.setEnabled(false);
+        //联网进行账号验证
+        OkHttpUtils.post().url(VALIDATE_ACCOUNT_NUMBER)
+                .addParams("accountNumber", mFogetPwdPhone.getText().toString().trim())
+                .build().execute(new StringCallback() {
+            @Override
+            public void onError(Call call, Exception e, int id) {
+                mForgetPwdGetCode.setEnabled(true);
+                LogUtil.Companion.d("忘记密码：" + e.getMessage());
+                Util.showTimeOutNotice(currentContext);
+            }
+
+            @Override
+            public void onResponse(String response, int id) {
+                mForgetPwdGetCode.setEnabled(true);
+                ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
+                switch (errorBean.getStatus()) {
+                    case "success":
+                        //验证通过，请求获取短信验证码，进入接口回调
+                        SMSSDK.getVerificationCode("86", mFogetPwdPhone.getText()
+                                .toString().trim());
+                        //按钮倒计时
+                        time.start();
+                        break;
+                    case "failure":
+                        Util.showError(currentContext, errorBean.getReason());
+                        break;
+                }
+            }
+        });
     }
 
     @Override
@@ -197,7 +209,7 @@ public class ForgetPwdActivity extends BaseActivity {
         @Override
         public void onTick(long millisUntilFinished) {
             mForgetPwdGetCode.setBackgroundResource(R.drawable.shape_getcode_loading);
-            mForgetPwdGetCode.setText(millisUntilFinished / 1000 +" 秒后可重新发送");
+            mForgetPwdGetCode.setText(millisUntilFinished / 1000 + " 秒后可重新发送");
             //button的setClickable无效
             mForgetPwdGetCode.setEnabled(false);
             mForgetPwdGetCode.setTextColor(Color.parseColor("#999999"));

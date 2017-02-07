@@ -157,7 +157,6 @@ public class InformationDetailActivity extends BaseActivity implements View.OnCl
     private void initView() {
         initTitleView();
 
-
         //评论列表
         mComment_list = (PullToRefreshListView) findViewById(R.id.information_detail_comments);
         //分享按钮
@@ -198,7 +197,6 @@ public class InformationDetailActivity extends BaseActivity implements View.OnCl
                 .MATCH_PARENT, ViewGroup.LayoutParams
                 .WRAP_CONTENT);
 
-        LogUtil.Companion.d("new_Html5WebView_mProgressDialog" + mLoadingProgress);
         //本地不处理外部链接
         Html5WebView.shouldOverrideUrlLoading = false;
         mWebView = new Html5WebView(this, mLoadingProgress);
@@ -259,8 +257,8 @@ public class InformationDetailActivity extends BaseActivity implements View.OnCl
         //获取资讯详情显示
         showInformationDetail();
 
-        //WebView获取资讯内容
-        showInformationContent();
+        //WebView获取资讯内容--GET请求方式
+//        showInformationContent();
 
         //获取评论列表
         showInformationComment();
@@ -304,8 +302,7 @@ public class InformationDetailActivity extends BaseActivity implements View.OnCl
                         setNewsDetail(mNews);
                         break;
                     case "failure":
-                        Util.showError(InformationDetailActivity.this, errorBean
-                                .getReason());
+                        Util.showError(currentContext, errorBean.getReason());
                         break;
                 }
             }
@@ -351,7 +348,8 @@ public class InformationDetailActivity extends BaseActivity implements View.OnCl
         String newsFrom = news.getNewsSource();
         mInformationDetailFrom.setText(newsFrom);
         //发布时间
-        mInformationDetailTime.setText(TimeUtil.timeStamp2Date(news.getPublishAt() + "", "MM月dd日 HH:mm"));
+        mInformationDetailTime.setText(TimeUtil.timeStamp2Date(news.getPublishAt() + "", "MM月dd日 " +
+                "HH:mm"));
         //设置标签
         List<TagListBean> tagList = news.getTagList();
         List<String> TagNameList = new ArrayList<>();
@@ -392,18 +390,37 @@ public class InformationDetailActivity extends BaseActivity implements View.OnCl
         } else {
             mImageUrl = mNews.getImageList().get(0).getImageUrl();
         }
+        //-富文本方式显示资讯内容
+        showInformationContent(mNews.getNewsContent());
     }
 
     /**
-     * WebView显示资讯详情内容
+     * WebView显示资讯详情内容--富文本
+     */
+    private void showInformationContent(String newsContent) {
+        WebSettings settings = mWebView.getSettings();
+        settings.setJavaScriptEnabled(true);
+        //自适应屏幕
+        settings.setLoadWithOverviewMode(true);
+        settings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
+        settings.setUseWideViewPort(true);
+        mWebView.loadData(newsContent, "text/html; charset=UTF-8", null);
+//        mWebView.loadDataWithBaseURL(null, newsContent, "text/html; charset=UTF-8", null, null);
+    }
+
+    /**
+     * WebView显示资讯详情内容--GET请求
      */
     private void showInformationContent() {
         WebSettings settings = mWebView.getSettings();
         settings.setJavaScriptEnabled(true);
         //自适应屏幕
         settings.setLoadWithOverviewMode(true);
+        settings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
+        settings.setUseWideViewPort(true);
         mWebView.loadUrl(CONTENT_URL + "?newsId=" + mNewsId);
     }
+
 
     @Override
     protected void onPause() {
@@ -780,74 +797,68 @@ public class InformationDetailActivity extends BaseActivity implements View.OnCl
     @Override
     public void OnScoreClick(TextView comment_user_score, int commentId) {
         mCommentUserScore = comment_user_score;
-        OkHttpUtils
-                .post()
-                .url(POST_COMMENT_SCORE)
-                .addHeader("X-Authorization-Token", mAccessToken)
+        OkHttpUtils.post().url(POST_COMMENT_SCORE)
+                .addHeader(ACCESS_TOKEN, mAccessToken)
                 .addParams("commentId", commentId + "")
-                .build()
-                .execute(new StringCallback() {
-                    @Override
-                    public void onError(Call call, Exception e, int id) {
-                        LogUtil.Companion.d("评论点赞E：" + e.getMessage());
-                        Util.showTimeOutNotice(currentContext);
-                    }
+                .build().execute(new StringCallback() {
+            @Override
+            public void onError(Call call, Exception e, int id) {
+                LogUtil.Companion.d("评论点赞E：" + e.getMessage());
+                Util.showTimeOutNotice(currentContext);
+            }
 
-                    @Override
-                    public void onResponse(String response, int id) {
-                        LogUtil.Companion.d("评论点赞" + response);
-                        ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
-                        switch (errorBean.getStatus()) {
-                            case "success":
-                                //评论点赞数加1
-                                int score_new = Integer.parseInt(mCommentUserScore.getText()
-                                        .toString()) + 1;
-                                mCommentUserScore.setText(score_new + "");
-                                mCommentUserScore.setCompoundDrawablesWithIntrinsicBounds
-                                        (mActivationScore, null, null, null);
-                                break;
-                            case "failure":
-                                Util.showError(InformationDetailActivity.this, errorBean
-                                        .getReason());
-                                break;
-                        }
-                    }
-                });
+            @Override
+            public void onResponse(String response, int id) {
+                LogUtil.Companion.d("评论点赞" + response);
+                ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
+                switch (errorBean.getStatus()) {
+                    case "success":
+                        //评论点赞数加1
+                        int score_new = Integer.parseInt(mCommentUserScore.getText()
+                                .toString()) + 1;
+                        mCommentUserScore.setText(score_new + "");
+                        mCommentUserScore.setCompoundDrawablesWithIntrinsicBounds
+                                (mActivationScore, null, null, null);
+                        break;
+                    case "failure":
+                        Util.showError(InformationDetailActivity.this, errorBean
+                                .getReason());
+                        break;
+                }
+            }
+        });
     }
 
     @Override
     public void OnPopupWindowClick(EditText comment_content) {
         String commentContent = comment_content.getText().toString();
-        OkHttpUtils
-                .post()
-                .url(POST_NEWS_COMMENT)
-                .addHeader("X-Authorization-Token", mAccessToken)
+        OkHttpUtils.post().url(POST_NEWS_COMMENT)
+                .addHeader(ACCESS_TOKEN, mAccessToken)
                 .addParams("objectId", mNewsId + "")
                 .addParams("commentContent", commentContent)
-                .build()
-                .execute(new StringCallback() {
-                    @Override
-                    public void onError(Call call, Exception e, int id) {
-                        LogUtil.Companion.d("提交评论E：" + e.getMessage());
-                        Util.showTimeOutNotice(currentContext);
-                    }
+                .build().execute(new StringCallback() {
+            @Override
+            public void onError(Call call, Exception e, int id) {
+                LogUtil.Companion.d("提交评论E：" + e.getMessage());
+                Util.showTimeOutNotice(currentContext);
+            }
 
-                    @Override
-                    public void onResponse(String response, int id) {
-                        ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
-                        switch (errorBean.getStatus()) {
-                            case "success":
-                                ToastUtil.showLong(InformationDetailActivity.this, "提交成功");
-                                //重新请求网络
-                                showInformationComment();
-                                break;
-                            case "failure":
-                                Util.showError(InformationDetailActivity.this, errorBean
-                                        .getReason());
-                                break;
-                        }
-                    }
-                });
+            @Override
+            public void onResponse(String response, int id) {
+                ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
+                switch (errorBean.getStatus()) {
+                    case "success":
+                        ToastUtil.showLong(InformationDetailActivity.this, "提交成功");
+                        //重新请求网络
+                        showInformationComment();
+                        break;
+                    case "failure":
+                        Util.showError(InformationDetailActivity.this, errorBean
+                                .getReason());
+                        break;
+                }
+            }
+        });
     }
 
     @Override
@@ -865,42 +876,40 @@ public class InformationDetailActivity extends BaseActivity implements View.OnCl
      */
     @Override
     public void onLoadMore() {
-
         if (PAGE <= TOTAL_PAGE) {
             OkHttpUtils.post().url(NEWS_COMMENT_LIST)
-                    .addHeader("X-Authorization-Token", mAccessToken)
+                    .addHeader(ACCESS_TOKEN, mAccessToken)
                     .addParams("objectId", mNewsId + "")
                     .addParams("userId", mUserId + "")
                     .addParams("page", PAGE + "")
                     .addParams("pageSize", "10")
-                    .build()
-                    .execute(new StringCallback() {
-                        @Override
-                        public void onError(Call call, Exception e, int id) {
-                            LogUtil.Companion.d("评论列表E：" + e.getMessage());
-                        }
+                    .build().execute(new StringCallback() {
+                @Override
+                public void onError(Call call, Exception e, int id) {
+                    LogUtil.Companion.d("评论列表E：" + e.getMessage());
+                }
 
-                        @Override
-                        public void onResponse(String response, int id) {
-                            LogUtil.Companion.d("评论列表：" + response);
-                            ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
-                            switch (errorBean.getStatus()) {
-                                case "success":
-                                    mInformationDetailUnread.setVisibility(PAGE == TOTAL_PAGE ?
-                                            View.INVISIBLE : View.VISIBLE);
-                                    PAGE++;
-                                    mCommentList.addAll(JSON.parseObject(response, CommentBean
-                                            .class).getCommentResult().getCommentList());
-                                    mCommentAdapter.notifyDataSetChanged();
-                                    break;
-                                case "failure":
-                                    Util.showError(InformationDetailActivity.this, errorBean
-                                            .getReason());
-                                    break;
-                            }
-                            mComment_list.onLoadMoreComplete();
-                        }
-                    });
+                @Override
+                public void onResponse(String response, int id) {
+                    LogUtil.Companion.d("评论列表：" + response);
+                    ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
+                    switch (errorBean.getStatus()) {
+                        case "success":
+                            mInformationDetailUnread.setVisibility(PAGE == TOTAL_PAGE ?
+                                    View.INVISIBLE : View.VISIBLE);
+                            PAGE++;
+                            mCommentList.addAll(JSON.parseObject(response, CommentBean
+                                    .class).getCommentResult().getCommentList());
+                            mCommentAdapter.notifyDataSetChanged();
+                            break;
+                        case "failure":
+                            Util.showError(InformationDetailActivity.this, errorBean
+                                    .getReason());
+                            break;
+                    }
+                    mComment_list.onLoadMoreComplete();
+                }
+            });
         } else {
             mComment_list.noMore();
         }
@@ -921,8 +930,16 @@ public class InformationDetailActivity extends BaseActivity implements View.OnCl
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        UMShareAPI.get(this).onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1001) {
+//            //-富文本方式显示资讯内容
+//            showInformationContent(mNews.getNewsContent());
+//            mCommentAdapter.notifyDataSetChanged();
+            LogUtil.Companion.d("从图片详情返回");
+        } else {
+            UMShareAPI.get(this).onActivityResult(requestCode, resultCode, data);
+        }
     }
+
 
     @Override
     protected void onDestroy() {

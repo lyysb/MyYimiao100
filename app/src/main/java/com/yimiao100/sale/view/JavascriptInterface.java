@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.yimiao100.sale.activity.ShowWebImageActivity;
+import com.yimiao100.sale.base.ActivityCollector;
 
 /**
  * 唤醒显示图片
@@ -22,7 +23,8 @@ public class JavascriptInterface {
         Intent intent = new Intent();
         intent.putExtra("image", img);
         intent.setClass(context, ShowWebImageActivity.class);
-        context.startActivity(intent);
+//        context.startActivity(intent);
+        ActivityCollector.getTopActivity().startActivityForResult(intent, 1001);
     }
 
 

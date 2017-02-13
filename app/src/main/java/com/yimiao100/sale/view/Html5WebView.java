@@ -23,32 +23,24 @@ import com.yimiao100.sale.utils.ToastUtil;
 
 /**
  * 自定义WebView
- * todo 不在这里控制加载进度条显示和隐藏
  */
 public class Html5WebView extends WebView {
 
     private Context mContext;
     private ProgressDialog mLoadingProgress;
-
     public static boolean shouldOverrideUrlLoading = true;
 
     public Html5WebView(Context context) {
         this(context, null);
     }
 
-    public Html5WebView(Context context, ProgressDialog progressDialog) {
-        this(context, progressDialog, null);
+    public Html5WebView(Context context, AttributeSet attrs) {
+        this(context, attrs, -1);
     }
 
-    public Html5WebView(Context context, ProgressDialog progressDialog, AttributeSet attrs) {
-        this(context, progressDialog, attrs, -1);
-    }
-
-    public Html5WebView(Context context, ProgressDialog progressDialog, AttributeSet attrs, int
-            defStyleAttr) {
+    public Html5WebView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         mContext = context;
-        mLoadingProgress = progressDialog;
         init();
     }
 

@@ -35,19 +35,12 @@ public class CommentAdapter extends BaseAdapter  {
 
     @Override
     public int getCount() {
-        if (mCommentList != null){
-            return mCommentList.size();
-        }else {
-            return 0;
-        }
+        return mCommentList != null ? mCommentList.size() : 0;
     }
 
     @Override
     public CommentListBean getItem(int position) {
-        if (mCommentList != null){
-            return mCommentList.get(position);
-        }
-        return null;
+        return mCommentList != null ? mCommentList.get(position) : null;
     }
 
     @Override

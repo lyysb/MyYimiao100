@@ -197,6 +197,7 @@ public class InformationDetailActivity extends BaseActivity implements View.OnCl
         mWebView = new Html5WebView(this);
         mWebView.setLayoutParams(params);
         mLayout.addView(mWebView);
+
         //载入js--可以点击显示图片，进行放大处理
         mWebView.addJavascriptInterface(new JavascriptInterface(this), "imagelistner");
 
@@ -908,24 +909,24 @@ public class InformationDetailActivity extends BaseActivity implements View.OnCl
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 1001) {
-//            //-富文本方式显示资讯内容
-//            showInformationContent(mNews.getNewsContent());
-//            mCommentAdapter.notifyDataSetChanged();
-            LogUtil.Companion.d("从图片详情返回");
-        } else {
-            UMShareAPI.get(this).onActivityResult(requestCode, resultCode, data);
-        }
+        UMShareAPI.get(this).onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
     protected void onPause() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB && mWebView != null) {
             mWebView.onPause(); // 暂停网页中正在播放的视频
         }
         super.onPause();
     }
 
+    @Override
+    protected void onResume() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB && mWebView != null) {
+            mWebView.onResume();
+        }
+        super.onResume();
+    }
 
     @Override
     protected void onDestroy() {

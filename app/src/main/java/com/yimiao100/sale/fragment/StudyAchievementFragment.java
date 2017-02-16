@@ -29,7 +29,7 @@ import okhttp3.Call;
 
 /**
  * 学习任务-已完成
- * Created by 亿苗通 on 2016/10/24.
+ * Created by Michel on 2016/10/24.
  */
 
 public class StudyAchievementFragment extends BaseFragmentSingleList {
@@ -41,6 +41,8 @@ public class StudyAchievementFragment extends BaseFragmentSingleList {
     private ArrayList<OpenClass> mAchievedClass;
     private AchievedAdapter mAchievedAdapter;
 
+
+
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -48,12 +50,15 @@ public class StudyAchievementFragment extends BaseFragmentSingleList {
     }
 
     @Override
+    protected String initPageTitle() {
+        return "已完成";
+    }
+
+    @Override
     public void onStart() {
         super.onStart();
         onRefresh();
     }
-
-
 
     @Override
     protected void onItemClick(AdapterView<?> parent, View view, int position, long id) {

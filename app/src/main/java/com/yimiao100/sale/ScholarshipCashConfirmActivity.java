@@ -26,6 +26,7 @@ import butterknife.OnClick;
 import okhttp3.Call;
 
 /**
+ * 鬼知道我当时怎么就放在了包外面。
  * 奖学金提现确认
  */
 public class ScholarshipCashConfirmActivity extends BaseActivity implements TitleView

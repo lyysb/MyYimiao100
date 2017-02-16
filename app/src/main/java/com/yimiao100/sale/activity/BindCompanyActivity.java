@@ -90,9 +90,6 @@ public class BindCompanyActivity extends BaseActivity implements TitleView
     private final String QQ = "qq";                                         //QQ
     private final String EMAIL = "email";                                   //邮箱
     private final String ID_NUMBER = "idNumber";                            //身份证号
-    private final String BIZ_LICENCE = "bizLicence";                        //企业营业执照
-    private final String PERSONAL_PHOTO = "personalPhoto";                  //个人手持证件照
-    private final String ID_PHOTO = "idPhoto";                              //身份证照片
     private final String EXPERIENCE = "experience";                         //工作经历
     private final String ADVANTAGE = "advantage";                           //推广优势
     private final String EXPERIENCE_LIST = "experienceList";                //推广经历
@@ -296,17 +293,15 @@ public class BindCompanyActivity extends BaseActivity implements TitleView
             LogUtil.Companion.d("idUrl-" + idUrl);
 
             Picasso.with(getApplicationContext()).load(bizUrl)
-                    .resize(DensityUtil.dp2px(this, 86), DensityUtil.dp2px(this, 108)).centerCrop()
                     .placeholder(R.mipmap.ico_binding_account_add_photos)
-                    .error(R.mipmap.ico_binding_account_add_photos)
+                    .transform(BitmapUtil.getTransformation(mBindCompanyTakePhoto))
                     .into(mBindCompanyTakePhoto);
             Picasso.with(getApplicationContext()).load(personalUrl)
-                    .resize(DensityUtil.dp2px(this, 134), DensityUtil.dp2px(this, 85)).centerCrop()
+                    .transform(BitmapUtil.getTransformation(mBindCompanyCardPhoto1))
                     .placeholder(R.mipmap.ico_binding_account_certificates)
-                    .error(R.mipmap.ico_binding_account_certificates)
                     .into(mBindCompanyCardPhoto1);
             Picasso.with(getApplicationContext()).load(idUrl)
-                    .resize(DensityUtil.dp2px(this, 134), DensityUtil.dp2px(this, 85)).centerCrop()
+                    .transform(BitmapUtil.getTransformation(mBindCompanyCardPhoto2))
                     .placeholder(R.mipmap.ico_binding_account_certificates_two)
                     .error(R.mipmap.ico_binding_account_certificates_two)
                     .into(mBindCompanyCardPhoto2);

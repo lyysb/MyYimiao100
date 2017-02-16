@@ -53,16 +53,23 @@ public abstract class BaseFragmentSingleList extends Fragment {
         ButterKnife.bind(this, mView);
 
         mAccessToken = (String) SharePreferenceUtil.get(getContext(), Constant.ACCESSTOKEN, "");
+
         initView();
-
-        onRefresh();
-
-
 
         return mView;
     }
 
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
+        onRefresh();
+    }
+
+    /**
+     * @return 初始化Tab标签
+     */
+    protected abstract String initPageTitle();
 
     private void initView() {
         initEmptyView();
@@ -94,7 +101,6 @@ public abstract class BaseFragmentSingleList extends Fragment {
     }
 
     private void initListView() {
-
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -127,24 +133,17 @@ public abstract class BaseFragmentSingleList extends Fragment {
             mEmptyView.setVisibility(View.GONE);
         }
     }
-    /**
-     * 条目点击事件
-     *
-     * @param parent
-     * @param view
-     * @param position
-     * @param id
-     */
+
     protected abstract void onItemClick(AdapterView<?> parent, View view, int position, long id);
 
-    /**
-     * 刷新数据
-     */
     protected abstract void onRefresh();
 
+    protected abstract void onLoadMore();
 
     /**
-     * 加载更多数据
+     * @return Tab标签
      */
-    protected abstract void onLoadMore();
+    public CharSequence getPageTitle() {
+        return initPageTitle();
+    }
 }

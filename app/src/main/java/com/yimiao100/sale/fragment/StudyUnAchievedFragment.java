@@ -47,12 +47,15 @@ public class StudyUnAchievedFragment extends BaseFragmentSingleList {
     }
 
     @Override
+    protected String initPageTitle() {
+        return "未完成";
+    }
+
+    @Override
     public void onStart() {
         super.onStart();
         onRefresh();
     }
-
-
 
     @Override
     protected void onItemClick(AdapterView<?> parent, View view, int position, long id) {

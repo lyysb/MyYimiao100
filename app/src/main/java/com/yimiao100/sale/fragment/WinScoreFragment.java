@@ -28,7 +28,7 @@ import okhttp3.Call;
 
 /**
  * 学习/做任务-领取积分
- * Created by 亿苗通 on 2016/10/24.
+ * Created by Michel on 2016/10/24.
  */
 
 public class WinScoreFragment extends BaseFragmentSingleList {
@@ -50,10 +50,16 @@ public class WinScoreFragment extends BaseFragmentSingleList {
     }
 
     @Override
+    protected String initPageTitle() {
+        return "领取积分";
+    }
+
+    @Override
     public void onStart() {
         super.onStart();
         onRefresh();
     }
+
 
 
     private RequestCall getBuild(int page) {

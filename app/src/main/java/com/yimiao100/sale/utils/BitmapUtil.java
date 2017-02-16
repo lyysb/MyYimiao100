@@ -8,6 +8,10 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
+import android.widget.ImageView;
+
+import com.squareup.picasso.Transformation;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -175,6 +179,51 @@ public class BitmapUtil {
             }
         }
         return inSampleSize;
+    }
+
+    /**
+     * 根据指定imageView的大小 实现图片的缩放
+     * @param imageView
+     * @return
+     */
+    @NonNull
+    public static Transformation getTransformation(@NonNull final ImageView imageView) {
+        return new Transformation() {
+            @Override
+            public Bitmap transform(Bitmap source) {
+                int targetWidth = imageView.getWidth();
+                LogUtil.Companion.d("source.getHeight()="  + source.getHeight()
+                        + "source.getWidth()=" + source.getWidth()
+                        + ",targetWidth=" + targetWidth);
+                if (source.getWidth() == 0) {
+                    return source;
+                }
+
+                // 如果图片小于设置的宽度，则返回原图
+                if (source.getWidth() < targetWidth) {
+                    return source;
+                } else {
+                    // 如果图片大于设置的宽度，则按照宽度比例来缩放
+                    double aspectRatio = (double) source.getHeight() / (double) source.getWidth();
+                    int targetHeight = (int) (targetWidth * aspectRatio);
+                    if (targetHeight != 0 && targetWidth != 0) {
+                        Bitmap result = Bitmap.createScaledBitmap(source, targetWidth, targetHeight, false);
+                        if (result != source) {
+                            // Same bitmap is returned if sizes are the same
+                            source.recycle();
+                        }
+                        return result;
+                    } else {
+                        return source;
+                    }
+                }
+            }
+
+            @Override
+            public String key() {
+                return "transformation" + " desiredWidth";
+            }
+        };
     }
 
 }

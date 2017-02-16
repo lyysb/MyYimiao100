@@ -1,15 +1,12 @@
 package com.yimiao100.sale;
 
-import android.app.Application;
-import android.content.Context;
-import android.support.multidex.MultiDex;
-
 import com.alibaba.fastjson.parser.ParserConfig;
 import com.meiqia.meiqiasdk.util.MQConfig;
 import com.tencent.bugly.crashreport.CrashReport;
 import com.umeng.socialize.Config;
 import com.umeng.socialize.PlatformConfig;
 import com.umeng.socialize.UMShareAPI;
+import com.yimiao100.sale.bean.Application;
 import com.yimiao100.sale.utils.Constant;
 import com.zhy.http.okhttp.OkHttpUtils;
 
@@ -19,10 +16,9 @@ import cn.jpush.android.api.JPushInterface;
 import okhttp3.OkHttpClient;
 
 /**
- *
- * Created by 亿苗通 on 2016/7/27.
+ * Created by Michel on 2016/7/27.
  */
-public class MyApplication extends Application{
+public class MyApplication extends Application {
 
     {
         //微信 appId appSecret
@@ -43,13 +39,9 @@ public class MyApplication extends Application{
         initMQ();
     }
 
-    @Override
-    protected void attachBaseContext(Context base) {
-        super.attachBaseContext(base);
-        // 如果删了此处代码程序就炸了
-        MultiDex.install(this);
-    }
-
+    /**
+     * 美洽
+     */
     private void initMQ() {
         //显示客户头像
         MQConfig.isShowClientAvatar = true;

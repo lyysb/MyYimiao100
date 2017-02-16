@@ -192,11 +192,11 @@ public class InformationDetailActivity extends BaseActivity implements View.OnCl
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams
         .MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
-        //本地不处理外部链接
-        Html5WebView.shouldOverrideUrlLoading = false;
         mWebView = new Html5WebView(this);
         mWebView.setLayoutParams(params);
         mLayout.addView(mWebView);
+        //本地不处理外部链接
+        mWebView.shouldOverrideUrlLoading = false;
 
         //载入js--可以点击显示图片，进行放大处理
         mWebView.addJavascriptInterface(new JavascriptInterface(this), "imagelistner");

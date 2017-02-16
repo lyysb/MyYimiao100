@@ -176,9 +176,10 @@
         </activity>
         <activity android:name=".activity.CollectionActivity">
         </activity>
-        <activity android:name=".activity.ResourcesDetailActivity"
-                  android:configChanges="orientation|screenSize|keyboardHidden"
-                  android:screenOrientation="portrait" >
+        <activity
+            android:name=".activity.ResourcesDetailActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            android:screenOrientation="portrait">
         </activity>
         <activity android:name=".activity.ResourcesPromotionActivity">
         </activity>
@@ -240,9 +241,10 @@
         </activity>
         <activity android:name=".activity.StudyTaskActivity">
         </activity>
-        <activity android:name=".activity.VideoDetailActivity"
-                  android:configChanges="orientation|screenSize|keyboardHidden"
-                  android:screenOrientation="portrait" >
+        <activity
+            android:name=".activity.VideoDetailActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            android:screenOrientation="portrait">
         </activity>
         <activity android:name=".activity.StudyCollectionActivity">
         </activity>
@@ -323,6 +325,9 @@
             android:enabled="true"
             android:exported="true">
         </service>
+
+        <activity android:name=".base.BaseActivityWithTab">
+        </activity>
     </application>
 
 </manifest>

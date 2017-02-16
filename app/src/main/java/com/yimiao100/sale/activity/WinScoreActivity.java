@@ -2,12 +2,12 @@ package com.yimiao100.sale.activity;
 
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 
 import com.yimiao100.sale.R;
-import com.yimiao100.sale.adapter.fragment.WinAdapter;
 import com.yimiao100.sale.base.BaseActivity;
+import com.yimiao100.sale.base.BaseFragmentPagerAdapter;
+import com.yimiao100.sale.base.BaseFragmentSingleList;
 import com.yimiao100.sale.fragment.WinScoreFragment;
 import com.yimiao100.sale.fragment.WinTaskFragment;
 import com.yimiao100.sale.view.TitleView;
@@ -48,12 +48,12 @@ public class WinScoreActivity extends BaseActivity implements TitleView.TitleBar
     }
 
     private void initViewPager() {
-        ArrayList<Fragment> fragments = new ArrayList<>();
+        ArrayList<BaseFragmentSingleList> fragments = new ArrayList<>();
         //全部任务
         fragments.add(new WinTaskFragment());
         //领取积分
         fragments.add(new WinScoreFragment());
-        mWinViewPager.setAdapter(new WinAdapter(getSupportFragmentManager(), fragments));
+        mWinViewPager.setAdapter(new BaseFragmentPagerAdapter(getSupportFragmentManager(), fragments));
     }
 
     private void initTabs() {

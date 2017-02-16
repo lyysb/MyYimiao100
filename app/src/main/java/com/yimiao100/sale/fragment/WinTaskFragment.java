@@ -28,12 +28,10 @@ import okhttp3.Call;
 
 /**
  * 学习/做任务-全部任务
- * Created by 亿苗通 on 2016/10/24.
+ * Created by Michel on 2016/10/24.
  */
 
 public class WinTaskFragment extends BaseFragmentSingleList {
-
-
     private final String URL_ALL_TASK = Constant.BASE_URL + "/api/course/open_list";
 
     private final String INTEGRAL_TYPE = "integralType";
@@ -46,6 +44,11 @@ public class WinTaskFragment extends BaseFragmentSingleList {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         setEmptyView("要学习是好事，但是……", R.mipmap.ico_curriculum);
+    }
+
+    @Override
+    protected String initPageTitle() {
+        return "全部任务";
     }
 
     @Override

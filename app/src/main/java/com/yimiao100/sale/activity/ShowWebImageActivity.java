@@ -28,6 +28,8 @@ public class ShowWebImageActivity extends BaseActivity {
 
         String imageUrl = getIntent().getStringExtra("image");
         final PhotoViewAttacher attacher = new PhotoViewAttacher(mWebImagePhoto);
+        // 设置最大放大级别为10
+        attacher.setMaximumScale(10);
         Picasso.with(this)
                 .load(imageUrl)
                 .into(mWebImagePhoto, new Callback() {

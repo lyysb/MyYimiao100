@@ -98,8 +98,6 @@ public class Html5WebView extends WebView {
      */
     WebViewClient webViewClient = new WebViewClient() {
 
-
-        // 多页面在同一个WebView中打开，就是不新建activity或者调用系统浏览器打开
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             //如果需要本地加载，则加载url
@@ -115,7 +113,7 @@ public class Html5WebView extends WebView {
                     Html5WebView.this.goBack();
                 }
             }
-            LogUtil.Companion.d(url);
+            LogUtil.Companion.d("跳转目标url：" + url);
             return true;
         }
 
@@ -123,7 +121,7 @@ public class Html5WebView extends WebView {
         // 网页开始加载
         @Override
         public void onPageStarted(WebView view, String url, Bitmap favicon) {
-            LogUtil.Companion.d("网页开始加载");
+            LogUtil.Companion.d("网页开始加载，url:" + url);
             if (mLoadingProgress == null) {
                 mLoadingProgress = ProgressDialogUtil.getLoadingProgress(ActivityCollector.getTopActivity());
             }
@@ -132,12 +130,14 @@ public class Html5WebView extends WebView {
             }
             view.getSettings().setJavaScriptEnabled(true);
             super.onPageStarted(view, url, favicon);
+
+            LogUtil.Companion.d("shouldOverrideUrlLoading:" + shouldOverrideUrlLoading);
         }
 
         // 网页加载结束
         @Override
         public void onPageFinished(WebView view, String url) {
-            LogUtil.Companion.d("网页加载结束");
+            LogUtil.Companion.d("网页加载结束，url：" + url);
             if (mLoadingProgress.isShowing() && mLoadingProgress != null) {
                 mLoadingProgress.dismiss();
             }
@@ -145,6 +145,12 @@ public class Html5WebView extends WebView {
             super.onPageFinished(view, url);
             // 加载完成之后，添加监听图片的点击JS函数
             addImageClickListener(view);
+            // 加载完成，添加外部打开内部链接的js函数
+            addHrefClickListener(view);
+            // 如果WebView禁止了内部加载外链 并且可以返回，则返回上一页
+            if (!shouldOverrideUrlLoading && view.canGoBack()) {
+                view.goBack();
+            }
         }
 
         @Override
@@ -168,6 +174,19 @@ public class Html5WebView extends WebView {
                     + "    objs[i].onclick=function()  " +
                     "    {  "
                     + "        window.imagelistner.openImage(this.src);  " +
+                    "    }  " +
+                    "}" +
+                    "})()");
+        }
+
+        private void addHrefClickListener(WebView view) {
+            view.loadUrl("javascript:(function(){" +
+                    "var objs = document.getElementsByTagName(\"a\"); " +
+                    "for(var i=0;i<objs.length;i++)  " +
+                    "{"
+                    + "    objs[i].onclick=function()  " +
+                    "    {  "
+                    + "        window.hreflistner.openHref(this.href); " +
                     "    }  " +
                     "}" +
                     "})()");

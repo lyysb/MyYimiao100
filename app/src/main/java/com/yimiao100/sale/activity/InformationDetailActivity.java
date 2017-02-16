@@ -200,6 +200,8 @@ public class InformationDetailActivity extends BaseActivity implements View.OnCl
 
         //载入js--可以点击显示图片，进行放大处理
         mWebView.addJavascriptInterface(new JavascriptInterface(this), "imagelistner");
+        //超链接点击处理
+        mWebView.addJavascriptInterface(new JavascriptInterface(this), "hreflistner");
 
         //标签
         mInformationTagGroup = (TagGroup) mHeadView.findViewById(R.id

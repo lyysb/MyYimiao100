@@ -45,7 +45,7 @@ public class RichesDetailActivity extends BaseActivitySingleList {
 
     @Override
     protected void setTitle(TitleView titleView) {
-        titleView.setTitle("资金明细");
+        titleView.setTitle("明细");
     }
 
     @Override

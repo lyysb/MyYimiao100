@@ -192,7 +192,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
                     <TextView
-                        android:text="基础指标：            "
+                        android:text="基础服务量            "
                         style="@style/style4"/>
                     <TextView
                         android:id="@+id/resource_promotion_quota"

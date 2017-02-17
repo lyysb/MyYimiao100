@@ -10,7 +10,7 @@
         android:id="@+id/promotion_experience_title"
         app:title_text="从事疫苗推广经历"
         app:right_isShow="true"
-        app:title_right="新增"
+        app:title_right="保存"
         app:left_isShow="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>

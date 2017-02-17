@@ -116,22 +116,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
             </LinearLayout>
-            <ImageView
-                android:id="@+id/order_already_download"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="15dp"
-                android:src="@drawable/selector_order_download"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-            <TextView
-                android:id="@+id/order_already_re"
-                android:textColor="@color/color666"
-                android:layout_marginRight="12dp"
-                android:layout_marginTop="20dp"
-                android:layout_marginLeft="12dp"
-                android:lineSpacingMultiplier="1.2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
             <TextView
                 android:id="@+id/order_already_show_account"
                 android:text="查看转账回款账户"
@@ -144,9 +128,27 @@
                 android:layout_marginTop="25dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
+            <TextView
+                android:id="@+id/order_already_re"
+                android:textColor="@color/color666"
+                android:layout_marginRight="12dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginLeft="12dp"
+                android:lineSpacingMultiplier="1.2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+            <ImageView
+                android:id="@+id/order_already_download"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="15dp"
+                android:layout_marginBottom="15dp"
+                android:src="@drawable/selector_order_download"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
             <Button
                 android:id="@+id/order_already_upload"
                 android:text="上传电子协议"
+                android:visibility="gone"
                 android:textColor="@android:color/white"
                 android:layout_marginBottom="20dp"
                 android:layout_gravity="center_horizontal"

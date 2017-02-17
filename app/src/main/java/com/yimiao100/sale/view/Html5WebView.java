@@ -109,8 +109,8 @@ public class Html5WebView extends WebView {
                 Uri content_url = Uri.parse(url);
                 intent.setData(content_url);
                 ActivityCollector.getTopActivity().startActivity(intent);
-                if (Html5WebView.this.canGoBack()) {
-                    Html5WebView.this.goBack();
+                if (view.canGoBack()) {
+                    view.goBack();
                 }
             }
             LogUtil.Companion.d("跳转目标url：" + url);

@@ -6,6 +6,8 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.Html;
 import android.text.Spanned;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSON;
@@ -80,6 +82,7 @@ public class ScholarshipActivity extends BaseActivity implements SwipeRefreshLay
     private TextView mVendorNameTextView;
     private TextView mTotalMoney;
     private View mEmptyView;
+    private View mHeadView;
 
 
     @Override
@@ -99,48 +102,39 @@ public class ScholarshipActivity extends BaseActivity implements SwipeRefreshLay
 
     private void initView() {
         mScholarshipListTitle.setOnTitleBarClick(this);
-        initEmptyView();
-
         initRefreshLayout();
 
         initListView();
-    }
-    private void initEmptyView() {
-        mEmptyView = findViewById(R.id.scholarship_empty);
-        TextView emptyText = (TextView) mEmptyView.findViewById(R.id.empty_text);
-        emptyText.setText("活到老、学到老，快去学习页面完成考试任务吧。");
-        emptyText.setCompoundDrawablesWithIntrinsicBounds(null, getResources().getDrawable(R.mipmap.ico_scholarship_detailed), null, null);
-    }
 
+        initEmptyView();
+    }
     private void initRefreshLayout() {
         //设置刷新
         mScholarshipListRefresh.setOnRefreshListener(this);
         //设置下拉圆圈的颜色
-        mScholarshipListRefresh.setColorSchemeResources(android.R.color.holo_blue_bright, android.R
-                        .color.holo_green_light,
-                android.R.color.holo_orange_light, android.R.color.holo_red_light);
+        mScholarshipListRefresh.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light, android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
         //设置手指在屏幕下拉多少距离会触发下拉刷新
         mScholarshipListRefresh.setDistanceToTriggerSync(400);
     }
 
     private void initListView() {
-        View headView = View.inflate(this, R.layout.head_vendor, null);
+        mHeadView = View.inflate(this, R.layout.head_vendor, null);
         //厂家logo
-        mLogoImage = (CircleImageView) headView.findViewById(R.id.head_vendor_logo);
+        mLogoImage = (CircleImageView) mHeadView.findViewById(R.id.head_vendor_logo);
         Picasso.with(this).load(mLogUrl).placeholder(R.mipmap.ico_default_short_picture)
                 .resize(DensityUtil.dp2px(this, 50), DensityUtil.dp2px(this, 50)).into(mLogoImage);
         //厂家名称
-        mVendorNameTextView = (TextView) headView.findViewById(R.id.head_vendor_title);
+        mVendorNameTextView = (TextView) mHeadView.findViewById(R.id.head_vendor_title);
         mVendorNameTextView.setText(mVendorName);
         //总费用
-        mTotalMoney = (TextView) headView.findViewById(R.id.head_vendor_product);
+        mTotalMoney = (TextView) mHeadView.findViewById(R.id.head_vendor_product);
         mTotalMoney.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
         //右侧view设置隐藏
-        headView.findViewById(R.id.head_vendor_money).setVisibility(View.GONE);
+        mHeadView.findViewById(R.id.head_vendor_money).setVisibility(View.GONE);
 
-
-
-        mScholarshipListCompanyListView.addHeaderView(headView);
+        mScholarshipListCompanyListView.addHeaderView(mHeadView);
         mScholarshipListCompanyListView.setSwipeRefreshLayoutEnabled(new PullToRefreshListView
                 .SwipeRefreshLayoutEnabledListener() {
             @Override
@@ -150,6 +144,19 @@ public class ScholarshipActivity extends BaseActivity implements SwipeRefreshLay
         });
         //不需要上拉加载
         mScholarshipListCompanyListView.cancleLoadMore();
+    }
+
+    private void initEmptyView() {
+        mEmptyView = findViewById(R.id.scholarship_empty);
+        TextView emptyText = (TextView) mEmptyView.findViewById(R.id.empty_text);
+        emptyText.setText("活到老、学到老，快去学习页面完成考试任务吧。");
+        emptyText.setCompoundDrawablesWithIntrinsicBounds(null, getResources().getDrawable(R.mipmap.ico_scholarship_detailed), null, null);
+
+        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(ViewGroup
+                .LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        //HeaderView的高度
+        layoutParams.setMargins(0, DensityUtil.dp2px(this, 85), 0, 0);
+        mEmptyView.setLayoutParams(layoutParams);
     }
 
     @OnClick(R.id.scholarship_list_confirm)

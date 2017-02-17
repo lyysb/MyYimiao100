@@ -385,6 +385,7 @@ public class InformationDetailActivity extends BaseActivity implements View.OnCl
      * WebView显示资讯详情内容--富文本
      */
     private void showInformationContent(String newsContent) {
+        LogUtil.Companion.d("newsContent:\n" + newsContent);
         WebSettings settings = mWebView.getSettings();
         settings.setJavaScriptEnabled(true);
         //自适应屏幕
@@ -396,7 +397,7 @@ public class InformationDetailActivity extends BaseActivity implements View.OnCl
     }
 
     /**
-     * WebView显示资讯详情内容--GET请求
+     * WebView显示资讯详情内容--GET请求--废弃
      */
     private void showInformationContent() {
         WebSettings settings = mWebView.getSettings();

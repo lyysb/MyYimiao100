@@ -5,8 +5,10 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSON;
@@ -117,6 +119,12 @@ public class AssuranceActivity extends BaseActivity implements TitleView.TitleBa
         TextView emptyText = (TextView) mEmptyView.findViewById(R.id.empty_text);
         emptyText.setText("一分耕耘，一分收获，请耐心等待。");
         emptyText.setCompoundDrawablesWithIntrinsicBounds(null, getResources().getDrawable(R.mipmap.ico_bond_factory_list_detailed), null, null);
+
+        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(ViewGroup
+                .LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        //HeaderView的高度
+        layoutParams.setMargins(0, DensityUtil.dp2px(this, 85), 0, 0);
+        mEmptyView.setLayoutParams(layoutParams);
     }
 
     private void initRefreshView() {

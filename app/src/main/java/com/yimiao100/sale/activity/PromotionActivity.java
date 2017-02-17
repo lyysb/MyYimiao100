@@ -5,9 +5,11 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSON;
@@ -40,6 +42,8 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import de.hdodenhof.circleimageview.CircleImageView;
 import okhttp3.Call;
+
+
 
 /**
  * 申请推广奖励提现
@@ -87,6 +91,7 @@ public class PromotionActivity extends BaseActivity implements TitleView.TitleBa
     private TextView mProductCount;
     private TextView mTotalAmount;
     private View mEmptyView;
+    private View mHeadView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,18 +110,11 @@ public class PromotionActivity extends BaseActivity implements TitleView.TitleBa
 
     private void initView() {
         mPromotionRichTitle.setOnTitleBarClick(this);
-        initEmptyView();
-
         initRefreshView();
 
         initListView();
-    }
 
-    private void initEmptyView() {
-        mEmptyView = findViewById(R.id.promotion_empty_view);
-        TextView emptyText = (TextView) mEmptyView.findViewById(R.id.empty_text);
-        emptyText.setText("不要着急，让奖励资金飞一会儿~");
-        emptyText.setCompoundDrawablesWithIntrinsicBounds(null, getResources().getDrawable(R.mipmap.ico_promotion_award_detailed), null, null);
+        initEmptyView();
     }
 
     private void initRefreshView() {
@@ -130,22 +128,21 @@ public class PromotionActivity extends BaseActivity implements TitleView.TitleBa
         mPromotionRichRefresh.setDistanceToTriggerSync(400);
     }
 
-
     private void initListView() {
-        View headView = View.inflate(this, R.layout.head_vendor, null);
+        mHeadView = View.inflate(this, R.layout.head_vendor, null);
         //厂家logo
-        mLogoImage = (CircleImageView) headView.findViewById(R.id.head_vendor_logo);
+        mLogoImage = (CircleImageView) mHeadView.findViewById(R.id.head_vendor_logo);
         Picasso.with(this).load(mLogUrl).placeholder(R.mipmap.ico_default_short_picture)
                 .resize(DensityUtil.dp2px(this, 50), DensityUtil.dp2px(this, 50)).into(mLogoImage);
         //厂家名字
-        mVendorNameTextView = (TextView) headView.findViewById(R.id.head_vendor_title);
+        mVendorNameTextView = (TextView) mHeadView.findViewById(R.id.head_vendor_title);
         mVendorNameTextView.setText(mVendorName);
         //产品数量
-        mProductCount = (TextView) headView.findViewById(R.id.head_vendor_product);
+        mProductCount = (TextView) mHeadView.findViewById(R.id.head_vendor_product);
         //总金额
-        mTotalAmount = (TextView) headView.findViewById(R.id.head_vendor_money);
+        mTotalAmount = (TextView) mHeadView.findViewById(R.id.head_vendor_money);
 
-        mPromotionRichCompanyListView.addHeaderView(headView);
+        mPromotionRichCompanyListView.addHeaderView(mHeadView);
         mPromotionRichCompanyListView.setSwipeRefreshLayoutEnabled(new PullToRefreshListView
                 .SwipeRefreshLayoutEnabledListener() {
             @Override
@@ -157,6 +154,20 @@ public class PromotionActivity extends BaseActivity implements TitleView.TitleBa
         mPromotionRichCompanyListView.setOnItemClickListener(this);
         //上拉加载监听
         mPromotionRichCompanyListView.setOnRefreshingListener(this);
+    }
+
+
+    private void initEmptyView() {
+        mEmptyView = findViewById(R.id.promotion_empty_view);
+        TextView emptyText = (TextView) mEmptyView.findViewById(R.id.empty_text);
+        emptyText.setText("不要着急，让奖励资金飞一会儿~");
+        emptyText.setCompoundDrawablesWithIntrinsicBounds(null, getResources().getDrawable(R.mipmap.ico_promotion_award_detailed), null, null);
+
+        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(ViewGroup
+                .LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        //HeaderView的高度
+        layoutParams.setMargins(0, DensityUtil.dp2px(this, 85), 0, 0);
+        mEmptyView.setLayoutParams(layoutParams);
     }
 
 

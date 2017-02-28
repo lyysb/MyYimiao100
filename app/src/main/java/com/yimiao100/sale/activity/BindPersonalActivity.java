@@ -1,79 +1,138 @@
 package com.yimiao100.sale.activity;
 
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
-import android.os.CountDownTimer;
-import android.os.Handler;
-import android.os.Message;
+import android.os.Environment;
+import android.provider.MediaStore;
+import android.support.v7.app.AlertDialog;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.alibaba.fastjson.JSON;
+import com.squareup.picasso.Picasso;
 import com.yimiao100.sale.R;
 import com.yimiao100.sale.base.BaseActivity;
 import com.yimiao100.sale.bean.ErrorBean;
+import com.yimiao100.sale.bean.Experience;
+import com.yimiao100.sale.bean.PersonalBean;
+import com.yimiao100.sale.bean.UserBean;
+import com.yimiao100.sale.utils.BitmapUtil;
+import com.yimiao100.sale.utils.CompressUtil;
 import com.yimiao100.sale.utils.Constant;
-import com.yimiao100.sale.utils.FormatUtils;
+import com.yimiao100.sale.utils.DensityUtil;
 import com.yimiao100.sale.utils.LogUtil;
 import com.yimiao100.sale.utils.SharePreferenceUtil;
+import com.yimiao100.sale.utils.TimeUtil;
 import com.yimiao100.sale.utils.ToastUtil;
 import com.yimiao100.sale.utils.Util;
 import com.yimiao100.sale.view.TitleView;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import cn.smssdk.EventHandler;
-import cn.smssdk.SMSSDK;
 import okhttp3.Call;
+import okhttp3.Request;
 
 /**
- * 推广主体-绑定个人银行卡
- * TODO 手机号有效性检验
+ * 推广主体-绑定个人主体
  */
-public class BindPersonalActivity extends BaseActivity implements TitleView.TitleBarOnClickListener {
+public class BindPersonalActivity extends BaseActivity implements TitleView
+        .TitleBarOnClickListener, TextWatcher {
 
-    @BindView(R.id.bind_personal_name)
-    EditText mBindPersonalName;
-    @BindView(R.id.bind_personal_phone)
-    EditText mBindPersonalPhone;
-    @BindView(R.id.bind_personal_getCode)
-    Button mBindPersonalGetCode;
-    @BindView(R.id.bind_personal_code)
-    EditText mBindPersonalCode;
-    @BindView(R.id.bind_personal_bank_card)
-    EditText mBindPersonalBankCard;
-    @BindView(R.id.bind_personal_bank_name)
-    EditText mBindPersonalBankName;
-    @BindView(R.id.bind_personal_submit)
-    ImageView mBindPersonalSubmit;
+
+    private static final int ID_CARD1_FROM_CAMERA = 101;
+    private static final int ID_CARD1_FROM_PHOTO = 102;
+    private static final int ID_CARD2_FROM_CAMERA = 201;
+    private static final int ID_CARD2_FROM_PHOTO = 202;
+    private static final int PERSONAL = 2;
+    private static final String CN_NAME = "cnName";
+    private static final String ID_NUMBER = "idNumber";
+    private static final String PERSONAL_PHONE_NUMBER = "personalPhoneNumber";
+    private static final String QQ = "qq";
+    private static final String EMAIL = "email";
+    private static final String BANK_NAME = "bankName";
+    private static final String OPENING_BANK = "openingBank";
+    private static final String BANK_CARD_NUMBER = "bankCardNumber";
+    private static final String EXPERIENCE_LIST = "experienceList";
+    private static final String EXPERIENCE = "experience";
+    private static final String ADVANTAGE = "advantage";
+    private static final String ZIP_FILE = "zipFile";
+    private final int WIDTH = 300;
+    private final int HEIGHT = 80;
     @BindView(R.id.bind_personal_title)
-    TitleView mBindPersonalTitle;
-    private TimeCount time;
+    TitleView mTitle;
+    @BindView(R.id.bind_personal_name)
+    EditText mPersonalName;
+    @BindView(R.id.bind_personal_id_card)
+    EditText mPersonalIdCard;
+    @BindView(R.id.bind_personal_phone)
+    EditText mPersonalPhone;
+    @BindView(R.id.bind_personal_qq)
+    EditText mPersonalQq;
+    @BindView(R.id.bind_personal_email)
+    EditText mPersonalEmail;
+    @BindView(R.id.bind_personal_card_photo1)
+    ImageView mPersonalCardPhoto1;
+    @BindView(R.id.bind_personal_card_photo2)
+    ImageView mPersonalCardPhoto2;
+    @BindView(R.id.bind_personal_owner)
+    TextView mPersonalOwner;
+    @BindView(R.id.bind_personal_bank)
+    EditText mPersonalBank;
+    @BindView(R.id.bind_personal_bank_name)
+    EditText mPersonalBankName;
+    @BindView(R.id.bind_personal_bank_card)
+    EditText mPersonalBankCard;
+    @BindView(R.id.bind_personal_ever)
+    EditText mPersonalEver;
+    @BindView(R.id.bind_personal_advantage)
+    EditText mPersonalAdvantage;
+    @BindView(R.id.bind_personal_experience)
+    TextView mPersonalExperience;
+    @BindView(R.id.bind_personal_submit)
+    Button mPersonalSubmit;
 
-    private final String POST_PERSONAL_USER_ACCOUNT = "/api/user/post_personal_user_account";
+    private final String URL_GET_PERSONAL = Constant.BASE_URL + "/api/user/get_user_account";
+    private final String URL_SUBMIT = Constant.BASE_URL + "/api/user/post_personal_user_account";
+    private File mIdPhoto1;
+    private String mPersonalPhotoName = "personalPhoto.jpg";
+    private File mIdPhoto2;
+    private String mIdPhotoName = "idPhoto.jpg";
+    private HashMap<String, String> mFileMap = new HashMap<>();
+    private boolean isFirst = true;
+    private ArrayList<Experience> mList;
+    private AlertDialog mDialog;
+    private String mPersonalName1;
+    private String mPersonalIdCard1;
+    private String mPersonalPhone1;
+    private String mPersonalQq1;
+    private String mPersonalEmail1;
+    private String mPersonalBank1;
+    private String mPersonalBankName1;
+    private String mPersonalBankCard1;
+    private String mPersonalEver1;
+    private String mPersonalAdvantage1;
+    private String mZipName;
+    private File mZipFile;
+    private String mExperienceList1;
+    private ProgressDialog mProgressDialog;
 
-    private Handler mHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            switch (msg.what) {
-                case 1:
-                    String detail = msg.getData().getString("detail");
-                    ToastUtil.showLong(getApplicationContext(), detail);
-                    break;
-            }
-        }
-    };
-    private String mAccessToken;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,170 +140,492 @@ public class BindPersonalActivity extends BaseActivity implements TitleView.Titl
         setContentView(R.layout.activity_bind_personal);
         ButterKnife.bind(this);
 
-        mAccessToken = (String) SharePreferenceUtil.get(this, Constant.ACCESSTOKEN, "");
-
-        mBindPersonalTitle.setOnTitleBarClick(this);
+        initView();
 
         initData();
+    }
 
-        //按钮倒计时部分
-        time = new TimeCount(60000, 1000);
-
-        //初始化SMSSDK
-        SMSSDK.initSDK(this, Constant.MOB_APP_KEY, Constant.MOB_APP_SECRET);
-
-        EventHandler eventHandler = new EventHandler() {
-            @Override
-            public void afterEvent(int event, int result, Object data) {
-                super.afterEvent(event, result, data);
-                if (result == SMSSDK.RESULT_COMPLETE) {
-                    //回调完成
-                    if (event == SMSSDK.EVENT_SUBMIT_VERIFICATION_CODE) {
-                        //验证通过，提交数据到服务器
-                        submitPersonalAccount();
-                    }
-                } else {
-                    Throwable throwable = (Throwable) data;
-                    try {
-                        JSONObject object = new JSONObject(throwable.getMessage());
-                        String detail = object.getString("detail");
-                        //将错误信息发送到UI线程
-                        Message message = new Message();
-                        message.what = 1;
-                        Bundle bundle = new Bundle();
-                        bundle.putString("detail", detail);
-                        message.setData(bundle);
-                        mHandler.sendMessage(message);
-                        LogUtil.Companion.d(detail);
-                        //打印错误码
-                        LogUtil.Companion.d(object.getString("status"));
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        };
-        //注册回调接口
-        SMSSDK.registerEventHandler(eventHandler);
+    private void initView() {
+        mTitle.setOnTitleBarClick(this);
+        mPersonalName.addTextChangedListener(this);
     }
 
     private void initData() {
-        boolean isExit = (boolean) SharePreferenceUtil.get(getApplicationContext(),
-                Constant.PERSONAL_EXIT, false);
-        String account_name = (String) SharePreferenceUtil.get(getApplicationContext(),
-                Constant.PERSONAL_CN_NAME, "");
-        String phone_number = (String) SharePreferenceUtil.get(getApplicationContext(),
-                Constant.PERSONAL_PHONE_NUMBER, "");
-        String bank_number = (String) SharePreferenceUtil.get(getApplicationContext(),
-                Constant.PERSONAL_BANK_ACCOUNT_NUMBER, "");
-        String bank_name = (String) SharePreferenceUtil.get(getApplicationContext(),
-                Constant.PERSONAL_BANK_NAME, "");
-        if (isExit) {
-            //如果存在个人账户信息
-            mBindPersonalName.setHint(account_name);
-            mBindPersonalPhone.setHint(FormatUtils.PhoneNumberFormat(phone_number));
-            mBindPersonalBankCard.setHint(bank_number);
-            mBindPersonalBankName.setHint(bank_name);
+        showLoadingProgress();
+        OkHttpUtils.post().url(URL_GET_PERSONAL).addHeader(ACCESS_TOKEN, mAccessToken)
+                .build().execute(new StringCallback() {
+            @Override
+            public void onError(Call call, Exception e, int id) {
+                LogUtil.Companion.d("推广主体E：" + e.getLocalizedMessage());
+                Util.showTimeOutNotice(currentContext);
+                dismissLoadingProgress();
+            }
 
+            @Override
+            public void onResponse(String response, int id) {
+                dismissLoadingProgress();
+                LogUtil.Companion.d("推广主体：" + response);
+                ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
+                switch (errorBean.getStatus()) {
+                    case "success":
+                        //回显网络数据
+                        echoData(JSON.parseObject(response, UserBean.class).getUserAccount()
+                                .getPersonal());
+                        break;
+                    case "failure":
+                        Util.showError(currentContext, errorBean.getReason());
+                        break;
+                }
+            }
+        });
+    }
+
+    private void echoData(PersonalBean personal) {
+        if (personal != null) {
+            // 不是新建账户
+            isFirst = false;
+            LogUtil.Companion.d("修改个人账户");
+            // 姓名
+            mPersonalName.setText(personal.getCnName());
+            // 身份证号
+            mPersonalIdCard.setText(personal.getIdNumber());
+            // 联系电话
+            mPersonalPhone.setText(personal.getPersonalPhoneNumber());
+            // QQ号码
+            mPersonalQq.setText(personal.getQq());
+            // 邮箱
+            mPersonalEmail.setText(personal.getEmail());
+            String personalUrl = personal.getPersonalPhotoUrl();
+            LogUtil.Companion.d("personalUrl-" + personalUrl);
+            String idUrl = personal.getIdPhotoUrl();
+            LogUtil.Companion.d("idUrl-" + idUrl);
+            // 证件照1
+            Picasso.with(getApplicationContext()).load(personalUrl)
+                    .transform(BitmapUtil.getTransformation(mPersonalCardPhoto1))
+                    .placeholder(R.mipmap.ico_binding_account_certificates)
+                    .into(mPersonalCardPhoto1);
+            // 证件照2
+            Picasso.with(getApplicationContext()).load(idUrl)
+                    .transform(BitmapUtil.getTransformation(mPersonalCardPhoto2))
+                    .placeholder(R.mipmap.ico_binding_account_certificates_two)
+                    .error(R.mipmap.ico_binding_account_certificates_two)
+                    .into(mPersonalCardPhoto2);
+            // 持卡人
+            mPersonalOwner.setText(personal.getCnName());
+            // 银行名称
+            mPersonalBank.setText(personal.getBankName());
+            // 开户行
+            mPersonalBankName.setText(personal.getOpeningBank());
+            // 银行卡号
+            mPersonalBankCard.setText(personal.getBankCardNumber());
+            // 推广经历
+            mList = personal.getExperienceList();
+            // 曾经所在公司及职位
+            mPersonalEver.setText(personal.getExperience());
+            // 推广优势
+            mPersonalAdvantage.setText(personal.getAdvantage());
+            // 如果审核通过，则不再允许修任何改数据
+            if (personal.getAccountStatus() != null && TextUtils.equals("passed", personal.getAccountStatus())) {
+                LogUtil.Companion.d("已通过审核，禁止修改任何数据");
+                //禁止修改数据
+                forbidChange();
+            }
+
+        } else {
+            isFirst = true;
+            LogUtil.Companion.d("新建个人账户");
         }
     }
 
-    @OnClick({R.id.bind_personal_getCode, R.id.bind_personal_submit})
+    /**
+     * 禁止所有点击事件
+     */
+    private void forbidChange() {
+        mPersonalName.setKeyListener(null);
+        mPersonalIdCard.setKeyListener(null);
+        mPersonalPhone.setKeyListener(null);
+        mPersonalQq.setKeyListener(null);
+        mPersonalEmail.setKeyListener(null);
+        mPersonalCardPhoto1.setEnabled(false);
+        mPersonalCardPhoto2.setEnabled(false);
+        mPersonalBank.setKeyListener(null);
+        mPersonalBankName.setKeyListener(null);
+        mPersonalBankCard.setKeyListener(null);
+        mPersonalExperience.setEnabled(false);
+        mPersonalEver.setKeyListener(null);
+        mPersonalAdvantage.setKeyListener(null);
+        mPersonalSubmit.setEnabled(false);
+    }
+
+
+    @OnClick({R.id.bind_personal_service, R.id.bind_personal_card_photo1, R.id.bind_personal_card_photo2,
+            R.id.bind_personal_experience, R.id.bind_personal_submit})
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.bind_personal_getCode:
-                //TODO 手机号有效性检验
-                //手机号不为空的时候允许发送验证码
-                if (mBindPersonalPhone.getText().toString().trim().isEmpty()) {
-                    ToastUtil.showLong(getApplicationContext(), "手机号不允许为空");
-                    return;
-                }
-                //如果手机号长度不是11位，则返回
-                if (mBindPersonalPhone.getText().toString().trim().length() != 11) {
-                    ToastUtil.showLong(getApplicationContext(), "请输入合法的手机号");
-                    return;
-                }
-                //提交手机号，获得验证码
-                SMSSDK.getVerificationCode("86", mBindPersonalPhone.getText().toString().trim());
-                //倒计时，按钮禁止点击
-                time.start();
+            case R.id.bind_personal_service:
+                //联系客服
+                Util.enterCustomerService(this);
+                break;
+            case R.id.bind_personal_card_photo1:
+                // 选择照片1
+                getPhoto1();
+                break;
+            case R.id.bind_personal_card_photo2:
+                // 选择照片2
+                getPhoto2();
+                break;
+            case R.id.bind_personal_experience:
+                // 进入推广经历列表
+                Intent intent = new Intent(this, PromotionExperienceListActivity.class);
+                intent.putParcelableArrayListExtra("experience", mList);
+                intent.putExtra("type", PERSONAL);
+                startActivityForResult(intent, PERSONAL);
                 break;
             case R.id.bind_personal_submit:
-                if (mBindPersonalName.getText().toString().trim().isEmpty() ||
-                        mBindPersonalPhone.getText().toString().trim().isEmpty() ||
-                        mBindPersonalCode.getText().toString().trim().isEmpty() ||
-                        mBindPersonalBankCard.getText().toString().trim().isEmpty() ||
-                        mBindPersonalBankName.getText().toString().trim().isEmpty()) {
-                    //提示非空
-                    ToastUtil.showLong(getApplicationContext(), "请填写完整信息");
-                    return;
-                }
-                //提交短信验证码，触发短信操作回调，验证短信验证码是否正确，然后和服务器进行交互
-                SMSSDK.submitVerificationCode("86", mBindPersonalPhone.getText().toString().trim(), mBindPersonalCode.getText().toString().trim());
+                // 校验数据
+                verifyData();
                 break;
         }
     }
 
-    private void submitPersonalAccount() {
-        String personal_url = Constant.BASE_URL + POST_PERSONAL_USER_ACCOUNT;
-        OkHttpUtils
-                .post()
-                .url(personal_url)
-                .addHeader("X-Authorization-Token", mAccessToken)
-                .addParams("cnName", mBindPersonalName.getText().toString().trim())
-                .addParams("phoneNumber", mBindPersonalPhone.getText().toString().trim())
-                .addParams("bankName", mBindPersonalBankName.getText().toString().trim())
-                .addParams("bankAccountNumber", mBindPersonalBankCard.getText().toString().trim())
-                .build()
-                .execute(new StringCallback() {
-                    @Override
-                    public void onError(Call call, Exception e, int id) {
-                        LogUtil.Companion.d("绑定银行卡E：" + e.getMessage());
-                    }
+    private void getPhoto1() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        CharSequence[] items = {"拍照", "从相册选择"};
+        builder.setItems(items, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which) {
+                    case 0:
+                        //打开相机
+                        //拍照返回
+                        Intent intentCapture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                        mIdPhoto1 = new File(Environment.getExternalStorageDirectory(),
+                                mPersonalPhotoName);
+                        intentCapture.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile
+                                (mIdPhoto1));
+                        startActivityForResult(intentCapture, ID_CARD1_FROM_CAMERA);
+                        break;
+                    case 1:
+                        //打开相册
+                        //激活系统图库，选择一张图片
+                        Intent intentPick = new Intent(Intent.ACTION_PICK);
+                        intentPick.setType("image/*");
+                        startActivityForResult(intentPick, ID_CARD1_FROM_PHOTO);
+                        break;
+                }
+                dialog.dismiss();
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
 
-                    @Override
-                    public void onResponse(String response, int id) {
-                        LogUtil.Companion.d("绑定银行卡：" + response);
-                        ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
-                        switch (errorBean.getStatus()) {
-                            case "success":
-                                //记录个人账户
-                                //个人账户存在
-                                SharePreferenceUtil.put(getApplicationContext(),
-                                        Constant.PERSONAL_EXIT, true);
-                                //推广人
-                                SharePreferenceUtil.put(getApplicationContext(),
-                                        Constant.PERSONAL_CN_NAME,
-                                        mBindPersonalName.getText().toString().trim());
-                                //手机号码
-                                SharePreferenceUtil.put(getApplicationContext(),
-                                        Constant.PERSONAL_PHONE_NUMBER,
-                                        mBindPersonalPhone.getText().toString().trim());
-                                //银行卡号
-                                SharePreferenceUtil.put(getApplicationContext(),
-                                        Constant.PERSONAL_BANK_ACCOUNT_NUMBER,
-                                        mBindPersonalBankCard.getText().toString().trim());
-                                //开户银行
-                                SharePreferenceUtil.put(getApplicationContext(),
-                                        Constant.PERSONAL_BANK_NAME,
-                                        mBindPersonalBankName.getText().toString().trim());
-                                //成功将个人账户信息提交到服务器，进入修改成功界面
-                                startActivity(new Intent(getApplicationContext(), ChangeFinishedActivity.class));
-                                finish();
-                                break;
-                            case "failure":
-                                Util.showError(currentContext, errorBean.getReason());
-                                break;
-                        }
-                    }
-                });
+    private void getPhoto2() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        CharSequence[] items = {"拍照", "从相册选择"};
+        builder.setItems(items, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which) {
+                    case 0:
+                        //打开相机
+                        //拍照返回
+                        Intent intentCapture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                        mIdPhoto2 = new File(Environment.getExternalStorageDirectory(),
+                                mIdPhotoName);
+                        intentCapture.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(mIdPhoto2));
+                        startActivityForResult(intentCapture, ID_CARD2_FROM_CAMERA);
+                        break;
+                    case 1:
+                        //打开相册
+                        //激活系统图库，选择一张图片
+                        Intent intentPick = new Intent(Intent.ACTION_PICK);
+                        intentPick.setType("image/*");
+                        startActivityForResult(intentPick, ID_CARD2_FROM_PHOTO);
+                        break;
+                }
+                dialog.dismiss();
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    /**
+     * 校验数据
+     */
+    private void verifyData() {
+        // 推广人姓名
+        mPersonalName1 = mPersonalName.getText().toString().trim();
+        if (mPersonalName1.isEmpty()) {
+            ToastUtil.showShort(this, "请填写推广人姓名");
+            return;
+        }
+        // 推广人身份证号
+        mPersonalIdCard1 = mPersonalIdCard.getText().toString().trim();
+        if (mPersonalIdCard1.isEmpty()) {
+            ToastUtil.showShort(this, "请填写推广人身份证号");
+            return;
+        }
+        // 推广人联系电话
+        mPersonalPhone1 = mPersonalPhone.getText().toString().trim();
+        if (mPersonalPhone1.isEmpty()) {
+            ToastUtil.showShort(this, "请填写推广人联系电话");
+            return;
+        }
+        // 推广人QQ号码
+        mPersonalQq1 = mPersonalQq.getText().toString().trim();
+        if (mPersonalQq1.isEmpty()) {
+            ToastUtil.showShort(this, "请填写推广人QQ号码");
+            return;
+        }
+        // 推广人邮箱
+        mPersonalEmail1 = mPersonalEmail.getText().toString().trim();
+        if (mPersonalEmail1.isEmpty()) {
+            ToastUtil.showShort(this, "请填写推广人邮箱");
+            return;
+        }
+        // 证件照
+        if (isFirst && (mIdPhoto1 == null || mIdPhoto2 == null)) {
+            ToastUtil.showShort(this, "初次上传，请拍摄证件照");
+        }
+        // 银行名称
+        mPersonalBank1 = mPersonalBank.getText().toString().trim();
+        if (mPersonalBank1.isEmpty()) {
+            ToastUtil.showShort(this, "请填写推广人银行名称");
+            return;
+        }
+        // 开户行
+        mPersonalBankName1 = mPersonalBankName.getText().toString().trim();
+        if (mPersonalBankName1.isEmpty()) {
+            ToastUtil.showShort(this, "请填写推广人开户行");
+            return;
+        }
+        // 银行卡号
+        mPersonalBankCard1 = mPersonalBankCard.getText().toString().trim();
+        if (mPersonalBankCard1.isEmpty()) {
+            ToastUtil.showShort(this, "请填写推广人银行卡号");
+            return;
+        }
+        // 推广经历
+        if (mList == null || mList.isEmpty()) {
+            ToastUtil.showShort(this, "请添加推广经历");
+            return;
+        } else {
+            mExperienceList1 = JSON.toJSONString(mList);
+            LogUtil.Companion.d("推广经历：" + mExperienceList1);
+        }
+        // 曾经所在公司及职位
+        mPersonalEver1 = mPersonalEver.getText().toString().trim();
+        if (mPersonalEver1.isEmpty()) {
+            ToastUtil.showShort(this, "请填写曾经所在公司及职位");
+            return;
+        }
+        // 推广优势
+        mPersonalAdvantage1 = mPersonalAdvantage.getText().toString().trim();
+        if (mPersonalAdvantage1.isEmpty()) {
+            ToastUtil.showShort(this, "请填写推广优势");
+            return;
+        }
+        // 显示是否确定提交
+        showConfirmDialog();
+    }
+    /**
+     * 显示提交确定弹窗
+     */
+    private void showConfirmDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.dialog);
+        View view = View.inflate(this, R.layout.dialog_confirm_submit, null);
+        builder.setView(view);
+        mDialog = builder.create();
+        mDialog.show();
+        Button check = (Button) view.findViewById(R.id.dialog_check);
+        // 再确认一次
+        check.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mDialog.dismiss();
+            }
+        });
+        Button submit = (Button) view.findViewById(R.id.dialog_confirm);
+        // 提交数据
+        submit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mDialog.dismiss();//压缩图片
+                mZipName = "corporatePromotions" + TimeUtil.timeStamp2Date(System.currentTimeMillis()+"", "yyyyMMdd_HHssmm") + ".zip";
+                // 压缩文件
+                mZipFile = CompressUtil.zipANDSave(mFileMap, mZipName);
+                if (mZipFile == null) {
+                    // 提示错误并返回
+                    ToastUtil.showShort(currentContext, "文件压缩出现未知错误，暂无法上传图片");
+                    return;
+                }
+                submitData();
+            }
+        });
+    }
+
+    /**
+     * 最终提交数据
+     */
+    private void submitData() {
+        // 禁止再次点击上传
+        mPersonalSubmit.setEnabled(false);
+        //上传进度条显示
+        mProgressDialog = new ProgressDialog(this);
+        mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        mProgressDialog.setCancelable(false);
+        mProgressDialog.setTitle("正在上传，请稍后...");
+        OkHttpUtils.post().url(URL_SUBMIT).addHeader(ACCESS_TOKEN, mAccessToken)
+                .addParams(CN_NAME, mPersonalName1)
+                .addParams(ID_NUMBER, mPersonalIdCard1)
+                .addParams(PERSONAL_PHONE_NUMBER, mPersonalPhone1)
+                .addParams(QQ, mPersonalQq1)
+                .addParams(EMAIL, mPersonalEmail1)
+                .addParams(BANK_NAME, mPersonalBank1)
+                .addParams(OPENING_BANK, mPersonalBankName1)
+                .addParams(BANK_CARD_NUMBER, mPersonalBankCard1)
+                .addParams(EXPERIENCE_LIST, mExperienceList1)
+                .addParams(EXPERIENCE, mPersonalEver1)
+                .addParams(ADVANTAGE, mPersonalAdvantage1)
+                .addFile(ZIP_FILE, mZipName, mZipFile)
+                .build().connTimeOut(10 * 60 * 1000)
+                .readTimeOut(10 * 60 * 1000)
+                .writeTimeOut(10 * 60 * 1000).execute(new StringCallback() {
+            @Override
+            public void onBefore(Request request, int id) {
+                super.onBefore(request, id);
+                mProgressDialog.show();
+                LogUtil.Companion.d("onBefore");
+            }
+
+            @Override
+            public void onAfter(int id) {
+                super.onAfter(id);
+                mProgressDialog.dismiss();
+                LogUtil.Companion.d("onAfter");
+            }
+
+            @Override
+            public void inProgress(float progress, long total, int id) {
+                super.inProgress(progress, total, id);
+                mProgressDialog.setProgress((int) (100 * progress + 0.5));
+                LogUtil.Companion.d("inProgress");
+            }
+
+            @Override
+            public void onError(Call call, Exception e, int id) {
+                e.printStackTrace();
+                Util.showTimeOutNotice(currentContext);
+                mPersonalSubmit.setEnabled(true);
+            }
+
+            @Override
+            public void onResponse(String response, int id) {
+                mPersonalSubmit.setEnabled(true);
+                LogUtil.Companion.d("个人主体数据：" + response);
+                ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
+                switch (errorBean.getStatus()) {
+                    case "success":
+                        // 更新本地数据
+                        updateLocalData();
+                        ToastUtil.showLong(getApplicationContext(), "提交成功，请等待审核");
+                        finish();
+                        break;
+                    case "failure":
+                        Util.showError(currentContext, errorBean.getReason());
+                        break;
+                }
+            }
+        });
+
+    }
+
+    private void updateLocalData() {
+        // 记录个人主体存在
+        SharePreferenceUtil.put(currentContext, Constant.PERSONAL_EXIT, true);
+        // 姓名
+        SharePreferenceUtil.put(currentContext, Constant.PERSONAL_CN_NAME, mPersonalName1);
+        // 银行卡号
+        SharePreferenceUtil.put(currentContext, Constant.PERSONAL_BANK_CARD_NUMBER, mPersonalBankCard1);
+        // 身份证号
+        SharePreferenceUtil.put(currentContext, Constant.PERSONAL_ID_CARD, mPersonalIdCard1);
+        // 联系电话
+        SharePreferenceUtil.put(currentContext, Constant.PERSONAL_PHONE_NUMBER, mPersonalPhone1);
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        //注销回调接口
-        SMSSDK.unregisterAllEventHandler();
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case ID_CARD1_FROM_CAMERA:
+                if (resultCode == RESULT_OK) {
+                    handlePhoto("personalPhoto", mIdPhoto1, mPersonalCardPhoto1);
+                }
+                break;
+            case ID_CARD2_FROM_CAMERA:
+                if (resultCode == RESULT_OK) {
+                    handlePhoto("idPhoto", mIdPhoto2, mPersonalCardPhoto2);
+                }
+                break;
+            case ID_CARD1_FROM_PHOTO:
+                if (data != null && resultCode == RESULT_OK) {
+                    mIdPhoto1 = new File((BitmapUtil.getRealPathFromURI(this, data.getData())));
+                    handlePhoto("personalPhoto", mIdPhoto1, mPersonalCardPhoto1);
+                }
+                break;
+            case ID_CARD2_FROM_PHOTO:
+                if (data != null && resultCode == RESULT_OK) {
+                    mIdPhoto2 = new File((BitmapUtil.getRealPathFromURI(this, data.getData())));
+                    handlePhoto("idPhoto", mIdPhoto2, mPersonalCardPhoto2);
+                }
+                break;
+            case PERSONAL:
+                if (data != null && resultCode == PERSONAL) {
+                    mList = data.getParcelableArrayListExtra("experience");
+                }
+                break;
+        }
+    }
+
+    /**
+     * 添加到压缩文件集合中
+     *
+     * @param childFileName 压缩文件中单个文件的名字
+     * @param file          压缩文件中的单个文件
+     * @param imageView     前台回显数据
+     */
+    private void handlePhoto(String childFileName, File file, ImageView imageView) {
+        // 压缩文件内单个文件的名字
+        String key = childFileName + file.getAbsolutePath().substring(file.getAbsolutePath()
+                .lastIndexOf("."));
+        // 压缩文件内单个文件的真实路径
+        String val = file.getAbsolutePath();
+        mFileMap.put(key, val);
+        LogUtil.Companion.d("key：" + key);
+        LogUtil.Companion.d("val：" + val);
+        //压缩回显
+        Bitmap bitmap = BitmapUtil.decodeSampledBitmapFromFile(file, DensityUtil.dp2px(this,
+                WIDTH), DensityUtil.dp2px(this, HEIGHT));
+        if (bitmap != null) {
+            imageView.setImageBitmap(bitmap);
+        }
+    }
+
+    @Override
+    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+    }
+
+    @Override
+    public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+    }
+
+    @Override
+    public void afterTextChanged(Editable s) {
+        mPersonalOwner.setText(s.length() == 0 ? "请输入推广人姓名" : s.toString());
     }
 
     @Override
@@ -255,29 +636,5 @@ public class BindPersonalActivity extends BaseActivity implements TitleView.Titl
     @Override
     public void rightOnClick() {
 
-    }
-
-    class TimeCount extends CountDownTimer {
-
-        public TimeCount(long millisInFuture, long countDownInterval) {
-            super(millisInFuture, countDownInterval);
-        }
-
-        @Override
-        public void onTick(long millisUntilFinished) {
-            mBindPersonalGetCode.setBackgroundResource(R.drawable.shape_getcode_loading);
-            mBindPersonalGetCode.setText(millisUntilFinished / 1000 + " 秒后可重新发送");
-            //button的setClickable无效
-            mBindPersonalGetCode.setEnabled(false);
-            mBindPersonalGetCode.setTextColor(Color.parseColor("#999999"));
-        }
-
-        @Override
-        public void onFinish() {
-            mBindPersonalGetCode.setText("重新获取验证码");
-            mBindPersonalGetCode.setTextColor(Color.parseColor("#eeeeee"));
-            mBindPersonalGetCode.setEnabled(true);
-            mBindPersonalGetCode.setBackgroundResource(R.drawable.shape_getcode);
-        }
     }
 }

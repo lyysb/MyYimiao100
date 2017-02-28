@@ -16,6 +16,17 @@ public class Experience implements Parcelable {
     private String startAtFormat;
     private String endAtFormat;
     private String productName;
+    private String serialNo;
+
+
+
+    public String getSerialNo() {
+        return serialNo;
+    }
+
+    public void setSerialNo(String serialNo) {
+        this.serialNo = serialNo;
+    }
 
     public int getProvinceId() {
         return provinceId;
@@ -73,6 +84,7 @@ public class Experience implements Parcelable {
         this.productName = productName;
     }
 
+
     @Override
     public int describeContents() {
         return 0;
@@ -87,6 +99,7 @@ public class Experience implements Parcelable {
         dest.writeString(this.startAtFormat);
         dest.writeString(this.endAtFormat);
         dest.writeString(this.productName);
+        dest.writeString(this.serialNo);
     }
 
     public Experience() {
@@ -100,6 +113,7 @@ public class Experience implements Parcelable {
         this.startAtFormat = in.readString();
         this.endAtFormat = in.readString();
         this.productName = in.readString();
+        this.serialNo = in.readString();
     }
 
     public static final Parcelable.Creator<Experience> CREATOR = new Parcelable.Creator<Experience>() {

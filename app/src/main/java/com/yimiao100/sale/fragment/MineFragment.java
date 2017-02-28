@@ -35,10 +35,12 @@ import com.yimiao100.sale.activity.StudyTaskActivity;
 import com.yimiao100.sale.activity.VendorListActivity;
 import com.yimiao100.sale.bean.ErrorBean;
 import com.yimiao100.sale.bean.ImageBean;
+import com.yimiao100.sale.bean.UserAccountBean;
 import com.yimiao100.sale.service.AliasService;
 import com.yimiao100.sale.utils.AppUtil;
 import com.yimiao100.sale.utils.BitmapUtil;
 import com.yimiao100.sale.utils.Constant;
+import com.yimiao100.sale.utils.DataUtil;
 import com.yimiao100.sale.utils.FormatUtils;
 import com.yimiao100.sale.utils.LogUtil;
 import com.yimiao100.sale.utils.SharePreferenceUtil;
@@ -79,6 +81,7 @@ public class MineFragment extends Fragment implements View.OnClickListener {
     private LinearLayout mLlStudy;
     private LinearLayout mLlMore;
     private TextView mIntegral;
+    private String mAccessToken;
 
     private File tempFile;
     private AlertDialog mDialog;
@@ -95,16 +98,19 @@ public class MineFragment extends Fragment implements View.OnClickListener {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle
             savedInstanceState) {
         mView = View.inflate(getContext(), R.layout.fragment_mine, null);
+        mAccessToken = (String) SharePreferenceUtil.get(getContext(), Constant.ACCESSTOKEN, "");
 
         initView();
         initData();
 
+        LogUtil.Companion.d("MineFragment:onCreateView");
         return mView;
     }
 
     @Override
     public void onStart() {
         super.onStart();
+        LogUtil.Companion.d("MineFragment:onStart");
         //获取用户头像URL
         mUserIconUrl = (String) SharePreferenceUtil.get(getContext(), Constant.PROFILEIMAGEURL, "");
         //设置个人头像
@@ -112,6 +118,8 @@ public class MineFragment extends Fragment implements View.OnClickListener {
             Picasso.with(getContext()).load(mUserIconUrl).placeholder(R.mipmap
                     .ico_my_default_avatar).into(mMinePhoto);
         }
+
+        initAccountData();
     }
 
     private void initView() {
@@ -176,27 +184,44 @@ public class MineFragment extends Fragment implements View.OnClickListener {
         mLl_mine_order.setOnClickListener(this);
 
         mReconciliation.setOnClickListener(this);
+
+
         //显示账户总额
         double total_amount = Double.valueOf((String) SharePreferenceUtil.get(getContext(), Constant
                 .TOTAL_AMOUNT, ""));
         mMineAmount.setText("￥" + FormatUtils.MoneyFormat(total_amount));
-        //显示推广主体
-        int bank_count = 0;
-        String corporate_bank_number = (String) SharePreferenceUtil.get(getContext(), Constant
-                .CORPORATE_ACCOUNT_NUMBER, "");
-        String personal_bank_number = (String) SharePreferenceUtil.get(getContext(), Constant
-                .PERSONAL_BANK_ACCOUNT_NUMBER, "");
-        if (corporate_bank_number.length() != 0) {
-            bank_count += 1;
-        }
-        if (personal_bank_number.length() != 0) {
-            bank_count += 1;
-        }
-        mBankCount.setText(bank_count + "");
+
         //显示积分
         int integral = (int) SharePreferenceUtil.get(getContext(), Constant.INTEGRAL, 0);
         mIntegral.setText(FormatUtils.NumberFormat(integral));
 
+    }
+
+    private void initAccountData() {//本地显示推广主体
+        int promotionCount = 0;
+        boolean corporateExit = (boolean) SharePreferenceUtil.get(getContext(), Constant.CORPORATE_EXIT, false);
+        boolean personalExit = (boolean) SharePreferenceUtil.get(getContext(), Constant.PERSONAL_EXIT, false);
+        if (corporateExit) {
+            promotionCount += 1;
+        }
+        if (personalExit) {
+            promotionCount += 1;
+        }
+        mBankCount.setText(promotionCount + "");
+        // 联网刷新数据
+        DataUtil.updateUserAccount(mAccessToken, new DataUtil.onSuccessListener() {
+            @Override
+            public void echoData(UserAccountBean userAccount) {
+                int promotionCount = 0;
+                if (userAccount.getCorporate() != null) {
+                    promotionCount += 1;
+                }
+                if (userAccount.getPersonal() != null) {
+                    promotionCount += 1;
+                }
+                mBankCount.setText(promotionCount + "");
+            }
+        });
     }
 
     @Override

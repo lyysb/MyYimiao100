@@ -34,7 +34,8 @@ import okhttp3.Call;
 /**
  * 资源-资源详情页
  */
-public class ResourcesDetailActivity extends BaseActivity implements TitleView.TitleBarOnClickListener, View.OnClickListener {
+public class ResourcesDetailActivity extends BaseActivity implements TitleView
+        .TitleBarOnClickListener, View.OnClickListener {
 
     @BindView(R.id.resources_detail_title)
     TitleView mResourcesDetailTitle;
@@ -104,30 +105,30 @@ public class ResourcesDetailActivity extends BaseActivity implements TitleView.T
                 .url(URL_RESOURCE_INFO)
                 .addHeader(ACCESS_TOKEN, mAccessToken)
                 .addParams("resourceId", mResourceID + "")
-                .build()
-                .execute(new StringCallback() {
-                    @Override
-                    public void onError(Call call, Exception e, int id) {
-                        e.printStackTrace();
-                        Util.showTimeOutNotice(currentContext);
-                    }
+                .build().execute(new StringCallback() {
+            @Override
+            public void onError(Call call, Exception e, int id) {
+                e.printStackTrace();
+                Util.showTimeOutNotice(currentContext);
+            }
 
-                    @Override
-                    public void onResponse(String response, int id) {
-                        LogUtil.Companion.d("资源详情：" + response);
-                        ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
-                        switch (errorBean.getStatus()) {
-                            case "success":
-                                //解析JSON数据
-                                mResourceInfo = JSON.parseObject(response, ResourceDetailBean.class).getResourceResult();
-                                setDetail(mResourceInfo);
-                                break;
-                            case "failure":
-                                Util.showError(ResourcesDetailActivity.this, errorBean.getReason());
-                                break;
-                        }
-                    }
-                });
+            @Override
+            public void onResponse(String response, int id) {
+                LogUtil.Companion.d("资源详情：" + response);
+                ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
+                switch (errorBean.getStatus()) {
+                    case "success":
+                        //解析JSON数据
+                        mResourceInfo = JSON.parseObject(response, ResourceDetailBean.class)
+                                .getResourceResult();
+                        setDetail(mResourceInfo);
+                        break;
+                    case "failure":
+                        Util.showError(ResourcesDetailActivity.this, errorBean.getReason());
+                        break;
+                }
+            }
+        });
     }
 
     private void setDetail(ResourceListBean resourceInfo) {
@@ -169,7 +170,8 @@ public class ResourcesDetailActivity extends BaseActivity implements TitleView.T
         //截止日期
         long expiredTipAt = resourceInfo.getBidExpiredTipAt();
         String expire = TimeUtil.timeStamp2Date(expiredTipAt + "", "yyyy年MM月dd日");
-        mResourceDetailExpiredAt.setText(Html.fromHtml("（<font color=\"#4188d2\">注意：</font>本资源竞标时间截止日为\t" + expire + "）"));
+        mResourceDetailExpiredAt.setText(Html.fromHtml("（<font " +
+                "color=\"#4188d2\">注意：</font>本资源竞标时间截止日为\t" + expire + "）"));
         //完成设置视频
         //图片url
         mImageUrl = resourceInfo.getProductImageUrl();
@@ -228,11 +230,13 @@ public class ResourcesDetailActivity extends BaseActivity implements TitleView.T
         }
         super.onBackPressed();
     }
+
     @Override
     protected void onPause() {
         super.onPause();
         JCVideoPlayer.releaseAllVideos();
     }
+
     @Override
     public void leftOnClick() {
         finish();

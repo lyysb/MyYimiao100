@@ -20,6 +20,7 @@ import java.util.ArrayList;
 public class ExperienceAdapter extends BaseAdapter {
 
     private final ArrayList<Experience> mList;
+    private onDeleteClickListener mListener;
 
     public ExperienceAdapter(ArrayList<Experience> list) {
         mList = list;
@@ -41,7 +42,7 @@ public class ExperienceAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
         Experience experience = getItem(position);
         if (convertView == null) {
             convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_experience, null);
@@ -49,9 +50,27 @@ public class ExperienceAdapter extends BaseAdapter {
         TextView time = ViewHolderUtil.get(convertView, R.id.experience_item_time);
         TextView region = ViewHolderUtil.get(convertView, R.id.experience_item_region);
         TextView vaccine = ViewHolderUtil.get(convertView, R.id.experience_item_vaccine);
-        time.setText(experience.getStartAtFormat() + "至" + experience.getEndAtFormat());
+        time.setText(experience.getStartAtFormat() + " 至 " + experience.getEndAtFormat());
         region.setText(experience.getProvinceName() + experience.getCityName());
         vaccine.setText(experience.getProductName());
+        TextView delete = ViewHolderUtil.get(convertView, R.id.experience_item_delete);
+        delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mListener != null) {
+                    mListener.delete(position);
+                }
+            }
+        });
         return convertView;
     }
+
+    public interface onDeleteClickListener {
+        void delete(int position);
+    }
+
+    public void setOnDeleteClickListener(onDeleteClickListener listener) {
+        mListener = listener;
+    }
+
 }

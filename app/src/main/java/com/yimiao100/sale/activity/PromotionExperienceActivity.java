@@ -19,6 +19,7 @@ import com.yimiao100.sale.bean.Province;
 import com.yimiao100.sale.utils.LogUtil;
 import com.yimiao100.sale.utils.RegionUtil;
 import com.yimiao100.sale.utils.ToastUtil;
+import com.yimiao100.sale.utils.Util;
 import com.yimiao100.sale.view.TitleView;
 
 import java.text.SimpleDateFormat;
@@ -50,8 +51,9 @@ public class PromotionExperienceActivity extends BaseActivity implements TitleVi
     @BindView(R.id.promotion_experience_vaccine)
     EditText mPromotionExperienceVaccine;
 
-
-    private static final int ADD_EXPERIENCE = 300;
+    private static int TYPE;
+    private static final int ADD_EXPERIENCE = 101;
+    private static final int EDIT_EXPERIENCE = 102;
 
     private TimePickerView mTimePickerView;
     private CharacterPickerWindow mCharacterPickerView;
@@ -59,6 +61,7 @@ public class PromotionExperienceActivity extends BaseActivity implements TitleVi
     private List<List<String>> mOptions2Items;
     private ArrayList<Province> mProvinceList;
     private Experience mExperience;
+    private int mPosition;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,7 +99,22 @@ public class PromotionExperienceActivity extends BaseActivity implements TitleVi
     }
 
     private void initData() {
-        mExperience = new Experience();
+        TYPE = getIntent().getIntExtra("type", -1);
+        if (TYPE == ADD_EXPERIENCE) {
+            // 新增推广经历
+            mExperience = new Experience();
+            mExperience.setSerialNo(Util.generateSeriaNo());
+        }
+        if (TYPE == EDIT_EXPERIENCE) {
+            // 编辑推广经历
+            mExperience = getIntent().getParcelableExtra("experience");
+            mPosition = getIntent().getIntExtra("position", -1);
+            mPromotionExperienceBegin.setText(mExperience.getStartAtFormat());
+            mPromotionExperienceEnd.setText(mExperience.getEndAtFormat());
+            mPromotionExperienceProvence.setText(mExperience.getProvinceName());
+            mPromotionExperienceCity.setText(mExperience.getCityName());
+            mPromotionExperienceVaccine.setText(mExperience.getProductName());
+        }
         //读取地域信息
         RegionUtil.getRegionList(this, this);
     }
@@ -237,7 +255,15 @@ public class PromotionExperienceActivity extends BaseActivity implements TitleVi
             mExperience.setProductName(mPromotionExperienceVaccine.getText().toString());
             Intent intent = new Intent();
             intent.putExtra("experience", mExperience);
-            setResult(ADD_EXPERIENCE, intent);
+            switch (TYPE) {
+                case ADD_EXPERIENCE:
+                    setResult(ADD_EXPERIENCE, intent);
+                    break;
+                case EDIT_EXPERIENCE:
+                    intent.putExtra("position", mPosition);
+                    setResult(EDIT_EXPERIENCE, intent);
+                    break;
+            }
             finish();
         }
     }
@@ -251,7 +277,6 @@ public class PromotionExperienceActivity extends BaseActivity implements TitleVi
                 mCharacterPickerView.dismiss();
                 return true;
             }
-
         }
         return super.onKeyDown(keyCode, event);
     }

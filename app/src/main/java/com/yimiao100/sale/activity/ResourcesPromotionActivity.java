@@ -82,7 +82,6 @@ public class ResourcesPromotionActivity extends BaseActivity implements TitleVie
 
         initView();
 
-
         Intent intent = getIntent();
         //资源
         mResourceInfo = intent.getParcelableExtra("resourceInfo");
@@ -91,8 +90,6 @@ public class ResourcesPromotionActivity extends BaseActivity implements TitleVie
         }
 
         initData();
-
-
     }
 
     @Override
@@ -103,7 +100,7 @@ public class ResourcesPromotionActivity extends BaseActivity implements TitleVie
     }
 
     /**
-     * 校验完毕
+     * 校验对公完毕
      * 处理对公账户信息数据
      *
      * @param corporate

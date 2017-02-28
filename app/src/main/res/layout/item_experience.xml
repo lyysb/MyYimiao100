@@ -2,22 +2,68 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:background="@android:color/white"
-    android:padding="12dp"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <TextView
-        android:id="@+id/experience_item_time"
-        android:gravity="left|center_vertical"
-        style="@style/style61"/>
-    <TextView
-        android:id="@+id/experience_item_region"
-        android:gravity="center"
-        style="@style/style61"/>
-    <TextView
-        android:id="@+id/experience_item_vaccine"
-        android:gravity="right|center_vertical"
-        style="@style/style61"/>
+    <LinearLayout
+        android:orientation="horizontal"
+        android:paddingLeft="12dp"
+        android:paddingRight="12dp"
+        android:paddingTop="18dp"
+        android:paddingBottom="18dp"
+        android:gravity="center_vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:id="@+id/experience_item_time"
+            android:text="{beginTime} 至 {endTime}"
+            style="@style/style61"
+            android:gravity="center_vertical|left"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
 
+        <TextView
+            android:id="@+id/experience_item_region"
+            android:text="{region}"
+            style="@style/style61"
+            android:gravity="center"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="12dp"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"/>
+        <TextView
+            android:id="@+id/experience_item_vaccine"
+            android:text="{vaccine}"
+            style="@style/style61"
+            android:gravity="center_vertical|right"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+
+    <View
+        style="@style/view_horizontal"
+        android:layout_height="0.5dp"/>
+    <LinearLayout
+        android:gravity="right"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:text="编辑"
+            android:drawableLeft="@mipmap/ico_address_edit"
+            style="@style/style47"
+            android:textColor="@color/color333"/>
+        <TextView
+            android:id="@+id/experience_item_delete"
+            android:paddingLeft="25dp"
+            android:paddingRight="12dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:text="删除"
+            android:drawableLeft="@mipmap/ico_address_delete"
+            style="@style/style47"
+            android:textColor="@color/color333"/>
+    </LinearLayout>
 
 </LinearLayout>

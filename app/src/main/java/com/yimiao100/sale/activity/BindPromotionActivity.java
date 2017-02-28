@@ -3,25 +3,19 @@ package com.yimiao100.sale.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.alibaba.fastjson.JSON;
 import com.yimiao100.sale.R;
 import com.yimiao100.sale.base.BaseActivity;
-import com.yimiao100.sale.bean.UserBean;
 import com.yimiao100.sale.utils.Constant;
-import com.yimiao100.sale.utils.LogUtil;
+import com.yimiao100.sale.utils.DataUtil;
 import com.yimiao100.sale.utils.SharePreferenceUtil;
-import com.yimiao100.sale.utils.Util;
 import com.yimiao100.sale.view.TitleView;
-import com.zhy.http.okhttp.OkHttpUtils;
-import com.zhy.http.okhttp.callback.StringCallback;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import okhttp3.Call;
 
 /**
  * 推广主体
@@ -29,149 +23,86 @@ import okhttp3.Call;
 public class BindPromotionActivity extends BaseActivity implements TitleView
         .TitleBarOnClickListener {
 
+
     @BindView(R.id.promotion_title)
-    TitleView mPromotionTitle;
-    @BindView(R.id.promotion_bind_company)
-    ImageView mPromotionBindCompany;
+    TitleView mTitle;
     @BindView(R.id.promotion_company_bank_name)
-    TextView mPromotionCompanyBankName;
-    @BindView(R.id.promotion_company)
-    TextView mPromotionCompany;
+    TextView mCompanyBankName;
     @BindView(R.id.promotion_company_bank_number)
-    TextView mPromotionCompanyBankNumber;
+    TextView mCompanyBankNumber;
+    @BindView(R.id.promotion_company_exit)
+    RelativeLayout mCompanyExit;
+    @BindView(R.id.promotion_company_null)
+    RelativeLayout mCompanyNull;
+    @BindView(R.id.promotion_personal_name)
+    TextView mPersonalName;
+    @BindView(R.id.promotion_personal_number)
+    TextView mPersonalNumber;
+    @BindView(R.id.promotion_personal_exit)
+    RelativeLayout mPersonalExit;
+    @BindView(R.id.promotion_personal_null)
+    RelativeLayout mPersonalNull;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_promotion_bind);
         ButterKnife.bind(this);
-
-        mPromotionTitle.setOnTitleBarClick(this);
+        mTitle.setOnTitleBarClick(this);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-
         initData();
     }
 
     private void initData() {
+        initCorporateData();
 
-        boolean corporate_exit = (boolean) SharePreferenceUtil.get(getApplicationContext(),
+        initPersonalData();
+        //请求网络，获取推广账户信息
+        DataUtil.updateUserAccount(mAccessToken);
+    }
+
+    private void initCorporateData() {
+        boolean corporateExit = (boolean) SharePreferenceUtil.get(currentContext,
                 Constant.CORPORATE_EXIT, false);
         String accountName = (String) SharePreferenceUtil.get(currentContext,
                 Constant.CORPORATE_ACCOUNT_NAME, "");
-        String corporate_bank_number = (String) SharePreferenceUtil.get(currentContext,
+        String corporateBankNumber = (String) SharePreferenceUtil.get(currentContext,
                 Constant.CORPORATE_ACCOUNT_NUMBER, "");
-        if (corporate_exit) {
-            //如果已经存在对公账户
-            mPromotionBindCompany.setBackgroundResource(R.mipmap.ico_bank_card_activation);
-            mPromotionCompanyBankName.setText(accountName);
-            mPromotionCompanyBankNumber.setText(corporate_bank_number);
-        } else {
-            mPromotionBindCompany.setBackgroundResource(R.mipmap.ico_bank_card_default);
+        // 主体数据的显示
+        mCompanyExit.setVisibility(corporateExit ? View.VISIBLE : View.GONE);
+        mCompanyNull.setVisibility(corporateExit ? View.GONE : View.VISIBLE);
+        if (corporateExit) {
+            mCompanyBankName.setText(accountName);
+            mCompanyBankNumber.setText(corporateBankNumber);
         }
-
-        mPromotionCompanyBankName.setVisibility(corporate_exit ? View.VISIBLE : View.INVISIBLE);
-        mPromotionCompany.setVisibility(corporate_exit ? View.VISIBLE : View.INVISIBLE);
-        mPromotionCompanyBankNumber.setVisibility(corporate_exit ? View.VISIBLE : View.INVISIBLE);
-        //重新请求网络，获取推广账户信息
-        OkHttpUtils.post().url(Constant.BASE_URL + "/api/user/get_user_account")
-                .addHeader(ACCESS_TOKEN, mAccessToken)
-                .build().execute(new StringCallback() {
-            @Override
-            public void onError(Call call, Exception e, int id) {
-                LogUtil.Companion.d("推广主体E：" + e.getLocalizedMessage());
-                Util.showTimeOutNotice(currentContext);
-            }
-
-            @Override
-            public void onResponse(String response, int id) {
-                LogUtil.Companion.d("推广主体：" + response);
-                UserBean userBean = JSON.parseObject(response, UserBean.class);
-                switch (userBean.getStatus()) {
-                    case "success":
-                        if (userBean.getUserAccount().getCorporate() != null) {
-                            //更新本地对公账户的记录
-                            refreshCorporate(userBean);
-                        }
-                        break;
-                    case "failure":
-                        Util.showError(currentContext, userBean.getReason());
-                        break;
-                }
-            }
-        });
     }
 
-    /**
-     * 刷新账户本地保存信息
-     * @param userBean
-     */
-    private void refreshCorporate(UserBean userBean) {
-        //记录对公账户存在
-        SharePreferenceUtil.put(getApplicationContext(),
-                Constant.CORPORATE_EXIT, true);
-        //对公账户-开户名称
-        SharePreferenceUtil.put(getApplicationContext(),
-                Constant.CORPORATE_ACCOUNT_NAME,
-                userBean.getUserAccount().getCorporate().getAccountName());
-        //对公账户-公司账号
-        SharePreferenceUtil.put(getApplicationContext(),
-                Constant.CORPORATE_ACCOUNT_NUMBER,
-                userBean.getUserAccount().getCorporate().getCorporateAccount
-                        ());
-        //对公账户-开户银行
-        SharePreferenceUtil.put(getApplicationContext(),
-                Constant.CORPORATE_BANK_NAME,
-                userBean.getUserAccount().getCorporate().getBankName());
-        //对公账户-公司电话号码
-        SharePreferenceUtil.put(getApplicationContext(),
-                Constant.CORPORATE_PHONE_NUMBER,
-                userBean.getUserAccount().getCorporate().getCorporatePhoneNumber());
-
-        //对公账户-企业营业执照地址
-        SharePreferenceUtil.put(getApplicationContext(),
-                Constant.CORPORATE_BIZ_LICENCE_URL,
-                userBean.getUserAccount().getCorporate().getBizLicenceUrl());
-
-        //对公账户-姓名
-        SharePreferenceUtil.put(getApplicationContext(),
-                Constant.CORPORATE_CN_NAME,
-                userBean.getUserAccount().getCorporate().getCnName());
-        //对公账户-身份证号
-        SharePreferenceUtil.put(getApplicationContext(),
-                Constant.CORPORATE_ID_NUMBER,
-                userBean.getUserAccount().getCorporate().getIdNumber());
-        //对公账户-电话
-        SharePreferenceUtil.put(getApplicationContext(),
-                Constant.CORPORATION_PERSONAL_PHONE_NUMBER,
-                userBean.getUserAccount().getCorporate()
-                        .getPersonalPhoneNumber());
-        //对公账户-QQ
-        SharePreferenceUtil.put(getApplicationContext(), Constant.CORPORATE_QQ, userBean.getUserAccount().getCorporate().getQq());
-        //对公账户-邮箱
-        SharePreferenceUtil.put(getApplicationContext(), Constant.CORPORATE_EMAIL,
-                userBean.getUserAccount().getCorporate().getEmail());
-        //对公账户-证件照1
-        SharePreferenceUtil.put(getApplicationContext(), Constant.CORPORATE_PERSONAL_URL,
-                userBean.getUserAccount().getCorporate().getPersonalPhotoUrl());
-        //对公账户-证件照2
-        SharePreferenceUtil.put(getApplicationContext(), Constant.CORPORATE_ID_URL,
-                userBean.getUserAccount().getCorporate().getIdPhotoUrl());
-
-        //对公账户-审核状态
-        SharePreferenceUtil.put(getApplicationContext(), Constant.CORPORATE_ACCOUNT_STATUS,
-                userBean.getUserAccount().getCorporate().getAccountStatus());
+    private void initPersonalData() {
+        boolean personalExit = (boolean) SharePreferenceUtil.get(currentContext, Constant.PERSONAL_EXIT, false);
+        String cnName = (String) SharePreferenceUtil.get(currentContext, Constant.PERSONAL_CN_NAME, "");
+        String bankCardNumber = (String) SharePreferenceUtil.get(currentContext, Constant.PERSONAL_BANK_CARD_NUMBER, "");
+        // 主体数据的显示
+        mPersonalExit.setVisibility(personalExit ? View.VISIBLE : View.GONE);
+        mPersonalNull.setVisibility(personalExit ? View.GONE : View.VISIBLE);
+        if (personalExit) {
+            mPersonalName.setText(cnName);
+            mPersonalNumber.setText(bankCardNumber);
+        }
     }
 
 
-    @OnClick({R.id.promotion_bind_company})
+    @OnClick({R.id.promotion_company, R.id.promotion_personal})
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.promotion_bind_company:
+            case R.id.promotion_company:
                 startActivity(new Intent(this, BindCompanyActivity.class));
+                break;
+            case R.id.promotion_personal:
+                startActivity(new Intent(this, BindPersonalActivity.class));
                 break;
         }
     }

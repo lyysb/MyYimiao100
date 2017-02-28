@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    style="@style/TitleStyle"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <com.yimiao100.sale.view.TitleView
+        android:id="@+id/promotion_experience_title"
+        app:left_isShow="true"
+        app:title_text="从事疫苗推广经历"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+    <ListView
+        android:id="@+id/promotion_experience_list"
+        android:layout_weight="1"
+        style="@style/list_view"
+        android:dividerHeight="3dp"
+        android:background="@color/colorEee"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"/>
+    <TextView
+        android:id="@+id/promotion_experience_add"
+        android:text="新增推广经历"
+        android:gravity="center"
+        android:textSize="14sp"
+        android:textColor="@color/colorMain"
+        android:background="@android:color/white"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"/>
+</LinearLayout>

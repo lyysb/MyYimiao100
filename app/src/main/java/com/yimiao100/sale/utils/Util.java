@@ -15,6 +15,7 @@ import com.yimiao100.sale.activity.BindPersonalActivity;
 import com.yimiao100.sale.activity.PersonalAddressAddActivity;
 
 import java.util.HashMap;
+import java.util.UUID;
 
 /**
  * 纯工具
@@ -26,15 +27,20 @@ public class Util {
         throw new UnsupportedOperationException("cannot be instantiated");
     }
 
-
-
+    /**
+     * @return 生成唯一key
+     */
+    public static String generateSeriaNo() {
+        return UUID.randomUUID().toString();
+    }
 
     /**
      * 计算税额
+     *
      * @param money
      * @return
      */
-    public static double getTex(double money){
+    public static double getTex(double money) {
 //        1、每次收入＜4000元的
 //        应纳税额=（每次收入额-800）*20%
 //        2、每次收入≥4000元以上的
@@ -58,6 +64,7 @@ public class Util {
 
     /**
      * 提示错误信息
+     *
      * @param activity
      * @param reason
      */
@@ -82,6 +89,7 @@ public class Util {
 
     /**
      * 显示个人信息不完整的Dialog
+     *
      * @param activity
      */
     public static void showPersonalDialog(final Activity activity) {
@@ -106,8 +114,9 @@ public class Util {
     }
 
 
-     /**
+    /**
      * 显示收获地址不完整Dialog
+     *
      * @param activity
      */
     public static void showAddressDialog(final Activity activity) {
@@ -117,7 +126,8 @@ public class Util {
         builder.setPositiveButton("去设置", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                activity.startActivityForResult(new Intent(activity, PersonalAddressAddActivity.class), 100);
+                activity.startActivityForResult(new Intent(activity, PersonalAddressAddActivity
+                        .class), 100);
             }
         });
         builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
@@ -139,7 +149,8 @@ public class Util {
         String userName = (String) SharePreferenceUtil.get(context, Constant.CNNAME, "未知");
         String userIcon = (String) SharePreferenceUtil.get(context, Constant.PROFILEIMAGEURL,
                 "http://oduhua0b1.bkt.clouddn.com/default_avatar.png");
-        String accountNumber = (String) SharePreferenceUtil.get(context, Constant.ACCOUNT_NUMBER, "未知");
+        String accountNumber = (String) SharePreferenceUtil.get(context, Constant.ACCOUNT_NUMBER,
+                "未知");
         HashMap<String, String> info = new HashMap<>();
         info.put("name", userName);
         info.put("avatar", userIcon);

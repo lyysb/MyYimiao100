@@ -7,7 +7,7 @@ import java.util.HashMap;
  * Created by 亿苗通 on 2016/8/9.
  */
 public interface Constant {
-    boolean isTest = false;     // 是否在测试环境下
+    boolean isTest = true;     // 是否在测试环境下
     String BASE_URL_TEST = "http://161p3p2316.iask.in/ymt";
     String BASE_URL_OFFICAL = "http://123.56.203.55/ymt";
     String BASE_URL = isTest ? BASE_URL_TEST : BASE_URL_OFFICAL;
@@ -101,6 +101,8 @@ public interface Constant {
             put(152, "支付无效");
             put(153, "获取协议文件无效");
             put(154, "操作过于频繁");
+            put(155, "提交个人账户信息无效");
+            put(156, "提现状态无效");
         }
     };
     String CNNAME = "cnName";
@@ -113,13 +115,9 @@ public interface Constant {
     String CORPORATE_ACCOUNT_NUMBER = "corporate_account_number";
     String CORPORATE_PHONE_NUMBER = "corporate_phone_number";
     String CORPORATE_AMOUNT = "corporate_amount";
-    String PERSONAL_BANK_ACCOUNT_NUMBER = "personal_bank_account_number";
-    String PERSONAL_PHONE_NUMBER = "personal_phone_number";
-    String PERSONAL_AMOUNT = "personal_amount";
     String LOGIN_STATUS = "login_status";
     String DEFAULT_IMAGE = "http://oduhua0b1.bkt.clouddn.com/banner_placeholder.png";
     String CORPORATE_BANK_NAME = "corporate_bank_name";
-    String PERSONAL_BANK_NAME = "personal_bank_name";
     String CORPORATE_EXIT = "corporate_exit";
     String PERSONAL_EXIT = "personal_exit";
     String CORPORATE_BIZ_LICENCE_URL = "corporate_biz_licence_url";
@@ -144,4 +142,9 @@ public interface Constant {
     String IS_FIRST = "is_first";
     String DATA_VERSION_ = "data_version_";
     String ACCOUNT_NUMBER = "account_number";
+    String PERSONAL_BANK_CARD_NUMBER = "personal_bank_card_number";
+    String PERSONAL_ACCOUNT_STATUS = "PERSONAL_ACCOUNT_STATUS";
+
+    String PERSONAL_ID_CARD = "personal_id_card";
+    String PERSONAL_PHONE_NUMBER = "personal_phone_number";
 }

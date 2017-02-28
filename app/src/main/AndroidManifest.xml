@@ -148,7 +148,8 @@
         </activity>
         <activity android:name=".activity.BindPromotionActivity">
         </activity>
-        <activity android:name=".activity.BindPersonalActivity">
+        <activity android:name=".activity.BindPersonalActivity"
+                  android:windowSoftInputMode="adjustPan">
         </activity>
         <activity
             android:name=".activity.BindCompanyActivity"
@@ -327,6 +328,8 @@
         </service>
 
         <activity android:name=".base.BaseActivityWithTab">
+        </activity>
+        <activity android:name=".activity.PromotionExperienceListActivity">
         </activity>
     </application>
 

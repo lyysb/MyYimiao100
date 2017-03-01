@@ -3,6 +3,7 @@ package com.yimiao100.sale.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -11,6 +12,7 @@ import android.widget.TextView;
 import com.yimiao100.sale.R;
 import com.yimiao100.sale.base.BaseActivity;
 import com.yimiao100.sale.bean.CorporateBean;
+import com.yimiao100.sale.bean.PersonalBean;
 import com.yimiao100.sale.bean.ResourceListBean;
 import com.yimiao100.sale.utils.CheckUtil;
 import com.yimiao100.sale.utils.FormatUtils;
@@ -27,7 +29,7 @@ import butterknife.OnClick;
  * 资源-公司推广
  */
 public class ResourcesPromotionActivity extends BaseActivity implements TitleView
-        .TitleBarOnClickListener, View.OnClickListener, CheckUtil.CorporatePassedListener {
+        .TitleBarOnClickListener, View.OnClickListener, CheckUtil.CorporatePassedListener, CheckUtil.PersonalPassedListener {
 
 
     @BindView(R.id.resources_promotion_title)
@@ -60,12 +62,18 @@ public class ResourcesPromotionActivity extends BaseActivity implements TitleVie
     TextView mResourcePromotionTotalCount;
     @BindView(R.id.resource_promotion_total_amount)
     TextView mResourcePromotionTotalAmount;
-    @BindView(R.id.resources_promotion_company_name)
-    TextView mCompanyName;
-    @BindView(R.id.resources_promotion_company_account)
-    TextView mCompanyAccount;
-    @BindView(R.id.resources_promotion_promoter)
-    TextView mPromoter;
+    @BindView(R.id.resource_promotion_item1)
+    TextView mPromotionItem1;
+    @BindView(R.id.resource_promotion_item2)
+    TextView mPromotionItem2;
+    @BindView(R.id.resource_promotion_item3)
+    TextView mPromotionItem3;
+    @BindView(R.id.resources_promotion_option1)
+    TextView mPromotionOption1;
+    @BindView(R.id.resources_promotion_option2)
+    TextView mPromotionOption2;
+    @BindView(R.id.resources_promotion_option3)
+    TextView mPromotionOption3;
     private int mNum;
     private AlertDialog mDialog;
 
@@ -73,6 +81,10 @@ public class ResourcesPromotionActivity extends BaseActivity implements TitleVie
     private int mQuota;
     private ResourceListBean mResourceInfo;
     private double mSaleDeposit;
+
+    private static String  mUserAccountType;
+    private static final String PERSONAL = "personal";
+    private static final String CORPORATE = "corporate";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,13 +94,6 @@ public class ResourcesPromotionActivity extends BaseActivity implements TitleVie
 
         initView();
 
-        Intent intent = getIntent();
-        //资源
-        mResourceInfo = intent.getParcelableExtra("resourceInfo");
-        if (mResourceInfo != null) {
-            LogUtil.Companion.d("resourceId-" + mResourceInfo.getId());
-        }
-
         initData();
     }
 
@@ -96,7 +101,32 @@ public class ResourcesPromotionActivity extends BaseActivity implements TitleVie
     protected void onStart() {
         super.onStart();
         //校验账户信息
-        CheckUtil.checkCorporate(this, this);
+        switch (mUserAccountType) {
+            case PERSONAL:
+                CheckUtil.checkPersonal(this, this);
+                break;
+            case CORPORATE:
+                CheckUtil.checkCorporate(this, this);
+                break;
+        }
+    }
+    /**
+     * 校验个人完毕
+     * 处理个人账户信息数据
+     *
+     * @param personal
+     */
+    @Override
+    public void handlePersonal(PersonalBean personal) {
+        // 推广人姓名
+        String cnName = personal.getCnName();
+        mPromotionOption1.setText(cnName);
+        // 推广人身份证号
+        String idNumber = personal.getIdNumber();
+        mPromotionOption2.setText(idNumber);
+        // 推广人联系电话
+        String personalPhoneNumber = personal.getPersonalPhoneNumber();
+        mPromotionOption3.setText(personalPhoneNumber);
     }
 
     /**
@@ -109,29 +139,44 @@ public class ResourcesPromotionActivity extends BaseActivity implements TitleVie
     public void handleCorporate(CorporateBean corporate) {
         //公司名称
         String bankAccountName = corporate.getAccountName();
-        mCompanyName.setText(bankAccountName);
+        mPromotionOption1.setText(bankAccountName);
         //公司账号
         String bankAccountNumber = corporate.getCorporateAccount();
-        mCompanyAccount.setText(bankAccountNumber);
+        mPromotionOption2.setText(bankAccountNumber);
         //推广人
         String cnName = corporate.getCnName();
-        mPromoter.setText(cnName);
+        mPromotionOption3.setText(cnName);
     }
 
     private void initView() {
         mResourcesPromotionTitle.setOnTitleBarClick(this);
     }
 
-
     private void initData() {
-        mResourcesPromotionTitle.setTitle("公司推广");
+        Intent intent = getIntent();
+        //资源
+        mResourceInfo = intent.getParcelableExtra("resourceInfo");
+        if (mResourceInfo != null) {
+            LogUtil.Companion.d("resourceId is " + mResourceInfo.getId());
+        }
+        mUserAccountType = intent.getStringExtra("userAccountType");
+        switch (mUserAccountType) {
+            case PERSONAL:
+                LogUtil.Companion.d("personal promotion");
+                initPersonalData();
+                break;
+            case CORPORATE:
+                LogUtil.Companion.d("corporate promotion");
+                initCorporateData();
+                break;
+            default:
+                LogUtil.Companion.d("Unknown Error");
+                break;
+        }
         mResourcesPromotionBody.setText("推广主体详情");
         mResourcesPromotionBody.setCompoundDrawablesWithIntrinsicBounds(
                 getResources().getDrawable(R.mipmap.ico_company_promotion_details), null, null,
                 null);
-        mCompanyName.setHint("请绑定对公信息");
-        mCompanyAccount.setHint("请绑定对公信息");
-        mPromoter.setHint("请绑定对公信息");
         //厂家名称
         String vendorName = mResourceInfo.getVendorName();
         mResourcePromotionVendorName.setText(vendorName);
@@ -170,6 +215,27 @@ public class ResourcesPromotionActivity extends BaseActivity implements TitleVie
         mChange = mQuota * increment / 100;
     }
 
+    private void initPersonalData() {
+        mResourcesPromotionTitle.setTitle("个人推广");
+        mPromotionItem1.setText("推广人姓名：");
+        mPromotionItem2.setText("推广人身份证号：");
+        mPromotionItem3.setText("推广人联系电话：");
+        mPromotionOption1.setHint("请输入推广人姓名");
+        mPromotionOption2.setHint("请输入推广人身份证号码");
+        mPromotionOption3.setHint("请输入推广个人联系电话");
+    }
+
+
+    private void initCorporateData() {
+        mResourcesPromotionTitle.setTitle("公司推广");
+        mPromotionItem1.setText("公司名称：");
+        mPromotionItem2.setText("公司账号：");
+        mPromotionItem3.setText("推广人：");
+        mPromotionOption1.setHint("请绑定对公信息");
+        mPromotionOption2.setHint("请绑定对公信息");
+        mPromotionOption3.setHint("请绑定对公信息");
+    }
+
     @Override
     public void leftOnClick() {
         finish();
@@ -186,7 +252,11 @@ public class ResourcesPromotionActivity extends BaseActivity implements TitleVie
         switch (view.getId()) {
             case R.id.resource_promotion_bind:
                 //进入到推广主体界面
-                startActivity(new Intent(this, BindCompanyActivity.class));
+                if (TextUtils.equals(mUserAccountType, PERSONAL)) {
+                    startActivity(new Intent(this, BindPersonalActivity.class));
+                } else if (TextUtils.equals(mUserAccountType, CORPORATE)) {
+                    startActivity(new Intent(this, BindCompanyActivity.class));
+                }
                 break;
             case R.id.promotion_subtract:
                 //指标数减少
@@ -224,6 +294,7 @@ public class ResourcesPromotionActivity extends BaseActivity implements TitleVie
                 intent.putExtra("resourceInfo", mResourceInfo);                 //资源
                 intent.putExtra("bidQty", mPromotionNum.getText().toString());  //竞标数量
                 intent.putExtra("mark", "resource");     //标识来源界面
+                intent.putExtra("userAccountType", mUserAccountType);
                 startActivity(intent);
                 mDialog.dismiss();
                 break;

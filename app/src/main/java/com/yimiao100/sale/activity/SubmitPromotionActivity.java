@@ -80,9 +80,7 @@ public class SubmitPromotionActivity extends BaseActivity implements TitleView
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_submit_promotion);
         ButterKnife.bind(this);
-
         // TODO: 2017/1/5 暂时用RadioButton，默认只能使用微信支付，以后加入其它支付方式再重构
-
         initView();
 
         initData();
@@ -98,8 +96,9 @@ public class SubmitPromotionActivity extends BaseActivity implements TitleView
 
     private void initData() {
         mParams = new HashMap<>();
-        mUserAccountType = "corporate";
         Intent intent = getIntent();
+        mUserAccountType = intent.getStringExtra("userAccountType");
+        LogUtil.Companion.d("userAccountType is " + mUserAccountType);
         //根据不同的来源添加不同的参数，显示不同的数据
         mMark = intent.getStringExtra("mark");
         LogUtil.Companion.d("mark_" + mMark);

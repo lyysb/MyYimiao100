@@ -3,6 +3,8 @@ package com.yimiao100.sale.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Html;
+import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -25,14 +27,17 @@ import com.yimiao100.sale.view.TitleView;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
+import java.util.ArrayList;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import cn.jeesoft.widget.pickerview.CharacterPickerWindow;
 import fm.jiecao.jcvideoplayer_lib.JCVideoPlayer;
 import fm.jiecao.jcvideoplayer_lib.JCVideoPlayerStandard;
 import okhttp3.Call;
 
 /**
- * 资源-资源详情页
+ * 资源-资源详情
  */
 public class ResourcesDetailActivity extends BaseActivity implements TitleView
         .TitleBarOnClickListener, View.OnClickListener {
@@ -73,6 +78,9 @@ public class ResourcesDetailActivity extends BaseActivity implements TitleView
     private final String URL_RESOURCE_INFO = Constant.BASE_URL + "/api/resource/resource_info";
     private ResourceListBean mResourceInfo;
     private String mImageUrl;
+    private CharacterPickerWindow mPromotionType;
+    private ArrayList<String> mPromotionTypeItems;
+    private String mUserAccountType;
 
 
     @Override
@@ -94,6 +102,10 @@ public class ResourcesDetailActivity extends BaseActivity implements TitleView
     private void initView() {
         mResourcesDetailTitle.setOnTitleBarClick(this);
         mResourcesPromotion.setOnClickListener(this);
+        mPromotionType = new CharacterPickerWindow(this);
+        mPromotionTypeItems = new ArrayList<>();
+        mPromotionTypeItems.add("个人推广");
+        mPromotionTypeItems.add("公司推广");
     }
 
     private void initData() {
@@ -101,9 +113,7 @@ public class ResourcesDetailActivity extends BaseActivity implements TitleView
     }
 
     private void loadDetail() {
-        OkHttpUtils.post()
-                .url(URL_RESOURCE_INFO)
-                .addHeader(ACCESS_TOKEN, mAccessToken)
+        OkHttpUtils.post().url(URL_RESOURCE_INFO).addHeader(ACCESS_TOKEN, mAccessToken)
                 .addParams("resourceId", mResourceID + "")
                 .build().execute(new StringCallback() {
             @Override
@@ -205,9 +215,9 @@ public class ResourcesDetailActivity extends BaseActivity implements TitleView
 
     @Override
     public void onClick(View v) {
-        Intent intent = new Intent();
         switch (v.getId()) {
             case R.id.resource_detail_image:
+                Intent intent = new Intent();
                 intent.putExtra("image", mImageUrl);
                 intent.setClass(this, ShowWebImageActivity.class);
                 startActivity(intent);
@@ -216,13 +226,50 @@ public class ResourcesDetailActivity extends BaseActivity implements TitleView
                 if (mResourceInfo == null) {
                     return;
                 }
-                intent.setClass(this, ResourcesPromotionActivity.class);
-                intent.putExtra("resourceInfo", mResourceInfo);
-                startActivity(intent);
+                // 选择推广方式
+                selectPromotionType(v);
                 break;
         }
     }
 
+    private void selectPromotionType(View view) {
+        mPromotionType.setPicker(mPromotionTypeItems);
+        mPromotionType.setFocusable(true);
+        mPromotionType.setCyclic(false);
+        mPromotionType.setSelectOptions(0);
+        mPromotionType.setOnoptionsSelectListener(new CharacterPickerWindow.OnOptionsSelectListener() {
+
+            @Override
+            public void onOptionsSelect(int options1, int option2, int options3) {
+                LogUtil.Companion.d("选择：" + options1);
+                Intent intent = new Intent(currentContext, ResourcesPromotionActivity.class);
+                intent.putExtra("resourceInfo", mResourceInfo);
+                switch (options1) {
+                    case 0:
+                        mUserAccountType = "personal";
+                        break;
+                    case 1:
+                        mUserAccountType = "corporate";
+                        break;
+                }
+                intent.putExtra("userAccountType", mUserAccountType);
+                startActivity(intent);
+            }
+        });
+        mPromotionType.showAtLocation(view, Gravity.BOTTOM, 0, 0);
+        mPromotionType.setFocusable(false);
+
+    }
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            if (mPromotionType.isShowing()) {
+                mPromotionType.dismiss();
+                return true;
+            }
+        }
+        return super.onKeyDown(keyCode, event);
+    }
     @Override
     public void onBackPressed() {
         if (JCVideoPlayer.backPress()) {

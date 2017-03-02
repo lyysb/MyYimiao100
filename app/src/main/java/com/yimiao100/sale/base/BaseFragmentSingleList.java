@@ -134,9 +134,9 @@ public abstract class BaseFragmentSingleList extends Fragment {
         }
     }
 
-    protected abstract void onItemClick(AdapterView<?> parent, View view, int position, long id);
-
     protected abstract void onRefresh();
+
+    protected abstract void onItemClick(AdapterView<?> parent, View view, int position, long id);
 
     protected abstract void onLoadMore();
 

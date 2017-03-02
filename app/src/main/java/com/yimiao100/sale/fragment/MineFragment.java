@@ -353,7 +353,6 @@ public class MineFragment extends Fragment implements View.OnClickListener {
         switch (requestCode) {
             case PHOTO_REQUEST_GALLERY:// 从相册返回的数据
                 if (data != null && resultCode == -1) {
-                    //返回数据，并且是拍照返回数据
                     Uri uri = data.getData();
                     crop(uri);
                 }

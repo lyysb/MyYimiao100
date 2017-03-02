@@ -145,9 +145,18 @@ public class OrderAlreadyActivity extends BaseActivity implements TitleView
         //竞标有效时间
         String defaultExpiredAt = TimeUtil.timeStamp2Date(mOrder.getDefaultExpiredAt() + "",
                 "yyyy年MM月dd日");
-        mOrderAlreadyRe.setText("请在" + defaultExpiredAt
-                + "之前，通过贵公司的对公账户将产品推广保证金" + orderTotalDeposit +
-                "转到如上账户，并且下载打印电子协议，认真阅读每一条协议内容。");
+        switch (mOrder.getUserAccountType()) {
+            case "corporate":
+                mOrderAlreadyRe.setText("请在" + defaultExpiredAt
+                        + "之前，通过贵公司的对公账号将产品推广保证金" + orderTotalDeposit +
+                        "转到如上账户，并且下载打印电子协议，认真阅读每一条协议内容。");
+                break;
+            case "personal":
+                mOrderAlreadyRe.setText("请在" + defaultExpiredAt
+                        + "之前，通过已绑定的个人银行卡将产品推广保证金" + orderTotalDeposit +
+                        "转到如上账户，并且下载打印电子协议，认真阅读每一条协议内容。");
+                break;
+        }
         //订单id
         mOrderId = mOrder.getId() + "";
         //获取是否已经阅读过免责信息

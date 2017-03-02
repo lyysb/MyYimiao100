@@ -68,7 +68,7 @@ public class ResourcesActivity extends BaseActivitySingleList implements Carouse
     //县position
     private int mCountyPosition;
     //区域集合
-    private HashMap<String, String> region = new HashMap<>();
+    private HashMap<String, String> mParams = new HashMap<>();
 
 
     private TextView mResourcesProvince;
@@ -212,9 +212,9 @@ public class ResourcesActivity extends BaseActivitySingleList implements Carouse
 
     private RequestCall getBuild(int page) {
         return OkHttpUtils.post().url(URL_RESOURCE_LIST).addHeader(ACCESS_TOKEN, mAccessToken)
+                .params(mParams)
                 .addParams(PAGE, page + "")
                 .addParams(PAGE_SIZE, mPageSize)
-                .params(region)
                 .build();
     }
 
@@ -280,12 +280,12 @@ public class ResourcesActivity extends BaseActivitySingleList implements Carouse
                 int provinceID = mProvinceList.get(mProvincePosition).getId();
                 if (provinceID != 0) {
                     //清空区域参数集合
-                    region.clear();
+                    mParams.clear();
                     //添加到区域参数集合中
-                    region.put("provinceId", provinceID + "");
+                    mParams.put("provinceId", provinceID + "");
                 } else {
                     //清空所有数据-虽然现在没必要
-                    region.clear();
+                    mParams.clear();
                 }
                 //重置市、县数据，设置市可点击，县不可点击
                 mResourcesCity.setText("");
@@ -328,13 +328,13 @@ public class ResourcesActivity extends BaseActivitySingleList implements Carouse
                         (mCityPosition).getId();
                 if (cityID != 0) {
                     //添加到区域属性集合中
-                    region.put("cityId", cityID + "");
+                    mParams.put("cityId", cityID + "");
                 } else {
                     //清空市属性集合
-                    region.remove("cityId");
+                    mParams.remove("cityId");
                 }
                 //移除县属性集合
-                region.remove("areaId");
+                mParams.remove("areaId");
                 //重置县数据，设置可点击
                 mResourcesCounty.setText("");
                 mResourcesCounty.setClickable(true);
@@ -375,10 +375,10 @@ public class ResourcesActivity extends BaseActivitySingleList implements Carouse
                         .getAreaList().get(mCountyPosition).getId();
                 if (countyID != 0) {
                     //添加县ID到属性集合中
-                    region.put("areaId", countyID + "");
+                    mParams.put("areaId", countyID + "");
                 } else {
                     //移除县属性
-                    region.remove("areaId");
+                    mParams.remove("areaId");
                 }
             }
         });
@@ -421,18 +421,7 @@ public class ResourcesActivity extends BaseActivitySingleList implements Carouse
             @Override
             public void onResponse(String response, int id) {
                 mSwipeRefreshLayout.setRefreshing(false);
-                if (response.length() > 4000) {
-                    for (int i = 0; i < response.length(); i += 4000) {
-                        if (i + 4000 < response.length()) {
-                            LogUtil.Companion.d(i + "资源列表：" + response.substring(i, i + 4000));
-                        } else {
-                            LogUtil.Companion.d(i + "资源列表：" + response.substring(i, response
-                                    .length()));
-                        }
-                    }
-                } else {
-                    LogUtil.Companion.d("资源列表：" + response);
-                }
+                LogUtil.Companion.d("资源列表：" + response);
                 ErrorBean errorBean = parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":
@@ -440,6 +429,7 @@ public class ResourcesActivity extends BaseActivitySingleList implements Carouse
                         ResourceResultBean resourceResult = parseObject(response,
                                 ResourceBean.class).getResourceResult();
                         mTotalPage = resourceResult.getTotalPage();
+                        LogUtil.Companion.d("nextPage is " + mPage + ", totalPage is " + mTotalPage) ;
                         //解析JSON，填充Adapter
                         //获取资源列表
                         mResourcesList = resourceResult.getResourcesList();
@@ -481,6 +471,7 @@ public class ResourcesActivity extends BaseActivitySingleList implements Carouse
                 switch (errorBean.getStatus()) {
                     case "success":
                         mPage++;
+                        LogUtil.Companion.d("nextPage is " + mPage + ", totalPage is " + mTotalPage) ;
                         mResourcesList.addAll(parseObject(response, ResourceBean
                                 .class).getResourceResult().getResourcesList());
                         mResourcesAdapter.notifyDataSetChanged();

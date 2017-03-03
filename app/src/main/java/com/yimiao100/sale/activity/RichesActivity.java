@@ -46,10 +46,10 @@ public class RichesActivity extends BaseActivity implements TitleView.TitleBarOn
 
 
     private final String URL_USER_FUND = Constant.BASE_URL + "/api/fund/user_fund";
-    private final String ENTER_FROM = "enter_from";
-    private final int FROM_EXAM_REWARD = 0;         //来自奖学金
-    private final int FROM_SALE = 1;                //来自推广费
-    private final int FROM_DEPOSIT = 2;             //来自保证金
+    private final String MODULE_TYPE = "moduleType";
+    private final String EXAM_REWARD_WITHDRAWAL = "exam_reward_withdrawal"; //课程考试奖励可提现
+    private final String SALE_WITHDRAWAL = "sale_withdrawal";               //销售资金可提现
+    private final String DEPOSIT_WITHDRAWAL = "deposit_withdrawal";         //保证金可提现
 
 
     @Override
@@ -140,17 +140,17 @@ public class RichesActivity extends BaseActivity implements TitleView.TitleBarOn
                 break;
             case R.id.riches_scholarship:
                 //进入奖学金厂家列表
-                vendorIntent.putExtra(ENTER_FROM, FROM_EXAM_REWARD);
+                vendorIntent.putExtra(MODULE_TYPE, EXAM_REWARD_WITHDRAWAL);
                 startActivity(vendorIntent);
                 break;
             case R.id.riches_promotion:
                 //进入推广费厂家列表
-                vendorIntent.putExtra(ENTER_FROM, FROM_SALE);
+                vendorIntent.putExtra(MODULE_TYPE, SALE_WITHDRAWAL);
                 startActivity(vendorIntent);
                 break;
             case R.id.riches_assurance:
                 //进入保证金厂家列表
-                vendorIntent.putExtra(ENTER_FROM, FROM_DEPOSIT);
+                vendorIntent.putExtra(MODULE_TYPE, DEPOSIT_WITHDRAWAL);
                 startActivity(vendorIntent);
                 break;
         }

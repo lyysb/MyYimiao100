@@ -60,7 +60,7 @@ public class CRMFragment extends Fragment implements View.OnClickListener, Carou
     private ViewPager mCrm_ad;
 
     private final String URL_SALE_STAT = Constant.BASE_URL + "/api/stat/sale_stat";
-    private final int FROM_RECONCILIATION = 4;      //来自对账
+    private final String BALANCE_ORDER = "balance_order";                   //对账订单
     private final String ACCESS_TOKEN = "X-Authorization-Token";
 
     private String mAccessToken;
@@ -242,7 +242,7 @@ public class CRMFragment extends Fragment implements View.OnClickListener, Carou
             case R.id.crm_reconciliation:
                 //跳转到对账列表
                 Intent reconciliationIntent = new Intent(getContext(), VendorListActivity.class);
-                reconciliationIntent.putExtra("enter_from", FROM_RECONCILIATION);
+                reconciliationIntent.putExtra("moduleType", BALANCE_ORDER);
                 startActivity(reconciliationIntent);
                 break;
             case R.id.crm_riches:

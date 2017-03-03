@@ -68,7 +68,7 @@ public class MineFragment extends Fragment implements View.OnClickListener {
     private LinearLayout mLl_mine_exit;
 
     private final String URL_LOGOUT = Constant.BASE_URL + "/api/user/logout";
-    private final int FROM_RECONCILIATION = 4;
+    private final String BALANCE_ORDER = "balance_order";                   //对账订单
     private CircleImageView mMinePhoto;
     private String mUserIconUrl;
     private LinearLayout mLlMineCollection;
@@ -256,7 +256,7 @@ public class MineFragment extends Fragment implements View.OnClickListener {
             case R.id.mine_reconciliation:
                 //业务对账
                 Intent reconciliationIntent = new Intent(getContext(), VendorListActivity.class);
-                reconciliationIntent.putExtra("enter_from", FROM_RECONCILIATION);
+                reconciliationIntent.putExtra("moduleType", BALANCE_ORDER);
                 startActivity(reconciliationIntent);
                 break;
             case R.id.ll_mine_notice:

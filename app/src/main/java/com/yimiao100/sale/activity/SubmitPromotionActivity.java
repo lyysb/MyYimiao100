@@ -101,7 +101,7 @@ public class SubmitPromotionActivity extends BaseActivity implements TitleView
         LogUtil.Companion.d("userAccountType is " + mUserAccountType);
         //根据不同的来源添加不同的参数，显示不同的数据
         mMark = intent.getStringExtra("mark");
-        LogUtil.Companion.d("mark_" + mMark);
+        LogUtil.Companion.d("mark is " + mMark);
         switch (mMark) {
             case "resource":
                 URL_PAY = Constant.BASE_URL + "/api/order/place_order";

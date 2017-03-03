@@ -162,6 +162,7 @@ public class OrderUnpaidActivity extends BaseActivity implements TitleView.Title
     public void onClick() {
         //进入支付界面
         Intent intent = new Intent(this, SubmitPromotionActivity.class);
+        intent.putExtra("userAccountType", mOrder.getUserAccountType());
         intent.putExtra("order", mOrder);
         intent.putExtra("mark", "order");
         startActivity(intent);

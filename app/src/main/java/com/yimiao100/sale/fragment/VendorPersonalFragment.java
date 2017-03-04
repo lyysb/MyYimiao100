@@ -52,7 +52,7 @@ public class VendorPersonalFragment extends BaseFragmentSingleList{
     private ArrayList<Vendor> mList;
     @Override
     protected String initPageTitle() {
-        return "公司推广";
+        return "个人推广";
     }
 
     @Nullable

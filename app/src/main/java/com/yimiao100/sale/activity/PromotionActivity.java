@@ -70,9 +70,9 @@ public class PromotionActivity extends BaseActivity implements TitleView.TitleBa
     private final String URL_SALE = Constant.BASE_URL + "/api/fund/sale_order_list";
     private final String VENDOR_ID = "vendorId";
     private final String USER_ACCOUNT_TYPE = "userAccountType";
-    private final String CORPORATE = "corporate";
 
     private int mVendorId;
+    private String mUserAccountType;
 
     private ArrayList<PromotionList> mPromotionLists;
     private PromotionAdapter mPromotionAdapter;
@@ -95,13 +95,15 @@ public class PromotionActivity extends BaseActivity implements TitleView.TitleBa
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        mVendorId = getIntent().getIntExtra("vendorId", -1);
+        mUserAccountType = getIntent().getStringExtra(USER_ACCOUNT_TYPE);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_promotion);
         ButterKnife.bind(this);
 
-        mVendorId = getIntent().getIntExtra("vendorId", -1);
         mLogUrl = getIntent().getStringExtra("logoImageUrl");
         mVendorName = getIntent().getStringExtra("vendorName");
+        LogUtil.Companion.d("userAccountType is " + mUserAccountType);
 
         initView();
 
@@ -251,10 +253,22 @@ public class PromotionActivity extends BaseActivity implements TitleView.TitleBa
             }
             //删除第一个逗号
             orderIds.delete(0, 1);
-            Intent intent = new Intent(this, PromotionCashConfirmActivity.class);
+            Intent intent = new Intent();
+            Class clz = null;
+            switch (mUserAccountType) {
+                case "personal":
+                    clz = PromotionCashConfirmPersonalActivity.class;
+                    break;
+                case "corporate":
+                    clz = PromotionCashConfirmActivity.class;
+                    break;
+            }
+            intent.setClass(this, clz);
             intent.putExtra("orderIds", orderIds.toString());
             intent.putExtra("amount", mApplyNum);
-            startActivity(intent);
+            if (clz != null) {
+                startActivity(intent);
+            }
         } else {
             ToastUtil.showShort(getApplicationContext(), "请选择订单");
         }
@@ -354,7 +368,7 @@ public class PromotionActivity extends BaseActivity implements TitleView.TitleBa
     private RequestCall getBuild(int page) {
         return OkHttpUtils.post().url(URL_SALE).addHeader(ACCESS_TOKEN, mAccessToken).addParams
                 (VENDOR_ID, mVendorId + "").addParams(PAGE, page + "").addParams(PAGE_SIZE, "10")
-                .addParams(USER_ACCOUNT_TYPE, CORPORATE).build();
+                .addParams(USER_ACCOUNT_TYPE, mUserAccountType).build();
     }
 
     @Override

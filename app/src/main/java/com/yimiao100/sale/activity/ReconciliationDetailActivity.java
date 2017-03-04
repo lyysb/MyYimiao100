@@ -14,7 +14,6 @@ import com.yimiao100.sale.base.BaseActivity;
 import com.yimiao100.sale.bean.ErrorBean;
 import com.yimiao100.sale.bean.ReconciliationDetail;
 import com.yimiao100.sale.bean.ReconciliationDetailBean;
-import com.yimiao100.sale.bean.ReconciliationList;
 import com.yimiao100.sale.utils.Constant;
 import com.yimiao100.sale.utils.LogUtil;
 import com.yimiao100.sale.utils.Util;
@@ -65,22 +64,22 @@ public class ReconciliationDetailActivity extends BaseActivity implements TitleV
         mReconciliationDetailTitle.setOnTitleBarClick(this);
 
         Intent intent = getIntent();
-        ReconciliationList reconciliation = intent.getParcelableExtra("reconciliation");
-        mOrderId = reconciliation.getId() + "";
+        Bundle bundle = intent.getExtras();
+        mOrderId = bundle.getString("orderId");
         //分类
-        String categoryName = reconciliation.getCategoryName();
+        String categoryName = bundle.getString("categoryName");
         //厂家名称
-        String vendorName = reconciliation.getVendorName();
+        String vendorName = bundle.getString("vendorName");
         //客户名称
-        String customerName = reconciliation.getCustomerName();
+        String customerName = bundle.getString("customerName");
         //产品名
-        String productName = reconciliation.getProductName();
+        String productName = bundle.getString("productName");
         //剂型
-        String dosageForm = reconciliation.getDosageForm();
+        String dosageForm = bundle.getString("dosageForm");
         //规格
-        String spec = reconciliation.getSpec();
+        String spec = bundle.getString("spec");
         //协议单号
-        String serialNo = reconciliation.getSerialNo();
+        String serialNo = bundle.getString("serialNo");
         //添加头部布局
         View view = View.inflate(getApplicationContext(), R.layout.head_reconciliation_detail, null);
         //商品名

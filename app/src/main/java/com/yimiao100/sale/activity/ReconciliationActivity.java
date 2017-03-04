@@ -43,9 +43,9 @@ public class ReconciliationActivity extends BaseActivitySingleList {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
         mVendorId = getIntent().getIntExtra("vendorId", -1);
         mUserAccountType = getIntent().getStringExtra(USER_ACCOUNT_TYPE);
+        super.onCreate(savedInstanceState);
         LogUtil.Companion.d("userAccountType is " + mUserAccountType);
         setEmptyView("早起的鸟儿有虫吃，快到资源里面申请推广吧。", R.mipmap.ico_reconciliation);
     }
@@ -103,7 +103,23 @@ public class ReconciliationActivity extends BaseActivitySingleList {
         //携带数据，打开对账详情列表
         ReconciliationList reconciliation = mReconciliationList.get(position);
         Intent intent = new Intent(this, ReconciliationDetailActivity.class);
-        intent.putExtra("reconciliation", reconciliation);
+        Bundle bundle = new Bundle();
+        bundle.putString("orderId", reconciliation.getId() + "");
+        //产品名-分类名
+        bundle.putString("categoryName", reconciliation.getCategoryName());
+        //商品名
+        bundle.putString("productName", reconciliation.getProductName());
+        //厂家名称
+        bundle.putString("vendorName", reconciliation.getVendorName());
+        //客户名称
+        bundle.putString("customerName", reconciliation.getCustomerName());
+        //剂型
+        bundle.putString("dosageForm", reconciliation.getDosageForm());
+        //规格
+        bundle.putString("spec", reconciliation.getSpec());
+        //协议单号
+        bundle.putString("serialNo", reconciliation.getSerialNo());
+        intent.putExtras(bundle);
         startActivity(intent);
     }
 

@@ -15,6 +15,7 @@ import com.yimiao100.sale.utils.Constant;
 import com.yimiao100.sale.utils.FormatUtils;
 import com.yimiao100.sale.utils.LogUtil;
 import com.yimiao100.sale.utils.SharePreferenceUtil;
+import com.yimiao100.sale.utils.ToastUtil;
 import com.yimiao100.sale.utils.Util;
 import com.yimiao100.sale.view.TitleView;
 import com.zhy.http.okhttp.OkHttpUtils;
@@ -45,6 +46,7 @@ public class AssuranceCompanyActivity extends BaseActivity implements TitleView
     private final String ORDER_ID = "orderIds";
 
     private String mOrderIds;
+    private String mUserAccountType;
 
 
     @Override
@@ -66,8 +68,16 @@ public class AssuranceCompanyActivity extends BaseActivity implements TitleView
         Intent intent = getIntent();
         double applyNum = intent.getDoubleExtra("applyNum", -1);
         mAssuranceCompanyAccount.setText("申请推广保证金提现：" + FormatUtils.MoneyFormat(applyNum) + "元");
-        String phone = (String) SharePreferenceUtil.get(this, Constant
-                .CORPORATION_PERSONAL_PHONE_NUMBER, "");
+        mUserAccountType = intent.getStringExtra("userAccountType");
+        String phone = null;
+        switch (mUserAccountType) {
+            case "personal":
+                phone = (String) SharePreferenceUtil.get(this, Constant.PERSONAL_PHONE_NUMBER, "");
+                break;
+            case "corporate":
+                phone = (String) SharePreferenceUtil.get(this, Constant.CORPORATION_PERSONAL_PHONE_NUMBER, "");
+                break;
+        }
         LogUtil.Companion.d(phone);
         mAssuranceCompanyPhone.setText("联系方式：" + phone);
 
@@ -79,7 +89,8 @@ public class AssuranceCompanyActivity extends BaseActivity implements TitleView
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.assurance_apply_cash:
-                showApplyDialog();
+                // 提示确认提现
+                showDialog();
                 break;
             case R.id.assurance_apply_service:
                 //打开客服
@@ -90,9 +101,47 @@ public class AssuranceCompanyActivity extends BaseActivity implements TitleView
 
 
     /**
+     * 提示确认提现
+     */
+    private void showDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(AssuranceCompanyActivity.this, R
+                .style.dialog);
+        View v = View.inflate(this, R.layout.dialog_confirm_promotion, null);
+        builder.setView(v);
+        builder.setCancelable(false);
+        TextView msg = (TextView) v.findViewById(R.id.dialog_msg);
+
+        switch (mUserAccountType) {
+            case "personal":
+                msg.setText("您申请的提现金额，将在工作人员收到提现\n申请之后5个工作日内，退回到您原来的\n推广主体个人账号里，请注意查收。");
+                break;
+            case "corporate":
+                msg.setText("您申请的提现金额，将在工作人员收到提现\n申请之后5个工作日内，退回到您原来的\n推广主体对公账号里，请注意查收。");
+                break;
+        }
+        Button btn1 = (Button) v.findViewById(R.id.dialog_promotion_bt1);
+        Button btn2 = (Button) v.findViewById(R.id.dialog_promotion_bt2);
+        final AlertDialog dialog = builder.create();
+        btn1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        btn2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                applyCash();
+            }
+        });
+        dialog.show();
+    }
+
+    /**
      * 提交申请
      */
-    private void showApplyDialog() {
+    private void applyCash() {
         //禁止点击按钮，避免重复点击造成重复请求
         mAssuranceApplyCash.setEnabled(false);
         OkHttpUtils.post().url(URL_CASH_WITHDRAWAL).addHeader(ACCESS_TOKEN, mAccessToken)
@@ -113,7 +162,9 @@ public class AssuranceCompanyActivity extends BaseActivity implements TitleView
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":
-                        showDialog();
+                        ToastUtil.showShort(currentContext, "申请成功");
+                        //申请提现成功，返回财富列表
+                        startActivity(new Intent(getApplicationContext(), RichesActivity.class));
                         break;
                     case "failure":
                         Util.showError(currentContext, errorBean.getReason());
@@ -121,32 +172,6 @@ public class AssuranceCompanyActivity extends BaseActivity implements TitleView
                 }
             }
         });
-    }
-
-    private void showDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(AssuranceCompanyActivity.this, R
-                .style.dialog);
-        View v = View.inflate(this, R.layout.dialog_confirm_promotion, null);
-        builder.setView(v);
-        builder.setCancelable(false);
-        TextView tv1 = (TextView) v.findViewById(R.id.dialog_tv1);
-        TextView tv2 = (TextView) v.findViewById(R.id.dialog_tv2);
-
-        tv1.setText("温馨提示");
-        tv2.setText("您申请的提现金额会在5个工作日\n之内到达您得账户，请注意查收。");
-
-        TextView submit = (TextView) v.findViewById(R.id.dialog_confirm_promotion);
-        submit.setText("好的");
-        final AlertDialog dialog = builder.create();
-        submit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //直接跳回到财富首页
-                startActivity(new Intent(getApplicationContext(), RichesActivity.class));
-                dialog.dismiss();
-            }
-        });
-        dialog.show();
     }
 
     @Override

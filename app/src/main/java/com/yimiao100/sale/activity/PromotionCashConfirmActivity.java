@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSON;
@@ -15,6 +16,7 @@ import com.yimiao100.sale.utils.DialogUtil;
 import com.yimiao100.sale.utils.FormatUtils;
 import com.yimiao100.sale.utils.LogUtil;
 import com.yimiao100.sale.utils.SharePreferenceUtil;
+import com.yimiao100.sale.utils.ToastUtil;
 import com.yimiao100.sale.utils.Util;
 import com.yimiao100.sale.view.TitleView;
 import com.zhy.http.okhttp.OkHttpUtils;
@@ -95,12 +97,43 @@ public class PromotionCashConfirmActivity extends BaseActivity implements TitleV
                 Util.enterCustomerService(this);
                 break;
             case R.id.promotion_cash_apply_cash:
-                //申请提现
-                applyCash();
+                //申请提现确定
+                showDialog();
                 break;
         }
     }
 
+
+    /**
+     * 申请提现确定
+     */
+    private void showDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(PromotionCashConfirmActivity.this,
+                R.style.dialog);
+        View v = View.inflate(this, R.layout.dialog_confirm_promotion, null);
+        builder.setView(v);
+        builder.setCancelable(false);
+        TextView msg = (TextView) v.findViewById(R.id.dialog_msg);
+        msg.setText("您申请的提现金额，将在工作人员收到对应\n金额发票后5个工作日内，支付到您绑定\n推广主体对公账号里，请注意查收。");
+
+        Button btn1 = (Button) v.findViewById(R.id.dialog_promotion_bt1);
+        Button btn2 = (Button) v.findViewById(R.id.dialog_promotion_bt2);
+        final AlertDialog dialog = builder.create();
+        btn1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        btn2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                applyCash();
+            }
+        });
+        dialog.show();
+    }
 
     /**
      * 申请提现
@@ -121,8 +154,9 @@ public class PromotionCashConfirmActivity extends BaseActivity implements TitleV
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":
-                        //申请提现成功，显示弹窗
-                        showDialog();
+                        ToastUtil.showShort(currentContext, "申请成功");
+                        //申请提现成功，返回财富列表
+                        startActivity(new Intent(getApplicationContext(), RichesActivity.class));
                         break;
                     case "failure":
                         Util.showError(PromotionCashConfirmActivity.this, errorBean.getReason());
@@ -130,34 +164,6 @@ public class PromotionCashConfirmActivity extends BaseActivity implements TitleV
                 }
             }
         });
-    }
-
-    /**
-     * 申请提现成功弹窗
-     */
-    private void showDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(PromotionCashConfirmActivity.this,
-                R.style.dialog);
-        View v = View.inflate(this, R.layout.dialog_confirm_promotion, null);
-        builder.setView(v);
-        builder.setCancelable(false);
-        TextView tv1 = (TextView) v.findViewById(R.id.dialog_tv1);
-        TextView tv2 = (TextView) v.findViewById(R.id.dialog_tv2);
-
-        tv1.setText("温馨提示");
-        tv2.setText("您申请的提现金额，将在工作人员\n收到对应金额发票后5个工作日内，\n支付到您绑定推广主体对公账号里，\n请注意查收。");
-
-        TextView submit = (TextView) v.findViewById(R.id.dialog_confirm_promotion);
-        submit.setText("好的");
-        final AlertDialog dialog = builder.create();
-        submit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-                startActivity(new Intent(getApplicationContext(), RichesActivity.class));
-            }
-        });
-        dialog.show();
     }
 
     @Override

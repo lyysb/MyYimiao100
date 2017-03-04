@@ -31,7 +31,7 @@ import java.util.ArrayList;
 import okhttp3.Call;
 
 /**
- * 厂家列表-对公推广
+ * 厂家列表-个人推广
  * Created by Michel on 2017/3/3.
  */
 

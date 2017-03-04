@@ -64,8 +64,10 @@ public class ScholarshipActivity extends BaseActivity implements SwipeRefreshLay
 
     private final String URL_EXAM_REWARD_LIST = Constant.BASE_URL + "/api/fund/exam_reward_list";
     private final String VENDOR_ID = "vendorId";
+    private final String USER_ACCOUNT_TYPE = "userAccountType";
 
     private int mVendorId;
+    private String mUserAccountType;
     private ScholarshipAdapter mScholarshipAdapter;
     //计数
     private int mCheckedCount = 0;
@@ -87,13 +89,17 @@ public class ScholarshipActivity extends BaseActivity implements SwipeRefreshLay
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        mVendorId = getIntent().getIntExtra("vendorId", -1);
+        mUserAccountType = getIntent().getStringExtra(USER_ACCOUNT_TYPE);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scholarship);
         ButterKnife.bind(this);
 
-        mVendorId = getIntent().getIntExtra("vendorId", -1);
         mLogUrl = getIntent().getStringExtra("logoImageUrl");
         mVendorName = getIntent().getStringExtra("vendorName");
+
+        LogUtil.Companion.d("vendorId is " + mVendorId);
+        LogUtil.Companion.d("userAccountType is " + mUserAccountType);
 
         initView();
 
@@ -184,10 +190,22 @@ public class ScholarshipActivity extends BaseActivity implements SwipeRefreshLay
             }
             //删除第一个逗号
             orderIds.delete(0, 1);
-            Intent intent = new Intent(this, ScholarshipCashConfirmActivity.class);
+            Intent intent = new Intent();
+            Class clz = null;
+            switch (mUserAccountType) {
+                case "personal":
+                    clz = ScholarshipCashConfirmPersonalActivity.class;
+                    break;
+                case "corporate":
+                    clz = ScholarshipCashConfirmActivity.class;
+                    break;
+            }
+            intent.setClass(this, clz);
             intent.putExtra("orderIds", orderIds.toString());
             intent.putExtra("amount", mApplyNum);
-            startActivity(intent);
+            if (clz != null) {
+                startActivity(intent);
+            }
         } else {
             ToastUtil.showShort(getApplicationContext(), "请选择订单");
         }
@@ -255,7 +273,8 @@ public class ScholarshipActivity extends BaseActivity implements SwipeRefreshLay
 
     private RequestCall getBuild() {
         return OkHttpUtils.post().url(URL_EXAM_REWARD_LIST).addHeader(ACCESS_TOKEN, mAccessToken)
-                .addParams(VENDOR_ID, mVendorId + "").build();
+                .addParams(VENDOR_ID, mVendorId + "")
+                .addParams(USER_ACCOUNT_TYPE, mUserAccountType).build();
     }
 
     @Override

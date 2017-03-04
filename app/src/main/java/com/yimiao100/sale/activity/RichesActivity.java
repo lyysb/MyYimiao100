@@ -9,6 +9,8 @@ import com.alibaba.fastjson.JSON;
 import com.yimiao100.sale.R;
 import com.yimiao100.sale.base.BaseActivity;
 import com.yimiao100.sale.bean.ErrorBean;
+import com.yimiao100.sale.bean.Tax;
+import com.yimiao100.sale.bean.TaxBean;
 import com.yimiao100.sale.bean.UserFundBean;
 import com.yimiao100.sale.bean.UserFundNew;
 import com.yimiao100.sale.utils.Constant;
@@ -46,6 +48,7 @@ public class RichesActivity extends BaseActivity implements TitleView.TitleBarOn
 
 
     private final String URL_USER_FUND = Constant.BASE_URL + "/api/fund/user_fund";
+    private final String URL_TEX = Constant.BASE_URL + "/api/tax/default";
     private final String MODULE_TYPE = "moduleType";
     private final String EXAM_REWARD_WITHDRAWAL = "exam_reward_withdrawal"; //课程考试奖励可提现
     private final String SALE_WITHDRAWAL = "sale_withdrawal";               //销售资金可提现
@@ -59,6 +62,36 @@ public class RichesActivity extends BaseActivity implements TitleView.TitleBarOn
         ButterKnife.bind(this);
 
         initView();
+
+        initTax();
+    }
+
+    private void initTax() {
+        OkHttpUtils.post().url(URL_TEX).addHeader(ACCESS_TOKEN, mAccessToken)
+                .build().execute(new StringCallback() {
+            @Override
+            public void onError(Call call, Exception e, int id) {
+                LogUtil.Companion.d("tax error is :");
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(String response, int id) {
+                LogUtil.Companion.d("tax :" + response);
+                ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
+                switch (errorBean.getStatus()) {
+                    case "success":
+                        Tax tax = JSON.parseObject(response, TaxBean.class).getTax();
+                        double taxRate = tax.getTaxRate();
+                        // 保存税率
+                        SharePreferenceUtil.put(currentContext, Constant.TAX_RATE, taxRate);
+                        break;
+                    case "failure":
+                        Util.showError(currentContext, errorBean.getReason());
+                        break;
+                }
+            }
+        });
     }
 
     @Override

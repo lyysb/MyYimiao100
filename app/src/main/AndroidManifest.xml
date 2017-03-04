@@ -263,9 +263,13 @@
         </activity>
         <activity android:name=".activity.PromotionCashConfirmActivity">
         </activity>
+        <activity android:name=".activity.PromotionCashConfirmPersonalActivity">
+        </activity>
         <activity android:name=".activity.ScholarshipActivity">
         </activity>
         <activity android:name=".ScholarshipCashConfirmActivity">
+        </activity>
+        <activity android:name=".activity.ScholarshipCashConfirmPersonalActivity">
         </activity>
         <activity android:name=".activity.RichItemDetailActivity">
         </activity>

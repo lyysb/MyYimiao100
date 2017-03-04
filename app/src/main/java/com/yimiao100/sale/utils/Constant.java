@@ -147,4 +147,6 @@ public interface Constant {
 
     String PERSONAL_ID_CARD = "personal_id_card";
     String PERSONAL_PHONE_NUMBER = "personal_phone_number";
+    String TAX_RATE = "tax_rate";
+
 }

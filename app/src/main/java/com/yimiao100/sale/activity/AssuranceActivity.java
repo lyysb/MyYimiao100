@@ -67,9 +67,9 @@ public class AssuranceActivity extends BaseActivity implements TitleView.TitleBa
     private final String URL_ASSURANCE = Constant.BASE_URL + "/api/fund/deposit_order_list";
     private final String VENDOR_ID = "vendorId";
     private final String USER_ACCOUNT_TYPE = "userAccountType";
-    private final String CORPORATE = "corporate";
 
     private int mVendorId;
+    private String mUserAccountType;
     //计数
     private int mCheckedCount = 0;
     //统计申请提现金额
@@ -91,13 +91,15 @@ public class AssuranceActivity extends BaseActivity implements TitleView.TitleBa
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        mVendorId = getIntent().getIntExtra("vendorId", -1);
+        mUserAccountType = getIntent().getStringExtra(USER_ACCOUNT_TYPE);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_assurance);
         ButterKnife.bind(this);
 
-        mVendorId = getIntent().getIntExtra("vendorId", -1);
         mLogUrl = getIntent().getStringExtra("logoImageUrl");
         mVendorName = getIntent().getStringExtra("vendorName");
+        LogUtil.Companion.d("userAccountType is " + mUserAccountType);
 
         initView();
 
@@ -170,7 +172,7 @@ public class AssuranceActivity extends BaseActivity implements TitleView.TitleBa
     private RequestCall getBuild(int page) {
         return OkHttpUtils.post().url(URL_ASSURANCE).addHeader(ACCESS_TOKEN, mAccessToken)
                 .addParams(PAGE, page + "").addParams(PAGE_SIZE, "10").addParams(VENDOR_ID,
-                        mVendorId + "").addParams(USER_ACCOUNT_TYPE, CORPORATE).build();
+                        mVendorId + "").addParams(USER_ACCOUNT_TYPE, mUserAccountType).build();
     }
 
 
@@ -199,6 +201,7 @@ public class AssuranceActivity extends BaseActivity implements TitleView.TitleBa
             //删除第一个逗号
             orderIds.delete(0, 1);
             Intent intent = new Intent(this, AssuranceCompanyActivity.class);
+            intent.putExtra(USER_ACCOUNT_TYPE, mUserAccountType);
             intent.putExtra("orderIds", orderIds.toString());
             intent.putExtra("applyNum", mApplyNum);
             startActivity(intent);

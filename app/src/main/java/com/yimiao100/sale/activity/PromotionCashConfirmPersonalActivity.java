@@ -1,4 +1,4 @@
-package com.yimiao100.sale;
+package com.yimiao100.sale.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,7 +8,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSON;
-import com.yimiao100.sale.activity.RichesActivity;
+import com.yimiao100.sale.R;
 import com.yimiao100.sale.base.BaseActivity;
 import com.yimiao100.sale.bean.ErrorBean;
 import com.yimiao100.sale.utils.Constant;
@@ -27,91 +27,110 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import okhttp3.Call;
 
+import static com.yimiao100.sale.utils.Constant.TAX_RATE;
+
 /**
- * 鬼知道我当时怎么就放在了包外面。
- * 奖学金提现确认
+ * 推广费提现确认界面-个人
  */
-public class ScholarshipCashConfirmActivity extends BaseActivity implements TitleView
-        .TitleBarOnClickListener{
+public class PromotionCashConfirmPersonalActivity extends BaseActivity implements TitleView
+        .TitleBarOnClickListener {
 
-    @BindView(R.id.scholarship_cash_title)
-    TitleView mScholarshipCashTitle;
-    @BindView(R.id.scholarship_cash_end)
-    TextView mScholarshipCashEnd;
-    @BindView(R.id.scholarship_cash_money)
-    TextView mScholarshipCashMoney;
-    @BindView(R.id.scholarship_cash_phone)
-    TextView mScholarshipCashPhone;
+    @BindView(R.id.promotion_cash_title_personal)
+    TitleView mPromotionCashTitle;
+    @BindView(R.id.promotion_cash_end_personal)
+    TextView mPromotionCashEnd;
+    @BindView(R.id.promotion_cash_money_personal)
+    TextView mPromotionCashMoney;
+    @BindView(R.id.promotion_cash_phone_personal)
+    TextView mPromotionCashPhone;
 
-    private final String URL_APPLY_CASH = Constant.BASE_URL + "/api/fund/exam_reward_cash_withdrawal";
-    private final String ORDER_IDS = "courseExamItemIds";
+
+    private final String URL_APPLY_CASH = Constant.BASE_URL + "/api/fund/sale_cash_withdrawal";
+    private final String ORDER_IDS = "orderIds";
+    @BindView(R.id.promotion_cash_final_personal)
+    TextView mPromotionCashFinalPersonal;
 
     private String mOrderIds;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_scholarship_cash_confirm);
+        setContentView(R.layout.activity_promotion_case_confirm_personal);
         ButterKnife.bind(this);
 
         initView();
 
         initData();
     }
+
     @Override
     protected void onStart() {
         super.onStart();
-        boolean isExit = (boolean) SharePreferenceUtil.get(this, Constant.CORPORATE_EXIT, false);
+        boolean isExit = (boolean) SharePreferenceUtil.get(this, Constant.PERSONAL_EXIT, false);
         if (isExit) {
             //设置尾号
-            String bank_number = (String) SharePreferenceUtil.get(this, Constant
-                    .CORPORATE_ACCOUNT_NUMBER, "");
-            mScholarshipCashEnd.setText(bank_number.length() > 4 ? "尾号" + bank_number.substring(bank_number.length() - 4) : bank_number);
+            String bankNumber = (String) SharePreferenceUtil.get(this, Constant
+                    .PERSONAL_BANK_CARD_NUMBER, "");
+            mPromotionCashEnd.setText(bankNumber.length() > 4 ? "尾号" + bankNumber.substring
+                    (bankNumber.length() - 4) : bankNumber);
             //设置联系方式
-            mScholarshipCashPhone.setText("联系方式：" + SharePreferenceUtil.get(this, Constant
-                    .CORPORATION_PERSONAL_PHONE_NUMBER, ""));
+            mPromotionCashPhone.setText("联系方式：" + SharePreferenceUtil.get(this, Constant
+                    .PERSONAL_PHONE_NUMBER, ""));
         } else {
-            DialogUtil.noneCorporate(this);
+            DialogUtil.nonePersonal(this);
         }
     }
 
     private void initView() {
-        mScholarshipCashTitle.setOnTitleBarClick(this);
+        mPromotionCashTitle.setOnTitleBarClick(this);
     }
+
     private void initData() {
         Intent intent = getIntent();
         //获取订单号串
         mOrderIds = intent.getStringExtra("orderIds");
-        LogUtil.Companion.d("mOrderIds:" + mOrderIds);
         //获取提现金额
         double amount = intent.getDoubleExtra("amount", -1);
-        mScholarshipCashMoney.setText("￥" + FormatUtils.MoneyFormat(amount));
+        mPromotionCashMoney.setText("￥" + FormatUtils.MoneyFormat(amount));
+        //根据说率计算税后金额
+        double taxRate = (double) SharePreferenceUtil.get(this, TAX_RATE, -1);
+        if (taxRate != -1) {
+            // 显示计算后金额
+            mPromotionCashFinalPersonal.setText("￥" + FormatUtils.MoneyFormat(amount * (1 - taxRate)));
+        } else {
+            // 提示错误
+            ToastUtil.showShort(this, "税率获取失败");
+        }
     }
-    @OnClick({R.id.scholarship_cash_apply_service, R.id.scholarship_cash_apply_cash})
+
+    @OnClick({R.id.promotion_cash_apply_service_personal, R.id.promotion_cash_apply_cash_personal})
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.scholarship_cash_apply_service:
+            case R.id.promotion_cash_apply_service_personal:
                 //打开客服
                 Util.enterCustomerService(this);
                 break;
-            case R.id.scholarship_cash_apply_cash:
-                // 确认提现
+            case R.id.promotion_cash_apply_cash_personal:
+                //申请提现确认
                 showDialog();
                 break;
         }
     }
+
+
     /**
-     * 申请提现确认弹窗
+     * 申请提现确定弹窗
      */
     private void showDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(ScholarshipCashConfirmActivity.this,
-                R.style.dialog);
+        AlertDialog.Builder builder = new AlertDialog.Builder
+                (PromotionCashConfirmPersonalActivity.this,
+                        R.style.dialog);
         View v = View.inflate(this, R.layout.dialog_confirm_promotion, null);
         builder.setView(v);
         builder.setCancelable(false);
         TextView msg = (TextView) v.findViewById(R.id.dialog_msg);
 
-        msg.setText("您申请的提现金额，将在工作人员收到对应\n金额发票后5个工作日内，支付到您绑定\n推广主体对公账号里，请注意查收。");
-
+        msg.setText("您申请的提现金额，将在工作人员收到提现\n申请之后5个工作日内，支付到您绑定的\n推广主体个人账号里，请注意查收。");
         Button btn1 = (Button) v.findViewById(R.id.dialog_promotion_bt1);
         Button btn2 = (Button) v.findViewById(R.id.dialog_promotion_bt2);
         final AlertDialog dialog = builder.create();
@@ -129,7 +148,8 @@ public class ScholarshipCashConfirmActivity extends BaseActivity implements Titl
             }
         });
         dialog.show();
-   }
+    }
+
     /**
      * 申请提现
      */
@@ -145,7 +165,6 @@ public class ScholarshipCashConfirmActivity extends BaseActivity implements Titl
 
             @Override
             public void onResponse(String response, int id) {
-                LogUtil.Companion.d("mOrderIds" + mOrderIds);
                 LogUtil.Companion.d("推广费申请提现：" + response);
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
@@ -161,6 +180,7 @@ public class ScholarshipCashConfirmActivity extends BaseActivity implements Titl
             }
         });
     }
+
     @Override
     public void leftOnClick() {
         finish();

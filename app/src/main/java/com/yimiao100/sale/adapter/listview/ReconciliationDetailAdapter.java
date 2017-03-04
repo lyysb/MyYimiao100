@@ -103,7 +103,7 @@ public class ReconciliationDetailAdapter extends BaseAdapter {
         //逾期扣款说明
         String withholdRemark = reconciliationDetail.getWithholdRemark();
         TextView reconciliation_detail_withhold_remark = ViewHolderUtil.get(convertView, R.id.reconciliation_detail_withhold_remark);
-        if (withholdRemark.isEmpty()) {
+        if (withholdRemark == null || withholdRemark.isEmpty()) {
             reconciliation_detail_withhold_remark.setVisibility(View.GONE);
         } else {
             reconciliation_detail_withhold_remark.setVisibility(View.VISIBLE);
@@ -112,7 +112,7 @@ public class ReconciliationDetailAdapter extends BaseAdapter {
         // 发货额外奖励说明
         String extraRewardRemark = reconciliationDetail.getExtraRewardRemark();
         TextView reconciliation_detail_extra_reward_remark = ViewHolderUtil.get(convertView, R.id.reconciliation_detail_extra_reward_remark);
-        if (extraRewardRemark.isEmpty()) {
+        if (extraRewardRemark == null || extraRewardRemark.isEmpty()) {
             reconciliation_detail_extra_reward_remark.setVisibility(View.GONE);
         } else {
             reconciliation_detail_extra_reward_remark.setVisibility(View.VISIBLE);

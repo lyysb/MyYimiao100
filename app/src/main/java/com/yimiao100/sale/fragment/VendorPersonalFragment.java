@@ -47,7 +47,7 @@ public class VendorPersonalFragment extends BaseFragmentSingleList{
     private final String USER_ACCOUNT_TYPE = "userAccountType";
 
     private String mModuleType;
-    private String mUserAccountType = "corporate";
+    private String mUserAccountType = "personal";
 
     private ArrayList<Vendor> mList;
     @Override

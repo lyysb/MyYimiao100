@@ -1,5 +1,7 @@
 package com.yimiao100.sale.activity;
 
+import android.text.TextUtils;
+
 import com.yimiao100.sale.base.BaseActivityWithTab;
 import com.yimiao100.sale.base.BaseFragmentSingleList;
 import com.yimiao100.sale.fragment.VendorCorporateFragment;
@@ -16,7 +18,12 @@ public class VendorListActivity extends BaseActivityWithTab {
 
     @Override
     protected String title() {
-        return "厂家列表";
+        String moduleType = getIntent().getStringExtra("moduleType");
+        if (TextUtils.equals(moduleType, "balance_order")) {
+            return "对账";
+        } else {
+            return "厂家列表";
+        }
     }
 
     @Override

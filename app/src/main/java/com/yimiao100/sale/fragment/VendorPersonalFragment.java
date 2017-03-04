@@ -14,6 +14,7 @@ import com.yimiao100.sale.activity.AssuranceActivity;
 import com.yimiao100.sale.activity.PromotionActivity;
 import com.yimiao100.sale.activity.ReconciliationActivity;
 import com.yimiao100.sale.activity.ScholarshipActivity;
+import com.yimiao100.sale.activity.ScoreDetailActivity;
 import com.yimiao100.sale.adapter.listview.VendorListAdapter;
 import com.yimiao100.sale.base.BaseFragmentSingleList;
 import com.yimiao100.sale.bean.ErrorBean;
@@ -39,6 +40,7 @@ public class VendorPersonalFragment extends BaseFragmentSingleList{
     private final String URL_VENDOR_LIST = Constant.BASE_URL + "/api/vendor/vendor_list_by_user";
     private final String MODULE_TYPE = "moduleType";
     private final String BALANCE_ORDER = "balance_order";                   //对账订单
+    private final String EXAM_REWARD = "exam_reward";                       //课程考试奖励
     private final String SALE_WITHDRAWAL = "sale_withdrawal";               //销售资金可提现
     private final String DEPOSIT_WITHDRAWAL = "deposit_withdrawal";         //保证金可提现
     private final String EXAM_REWARD_WITHDRAWAL = "exam_reward_withdrawal"; //课程考试奖励可提现
@@ -67,6 +69,10 @@ public class VendorPersonalFragment extends BaseFragmentSingleList{
             case BALANCE_ORDER:
                 //来自对账
                 setEmptyView("早起的鸟儿有虫吃，快到资源里面申请推广吧。", R.mipmap.ico_reconciliation);
+                break;
+            case EXAM_REWARD:
+                //来自我的成就-我的奖学金
+                setEmptyView("考试是可以“挣钱”的。但是，暂时没有学习任务。", R.mipmap.ico_study_extension);
                 break;
             case SALE_WITHDRAWAL:
                 //来自推广费
@@ -125,6 +131,13 @@ public class VendorPersonalFragment extends BaseFragmentSingleList{
             case EXAM_REWARD_WITHDRAWAL:
                 //进入对应的奖学金提现界面
                 clz = ScholarshipActivity.class;
+                intent.putExtra("vendorId", vendor.getId());
+                intent.putExtra("logoImageUrl", vendor.getLogoImageUrl());
+                intent.putExtra("vendorName", vendor.getVendorName());
+                break;
+            case EXAM_REWARD:
+                // 进入对应的学习成绩详情界面
+                clz = ScoreDetailActivity.class;
                 intent.putExtra("vendorId", vendor.getId());
                 intent.putExtra("logoImageUrl", vendor.getLogoImageUrl());
                 intent.putExtra("vendorName", vendor.getVendorName());

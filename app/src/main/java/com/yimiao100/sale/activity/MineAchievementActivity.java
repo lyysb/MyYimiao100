@@ -148,11 +148,10 @@ public class MineAchievementActivity extends BaseActivity implements TitleView
 
     /**
      * 我的奖学金
-     * todo 调整
      */
     private void StudyScore() {
-        Intent intent = new Intent(this, VendorListForStudyActivity.class);
-        intent.putExtra("enter_from", 3);
+        Intent intent = new Intent(this, VendorListActivity.class);
+        intent.putExtra("moduleType", "balance_order");
         startActivity(intent);
     }
 

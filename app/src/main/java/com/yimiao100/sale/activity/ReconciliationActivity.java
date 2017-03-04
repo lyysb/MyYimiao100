@@ -33,8 +33,10 @@ public class ReconciliationActivity extends BaseActivitySingleList {
 
     private final String URL_ORDER_LIST = Constant.BASE_URL + "/api/order/balance_order_list";
     private final String VENDOR_ID = "vendorId";
+    private final String USER_ACCOUNT_TYPE = "userAccountType";
 
     private int mVendorId;
+    private String mUserAccountType;
 
     private ArrayList<ReconciliationList> mReconciliationList;
     private ReconciliationAdapter mReconciliationAdapter;
@@ -43,6 +45,8 @@ public class ReconciliationActivity extends BaseActivitySingleList {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mVendorId = getIntent().getIntExtra("vendorId", -1);
+        mUserAccountType = getIntent().getStringExtra(USER_ACCOUNT_TYPE);
+        LogUtil.Companion.d("userAccountType is " + mUserAccountType);
         setEmptyView("早起的鸟儿有虫吃，快到资源里面申请推广吧。", R.mipmap.ico_reconciliation);
     }
 
@@ -98,34 +102,9 @@ public class ReconciliationActivity extends BaseActivitySingleList {
     protected void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         //携带数据，打开对账详情列表
         ReconciliationList reconciliation = mReconciliationList.get(position);
-        int orderId = reconciliation.getId();
         Intent intent = new Intent(this, ReconciliationDetailActivity.class);
-        Bundle bundle = new Bundle();
-        intent.putExtra("orderId", orderId + "");
-        //分类
-        String categoryName = reconciliation.getCategoryName();
-        //厂家名称
-        String vendorName = reconciliation.getVendorName();
-        //客户名称
-        String customerName = reconciliation.getCustomerName();
-        //产品名
-        String productName = reconciliation.getProductName();
-        //剂型
-        String dosageForm = reconciliation.getDosageForm();
-        //规格
-        String spec = reconciliation.getSpec();
-        //协议单号
-        String serialNo = reconciliation.getSerialNo();
-        bundle.putString("categoryName", categoryName);
-        bundle.putString("productName", productName);
-        bundle.putString("vendorName", vendorName);
-        bundle.putString("customerName", customerName);
-        bundle.putString("dosageForm", dosageForm);
-        bundle.putString("spec", spec);
-        bundle.putString("serialNo", serialNo);
-        intent.putExtras(bundle);
+        intent.putExtra("reconciliation", reconciliation);
         startActivity(intent);
-
     }
 
 
@@ -161,7 +140,8 @@ public class ReconciliationActivity extends BaseActivitySingleList {
 
     private RequestCall getBuild(int page) {
         return OkHttpUtils.post().url(URL_ORDER_LIST).addHeader(ACCESS_TOKEN, mAccessToken)
-                .addParams(PAGE, page + "").addParams(PAGE_SIZE, "10").addParams(VENDOR_ID,
-                        mVendorId + "").build();
+                .addParams(PAGE, page + "").addParams(PAGE_SIZE, "10")
+                .addParams(VENDOR_ID, mVendorId + "")
+                .addParams(USER_ACCOUNT_TYPE, mUserAccountType).build();
     }
 }

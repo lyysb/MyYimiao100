@@ -24,6 +24,7 @@ public class ReconciliationDetail {
     private int qty;
     private double withholdAmount;
     private String withholdRemark;
+    private String extraRewardRemark;
     private String deliveryConfirmStatus;
     private String deliveryConfirmStatusName;
     private String paymentConfirmStatus;
@@ -37,6 +38,14 @@ public class ReconciliationDetail {
     private double deliveryTotalAmount;
     private double paymentTotalAmount;
     private String units;
+
+    public String getExtraRewardRemark() {
+        return extraRewardRemark;
+    }
+
+    public void setExtraRewardRemark(String extraRewardRemark) {
+        this.extraRewardRemark = extraRewardRemark;
+    }
 
     public String getUnits() {
         return units;

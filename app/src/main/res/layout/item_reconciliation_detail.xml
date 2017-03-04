@@ -85,10 +85,9 @@
     </LinearLayout>
     <View
         android:layout_marginTop="20dp"
-        android:layout_marginBottom="20dp"
+        android:layout_marginBottom="14dp"
         style="@style/view_horizontal"/>
     <LinearLayout
-        android:id="@+id/reconciliation_detail_ship_detail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
@@ -99,13 +98,14 @@
             android:src="@mipmap/ico_reconciliation_delivery"/>
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="7dp"
             android:layout_weight="1"
             android:orientation="vertical">
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
                 android:layout_weight="1">
                 <TextView
                     style="@style/style11"
@@ -115,8 +115,10 @@
                     style="@style/style12"/>
             </LinearLayout>
             <LinearLayout
+                android:id="@+id/reconciliation_detail_ship_detail"
+                android:layout_marginTop="20dp"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1">
                 <TextView
                     style="@style/style11"
@@ -131,15 +133,12 @@
             </LinearLayout>
 
         </LinearLayout>
-        <TextView
+        <ImageView
             android:id="@+id/reconciliation_detail_ship"
-            android:text="未确认"
-            android:textSize="12sp"
-            android:textColor="@color/color_riches_wealth"
-            android:gravity="center"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/selector_reconciliation_not_confirm"
+            android:layout_gravity="center_vertical"
+            android:src="@mipmap/ico_reconciliation_not_not_confirmed_blue"
             />
 
     </LinearLayout>
@@ -155,7 +154,7 @@
             android:src="@mipmap/ico_reconciliation_payment"/>
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="7dp"
             android:layout_weight="1"
             android:orientation="vertical">
@@ -172,6 +171,7 @@
                     android:text="2016年8月25日"/>
             </LinearLayout>
             <LinearLayout
+                android:layout_marginTop="20dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1">
@@ -188,23 +188,31 @@
             </LinearLayout>
 
         </LinearLayout>
-        <TextView
+        <ImageView
             android:id="@+id/reconciliation_detail_payment"
-            android:text="未确认"
-            android:textSize="12sp"
-            android:textColor="@color/color_riches_wealth"
-            android:gravity="center"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/selector_reconciliation_not_confirm"/>
+            android:layout_gravity="center_vertical"
+            android:src="@mipmap/ico_reconciliation_not_not_confirmed_gray"/>
 
     </LinearLayout>
     <TextView
         android:id="@+id/reconciliation_detail_withhold_remark"
-        android:text="逾期扣款说明：按照每天扣除0.5%回款奖励"
+        android:text="逾期扣款说明"
         android:gravity="center_vertical"
         android:textSize="10sp"
         android:textColor="@color/color999"
+        android:paddingTop="12dp"
         android:layout_width="match_parent"
-        android:layout_height="60dp"/>
+        android:layout_height="wrap_content"/>
+    <TextView
+        android:id="@+id/reconciliation_detail_extra_reward_remark"
+        android:text="发货额外奖励说明"
+        android:gravity="center_vertical"
+        android:textSize="10sp"
+        android:textColor="@color/color999"
+        android:paddingTop="12dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
 </LinearLayout>

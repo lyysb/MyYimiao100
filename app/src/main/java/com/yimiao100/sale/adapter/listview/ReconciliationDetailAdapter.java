@@ -1,12 +1,12 @@
 package com.yimiao100.sale.adapter.listview;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -89,9 +89,9 @@ public class ReconciliationDetailAdapter extends BaseAdapter {
         double deliveryTotalAmount = reconciliationDetail.getDeliveryTotalAmount();
         TextView reconciliation_detail_delivery_total_amount = ViewHolderUtil.get(convertView, R.id.reconciliation_detail_delivery_total_amount);
         reconciliation_detail_delivery_total_amount.setText(deliveryTotalAmount + "");
-        //根据发货费用是否为0，设置发货条目是否显示
-        LinearLayout shipItem = ViewHolderUtil.get(convertView, R.id.reconciliation_detail_ship_detail);
-        shipItem.setVisibility(deliveryTotalAmount != 0 ? View.VISIBLE : View.GONE);
+        //根据发货奖励是否为0，设置发货奖励是否显示
+        LinearLayout shipDeliveryItem = ViewHolderUtil.get(convertView, R.id.reconciliation_detail_ship_detail);
+        shipDeliveryItem.setVisibility(deliveryTotalAmount != 0 ? View.VISIBLE : View.GONE);
         //回款日期
         long paymentAt = reconciliationDetail.getPaymentAt();
         TextView reconciliation_detail_payment_at = ViewHolderUtil.get(convertView, R.id.reconciliation_detail_payment_at);
@@ -103,46 +103,42 @@ public class ReconciliationDetailAdapter extends BaseAdapter {
         //逾期扣款说明
         String withholdRemark = reconciliationDetail.getWithholdRemark();
         TextView reconciliation_detail_withhold_remark = ViewHolderUtil.get(convertView, R.id.reconciliation_detail_withhold_remark);
-        if (withholdRemark == null) {
+        if (withholdRemark.isEmpty()) {
             reconciliation_detail_withhold_remark.setVisibility(View.GONE);
         } else {
             reconciliation_detail_withhold_remark.setVisibility(View.VISIBLE);
             reconciliation_detail_withhold_remark.setText(withholdRemark);
         }
+        // 发货额外奖励说明
+        String extraRewardRemark = reconciliationDetail.getExtraRewardRemark();
+        TextView reconciliation_detail_extra_reward_remark = ViewHolderUtil.get(convertView, R.id.reconciliation_detail_extra_reward_remark);
+        if (extraRewardRemark.isEmpty()) {
+            reconciliation_detail_extra_reward_remark.setVisibility(View.GONE);
+        } else {
+            reconciliation_detail_extra_reward_remark.setVisibility(View.VISIBLE);
+            reconciliation_detail_extra_reward_remark.setText(extraRewardRemark);
+        }
         //发货状态
         String deliveryConfirmStatus = reconciliationDetail.getDeliveryConfirmStatus();
-        String deliveryConfirmStatusName = reconciliationDetail.getDeliveryConfirmStatusName();
-        TextView ship = ViewHolderUtil.get(convertView, R.id.reconciliation_detail_ship);
-        ship.setText(deliveryConfirmStatusName);
+        ImageView ship = ViewHolderUtil.get(convertView, R.id.reconciliation_detail_ship);
         if (TextUtils.equals(deliveryConfirmStatus, "confirmed")) {
-            //按钮不可点击
+            // 已确认
             ship.setEnabled(false);
-            //背景颜色变蓝色
-            ship.setBackgroundResource(R.mipmap.ico_reconciliation_not_confirmed_activation);
-            //字体变成白色
-            ship.setTextColor(Color.parseColor("#ffffff"));
+            ship.setImageResource(R.mipmap.ico_reconciliation_not_not_confirmed_gray);
         } else {
-            //字体变成选择器
-            ship.setTextColor(parent.getContext().getResources().getColorStateList(R.color.color_riches_wealth));
-            ship.setEnabled(true);
-            ship.setBackgroundResource(R.drawable.selector_reconciliation_not_confirm);
+            // 未确认
+            ship.setImageResource(R.mipmap.ico_reconciliation_not_not_confirmed_blue);
         }
         //回款状态
         String paymentConfirmStatus = reconciliationDetail.getPaymentConfirmStatus();
-        String paymentConfirmStatusName = reconciliationDetail.getPaymentConfirmStatusName();
-        TextView payment = ViewHolderUtil.get(convertView, R.id.reconciliation_detail_payment);
-        payment.setText(paymentConfirmStatusName);
+        ImageView payment = ViewHolderUtil.get(convertView, R.id.reconciliation_detail_payment);
         if (TextUtils.equals(paymentConfirmStatus, "confirmed")) {
-            //按钮不可点击
+            // 已确认
             payment.setEnabled(false);
-            //背景颜色变蓝色
-            payment.setBackgroundResource(R.mipmap.ico_reconciliation_not_confirmed_activation);
-            //字体变成白色
-            payment.setTextColor(Color.parseColor("#ffffff"));
+            payment.setImageResource(R.mipmap.ico_reconciliation_not_not_confirmed_gray);
         } else {
-            payment.setTextColor(parent.getContext().getResources().getColorStateList(R.color.color_riches_wealth));
-            payment.setEnabled(true);
-            payment.setBackgroundResource(R.drawable.selector_reconciliation_not_confirm);
+            // 未确认
+            payment.setImageResource(R.mipmap.ico_reconciliation_not_not_confirmed_blue);
         }
         //回款列表
         LinearLayout reconciliation_detail_payment_ll = ViewHolderUtil.get(convertView, R.id.reconciliation_detail_payment_ll);

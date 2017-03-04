@@ -163,6 +163,7 @@ public class VendorPersonalFragment extends BaseFragmentSingleList{
                 break;
         }
         intent.setClass(getContext(), clz);
+        intent.putExtra(USER_ACCOUNT_TYPE, mUserAccountType);
         startActivity(intent);
     }
 

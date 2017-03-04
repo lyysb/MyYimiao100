@@ -1,9 +1,12 @@
 package com.yimiao100.sale.bean;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Created by 亿苗通 on 2016/9/1.
  */
-public class ReconciliationList {
+public class ReconciliationList implements Parcelable {
     private int id;
     private int resourceId;
     private int userId;
@@ -419,4 +422,121 @@ public class ReconciliationList {
     public void setCustomerName(String customerName) {
         this.customerName = customerName;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(this.id);
+        dest.writeInt(this.resourceId);
+        dest.writeInt(this.userId);
+        dest.writeInt(this.vendorId);
+        dest.writeInt(this.productId);
+        dest.writeInt(this.provinceId);
+        dest.writeInt(this.cityId);
+        dest.writeInt(this.areaId);
+        dest.writeDouble(this.bidDeposit);
+        dest.writeDouble(this.saleDeposit);
+        dest.writeInt(this.quota);
+        dest.writeInt(this.increment);
+        dest.writeInt(this.evaluationMonth);
+        dest.writeInt(this.paymentPeriod);
+        dest.writeDouble(this.withholdRatio);
+        dest.writeDouble(this.unitPrice);
+        dest.writeDouble(this.deliveryPrice);
+        dest.writeDouble(this.paymentPrice);
+        dest.writeString(this.resourceProtocolUrl);
+        dest.writeString(this.orderProtocolUrl);
+        dest.writeString(this.serialNo);
+        dest.writeInt(this.bidQty);
+        dest.writeString(this.userAccountType);
+        dest.writeString(this.orderStatus);
+        dest.writeString(this.orderStatusName);
+        dest.writeString(this.invalidReason);
+        dest.writeInt(this.totalQty);
+        dest.writeDouble(this.totalAmount);
+        dest.writeDouble(this.orderBidDeposit);
+        dest.writeDouble(this.orderRemainingDeposit);
+        dest.writeLong(this.startAt);
+        dest.writeLong(this.endAt);
+        dest.writeLong(this.bidExpiredAt);
+        dest.writeLong(this.defaultExpiredAt);
+        dest.writeLong(this.createdAt);
+        dest.writeLong(this.updatedAt);
+        dest.writeString(this.vendorName);
+        dest.writeString(this.vendorLogoImageUrl);
+        dest.writeString(this.spec);
+        dest.writeString(this.dosageForm);
+        dest.writeString(this.provinceName);
+        dest.writeString(this.cityName);
+        dest.writeString(this.areaName);
+        dest.writeString(this.customerName);
+        dest.writeString(this.categoryName);
+        dest.writeString(this.productName);
+    }
+
+    public ReconciliationList() {
+    }
+
+    protected ReconciliationList(Parcel in) {
+        this.id = in.readInt();
+        this.resourceId = in.readInt();
+        this.userId = in.readInt();
+        this.vendorId = in.readInt();
+        this.productId = in.readInt();
+        this.provinceId = in.readInt();
+        this.cityId = in.readInt();
+        this.areaId = in.readInt();
+        this.bidDeposit = in.readDouble();
+        this.saleDeposit = in.readDouble();
+        this.quota = in.readInt();
+        this.increment = in.readInt();
+        this.evaluationMonth = in.readInt();
+        this.paymentPeriod = in.readInt();
+        this.withholdRatio = in.readDouble();
+        this.unitPrice = in.readDouble();
+        this.deliveryPrice = in.readDouble();
+        this.paymentPrice = in.readDouble();
+        this.resourceProtocolUrl = in.readString();
+        this.orderProtocolUrl = in.readString();
+        this.serialNo = in.readString();
+        this.bidQty = in.readInt();
+        this.userAccountType = in.readString();
+        this.orderStatus = in.readString();
+        this.orderStatusName = in.readString();
+        this.invalidReason = in.readString();
+        this.totalQty = in.readInt();
+        this.totalAmount = in.readDouble();
+        this.orderBidDeposit = in.readDouble();
+        this.orderRemainingDeposit = in.readDouble();
+        this.startAt = in.readLong();
+        this.endAt = in.readLong();
+        this.bidExpiredAt = in.readLong();
+        this.defaultExpiredAt = in.readLong();
+        this.createdAt = in.readLong();
+        this.updatedAt = in.readLong();
+        this.vendorName = in.readString();
+        this.vendorLogoImageUrl = in.readString();
+        this.spec = in.readString();
+        this.dosageForm = in.readString();
+        this.provinceName = in.readString();
+        this.cityName = in.readString();
+        this.areaName = in.readString();
+        this.customerName = in.readString();
+        this.categoryName = in.readString();
+        this.productName = in.readString();
+    }
+
+    public static final Parcelable.Creator<ReconciliationList> CREATOR = new Parcelable.Creator<ReconciliationList>() {
+        public ReconciliationList createFromParcel(Parcel source) {
+            return new ReconciliationList(source);
+        }
+
+        public ReconciliationList[] newArray(int size) {
+            return new ReconciliationList[size];
+        }
+    };
 }

@@ -14,9 +14,9 @@ import com.yimiao100.sale.base.BaseActivity;
 import com.yimiao100.sale.bean.ErrorBean;
 import com.yimiao100.sale.bean.ReconciliationDetail;
 import com.yimiao100.sale.bean.ReconciliationDetailBean;
+import com.yimiao100.sale.bean.ReconciliationList;
 import com.yimiao100.sale.utils.Constant;
 import com.yimiao100.sale.utils.LogUtil;
-import com.yimiao100.sale.utils.SharePreferenceUtil;
 import com.yimiao100.sale.utils.Util;
 import com.yimiao100.sale.view.TitleView;
 import com.zhy.http.okhttp.OkHttpUtils;
@@ -39,7 +39,6 @@ public class ReconciliationDetailActivity extends BaseActivity implements TitleV
     ListView mReconciliationDetailListView;
     private ReconciliationDetailAdapter mReconciliationDetailAdapter;
     private String mOrderId;
-    private String mAccessToken;
 
     private final String BALANCE_ORDER_DETAIL = "/api/order/balance_order_detail";
 
@@ -64,18 +63,24 @@ public class ReconciliationDetailActivity extends BaseActivity implements TitleV
 
     private void initView() {
         mReconciliationDetailTitle.setOnTitleBarClick(this);
-        mAccessToken = (String) SharePreferenceUtil.get(getApplicationContext(), Constant.ACCESSTOKEN, "");
 
         Intent intent = getIntent();
-        mOrderId = intent.getStringExtra("orderId");
-        Bundle bundle = intent.getExtras();
-        String categoryName = bundle.getString("categoryName");
-        String productName = bundle.getString("productName");
-        String vendorName = bundle.getString("vendorName");
-        String customerName = bundle.getString("customerName");
-        String dosageForm = bundle.getString("dosageForm");
-        String spec = bundle.getString("spec");
-        String serialNo = bundle.getString("serialNo");
+        ReconciliationList reconciliation = intent.getParcelableExtra("reconciliation");
+        mOrderId = reconciliation.getId() + "";
+        //分类
+        String categoryName = reconciliation.getCategoryName();
+        //厂家名称
+        String vendorName = reconciliation.getVendorName();
+        //客户名称
+        String customerName = reconciliation.getCustomerName();
+        //产品名
+        String productName = reconciliation.getProductName();
+        //剂型
+        String dosageForm = reconciliation.getDosageForm();
+        //规格
+        String spec = reconciliation.getSpec();
+        //协议单号
+        String serialNo = reconciliation.getSerialNo();
         //添加头部布局
         View view = View.inflate(getApplicationContext(), R.layout.head_reconciliation_detail, null);
         //商品名
@@ -107,7 +112,7 @@ public class ReconciliationDetailActivity extends BaseActivity implements TitleV
     private void initData() {
         //获取数据
         OkHttpUtils.post().url(Constant.BASE_URL + BALANCE_ORDER_DETAIL)
-                .addHeader("X-Authorization-Token", mAccessToken)
+                .addHeader(ACCESS_TOKEN, mAccessToken)
                 .addParams("orderId", mOrderId)
                 .build().execute(new StringCallback() {
             @Override

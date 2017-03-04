@@ -151,7 +151,7 @@ public class MineAchievementActivity extends BaseActivity implements TitleView
      */
     private void StudyScore() {
         Intent intent = new Intent(this, VendorListActivity.class);
-        intent.putExtra("moduleType", "balance_order");
+        intent.putExtra("moduleType", "exam_reward");
         startActivity(intent);
     }
 

@@ -94,7 +94,7 @@ public class ScholarshipCashConfirmPersonalActivity extends BaseActivity impleme
         double amount = intent.getDoubleExtra("amount", -1);
         mScholarshipCashMoney.setText("￥" + FormatUtils.MoneyFormat(amount));
         //根据说率计算税后金额
-        double taxRate = (double) SharePreferenceUtil.get(this, TAX_RATE, -1);
+        double taxRate = Double.valueOf((String)SharePreferenceUtil.get(this, TAX_RATE, "")) ;
         if (taxRate != -1) {
             // 显示计算后金额
             mScholarshipCashFinalPersonal.setText("￥" + FormatUtils.MoneyFormat(amount * (1 - taxRate)));
@@ -130,7 +130,7 @@ public class ScholarshipCashConfirmPersonalActivity extends BaseActivity impleme
         builder.setCancelable(false);
         TextView msg = (TextView) v.findViewById(R.id.dialog_msg);
 
-        msg.setText("您申请的提现金额，将在工作人员收到提现\n申请之后5个工作日内，支付到您绑定的\n推广主体个人账号里，请注意查收。");
+        msg.setText("您申请的提现金额，将在工作人员收到提现\n申请之后5个工作日内，支付到您绑定的\n推广主体个人账户里，请注意查收。");
 
         Button btn1 = (Button) v.findViewById(R.id.dialog_promotion_bt1);
         Button btn2 = (Button) v.findViewById(R.id.dialog_promotion_bt2);

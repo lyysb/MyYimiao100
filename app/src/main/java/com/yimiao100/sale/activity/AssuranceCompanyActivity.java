@@ -113,10 +113,10 @@ public class AssuranceCompanyActivity extends BaseActivity implements TitleView
 
         switch (mUserAccountType) {
             case "personal":
-                msg.setText("您申请的提现金额，将在工作人员收到提现\n申请之后5个工作日内，退回到您原来的\n推广主体个人账号里，请注意查收。");
+                msg.setText("您申请的提现金额，将在工作人员收到提现\n申请之后5个工作日内，退回到您原来的\n推广主体个人账户里，请注意查收。");
                 break;
             case "corporate":
-                msg.setText("您申请的提现金额，将在工作人员收到提现\n申请之后5个工作日内，退回到您原来的\n推广主体对公账号里，请注意查收。");
+                msg.setText("您申请的提现金额，将在工作人员收到提现\n申请之后5个工作日内，退回到您原来的\n推广主体对公账户里，请注意查收。");
                 break;
         }
         Button btn1 = (Button) v.findViewById(R.id.dialog_promotion_bt1);

@@ -93,7 +93,8 @@ public class PromotionCashConfirmPersonalActivity extends BaseActivity implement
         double amount = intent.getDoubleExtra("amount", -1);
         mPromotionCashMoney.setText("￥" + FormatUtils.MoneyFormat(amount));
         //根据说率计算税后金额
-        double taxRate = (double) SharePreferenceUtil.get(this, TAX_RATE, -1);
+        // ps 鬼知道为啥我存进去的double 取出来就是string
+        double taxRate = Double.valueOf((String) SharePreferenceUtil.get(this, TAX_RATE, ""));
         if (taxRate != -1) {
             // 显示计算后金额
             mPromotionCashFinalPersonal.setText("￥" + FormatUtils.MoneyFormat(amount * (1 - taxRate)));
@@ -130,7 +131,7 @@ public class PromotionCashConfirmPersonalActivity extends BaseActivity implement
         builder.setCancelable(false);
         TextView msg = (TextView) v.findViewById(R.id.dialog_msg);
 
-        msg.setText("您申请的提现金额，将在工作人员收到提现\n申请之后5个工作日内，支付到您绑定的\n推广主体个人账号里，请注意查收。");
+        msg.setText("您申请的提现金额，将在工作人员收到提现\n申请之后5个工作日内，支付到您绑定的\n推广主体个人账户里，请注意查收。");
         Button btn1 = (Button) v.findViewById(R.id.dialog_promotion_bt1);
         Button btn2 = (Button) v.findViewById(R.id.dialog_promotion_bt2);
         final AlertDialog dialog = builder.create();

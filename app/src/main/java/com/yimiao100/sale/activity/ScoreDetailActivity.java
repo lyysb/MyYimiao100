@@ -49,8 +49,10 @@ public class ScoreDetailActivity extends BaseActivity implements SwipeRefreshLay
 
     private final String URL_EXAM_INFO = Constant.BASE_URL + "/api/course/exam_info";
     private final String VENDOR_ID = "vendorId";
+    private final String USER_ACCOUNT_TYPE = "userAccountType";
 
     private int mVendorId;
+    private String mUserAccountType;
     private String mLogUrl;
     private CircleImageView mLogoImage;
     private String mVendorName;
@@ -70,6 +72,7 @@ public class ScoreDetailActivity extends BaseActivity implements SwipeRefreshLay
         mVendorId = getIntent().getIntExtra("vendorId", -1);
         mLogUrl = getIntent().getStringExtra("logoImageUrl");
         mVendorName = getIntent().getStringExtra("vendorName");
+        mUserAccountType = getIntent().getStringExtra("userAccountType");
 
         initView();
 
@@ -117,7 +120,9 @@ public class ScoreDetailActivity extends BaseActivity implements SwipeRefreshLay
     private void initData() {
         //联网请求数据
         OkHttpUtils.post().url(URL_EXAM_INFO).addHeader(ACCESS_TOKEN, mAccessToken)
-                .addParams(VENDOR_ID, mVendorId + "").build().execute(new StringCallback() {
+                .addParams(VENDOR_ID, mVendorId + "")
+                .addParams(USER_ACCOUNT_TYPE, mUserAccountType)
+                .build().execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
                 LogUtil.Companion.d("课程考试结果E：" + e.getLocalizedMessage());
@@ -151,7 +156,9 @@ public class ScoreDetailActivity extends BaseActivity implements SwipeRefreshLay
     public void onRefresh() {
         //联网请求数据
         OkHttpUtils.post().url(URL_EXAM_INFO).addHeader(ACCESS_TOKEN, mAccessToken)
-                .addParams(VENDOR_ID, mVendorId + "").build().execute(new StringCallback() {
+                .addParams(VENDOR_ID, mVendorId + "")
+                .addParams(USER_ACCOUNT_TYPE, mUserAccountType)
+                .build().execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
                 LogUtil.Companion.d("课程考试结果E：" + e.getLocalizedMessage());

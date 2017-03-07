@@ -134,8 +134,14 @@ public class OrderCompletedActivity extends BaseActivity implements TitleView.Ti
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.order_complete_into:
-                //进入到对账详情页面
-                enterReconciliationDetail();
+                if (mOrder.getDeliveryTotalQty() > 0) {
+                    //进入到对账详情页面
+                    enterReconciliationDetail();
+                } else {
+                    // 提示没有发货信息
+                    ToastUtil.showShort(this, "此业务暂无发货信息");
+                    return;
+                }
                 break;
             case R.id.order_complete_view:
                 //下载已签约协议，使用相册打开

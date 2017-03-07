@@ -114,7 +114,7 @@ public class PromotionCashConfirmActivity extends BaseActivity implements TitleV
         builder.setView(v);
         builder.setCancelable(false);
         TextView msg = (TextView) v.findViewById(R.id.dialog_msg);
-        msg.setText("您申请的提现金额，将在工作人员收到对应\n金额发票后5个工作日内，支付到您绑定\n推广主体对公账号里，请注意查收。");
+        msg.setText("您申请的提现金额，将在工作人员收到对应\n金额发票后5个工作日内，支付到您绑定\n推广主体对公账户里，请注意查收。");
 
         Button btn1 = (Button) v.findViewById(R.id.dialog_promotion_bt1);
         Button btn2 = (Button) v.findViewById(R.id.dialog_promotion_bt2);

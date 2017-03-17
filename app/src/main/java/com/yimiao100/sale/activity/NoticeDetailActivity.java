@@ -6,6 +6,7 @@ import android.widget.TextView;
 
 import com.alibaba.fastjson.JSON;
 import com.yimiao100.sale.R;
+import com.yimiao100.sale.base.ActivityCollector;
 import com.yimiao100.sale.base.BaseActivity;
 import com.yimiao100.sale.bean.ErrorBean;
 import com.yimiao100.sale.bean.NoticeDetailBean;
@@ -57,6 +58,8 @@ public class NoticeDetailActivity extends BaseActivity implements TitleView
 
         mNoticeDetailHead.setOnTitleBarClick(this);
 
+        showLoadingProgress();
+
         initData();
 
     }
@@ -71,10 +74,12 @@ public class NoticeDetailActivity extends BaseActivity implements TitleView
             public void onError(Call call, Exception e, int id) {
                 LogUtil.Companion.d("通知详情E：" + e.getMessage());
                 Util.showTimeOutNotice(currentContext);
+                hideLoadingProgress();
             }
 
             @Override
             public void onResponse(String response, int id) {
+                hideLoadingProgress();
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":
@@ -98,7 +103,8 @@ public class NoticeDetailActivity extends BaseActivity implements TitleView
                         } else {
                             //请重新登录
                             ToastUtil.showShort(currentContext, "账号异常，请重新登录");
-                            NoticeDetailActivity.this.finish();
+                            ActivityCollector.finishAll();
+                            SharePreferenceUtil.clear(currentContext);
                             startActivity(new Intent(currentContext, LoginActivity.class));
                         }
 

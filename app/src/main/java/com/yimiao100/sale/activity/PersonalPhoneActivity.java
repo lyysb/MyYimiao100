@@ -68,7 +68,7 @@ public class PersonalPhoneActivity extends BaseActivity implements TitleView
     public void rightOnClick() {
         //校验手机号
         if (mPersonalPhone.getText().toString().trim().length() != 11) {
-            ToastUtil.showLong(getApplicationContext(), "请输入合法的手机号");
+            ToastUtil.showShort(this, "请输入合法的手机号");
             return;
         }
         //保存将数据发送到服务器

@@ -54,6 +54,7 @@ public class ReconciliationDetailActivity extends BaseActivity implements TitleV
         setContentView(R.layout.activity_reconciliation_detail);
         ButterKnife.bind(this);
 
+        showLoadingProgress();
 
         initView();
 
@@ -118,11 +119,13 @@ public class ReconciliationDetailActivity extends BaseActivity implements TitleV
             public void onError(Call call, Exception e, int id) {
                 LogUtil.Companion.d("对账详情E：" + e.getMessage());
                 Util.showTimeOutNotice(currentContext);
+                hideLoadingProgress();
             }
 
             @Override
             public void onResponse(String response, int id) {
                 LogUtil.Companion.d("对账详情：" + response);
+                hideLoadingProgress();
                 ReconciliationDetailBean reconciliationDetailBean = JSON.parseObject(response, ReconciliationDetailBean.class);
                 switch (reconciliationDetailBean.getStatus()) {
                     case "success":
@@ -183,7 +186,7 @@ public class ReconciliationDetailActivity extends BaseActivity implements TitleV
                 int orderItemId = mReconciliationDetailAdapter.getItem(position).getId();
                 String confirm_delivery_url = Constant.BASE_URL + CONFIRM_DELIVERY;
                 OkHttpUtils.post().url(confirm_delivery_url)
-                        .addHeader("X-Authorization-Token", mAccessToken)
+                        .addHeader(ACCESS_TOKEN, mAccessToken)
                         .addParams("orderItemId", orderItemId + "")
                         .build().execute(new StringCallback() {
                     @Override
@@ -245,7 +248,7 @@ public class ReconciliationDetailActivity extends BaseActivity implements TitleV
                 int orderItemId = mReconciliationDetailAdapter.getItem(position).getId();
                 String confirm_payment_url = Constant.BASE_URL + CONFIRM_PAYMENT;
                 OkHttpUtils.post().url(confirm_payment_url)
-                        .addHeader("X-Authorization-Token", mAccessToken)
+                        .addHeader(ACCESS_TOKEN, mAccessToken)
                         .addParams("orderItemId", orderItemId + "")
                         .build().execute(new StringCallback() {
                     @Override

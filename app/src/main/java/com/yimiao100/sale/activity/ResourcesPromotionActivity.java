@@ -217,23 +217,23 @@ public class ResourcesPromotionActivity extends BaseActivity implements TitleVie
 
     private void initPersonalData() {
         mResourcesPromotionTitle.setTitle("个人推广");
-        mPromotionItem1.setText("推广人姓名：");
-        mPromotionItem2.setText("推广人身份证号：");
-        mPromotionItem3.setText("推广人联系电话：");
-        mPromotionOption1.setHint("请输入推广人姓名");
-        mPromotionOption2.setHint("请输入推广人身份证号码");
-        mPromotionOption3.setHint("请输入推广个人联系电话");
+        mPromotionItem1.setText(getString(R.string.resources_promotion_personal_item1));
+        mPromotionItem2.setText(getString(R.string.resources_promotion_personal_item2));
+        mPromotionItem3.setText(getString(R.string.resources_promotion_personal_item3));
+        mPromotionOption1.setHint(getString(R.string.resources_promotion_personal_option1));
+        mPromotionOption2.setHint(getString(R.string.resources_promotion_personal_option2));
+        mPromotionOption3.setHint(getString(R.string.resources_promotion_personal_option3));
     }
 
 
     private void initCorporateData() {
         mResourcesPromotionTitle.setTitle("公司推广");
-        mPromotionItem1.setText("公司名称：");
-        mPromotionItem2.setText("公司账号：");
-        mPromotionItem3.setText("推广人：");
-        mPromotionOption1.setHint("请绑定对公信息");
-        mPromotionOption2.setHint("请绑定对公信息");
-        mPromotionOption3.setHint("请绑定对公信息");
+        mPromotionItem1.setText(getString(R.string.resources_promotion_corporate_item1));
+        mPromotionItem2.setText(getString(R.string.resources_promotion_corporate_item2));
+        mPromotionItem3.setText(getString(R.string.resources_promotion_corporate_item3));
+        mPromotionOption1.setHint(getString(R.string.resources_promotion_corporate_option1));
+        mPromotionOption2.setHint(getString(R.string.resources_promotion_corporate_option2));
+        mPromotionOption3.setHint(getString(R.string.resources_promotion_corporate_option3));
     }
 
     @Override

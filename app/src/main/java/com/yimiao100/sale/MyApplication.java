@@ -37,6 +37,7 @@ public class MyApplication extends Application {
         initFastJson();
         initJPush();
         initMQ();
+//        Picasso.with(this).setIndicatorsEnabled(true);
     }
 
     /**

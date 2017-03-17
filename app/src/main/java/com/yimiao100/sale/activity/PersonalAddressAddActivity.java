@@ -67,7 +67,6 @@ public class PersonalAddressAddActivity extends BaseActivity implements TitleVie
 
     private final String URL_UPDATE_ADDRESS = Constant.BASE_URL + "/api/user/update_address";
     private final String URL_ADD_ADDRESS = Constant.BASE_URL + "/api/user/add_address";
-    private final String URL_REGION_LIST = Constant.BASE_URL + "/api/region/all";
     private final String ADDRESS_ID = "addressId";
     private final String PROVINCE_ID = "provinceId";
     private final String CITY_ID = "cityId";

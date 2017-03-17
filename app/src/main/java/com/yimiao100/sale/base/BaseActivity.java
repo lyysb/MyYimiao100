@@ -66,7 +66,7 @@ public class BaseActivity extends AppCompatActivity {
         mLoadingProgress.show();
     }
 
-    protected void dismissLoadingProgress() {
+    protected void hideLoadingProgress() {
         if (mLoadingProgress.isShowing()) {
             mLoadingProgress.dismiss();
         }

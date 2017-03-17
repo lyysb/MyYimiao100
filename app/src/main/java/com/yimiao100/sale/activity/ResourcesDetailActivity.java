@@ -89,6 +89,7 @@ public class ResourcesDetailActivity extends BaseActivity implements TitleView
         setContentView(R.layout.activity_resources_detail);
         ButterKnife.bind(this);
 
+        showLoadingProgress();
 
         mResourceID = getIntent().getIntExtra("resourceID", -1);
 
@@ -120,11 +121,13 @@ public class ResourcesDetailActivity extends BaseActivity implements TitleView
             public void onError(Call call, Exception e, int id) {
                 e.printStackTrace();
                 Util.showTimeOutNotice(currentContext);
+                hideLoadingProgress();
             }
 
             @Override
             public void onResponse(String response, int id) {
                 LogUtil.Companion.d("资源详情：" + response);
+                hideLoadingProgress();
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":

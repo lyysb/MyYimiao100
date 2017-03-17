@@ -78,7 +78,7 @@ public class OrderUnpaidActivity extends BaseActivity implements TitleView.Title
         mOrder = intent.getParcelableExtra("order");
         //提交日期
         String submit_time = TimeUtil.timeStamp2Date(mOrder.getCreatedAt() + "", "yyyy年MM月dd日");
-        mTime.setText(submit_time + "您提交的申请推广已经通过审核，\n请您尽快提交竞标保证金。");
+        mTime.setText(submit_time + getString(R.string.order_unpaid_notice));
         //厂家名称
         String vendorName = mOrder.getVendorName();
         mVendorName.setText(vendorName);

@@ -207,7 +207,7 @@ public class ExamActivity extends BaseActivity implements ViewPager.OnPageChange
         if (mExamViewPager.getCurrentItem() != 0) {
             mExamViewPager.setCurrentItem(mExamViewPager.getCurrentItem() - 1);
         } else {
-            ToastUtil.showShort(this, "当前已经是第一道题");
+            ToastUtil.showShort(this, getString(R.string.exam_to_last));
         }
     }
 
@@ -218,7 +218,7 @@ public class ExamActivity extends BaseActivity implements ViewPager.OnPageChange
         if (mExamViewPager.getCurrentItem() != (mExamAdapter.getCount() - 1)) {
             mExamViewPager.setCurrentItem(mExamViewPager.getCurrentItem() + 1);
         } else {
-            ToastUtil.showShort(this, "当前已经是最后一道题");
+            ToastUtil.showShort(this, getString(R.string.exam_to_next));
         }
     }
 
@@ -228,15 +228,15 @@ public class ExamActivity extends BaseActivity implements ViewPager.OnPageChange
     private void submit() {
         //提示确认交卷
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage("考试未完成，是否现在交卷？");
+        builder.setMessage(getString(R.string.exam_dialog_msg));
         builder.setCancelable(false);
-        builder.setNegativeButton("不，我还没有做完", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(getString(R.string.exam_dialog_nb), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
             }
         });
-        builder.setPositiveButton("是的，交卷", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(getString(R.string.exam_dialog_pb), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
@@ -309,7 +309,7 @@ public class ExamActivity extends BaseActivity implements ViewPager.OnPageChange
         AlertDialog.Builder builder = new AlertDialog.Builder(ExamActivity.this);
         builder.setMessage(message);
         builder.setCancelable(false);
-        builder.setPositiveButton("退出本次考试", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(getString(R.string.exam_dialog_exit), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();

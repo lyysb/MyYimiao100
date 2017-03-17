@@ -25,6 +25,16 @@ public class CorporateBean {
     private String experience;
     private String advantage;
 
+    private String accountStatusName;
+
+    public String getAccountStatusName() {
+        return accountStatusName;
+    }
+
+    public void setAccountStatusName(String accountStatusName) {
+        this.accountStatusName = accountStatusName;
+    }
+
     private ArrayList<Experience> experienceList;
 
     public String getQq() {

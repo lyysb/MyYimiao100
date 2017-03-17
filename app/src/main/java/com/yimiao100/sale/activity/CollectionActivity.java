@@ -83,7 +83,7 @@ public class CollectionActivity extends BaseActivity implements TitleView.TitleB
     private void initEmptyView() {
         mEmptyView = findViewById(R.id.collection_empty_view);
         TextView emptyText = (TextView) mEmptyView.findViewById(R.id.empty_text);
-        emptyText.setText("多收藏也不会怀孕……");
+        emptyText.setText(getString(R.string.empty_view_collection));
         emptyText.setCompoundDrawablesWithIntrinsicBounds(null, getResources().getDrawable(R.mipmap.ico_my_collection_empty), null, null);
     }
 

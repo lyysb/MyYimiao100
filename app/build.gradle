@@ -74,7 +74,7 @@ dependencies {
     compile 'com.android.support:design:23.2.1'
     compile 'com.android.support:support-v4:23.0.3'
     compile 'com.bigkoo:pickerview:2.1.0'
-    compile 'com.alibaba:fastjson:1.2.15'
+    compile 'com.alibaba:fastjson:1.2.28'
     compile project(':CharacterPickerViewLibrary')
     compile name: 'SMSSDK-2.1.1', ext: 'aar'
     compile 'com.zhy:okhttputils:2.6.2'

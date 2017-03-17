@@ -1,7 +1,6 @@
 package com.yimiao100.sale.activity;
 
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.View;
 import android.widget.ExpandableListView;
@@ -57,6 +56,8 @@ public class ShipActivity extends BaseActivity implements TitleView.TitleBarOnCl
         setContentView(R.layout.activity_ship);
         ButterKnife.bind(this);
 
+        showLoadingProgress();
+
         initView();
 
         onRefresh();
@@ -104,17 +105,13 @@ public class ShipActivity extends BaseActivity implements TitleView.TitleBarOnCl
             public void onError(Call call, Exception e, int id) {
                 LogUtil.Companion.d("发货累计E：" + e.getLocalizedMessage());
                 Util.showTimeOutNotice(currentContext);
+                hideLoadingProgress();
             }
 
             @Override
             public void onResponse(String response, int id) {
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        // 停止刷新
-                        mShipRefresh.setRefreshing(false);
-                    }
-                }, 300);
+                mShipRefresh.setRefreshing(false);
+                hideLoadingProgress();
                 LogUtil.Companion.d("发货累计：" + response);
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {

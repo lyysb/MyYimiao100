@@ -2,7 +2,6 @@ package com.yimiao100.sale.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.View;
 import android.widget.AdapterView;
 
@@ -38,6 +37,7 @@ public class ClinicActivity extends BaseActivitySingleList{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         mCdcId = getIntent().getStringExtra("cdcId");
+        showLoadingProgress();
         super.onCreate(savedInstanceState);
     }
 
@@ -53,17 +53,13 @@ public class ClinicActivity extends BaseActivitySingleList{
             public void onError(Call call, Exception e, int id) {
                 LogUtil.Companion.d("辖区门诊E：" + e.getLocalizedMessage());
                 Util.showTimeOutNotice(currentContext);
+                hideLoadingProgress();
             }
 
             @Override
             public void onResponse(String response, int id) {
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        // 停止刷新
-                        mSwipeRefreshLayout.setRefreshing(false);
-                    }
-                }, 300); // 5秒后发送消息，停止刷新
+                hideLoadingProgress();
+                mSwipeRefreshLayout.setRefreshing(false);
                 LogUtil.Companion.d("辖区门诊：" + response);
                 //暂定直接用CDC的JavaBean，后期有需求再重新写
                 CDCBean cdcBean = JSON.parseObject(response, CDCBean.class);

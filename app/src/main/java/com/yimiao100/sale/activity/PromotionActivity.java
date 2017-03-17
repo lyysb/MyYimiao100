@@ -2,7 +2,6 @@ package com.yimiao100.sale.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.View;
 import android.view.ViewGroup;
@@ -95,17 +94,19 @@ public class PromotionActivity extends BaseActivity implements TitleView.TitleBa
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        mVendorId = getIntent().getIntExtra("vendorId", -1);
-        mUserAccountType = getIntent().getStringExtra(USER_ACCOUNT_TYPE);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_promotion);
         ButterKnife.bind(this);
 
+        mVendorId = getIntent().getIntExtra("vendorId", -1);
+        mUserAccountType = getIntent().getStringExtra(USER_ACCOUNT_TYPE);
         mLogUrl = getIntent().getStringExtra("logoImageUrl");
         mVendorName = getIntent().getStringExtra("vendorName");
         LogUtil.Companion.d("userAccountType is " + mUserAccountType);
 
         initView();
+
+        showLoadingProgress();
 
         onRefresh();
     }
@@ -162,7 +163,7 @@ public class PromotionActivity extends BaseActivity implements TitleView.TitleBa
     private void initEmptyView() {
         mEmptyView = findViewById(R.id.promotion_empty_view);
         TextView emptyText = (TextView) mEmptyView.findViewById(R.id.empty_text);
-        emptyText.setText("不要着急，让奖励资金飞一会儿~");
+        emptyText.setText(getString(R.string.empty_view_promotion));
         emptyText.setCompoundDrawablesWithIntrinsicBounds(null, getResources().getDrawable(R.mipmap.ico_promotion_award_detailed), null, null);
 
         RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(ViewGroup
@@ -196,17 +197,13 @@ public class PromotionActivity extends BaseActivity implements TitleView.TitleBa
             public void onError(Call call, Exception e, int id) {
                 LogUtil.Companion.d("推广费可提现E：" + e.getMessage());
                 Util.showTimeOutNotice(currentContext);
+                hideLoadingProgress();
             }
 
             @Override
             public void onResponse(String response, int id) {
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        // 停止刷新
-                        mPromotionRichRefresh.setRefreshing(false);
-                    }
-                }, 2000);
+                mPromotionRichRefresh.setRefreshing(false);
+                hideLoadingProgress();
                 LogUtil.Companion.d("推广费提现：" + response);
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
@@ -270,7 +267,7 @@ public class PromotionActivity extends BaseActivity implements TitleView.TitleBa
                 startActivity(intent);
             }
         } else {
-            ToastUtil.showShort(getApplicationContext(), "请选择订单");
+            ToastUtil.showShort(currentContext, "请选择订单");
         }
     }
 

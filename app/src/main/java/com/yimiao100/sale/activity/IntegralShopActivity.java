@@ -33,6 +33,7 @@ public class IntegralShopActivity extends BaseActivitySingleList {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        showLoadingProgress();
         super.onCreate(savedInstanceState);
     }
 
@@ -62,12 +63,14 @@ public class IntegralShopActivity extends BaseActivitySingleList {
                     public void onError(Call call, Exception e, int id) {
                         LogUtil.Companion.d("积分商城列表E：" + e.getLocalizedMessage());
                         Util.showTimeOutNotice(currentContext);
+                        hideLoadingProgress();
                     }
 
                     @Override
                     public void onResponse(String response, int id) {
                         LogUtil.Companion.d("积分商城列表：" + response);
                         mSwipeRefreshLayout.setRefreshing(false);
+                        hideLoadingProgress();
                         ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                         switch (errorBean.getStatus()) {
                             case "success":

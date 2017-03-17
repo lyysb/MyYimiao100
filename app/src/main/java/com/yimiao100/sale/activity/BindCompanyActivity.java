@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v7.app.AlertDialog;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -29,6 +28,7 @@ import com.yimiao100.sale.utils.CompressUtil;
 import com.yimiao100.sale.utils.Constant;
 import com.yimiao100.sale.utils.DensityUtil;
 import com.yimiao100.sale.utils.LogUtil;
+import com.yimiao100.sale.utils.Regex;
 import com.yimiao100.sale.utils.SharePreferenceUtil;
 import com.yimiao100.sale.utils.TimeUtil;
 import com.yimiao100.sale.utils.ToastUtil;
@@ -40,6 +40,7 @@ import com.zhy.http.okhttp.callback.StringCallback;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -92,6 +93,10 @@ public class BindCompanyActivity extends BaseActivity implements TitleView
     private final String EXPERIENCE_LIST = "experienceList";                //推广经历
     private final String ZIP_FILE = "zipFile";                              //压缩文件
 
+    private final String bizLicence =  "bizLicence";
+    private final String personalPhoto = "personalPhoto";
+    private final String idPhoto = "idPhoto";
+
 
     private static final int BIZ_FROM_CAMERA = 100;
     private static final int PERSONAL_FROM_CAMERA = 101;
@@ -124,9 +129,6 @@ public class BindCompanyActivity extends BaseActivity implements TitleView
     private File mIdPhoto;
     private File mZipFile;
 
-    private String mBizLicenceName = "bizLicence.jpg";
-    private String mPersonalPhotoName = "personalPhoto.jpg";
-    private String mIdPhotoName = "idPhoto.jpg";
     private String mZipName;
 
     private boolean isFirst = true;     // 是否第一次提交，默认为true
@@ -136,6 +138,7 @@ public class BindCompanyActivity extends BaseActivity implements TitleView
     private ProgressDialog mProgressDialog;
     private ArrayList<Experience> mList;
     private AlertDialog mDialog;
+    private String mAccountStatus;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -201,12 +204,12 @@ public class BindCompanyActivity extends BaseActivity implements TitleView
             public void onError(Call call, Exception e, int id) {
                 LogUtil.Companion.d("推广主体E：" + e.getLocalizedMessage());
                 Util.showTimeOutNotice(currentContext);
-                dismissLoadingProgress();
+                hideLoadingProgress();
             }
 
             @Override
             public void onResponse(String response, int id) {
-                dismissLoadingProgress();
+                hideLoadingProgress();
                 LogUtil.Companion.d("推广主体：" + response);
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
@@ -262,32 +265,74 @@ public class BindCompanyActivity extends BaseActivity implements TitleView
             mPromotionAdvantage.setText(corporate.getAdvantage());
             //三张图片url
             String bizUrl = corporate.getBizLicenceUrl();
-            LogUtil.Companion.d("bizUrl-" + bizUrl);
+            LogUtil.Companion.d("bizUrl is " + bizUrl);
             String personalUrl = corporate.getPersonalPhotoUrl();
-            LogUtil.Companion.d("personalUrl-" + personalUrl);
+            LogUtil.Companion.d("personalUrl is " + personalUrl);
             String idUrl = corporate.getIdPhotoUrl();
-            LogUtil.Companion.d("idUrl-" + idUrl);
+            LogUtil.Companion.d("idUrl is " + idUrl);
 
-            Picasso.with(getApplicationContext()).load(bizUrl)
-                    .placeholder(R.mipmap.ico_binding_account_add_photos)
-                    .transform(BitmapUtil.getTransformation(mBindCompanyTakePhoto))
-                    .into(mBindCompanyTakePhoto);
-            Picasso.with(getApplicationContext()).load(personalUrl)
-                    .transform(BitmapUtil.getTransformation(mBindCompanyCardPhoto1))
-                    .placeholder(R.mipmap.ico_binding_account_certificates)
-                    .into(mBindCompanyCardPhoto1);
-            Picasso.with(getApplicationContext()).load(idUrl)
-                    .transform(BitmapUtil.getTransformation(mBindCompanyCardPhoto2))
-                    .placeholder(R.mipmap.ico_binding_account_certificates_two)
-                    .error(R.mipmap.ico_binding_account_certificates_two)
-                    .into(mBindCompanyCardPhoto2);
+            Picasso picasso = Picasso.with(this);
+            String bizLicencePath = (String) SharePreferenceUtil.get(this, "corporate" + bizLicence, "");
+            if (!bizLicencePath.isEmpty()) {
+                LogUtil.Companion.d("bizLicence path is " + bizLicencePath);
+                picasso.load(new File(bizLicencePath))
+                        .transform(BitmapUtil.getTransformation(mBindCompanyTakePhoto))
+                        .placeholder(R.mipmap.ico_binding_account_add_photos)
+                        .into(mBindCompanyTakePhoto);
+            } else {
+                picasso.load(bizUrl)
+                        .transform(BitmapUtil.getTransformation(mBindCompanyTakePhoto))
+                        .placeholder(R.mipmap.ico_binding_account_add_photos)
+                        .into(mBindCompanyTakePhoto);
+            }
+            String personalPhotoPath = (String) SharePreferenceUtil.get(this, "corporate" + personalPhoto, "");
+            if (!personalPhotoPath.isEmpty()) {
+                LogUtil.Companion.d("personalPhotoPath is " + personalPhotoPath);
+                picasso.load(new File(personalPhotoPath))
+                        .transform(BitmapUtil.getTransformation(mBindCompanyCardPhoto1))
+                        .placeholder(R.mipmap.ico_binding_account_certificates)
+                        .error(R.mipmap.ico_binding_account_certificates)
+                        .into(mBindCompanyCardPhoto1);
+            } else {
+                picasso.load(personalUrl)
+                        .transform(BitmapUtil.getTransformation(mBindCompanyCardPhoto1))
+                        .placeholder(R.mipmap.ico_binding_account_certificates)
+                        .error(R.mipmap.ico_binding_account_certificates)
+                        .into(mBindCompanyCardPhoto1);
+            }
+            String idPhotoPath = (String) SharePreferenceUtil.get(this, "corporate" + idPhoto, "");
+            if (!idPhotoPath.isEmpty()) {
+                LogUtil.Companion.d("idPhotoPath is " + idPhotoPath);
+                picasso.load(new File(idPhotoPath))
+                        .transform(BitmapUtil.getTransformation(mBindCompanyCardPhoto2))
+                        .placeholder(R.mipmap.ico_binding_account_certificates_two)
+                        .error(R.mipmap.ico_binding_account_certificates_two)
+                        .into(mBindCompanyCardPhoto2);
+            } else {
+                picasso.load(idUrl)
+                        .transform(BitmapUtil.getTransformation(mBindCompanyCardPhoto2))
+                        .placeholder(R.mipmap.ico_binding_account_certificates_two)
+                        .error(R.mipmap.ico_binding_account_certificates_two)
+                        .into(mBindCompanyCardPhoto2);
+            }
 
             //如果审核通过，则不再允许修任何改数据
-            if (corporate.getAccountStatus() != null && TextUtils.equals("passed", corporate
-                    .getAccountStatus())) {
-                LogUtil.Companion.d("已通过审核，禁止修改任何数据");
-                //禁止修改数据
-                forbidChange();
+            mAccountStatus = corporate.getAccountStatus();
+            if (mAccountStatus != null) {
+                switch (mAccountStatus) {
+                    case "passed":
+                        LogUtil.Companion.d("审核已通过，不可编辑");
+                        ToastUtil.showShort(this, getString(R.string.account_passed_notice));
+                        //禁止修改数据
+                        forbidChange();
+                        break;
+                    case "auditing":
+                        LogUtil.Companion.d("信息审核中，不可编辑");
+                        ToastUtil.showShort(this, getString(R.string.account_auditing_notice));
+                        //禁止修改数据
+                        forbidChange();
+                        break;
+                }
             }
         } else {
             LogUtil.Companion.d("第一次提交");
@@ -316,7 +361,6 @@ public class BindCompanyActivity extends BaseActivity implements TitleView
         mBindCompanyTakePhoto.setEnabled(false);
         mBindCompanyCardPhoto1.setEnabled(false);
         mBindCompanyCardPhoto2.setEnabled(false);
-        mAddExperience.setEnabled(false);
         mBindCompanySubmit.setEnabled(false);
     }
 
@@ -346,11 +390,20 @@ public class BindCompanyActivity extends BaseActivity implements TitleView
                 Intent intent = new Intent(this, PromotionExperienceListActivity.class);
                 intent.putParcelableArrayListExtra("experience", mList);
                 intent.putExtra("type", CORPORATE);
+                if (mAccountStatus != null) {
+                    intent.putExtra("accountStatus", mAccountStatus);
+                }
                 startActivityForResult(intent, CORPORATE);
                 break;
             case R.id.bind_company_submit:
-                if (mCompanyName.getText().toString().trim().isEmpty()) {
+                String companyName = mCompanyName.getText().toString();
+                if (companyName.trim().isEmpty()) {
                     ToastUtil.showShort(this, "请填写开户名称");
+                    return;
+                }
+                String regex = "[\u4e00-\u9fa5\\w]+";
+                if (!companyName.matches(regex)) {
+                    ToastUtil.showShort(this, "开户名称只允许是中文、英文、数字和“_”");
                     return;
                 }
                 if (mCompanyBankCard.getText().toString().trim().isEmpty()) {
@@ -364,16 +417,25 @@ public class BindCompanyActivity extends BaseActivity implements TitleView
 
                 // 提示营业执照
                 if (isFirst && mBizLicence == null) {
-                    ToastUtil.showLong(getApplicationContext(), "初次上传，请拍摄营业执照");
+                    ToastUtil.showShort(this, getString(R.string.account_biz_licence_notice));
                     return;
                 }
 
-                if (mCorporation.getText().toString().trim().isEmpty()) {
+                String corporation = mCorporation.getText().toString();
+                if (corporation.trim().isEmpty()) {
                     ToastUtil.showShort(this, "请填写姓名");
+                    return;
+                }
+                if (!corporation.matches(regex)) {
+                    ToastUtil.showShort(this, "姓名只允许是中文、英文、数字和“_”");
                     return;
                 }
                 if (mCorporationIdNumber.getText().toString().trim().isEmpty()) {
                     ToastUtil.showShort(this, "请填写身份账号");
+                    return;
+                }
+                if (!mCorporationIdNumber.getText().toString().matches(Regex.idCard)) {
+                    ToastUtil.showShort(this, "身份证号格式不正确");
                     return;
                 }
                 if (mCorporationPhoneNumber.getText().toString().trim().isEmpty()) {
@@ -390,20 +452,20 @@ public class BindCompanyActivity extends BaseActivity implements TitleView
                 }
                 // 提示个人证件照
                 if (isFirst && (mPersonalPhoto == null || mIdPhoto == null)) {
-                    ToastUtil.showLong(getApplicationContext(), "初次上传，请拍摄证件照");
+                    ToastUtil.showShort(this, getString(R.string.account_id_photo_notice));
                     return;
                 }
 
                 if (mList == null || mList.size() == 0) {
-                    ToastUtil.showShort(currentContext, "请添加推广经历");
+                    ToastUtil.showShort(this, getString(R.string.account_experience_notice));
                     return;
                 }
                 if (mCompanyEver.getText().toString().trim().isEmpty()) {
-                    ToastUtil.showShort(this, "曾经所在公司及职位");
+                    ToastUtil.showShort(this, getString(R.string.account_ever_notice));
                     return;
                 }
                 if (mPromotionAdvantage.getText().toString().trim().isEmpty()) {
-                    ToastUtil.showShort(this, "请填写推广优势");
+                    ToastUtil.showShort(this, getString(R.string.account_advantage_notice));
                     return;
                 }
                 //显示提交确定弹窗
@@ -422,7 +484,7 @@ public class BindCompanyActivity extends BaseActivity implements TitleView
                 mZipFile = CompressUtil.zipANDSave(mFileMap, mZipName);
                 if (mZipFile == null) {
                     // 提示错误并返回
-                    ToastUtil.showShort(currentContext, "文件压缩出现未知错误，暂无法上传图片");
+                    ToastUtil.showShort(currentContext, getString(R.string.account_zip_error_notice));
                     return;
                 }
                 //提交数据
@@ -461,8 +523,9 @@ public class BindCompanyActivity extends BaseActivity implements TitleView
                         //打开相机
                         //拍照返回
                         Intent intentCapture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                        mBizLicence = new File(Environment.getExternalStorageDirectory(),
-                                mBizLicenceName);
+                        String bizLicenceName = bizLicence + "_" +
+                                TimeUtil.timeStamp2Date(System.currentTimeMillis() + "", "yyyyMMddHH_mm_ss")+ ".jpg";
+                        mBizLicence = new File(Environment.getExternalStorageDirectory(), bizLicenceName);
                         intentCapture.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(mBizLicence));
                         startActivityForResult(intentCapture, BIZ_FROM_CAMERA);
                         break;
@@ -495,8 +558,10 @@ public class BindCompanyActivity extends BaseActivity implements TitleView
                         //打开相机
                         //拍照返回
                         Intent intentCapture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                        String personalPhotoName = personalPhoto + "_" +
+                                TimeUtil.timeStamp2Date(System.currentTimeMillis() + "", "yyyyMMddHH_mm_ss")+ ".jpg";
                         mPersonalPhoto = new File(Environment.getExternalStorageDirectory(),
-                                mPersonalPhotoName);
+                                personalPhotoName);
                         intentCapture.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile
                                 (mPersonalPhoto));
                         startActivityForResult(intentCapture, PERSONAL_FROM_CAMERA);
@@ -530,8 +595,9 @@ public class BindCompanyActivity extends BaseActivity implements TitleView
                         //打开相机
                         //拍照返回
                         Intent intentCapture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                        mIdPhoto = new File(Environment.getExternalStorageDirectory(),
-                                mIdPhotoName);
+                        String idPhotoName = idPhoto + "_" +
+                                TimeUtil.timeStamp2Date(System.currentTimeMillis() + "", "yyyyMMddHH_mm_ss")+ ".jpg";
+                        mIdPhoto = new File(Environment.getExternalStorageDirectory(), idPhotoName);
                         intentCapture.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(mIdPhoto));
                         startActivityForResult(intentCapture, ID_FROM_CAMERA);
                         break;
@@ -587,7 +653,7 @@ public class BindCompanyActivity extends BaseActivity implements TitleView
         mProgressDialog = new ProgressDialog(this);
         mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
         mProgressDialog.setCancelable(false);
-        mProgressDialog.setTitle("正在上传，请稍后...");
+        mProgressDialog.setTitle(getString(R.string.upload_progress_dialog_title));
         //请求网络发送数据
         OkHttpUtils.post().url(URL_CORPORATE_USER_ACCOUNT).addHeader(ACCESS_TOKEN, mAccessToken)
                 .addParams(ACCOUNT_NAME, mAccountName)
@@ -646,7 +712,9 @@ public class BindCompanyActivity extends BaseActivity implements TitleView
                     case "success":
                         //记录对公账户数据
                         updateLocalData();
-                        ToastUtil.showShort(getApplicationContext(), "提交成功，请等待审核");
+                        // 更新本地记录文件
+                        updatePhotoData();
+                        ToastUtil.showShort(currentContext, getString(R.string.account_upload_success_notice));
                         finish();
                         break;
                     case "failure":
@@ -655,6 +723,18 @@ public class BindCompanyActivity extends BaseActivity implements TitleView
                 }
             }
         });
+    }
+
+    private void updatePhotoData() {
+        if (mFileMap != null) {
+            for (Map.Entry<String, String> entry : mFileMap.entrySet()) {
+                String key = entry.getKey().substring(0, entry.getKey().lastIndexOf("."));
+                LogUtil.Companion.d("key is " + key);
+                String value = entry.getValue();
+                LogUtil.Companion.d("val is " + value);
+                SharePreferenceUtil.put(currentContext, "corporate" + key, value);
+            }
+        }
     }
 
     private void updateLocalData() {
@@ -691,35 +771,35 @@ public class BindCompanyActivity extends BaseActivity implements TitleView
         switch (requestCode) {
             case BIZ_FROM_CAMERA:
                 if (resultCode == RESULT_OK) {
-                    handlePhoto("bizLicence", mBizLicence, mBindCompanyTakePhoto);
+                    handlePhoto(bizLicence, mBizLicence, mBindCompanyTakePhoto);
                 }
                 break;
             case PERSONAL_FROM_CAMERA:
                 if (resultCode == RESULT_OK) {
-                    handlePhoto("personalPhoto", mPersonalPhoto, mBindCompanyCardPhoto1);
+                    handlePhoto(personalPhoto, mPersonalPhoto, mBindCompanyCardPhoto1);
                 }
                 break;
             case ID_FROM_CAMERA:
                 if (resultCode == RESULT_OK) {
-                    handlePhoto("idPhoto", mIdPhoto, mBindCompanyCardPhoto2);
+                    handlePhoto(idPhoto, mIdPhoto, mBindCompanyCardPhoto2);
                 }
                 break;
             case BIZ_FROM_PHOTO:
                 if (data != null && resultCode == RESULT_OK) {
                     mBizLicence = new File(BitmapUtil.getRealPathFromURI(this, data.getData()));
-                    handlePhoto("bizLicence", mBizLicence, mBindCompanyTakePhoto);
+                    handlePhoto(bizLicence, mBizLicence, mBindCompanyTakePhoto);
                 }
                 break;
             case PERSONAL_FROM_PHOTO:
                 if (data != null && resultCode == RESULT_OK) {
                     mPersonalPhoto = new File((BitmapUtil.getRealPathFromURI(this, data.getData())));
-                    handlePhoto("personalPhoto", mPersonalPhoto, mBindCompanyCardPhoto1);
+                    handlePhoto(personalPhoto, mPersonalPhoto, mBindCompanyCardPhoto1);
                 }
                 break;
             case ID_FROM_PHOTO:
                 if (data != null && resultCode == RESULT_OK) {
                     mIdPhoto = new File((BitmapUtil.getRealPathFromURI(this, data.getData())));
-                    handlePhoto("idPhoto", mIdPhoto, mBindCompanyCardPhoto2);
+                    handlePhoto(idPhoto, mIdPhoto, mBindCompanyCardPhoto2);
                 }
                 break;
             case CORPORATE:

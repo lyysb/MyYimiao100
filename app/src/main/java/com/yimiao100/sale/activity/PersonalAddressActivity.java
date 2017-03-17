@@ -2,7 +2,6 @@ package com.yimiao100.sale.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.TextUtils;
 import android.widget.ListView;
@@ -71,7 +70,7 @@ public class PersonalAddressActivity extends BaseActivity implements AddressAdap
         mAddressId = getIntent().getIntExtra("addressId", -1);
         LogUtil.Companion.d("确定订单返回的地址id：" + mAddressId);
 
-
+        showLoadingProgress();
 
         initView();
 
@@ -100,11 +99,13 @@ public class PersonalAddressActivity extends BaseActivity implements AddressAdap
             public void onError(Call call, Exception e, int id) {
                 LogUtil.Companion.d("常用地址列表E：" + e.getLocalizedMessage());
                 Util.showTimeOutNotice(currentContext);
+                hideLoadingProgress();
             }
 
             @Override
             public void onResponse(String response, int id) {
                 LogUtil.Companion.d("常用地址列表：" + response);
+                hideLoadingProgress();
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":
@@ -272,13 +273,7 @@ public class PersonalAddressActivity extends BaseActivity implements AddressAdap
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":
-                        new Handler().postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                // 停止刷新
-                                mSwipe.setRefreshing(false);
-                            }
-                        }, 1000);
+                        mSwipe.setRefreshing(false);
                         mAddressList = JSON.parseObject(response, AddressBean
                                 .class).getAddresslist();
                         mAddressAdapter = new AddressAdapter(mAddressList);

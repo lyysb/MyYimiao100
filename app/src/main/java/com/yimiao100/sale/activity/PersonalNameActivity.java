@@ -32,7 +32,7 @@ public class PersonalNameActivity extends BaseActivity implements TitleView
     @BindView(R.id.name_clear)
     ImageView mNameClear;
 
-    private final String UPDATE_CN_NAME = "/api/user/update_cn_name";
+    private final String UPDATE_CN_NAME = Constant.BASE_URL + "/api/user/update_cn_name";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,11 +62,8 @@ public class PersonalNameActivity extends BaseActivity implements TitleView
     @Override
     public void rightOnClick() {
         //保存将数据发送到服务器
-        String user_name_url = Constant.BASE_URL + UPDATE_CN_NAME;
-        OkHttpUtils
-                .post()
-                .url(user_name_url)
-                .addHeader("X-Authorization-Token", mAccessToken)
+        OkHttpUtils.post().url(UPDATE_CN_NAME)
+                .addHeader(ACCESS_TOKEN, mAccessToken)
                 .addParams("cnName", mPersonalName.getText().toString().trim())
                 .build().execute(new StringCallback() {
             @Override

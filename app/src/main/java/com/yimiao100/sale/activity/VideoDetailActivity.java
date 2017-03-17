@@ -1,6 +1,5 @@
 package com.yimiao100.sale.activity;
 
-import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -85,15 +84,6 @@ public class VideoDetailActivity extends BaseActivity implements YMVideoPlayer
     private final String OBJECT_ID = "objectId";
     private final String OBJECT_TYPE = "objectType";
 
-    protected static Activity currentContext;
-    protected final String ACCESS_TOKEN = "X-Authorization-Token";
-    protected final String PAGE = "page";
-    protected final String PAGE_SIZE = "pageSize";
-
-    protected int mPage;
-    protected int mTotalPage;
-    protected final String mPageSize = "10";
-
     private int mCourseId;
     private Course mCourse;
     private final String mObjectType = "course";
@@ -108,6 +98,8 @@ public class VideoDetailActivity extends BaseActivity implements YMVideoPlayer
         mIntegral = (int) SharePreferenceUtil.get(this, Constant.INTEGRAL, -1);
 
         initView();
+
+        showLoadingProgress();
 
         initData();
     }
@@ -126,11 +118,13 @@ public class VideoDetailActivity extends BaseActivity implements YMVideoPlayer
             public void onError(Call call, Exception e, int id) {
                 LogUtil.Companion.d("课程详情E：" + e.getLocalizedMessage());
                 Util.showTimeOutNotice(currentContext);
+                hideLoadingProgress();
             }
 
             @Override
             public void onResponse(String response, int id) {
                 LogUtil.Companion.d("课程详情：" + response);
+                hideLoadingProgress();
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":
@@ -158,8 +152,7 @@ public class VideoDetailActivity extends BaseActivity implements YMVideoPlayer
         if (course.getVideoUrl() != null) {
             LogUtil.Companion.d("视频链接：" + course.getVideoUrl());
         }
-        mVideoDetailPlayer.setUp(course.getVideoUrl() != null ? course.getVideoUrl() :
-                        "http://oduhua0b1.bkt.clouddn.com/default_video.mp4",
+        mVideoDetailPlayer.setUp(course.getVideoUrl() != null ? course.getVideoUrl() : Constant.DEFAULT_VIDEO,
                 JCVideoPlayerStandard.SCREEN_LAYOUT_LIST, course.getCourseName());
         //设置封面图
         if (course.getImageUrl() != null && !course.getImageUrl().isEmpty()) {
@@ -506,7 +499,7 @@ public class VideoDetailActivity extends BaseActivity implements YMVideoPlayer
      */
     private void forbidPlay() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage("您的积分余额不足，请完成积分任务后再来观看此视频。");
+        builder.setMessage(getString(R.string.video_detail_dialog_msg));
         builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {

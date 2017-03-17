@@ -68,6 +68,7 @@ public class ScoreDetailActivity extends BaseActivity implements SwipeRefreshLay
         setContentView(R.layout.activity_score_detail);
         ButterKnife.bind(this);
 
+        showLoadingProgress();
 
         mVendorId = getIntent().getIntExtra("vendorId", -1);
         mLogUrl = getIntent().getStringExtra("logoImageUrl");
@@ -127,11 +128,13 @@ public class ScoreDetailActivity extends BaseActivity implements SwipeRefreshLay
             public void onError(Call call, Exception e, int id) {
                 LogUtil.Companion.d("课程考试结果E：" + e.getLocalizedMessage());
                 Util.showTimeOutNotice(currentContext);
+                hideLoadingProgress();
             }
 
             @Override
             public void onResponse(String response, int id) {
                 LogUtil.Companion.d("课程考试结果：" + response);
+                hideLoadingProgress();
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":
@@ -208,7 +211,7 @@ public class ScoreDetailActivity extends BaseActivity implements SwipeRefreshLay
 
     private void showNoticeDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage("奖学金=第一次考试成绩×当前总发货量+当前考试平均成绩×当前发货量");
+        builder.setMessage(getString(R.string.score_detail_dialog_msg));
         builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {

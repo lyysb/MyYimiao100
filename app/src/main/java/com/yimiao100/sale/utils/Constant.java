@@ -105,6 +105,7 @@ public interface Constant {
             put(156, "提现状态无效");
         }
     };
+    String DEFAULT_VIDEO = "http://oduhua0b1.bkt.clouddn.com/default_video.mp4";
     String CNNAME = "cnName";
     String PHONENUMBER = "phoneNumber";
     String EMAIL = "email";

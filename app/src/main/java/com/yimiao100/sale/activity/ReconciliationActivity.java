@@ -45,9 +45,10 @@ public class ReconciliationActivity extends BaseActivitySingleList {
     protected void onCreate(Bundle savedInstanceState) {
         mVendorId = getIntent().getIntExtra("vendorId", -1);
         mUserAccountType = getIntent().getStringExtra(USER_ACCOUNT_TYPE);
+        showLoadingProgress();
         super.onCreate(savedInstanceState);
         LogUtil.Companion.d("userAccountType is " + mUserAccountType);
-        setEmptyView("早起的鸟儿有虫吃，快到资源里面申请推广吧。", R.mipmap.ico_reconciliation);
+        setEmptyView(getString(R.string.empty_view_reconciliation), R.mipmap.ico_reconciliation);
     }
 
     @Override
@@ -69,11 +70,13 @@ public class ReconciliationActivity extends BaseActivitySingleList {
             public void onError(Call call, Exception e, int id) {
                 LogUtil.Companion.d("对账列表E：" + e.getMessage());
                 Util.showTimeOutNotice(currentContext);
+                hideLoadingProgress();
             }
 
             @Override
             public void onResponse(String response, int id) {
                 mSwipeRefreshLayout.setRefreshing(false);
+                hideLoadingProgress();
                 LogUtil.Companion.d("对账列表：" + response);
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {

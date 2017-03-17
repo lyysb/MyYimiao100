@@ -37,8 +37,9 @@ public class VideoListActivity extends BaseActivitySingleList {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        showLoadingProgress();
         super.onCreate(savedInstanceState);
-        setEmptyView("考试是可以“挣钱”的。但是，暂时没有学习任务。", R.mipmap.ico_study_extension);
+        setEmptyView(getString(R.string.empty_view_video_list), R.mipmap.ico_study_extension);
     }
 
     @Override
@@ -60,11 +61,13 @@ public class VideoListActivity extends BaseActivitySingleList {
             public void onError(Call call, Exception e, int id) {
                 LogUtil.Companion.d("考试视频列表E：" + e.getLocalizedMessage());
                 Util.showTimeOutNotice(currentContext);
+                hideLoadingProgress();
             }
 
             @Override
             public void onResponse(String response, int id) {
                 LogUtil.Companion.d("考试视频列表：" + response);
+                hideLoadingProgress();
                 mSwipeRefreshLayout.setRefreshing(false);
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {

@@ -9,4 +9,66 @@
     <string name="tips">This is a custom TextView that can be expanded with a smooth transition
         animation,you can set the number of lines to expand,change its icon or text and so on\n
     </string>
+    <string name="order_celebrate">恭喜您!</string>
+    <string name="order_notice">请您再次核对您要推广的资源信息</string>
+    <string name="order_already_notice">提交的申请推广已经通过审核，\n您提交的竞标保证金已经查收。</string>
+    <string name="order_already_view_account">查看转账汇款账户</string>
+    <string name="order_complete_notice">提交的申请推广已经正式签约，\n请按照推广协议尽快完成推广任务。</string>
+    <string name="order_complete_enter_reconciliation">此业务暂无发货信息</string>
+    <string name="order_submit_notice">您提交的申请推广,已经收到\n提交的竞标保证金,目前正在审核中,请耐心等待。</string>
+    <string name="order_unpaid_notice">您已成功提交推广申请，为了保证\n您有效竞标，请您尽快提交竞标保证金。</string>
+    <string name="account_passed_notice">审核已通过，不可编辑</string>
+    <string name="account_auditing_notice">信息审核中，不可编辑</string>
+    <string name="account_id_photo_notice">初次上传，请拍摄证件照</string>
+    <string name="account_experience_notice">请添加推广经历</string>
+    <string name="account_ever_notice">请填写曾经所在公司及职位</string>
+    <string name="account_advantage_notice">请填写推广优势</string>
+    <string name="account_zip_error_notice">文件压缩出现未知错误，暂无法上传</string>
+    <string name="account_upload_success_notice">提交成功，请等待审核</string>
+    <string name="upload_progress_dialog_title">上传中，请稍后...</string>
+    <string name="download_progress_dialog_title">下载中，请稍后...</string>
+    <string name="download_complete_dialog_title">下载成功</string>
+    <string name="download_complete_dialog_msg">下载完成，请选择文件处理方式</string>
+    <string name="download_complete_dialog_pb">发送出去</string>
+    <string name="download_complete_dialog_nb">本地打开</string>
+    <string name="account_biz_licence_notice">初次上传，请拍摄营业执照</string>
+    <string name="empty_view_assurance">一分耕耘，一分收获，请耐心等待。</string>
+    <string name="empty_view_collection">多收藏也不会怀孕……</string>
+    <string name="empty_view_notice">“kong kong”如也，快快与我发生关系吧。</string>
+    <string name="empty_view_customer">太孤单了吧，赶快去全部客户里挑选您想要\n推广的客户吧。</string>
+    <string name="empty_view_payment">还在等什么，赶快到资源里面申请推广吧。</string>
+    <string name="empty_view_promotion">不要着急，让奖励资金飞一会儿~</string>
+    <string name="empty_view_reconciliation">早起的鸟儿有虫吃，快到资源里面申请推广吧。</string>
+    <string name="empty_view_resources">好饭不怕晚，推广资源也是。</string>
+    <string name="empty_view_experience">快快告诉我们你辉煌的历史</string>
+    <string name="empty_view_study_collection">多收藏也不会怀孕……</string>
+    <string name="empty_view_video_list">考试是可以“挣钱”的。但是，暂时没有学习任务。</string>
+    <string name="assurance_withdrawal_personal">您申请的提现金额，将在工作人员收到提现\n申请之后5个工作日内，退回到您原来的\n推广主体个人账户里，请注意查收。</string>
+    <string name="assurance_withdrawal_corporate">您申请的提现金额，将在工作人员收到提现\n申请之后5个工作日内，退回到您原来的\n推广主体对公账户里，请注意查收。</string>
+    <string name="promotion_withdrawal_personal">您申请的提现金额，将在工作人员收到提现\n申请之后5个工作日内，支付到您绑定的\n推广主体个人账户里，请注意查收。</string>
+    <string name="promotion_withdrawal_corporate">您申请的提现金额，将在工作人员收到对应\n金额发票后5个工作日内，支付到您绑定\n推广主体对公账户里，请注意查收。</string>
+    <string name="exam_withdrawal_personal">您申请的提现金额，将在工作人员收到提现\n申请之后5个工作日内，支付到您绑定的\n推广主体个人账户里，请注意查收。</string>
+    <string name="exam_withdrawal_corporate">您申请的提现金额，将在工作人员收到对应\n金额发票后5个工作日内，支付到您绑定\n推广主体对公账户里，请注意查收。</string>
+    <string name="news_submit_error">提交成功，谢谢反馈</string>
+    <string name="exam_to_last">当前已经是第一道题</string>
+    <string name="exam_to_next">当前已经是最后一道题</string>
+    <string name="exam_dialog_msg">考试未完成，是否现在交卷？</string>
+    <string name="exam_dialog_nb">不，我还没有做完</string>
+    <string name="exam_dialog_pb">是的，交卷</string>
+    <string name="exam_dialog_exit">退出本次考试</string>
+    <string name="resources_promotion_personal_item1">推广人姓名：</string>
+    <string name="resources_promotion_personal_item2">推广人身份证号：</string>
+    <string name="resources_promotion_personal_item3">推广人联系电话：</string>
+    <string name="resources_promotion_personal_option1">请输入推广人姓名</string>
+    <string name="resources_promotion_personal_option2">请输入推广人身份证号码</string>
+    <string name="resources_promotion_personal_option3">请输入推广个人联系电话</string>
+    <string name="resources_promotion_corporate_item1">公司名称：</string>
+    <string name="resources_promotion_corporate_item2">公司账号：</string>
+    <string name="resources_promotion_corporate_item3">推广人：</string>
+    <string name="resources_promotion_corporate_option1">请绑定对公信息</string>
+    <string name="resources_promotion_corporate_option2">请绑定对公信息</string>
+    <string name="resources_promotion_corporate_option3">请绑定对公信息</string>
+    <string name="score_detail_dialog_msg">奖学金=第一次考试成绩×当前总发货量+当前考试平均成绩×当前发货量</string>
+    <string name="video_detail_dialog_msg">您的积分余额不足，请完成积分任务后再来观看此视频。</string>
+
 </resources>

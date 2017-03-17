@@ -12,14 +12,24 @@
         app:title_text="从事疫苗推广经历"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
-    <ListView
-        android:id="@+id/promotion_experience_list"
-        android:layout_weight="1"
-        style="@style/list_view"
-        android:dividerHeight="3dp"
-        android:background="@color/colorEee"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"/>
+        android:layout_weight="1"
+        android:background="@color/colorEee"
+        android:layout_height="0dp">
+        <ListView
+            android:id="@+id/promotion_experience_list"
+            style="@style/list_view"
+            android:dividerHeight="3dp"
+            android:background="@color/colorEee"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+        <include
+            android:id="@+id/experience_list_empty_view"
+            layout="@layout/empty_view"/>
+    </RelativeLayout>
+    <View
+        style="@style/view_horizontal"/>
     <TextView
         android:id="@+id/promotion_experience_add"
         android:text="新增推广经历"

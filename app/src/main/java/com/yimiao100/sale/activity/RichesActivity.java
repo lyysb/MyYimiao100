@@ -97,6 +97,7 @@ public class RichesActivity extends BaseActivity implements TitleView.TitleBarOn
     @Override
     protected void onResume() {
         super.onResume();
+        showLoadingProgress();
         initData();
     }
 
@@ -111,11 +112,13 @@ public class RichesActivity extends BaseActivity implements TitleView.TitleBarOn
             public void onError(Call call, Exception e, int id) {
                 LogUtil.Companion.d("财富E：" + e.getMessage());
                 Util.showTimeOutNotice(currentContext);
+                hideLoadingProgress();
             }
 
             @Override
             public void onResponse(String response, int id) {
                 LogUtil.Companion.d("财富：" + response);
+                hideLoadingProgress();
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":

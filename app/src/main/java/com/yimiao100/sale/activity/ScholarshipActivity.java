@@ -89,17 +89,19 @@ public class ScholarshipActivity extends BaseActivity implements SwipeRefreshLay
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        mVendorId = getIntent().getIntExtra("vendorId", -1);
-        mUserAccountType = getIntent().getStringExtra(USER_ACCOUNT_TYPE);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scholarship);
         ButterKnife.bind(this);
 
+        mVendorId = getIntent().getIntExtra("vendorId", -1);
+        mUserAccountType = getIntent().getStringExtra(USER_ACCOUNT_TYPE);
         mLogUrl = getIntent().getStringExtra("logoImageUrl");
         mVendorName = getIntent().getStringExtra("vendorName");
 
         LogUtil.Companion.d("vendorId is " + mVendorId);
         LogUtil.Companion.d("userAccountType is " + mUserAccountType);
+
+        showLoadingProgress();
 
         initView();
 
@@ -217,12 +219,14 @@ public class ScholarshipActivity extends BaseActivity implements SwipeRefreshLay
             public void onError(Call call, Exception e, int id) {
                 LogUtil.Companion.d("奖学金提现E：" + e.getMessage());
                 Util.showTimeOutNotice(currentContext);
+                hideLoadingProgress();
             }
 
             @Override
             public void onResponse(String response, int id) {
                 mScholarshipListRefresh.setRefreshing(false);
                 LogUtil.Companion.d("奖学金提现：" + response);
+                hideLoadingProgress();
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":

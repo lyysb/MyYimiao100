@@ -1,5 +1,6 @@
 package com.yimiao100.sale.activity;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
@@ -13,6 +14,7 @@ import com.yimiao100.sale.R;
 import com.yimiao100.sale.base.BaseActivity;
 import com.yimiao100.sale.bean.ErrorBean;
 import com.yimiao100.sale.utils.Constant;
+import com.yimiao100.sale.utils.ProgressDialogUtil;
 import com.yimiao100.sale.utils.Util;
 import com.yimiao100.sale.view.TitleView;
 import com.zhy.http.okhttp.OkHttpUtils;
@@ -42,6 +44,7 @@ public class ForgetPwd2Activity extends BaseActivity implements TextWatcher, Tit
     private String mAccountNumber;
 
     private String URL_RESET_PASSWORD = Constant.BASE_URL + "/api/user/reset_password";
+    private ProgressDialog mProgressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +60,8 @@ public class ForgetPwd2Activity extends BaseActivity implements TextWatcher, Tit
         mForgetPwdNew.addTextChangedListener(this);
         mForgetPwdConfirm.addTextChangedListener(this);
 
+        mProgressDialog = ProgressDialogUtil.getLoadingProgress(this, "正在提交");
+
     }
 
     @OnClick(R.id.forget_submit)
@@ -67,6 +72,7 @@ public class ForgetPwd2Activity extends BaseActivity implements TextWatcher, Tit
     private void resetPwd() {
         //将新密码提交到服务器，进入修改成功界面
         mForgetSubmit.setEnabled(false);
+        mProgressDialog.show();
         OkHttpUtils.post().url(URL_RESET_PASSWORD)
                 .addParams("accountNumber", mAccountNumber)
                 .addParams("password", mForgetPwdNew.getText().toString().trim())
@@ -76,11 +82,17 @@ public class ForgetPwd2Activity extends BaseActivity implements TextWatcher, Tit
                 mForgetSubmit.setEnabled(true);
                 e.printStackTrace();
                 Util.showTimeOutNotice(currentContext);
+                if (mProgressDialog.isShowing()) {
+                    mProgressDialog.dismiss();
+                }
             }
 
             @Override
             public void onResponse(String response, int id) {
                 mForgetSubmit.setEnabled(true);
+                if (mProgressDialog.isShowing()) {
+                    mProgressDialog.dismiss();
+                }
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":

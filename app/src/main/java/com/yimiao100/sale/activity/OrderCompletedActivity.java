@@ -105,7 +105,7 @@ public class OrderCompletedActivity extends BaseActivity implements TitleView.Ti
         mOrder = getIntent().getParcelableExtra("order");
         mOrderId = mOrder.getId() + "";
         String submit_time = TimeUtil.timeStamp2Date(mOrder.getCreatedAt() + "", "yyyy年MM月dd日");
-        mOrderCompleteSubmitTime.setText(submit_time + "提交的申请推广已经正式签约，\n请按照推广协议尽快完成推广任务。");
+        mOrderCompleteSubmitTime.setText(submit_time + getString(R.string.order_complete_notice));
         mVendorName = mOrder.getVendorName();
         mOrderCompleteVendorName.setText(mVendorName);
         mCategoryName = mOrder.getCategoryName();
@@ -139,12 +139,12 @@ public class OrderCompletedActivity extends BaseActivity implements TitleView.Ti
                     enterReconciliationDetail();
                 } else {
                     // 提示没有发货信息
-                    ToastUtil.showShort(this, "此业务暂无发货信息");
+                    ToastUtil.showShort(this, getString(R.string.order_complete_enter_reconciliation));
                     return;
                 }
                 break;
             case R.id.order_complete_view:
-                //下载已签约协议，使用相册打开
+                //下载已签约协议，使用相册打开--已废弃
 //                downloadAlreadyAgreement(mOrderProtocolUrl);
                 ToastUtil.showShort(currentContext, "请查看您之前所拍摄照片");
                 break;
@@ -181,7 +181,7 @@ public class OrderCompletedActivity extends BaseActivity implements TitleView.Ti
         mProgressDialog = new ProgressDialog(this);
         mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
         mProgressDialog.setCancelable(false);
-        mProgressDialog.setTitle("正在下载，请稍后...");
+        mProgressDialog.setTitle(getString(R.string.download_progress_dialog_title));
         String fileName = orderProtocolUrl.substring(orderProtocolUrl.lastIndexOf("/") + 1);
         LogUtil.Companion.d("已签约协议fileName：" + fileName);
         OkHttpUtils.get().url(orderProtocolUrl)
@@ -232,7 +232,7 @@ public class OrderCompletedActivity extends BaseActivity implements TitleView.Ti
     private void downloadAgreement() {
         mProgressDownloadDialog = new ProgressDialog(this);
         mProgressDownloadDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        mProgressDownloadDialog.setTitle("下载中，请稍后");
+        mProgressDownloadDialog.setTitle(getString(R.string.download_progress_dialog_title));
         mProgressDownloadDialog.setCancelable(false);
         String fileHead = "推广协议" + mOrder.getProductName();
         OkHttpUtils.post().url(URL_DOWNLOAD_FILE).addHeader(ACCESS_TOKEN, mAccessToken)
@@ -293,10 +293,10 @@ public class OrderCompletedActivity extends BaseActivity implements TitleView.Ti
      */
     private void showSuccessDialog(final File response) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("下载成功");
-        builder.setMessage("下载完成，请选择文件处理方式");
+        builder.setTitle(getString(R.string.download_complete_dialog_title));
+        builder.setMessage(getString(R.string.download_complete_dialog_msg));
         builder.setCancelable(false);
-        builder.setPositiveButton("发送出去", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(getString(R.string.download_complete_dialog_pb), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 //打开邮箱
@@ -316,7 +316,7 @@ public class OrderCompletedActivity extends BaseActivity implements TitleView.Ti
                 dialog.dismiss();
             }
         });
-        builder.setNegativeButton("本地打开", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(getString(R.string.download_complete_dialog_nb), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 Intent intent = new Intent("android.intent.action.VIEW");

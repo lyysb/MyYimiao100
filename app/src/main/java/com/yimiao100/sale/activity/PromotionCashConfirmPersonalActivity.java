@@ -131,7 +131,7 @@ public class PromotionCashConfirmPersonalActivity extends BaseActivity implement
         builder.setCancelable(false);
         TextView msg = (TextView) v.findViewById(R.id.dialog_msg);
 
-        msg.setText("您申请的提现金额，将在工作人员收到提现\n申请之后5个工作日内，支付到您绑定的\n推广主体个人账户里，请注意查收。");
+        msg.setText(getString(R.string.promotion_withdrawal_personal));
         Button btn1 = (Button) v.findViewById(R.id.dialog_promotion_bt1);
         Button btn2 = (Button) v.findViewById(R.id.dialog_promotion_bt2);
         final AlertDialog dialog = builder.create();

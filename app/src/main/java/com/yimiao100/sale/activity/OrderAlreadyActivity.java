@@ -112,7 +112,7 @@ public class OrderAlreadyActivity extends BaseActivity implements TitleView
         mOrder = intent.getParcelableExtra("order");
         //提交日期
         String submit_time = TimeUtil.timeStamp2Date(mOrder.getCreatedAt() + "", "yyyy年MM月dd日");
-        mOrderAlreadySubmitTime.setText(submit_time + "提交的申请推广已经通过审核，\n您提交的竞标保证金已经查收。");
+        mOrderAlreadySubmitTime.setText(submit_time + getString(R.string.order_already_notice));
         //厂家名称
         String vendorName = mOrder.getVendorName();
         mOrderAlreadyVendorName.setText(vendorName);
@@ -149,7 +149,7 @@ public class OrderAlreadyActivity extends BaseActivity implements TitleView
             case "corporate":
                 mOrderAlreadyRe.setText("请在" + defaultExpiredAt
                         + "之前，通过贵公司的对公账号将产品推广保证金" + orderTotalDeposit +
-                        "转到如上账户，并且下载打印电子协议，认真阅读每一条协议内容。");
+                        "转到如上账户，并且下载电子协议，认真阅读每一条协议内容。");
                 break;
             case "personal":
                 mOrderAlreadyRe.setText("请在" + defaultExpiredAt
@@ -249,7 +249,7 @@ public class OrderAlreadyActivity extends BaseActivity implements TitleView
     private void downloadAgreement() {
         mProgressDownloadDialog = new ProgressDialog(this);
         mProgressDownloadDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        mProgressDownloadDialog.setTitle("下载中，请稍后");
+        mProgressDownloadDialog.setTitle(getString(R.string.download_progress_dialog_title));
         mProgressDownloadDialog.setCancelable(false);
         String fileHead = "推广协议" + mOrder.getProductName();
         OkHttpUtils.post().url(URL_DOWNLOAD_FILE).addHeader(ACCESS_TOKEN, mAccessToken)
@@ -318,10 +318,10 @@ public class OrderAlreadyActivity extends BaseActivity implements TitleView
      */
     private void showSuccessDialog(final File response) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("下载成功");
-        builder.setMessage("下载完成，请选择文件处理方式");
+        builder.setTitle(getString(R.string.download_complete_dialog_title));
+        builder.setMessage(getString(R.string.download_complete_dialog_msg));
         builder.setCancelable(false);
-        builder.setPositiveButton("发送出去", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(getString(R.string.download_complete_dialog_pb), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 //打开邮箱
@@ -341,7 +341,7 @@ public class OrderAlreadyActivity extends BaseActivity implements TitleView
                 dialog.dismiss();
             }
         });
-        builder.setNegativeButton("本地打开", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(getString(R.string.download_complete_dialog_nb), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 Intent intent = new Intent("android.intent.action.VIEW");
@@ -418,7 +418,7 @@ public class OrderAlreadyActivity extends BaseActivity implements TitleView
         mProgressUploadDialog = new ProgressDialog(this);
         mProgressUploadDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
         mProgressUploadDialog.setCancelable(false);
-        mProgressUploadDialog.setTitle("正在上传，请稍后...");
+        mProgressUploadDialog.setTitle(getString(R.string.upload_progress_dialog_title));
         OkHttpUtils.post().url(URL_UPLOAD_FILE)
                 .addHeader(ACCESS_TOKEN, mAccessToken)
                 .addFile(ZIP_FILE, fileName, file)

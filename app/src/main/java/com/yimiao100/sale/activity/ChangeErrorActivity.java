@@ -153,7 +153,7 @@ public class ChangeErrorActivity extends BaseActivity implements TitleView.Title
                 switch (errorBean.getStatus()) {
                     case "success":
                         //提交成功，返回上一层
-                        ToastUtil.showLong(ChangeErrorActivity.this, "提交成功，谢谢反馈");
+                        ToastUtil.showShort(currentContext, getString(R.string.news_submit_error));
                         finish();
                         break;
                     case "failure":

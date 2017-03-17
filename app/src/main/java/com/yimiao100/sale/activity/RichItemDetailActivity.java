@@ -14,7 +14,6 @@ import com.yimiao100.sale.bean.RichesItemDetailBean;
 import com.yimiao100.sale.utils.Constant;
 import com.yimiao100.sale.utils.FormatUtils;
 import com.yimiao100.sale.utils.LogUtil;
-import com.yimiao100.sale.utils.SharePreferenceUtil;
 import com.yimiao100.sale.utils.TimeUtil;
 import com.yimiao100.sale.utils.Util;
 import com.yimiao100.sale.view.TitleView;
@@ -57,10 +56,8 @@ public class RichItemDetailActivity extends BaseActivity implements TitleView
     TextView mRichItemVendor;
 
     private final String URL_ACCOUNT_DETAIL = Constant.BASE_URL + "/api/fund/account_detail";
-    private final String ACCESS_TOKEN = "X-Authorization-Token";
     private final String ID = "id";
 
-    private String mAccessToken;
     private int mId;
 
 
@@ -70,7 +67,7 @@ public class RichItemDetailActivity extends BaseActivity implements TitleView
         setContentView(R.layout.activity_rich_item_detail);
         ButterKnife.bind(this);
 
-        mAccessToken = (String) SharePreferenceUtil.get(this, Constant.ACCESSTOKEN, "");
+        showLoadingProgress();
 
         mId = getIntent().getIntExtra("id", -1);
 
@@ -89,11 +86,13 @@ public class RichItemDetailActivity extends BaseActivity implements TitleView
             @Override
             public void onError(Call call, Exception e, int id) {
                 LogUtil.Companion.d("提现明细详情E：" + e.getLocalizedMessage());
+                hideLoadingProgress();
             }
 
             @Override
             public void onResponse(String response, int id) {
                 LogUtil.Companion.d("提现明细详情：" + response);
+                hideLoadingProgress();
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":

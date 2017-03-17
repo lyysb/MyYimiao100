@@ -35,11 +35,12 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="15dp"
-                    android:text="恭喜您!"
+                    android:text="@string/order_celebrate"
                     android:textColor="@color/colorMain"
                     android:textSize="23sp"/>
                 <TextView
                     android:id="@+id/order_unpaid_submit_time"
+                    android:text="----年--月--日您已成功提交推广申请，为了保证\n您有效竞标，请您尽快提交竞标保证金。"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center_horizontal"
@@ -51,7 +52,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="9dp"
                     android:layout_marginTop="25dp"
-                    android:text="请您再次核对您要推广的资源信息"
+                    android:text="@string/order_notice"
                     android:textColor="@color/color999"
                     android:textSize="12sp"/>
             </LinearLayout>

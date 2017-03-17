@@ -36,6 +36,7 @@ public class ExchangeNoteActivity extends BaseActivitySingleList {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        showLoadingProgress();
         super.onCreate(savedInstanceState);
     }
 
@@ -53,12 +54,14 @@ public class ExchangeNoteActivity extends BaseActivitySingleList {
             public void onError(Call call, Exception e, int id) {
                 LogUtil.Companion.d("兑换列表E：" + e.getLocalizedMessage());
                 Util.showTimeOutNotice(currentContext);
+                hideLoadingProgress();
             }
 
             @Override
             public void onResponse(String response, int id) {
                 LogUtil.Companion.d("兑换列表：" + response);
                 mSwipeRefreshLayout.setRefreshing(false);
+                hideLoadingProgress();
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":

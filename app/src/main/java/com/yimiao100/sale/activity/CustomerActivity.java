@@ -102,7 +102,7 @@ public class CustomerActivity extends BaseActivity implements TitleView.TitleBar
     private void initEmptyView() {
         mEmptyView = findViewById(R.id.customer_empty_view);
         TextView emptyText = (TextView) mEmptyView.findViewById(R.id.empty_text);
-        emptyText.setText("太孤单了吧，赶快去全部客户里挑选您想要\n推广的客户吧。");
+        emptyText.setText(getString(R.string.empty_view_customer));
         emptyText.setCompoundDrawablesWithIntrinsicBounds(null, getResources().getDrawable(R.mipmap.ico_my_client), null, null);
     }
 

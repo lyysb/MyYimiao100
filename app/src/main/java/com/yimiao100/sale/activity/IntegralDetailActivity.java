@@ -34,6 +34,7 @@ public class IntegralDetailActivity extends BaseActivitySingleList {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        showLoadingProgress();
         super.onCreate(savedInstanceState);
     }
 
@@ -49,11 +50,13 @@ public class IntegralDetailActivity extends BaseActivitySingleList {
             public void onError(Call call, Exception e, int id) {
                 LogUtil.Companion.d("积分明细列表E：" + e.getLocalizedMessage());
                 Util.showTimeOutNotice(currentContext);
+                hideLoadingProgress();
             }
 
             @Override
             public void onResponse(String response, int id) {
                 mSwipeRefreshLayout.setRefreshing(false);
+                hideLoadingProgress();
                 LogUtil.Companion.d("积分明细列表E：" + response);
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {

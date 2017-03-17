@@ -119,7 +119,7 @@ public class AssuranceActivity extends BaseActivity implements TitleView.TitleBa
     private void initEmptyView() {
         mEmptyView = findViewById(R.id.assurance_empty);
         TextView emptyText = (TextView) mEmptyView.findViewById(R.id.empty_text);
-        emptyText.setText("一分耕耘，一分收获，请耐心等待。");
+        emptyText.setText(getString(R.string.empty_view_assurance));
         emptyText.setCompoundDrawablesWithIntrinsicBounds(null, getResources().getDrawable(R.mipmap.ico_bond_factory_list_detailed), null, null);
 
         RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(ViewGroup
@@ -192,11 +192,11 @@ public class AssuranceActivity extends BaseActivity implements TitleView.TitleBa
     private void assuranceConfirm() {
         //遍历Map，拼接订单id
         if (checkedIDs.size() != 0) {
-            StringBuffer orderIds = new StringBuffer("");
+            StringBuilder orderIds = new StringBuilder("");
             Set<Map.Entry<Integer, Integer>> entrySet = checkedIDs.entrySet();
             for (Map.Entry<Integer, Integer> entry : entrySet) {
                 Integer orderId = entry.getValue();
-                orderIds.append("," + orderId);
+                orderIds.append(",").append(orderId);
             }
             //删除第一个逗号
             orderIds.delete(0, 1);
@@ -206,7 +206,7 @@ public class AssuranceActivity extends BaseActivity implements TitleView.TitleBa
             intent.putExtra("applyNum", mApplyNum);
             startActivity(intent);
         } else {
-            ToastUtil.showLong(getApplicationContext(), "请选择订单");
+            ToastUtil.showShort(getApplicationContext(), "请选择订单");
         }
     }
 

@@ -66,6 +66,7 @@ public class StudyCollectionActivity extends BaseActivity implements SwipeRefres
         setContentView(R.layout.activity_study_collection);
         ButterKnife.bind(this);
 
+        showLoadingProgress();
 
         initView();
 
@@ -83,7 +84,7 @@ public class StudyCollectionActivity extends BaseActivity implements SwipeRefres
     private void initEmptyView() {
         mEmptyView = findViewById(R.id.study_collection_empty_view);
         TextView emptyText = (TextView) mEmptyView.findViewById(R.id.empty_text);
-        emptyText.setText("多收藏也不会怀孕……");
+        emptyText.setText(getString(R.string.empty_view_study_collection));
         emptyText.setCompoundDrawablesWithIntrinsicBounds(null, getResources().getDrawable(R.mipmap.ico_my_collection_empty), null, null);
     }
 
@@ -159,8 +160,8 @@ public class StudyCollectionActivity extends BaseActivity implements SwipeRefres
     private void delete(final int position) {
         //取消收藏
         OkHttpUtils.post().url(URL_CANCLE_COLLECTION).addHeader(ACCESS_TOKEN, mAccessToken)
-                .addParams(COURSE_ID, mCollectClasses.get(position).getId() + "").build().execute
-                (new StringCallback() {
+                .addParams(COURSE_ID, mCollectClasses.get(position).getId() + "")
+                .build().execute(new StringCallback() {
 
 
             @Override
@@ -210,11 +211,13 @@ public class StudyCollectionActivity extends BaseActivity implements SwipeRefres
             public void onError(Call call, Exception e, int id) {
                 LogUtil.Companion.d("学习课程收藏列表E：" + e.getLocalizedMessage());
                 Util.showTimeOutNotice(currentContext);
+                hideLoadingProgress();
             }
 
             @Override
             public void onResponse(String response, int id) {
                 LogUtil.Companion.d("学习课程收藏列表：" + response);
+                hideLoadingProgress();
                 mStudyCollectionSwipe.setRefreshing(false);
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {

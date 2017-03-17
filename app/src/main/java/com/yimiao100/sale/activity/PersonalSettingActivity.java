@@ -132,9 +132,11 @@ public class PersonalSettingActivity extends BaseActivity implements TitleView
         //获取用户姓名
         String user_name = (String) SharePreferenceUtil.get(this, Constant.CNNAME, "");
         //获取用户注册账号
-        String accountNumber = (String) SharePreferenceUtil.get(this, Constant.ACCOUNT_NUMBER, "未知");
+        String accountNumber = (String) SharePreferenceUtil.get(this, Constant.ACCOUNT_NUMBER,
+                "未知");
         //获取用户电话
-        String user_phone_number = (String) SharePreferenceUtil.get(this, Constant.PHONENUMBER, accountNumber);
+        String user_phone_number = (String) SharePreferenceUtil.get(this, Constant.PHONENUMBER,
+                accountNumber);
         //获取用户邮箱
         String user_email = (String) SharePreferenceUtil.get(this, Constant.EMAIL, "");
         //获取用户推广地域并设置
@@ -337,37 +339,34 @@ public class PersonalSettingActivity extends BaseActivity implements TitleView
                 String accessToken = (String) SharePreferenceUtil.get(this, "accessToken", "");
                 LogUtil.Companion.d("头像设置：" + accessToken);
 
-                OkHttpUtils
-                        .post()
-                        .url(url)
-                        .addHeader("X-Authorization-Token", accessToken)
+                OkHttpUtils.post().url(url)
+                        .addHeader(ACCESS_TOKEN, mAccessToken)
                         .addFile("profileImage", "head.jpg", file)
-                        .build()
-                        .execute(new StringCallback() {
-                            @Override
-                            public void onError(Call call, Exception e, int id) {
-                                Util.showTimeOutNotice(currentContext);
-                            }
+                        .build().execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        Util.showTimeOutNotice(currentContext);
+                    }
 
-                            @Override
-                            public void onResponse(String response, int id) {
-                                LogUtil.Companion.d("更新头像" + response);
-                                ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
-                                switch (errorBean.getStatus()) {
-                                    case "success":
-                                        ImageBean imageBean = JSON.parseObject(response,
-                                                ImageBean.class);
-                                        //拿到头像的URL地址，更新本地数据
-                                        String profileImageUrl = imageBean.getProfileImageUrl();
-                                        SharePreferenceUtil.put(getApplicationContext(), Constant
-                                                .PROFILEIMAGEURL, profileImageUrl);
-                                        break;
-                                    case "failure":
-                                        Util.showError(currentContext, errorBean.getReason());
-                                        break;
-                                }
-                            }
-                        });
+                    @Override
+                    public void onResponse(String response, int id) {
+                        LogUtil.Companion.d("更新头像" + response);
+                        ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
+                        switch (errorBean.getStatus()) {
+                            case "success":
+                                ImageBean imageBean = JSON.parseObject(response,
+                                        ImageBean.class);
+                                //拿到头像的URL地址，更新本地数据
+                                String profileImageUrl = imageBean.getProfileImageUrl();
+                                SharePreferenceUtil.put(getApplicationContext(), Constant
+                                        .PROFILEIMAGEURL, profileImageUrl);
+                                break;
+                            case "failure":
+                                Util.showError(currentContext, errorBean.getReason());
+                                break;
+                        }
+                    }
+                });
                 try {
                     // 将临时文件删除
                     tempFile.delete();
@@ -475,10 +474,8 @@ public class PersonalSettingActivity extends BaseActivity implements TitleView
                 int countyId = mProvinceList.get(options1).getCityList().get(option2).getAreaList()
                         .get(options3).getId();
                 //更新用户区域信息
-                OkHttpUtils
-                        .post()
-                        .url(URL_UPDATE_REGION)
-                        .addHeader("X-Authorization-Token", mAccessToken)
+                OkHttpUtils.post().url(URL_UPDATE_REGION)
+                        .addHeader(ACCESS_TOKEN, mAccessToken)
                         .addParams("provinceId", provinceId + "")
                         .addParams("cityId", cityId + "")
                         .addParams("areaId", countyId + "")

@@ -97,8 +97,9 @@ public class ResourcesActivity extends BaseActivitySingleList implements Carouse
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        showLoadingProgress();
         super.onCreate(savedInstanceState);
-        setEmptyView("好饭不怕晚，推广资源也是。", R.mipmap.ico_resources);
+        setEmptyView(getString(R.string.empty_view_resources), R.mipmap.ico_resources);
         RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(ViewGroup
                 .LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         // 145是HeaderView的高度
@@ -416,12 +417,14 @@ public class ResourcesActivity extends BaseActivitySingleList implements Carouse
             public void onError(Call call, Exception e, int id) {
                 LogUtil.Companion.d("资源列表E：" + e.getMessage());
                 Util.showTimeOutNotice(currentContext);
+                hideLoadingProgress();
             }
 
             @Override
             public void onResponse(String response, int id) {
                 mSwipeRefreshLayout.setRefreshing(false);
                 LogUtil.Companion.d("资源列表：" + response);
+                hideLoadingProgress();
                 ErrorBean errorBean = parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":

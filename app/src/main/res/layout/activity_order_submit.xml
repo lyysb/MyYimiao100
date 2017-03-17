@@ -35,7 +35,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="15dp"
-                    android:text="恭喜您!"
+                    android:text="@string/order_celebrate"
                     android:textColor="@color/colorMain"
                     android:textSize="23sp"/>
                 <TextView
@@ -53,7 +53,7 @@
                     android:layout_marginTop="25dp"
                     android:layout_marginLeft="9dp"
                     android:layout_marginRight="9dp"
-                    android:text="请您再次核对您要推广的资源信息"
+                    android:text="@string/order_notice"
                     android:textColor="@color/color999"
                     android:textSize="12sp"/>
             </LinearLayout>

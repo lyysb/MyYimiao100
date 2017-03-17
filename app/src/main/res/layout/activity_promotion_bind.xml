@@ -48,7 +48,7 @@
 
                 <TextView
                     android:id="@+id/promotion_type_company"
-                    android:text="对公账户"
+                    android:text="公司账户"
                     android:layout_marginTop="22dp"
                     android:layout_marginRight="22dp"
                     android:textSize="12sp"

@@ -451,8 +451,7 @@ public class InformationDetailActivity extends BaseActivity implements View.OnCl
                         mListView.setAdapter(mCommentAdapter);
                         break;
                     case "failure":
-                        Util.showError(InformationDetailActivity.this, errorBean
-                                .getReason());
+                        Util.showError(currentContext, errorBean.getReason());
                         break;
                 }
             }
@@ -593,7 +592,7 @@ public class InformationDetailActivity extends BaseActivity implements View.OnCl
 
         @Override
         public void onCancel(SHARE_MEDIA platform) {
-            ToastUtil.showShort(getApplicationContext(), "取消分享");
+            ToastUtil.showShort(currentContext, "取消分享");
         }
     };
 
@@ -627,7 +626,7 @@ public class InformationDetailActivity extends BaseActivity implements View.OnCl
                         break;
                     case "failure":
                         if (errorBean.getReason() == 116) {
-                            Util.showError(InformationDetailActivity.this, errorBean.getReason());
+                            Util.showError(currentContext, errorBean.getReason());
                         } else {
                             ToastUtil.showShort(currentContext, "积分只能累加一次哟~");
                         }
@@ -641,29 +640,31 @@ public class InformationDetailActivity extends BaseActivity implements View.OnCl
      * 收藏
      */
     private void collection() {
+        mInformationDetailCollection.setEnabled(false);
         getBuild(ADD_COLLECTION)
                 .execute(new StringCallback() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         LogUtil.Companion.d("收藏资讯E：" + e.getMessage());
                         Util.showTimeOutNotice(currentContext);
+                        mInformationDetailCollection.setEnabled(true);
                     }
 
                     @Override
                     public void onResponse(String response, int id) {
                         LogUtil.Companion.d("收藏资讯：" + response);
+                        mInformationDetailCollection.setEnabled(true);
                         ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                         switch (errorBean.getStatus()) {
                             case "success":
                                 //收藏成功，改变图标样式，记录收藏结果
                                 mInformationDetailCollection.setImageResource(R.mipmap
                                         .ico_information_activation_collection);
-                                ToastUtil.showShort(getApplicationContext(), "收藏成功");
+                                ToastUtil.showShort(currentContext, "收藏成功");
                                 mNews.setUserCollectionStatus(1);
                                 break;
                             case "failure":
-                                Util.showError(InformationDetailActivity.this, errorBean
-                                        .getReason());
+                                Util.showError(currentContext, errorBean.getReason());
                                 break;
                         }
                     }
@@ -674,17 +675,20 @@ public class InformationDetailActivity extends BaseActivity implements View.OnCl
      * 取消收藏
      */
     private void cancelCollection() {
+        mInformationDetailCollection.setEnabled(false);
         getBuild(Constant.BASE_URL + "/api/news/cancel_collection")
                 .execute(new StringCallback() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         LogUtil.Companion.d("取消收藏E：" + e.getLocalizedMessage());
                         Util.showTimeOutNotice(currentContext);
+                        mInformationDetailCollection.setEnabled(true);
                     }
 
                     @Override
                     public void onResponse(String response, int id) {
                         LogUtil.Companion.d("取消收藏：" + response);
+                        mInformationDetailCollection.setEnabled(true);
                         ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                         switch (errorBean.getStatus()) {
                             case "success":
@@ -695,8 +699,7 @@ public class InformationDetailActivity extends BaseActivity implements View.OnCl
                                 mNews.setUserCollectionStatus(0);
                                 break;
                             case "failure":
-                                Util.showError(InformationDetailActivity.this, errorBean
-                                        .getReason());
+                                Util.showError(currentContext, errorBean.getReason());
                                 break;
                         }
                     }
@@ -803,8 +806,7 @@ public class InformationDetailActivity extends BaseActivity implements View.OnCl
                                 (mActivationScore, null, null, null);
                         break;
                     case "failure":
-                        Util.showError(InformationDetailActivity.this, errorBean
-                                .getReason());
+                        Util.showError(currentContext, errorBean.getReason());
                         break;
                 }
             }
@@ -835,8 +837,7 @@ public class InformationDetailActivity extends BaseActivity implements View.OnCl
                         showInformationComment();
                         break;
                     case "failure":
-                        Util.showError(InformationDetailActivity.this, errorBean
-                                .getReason());
+                        Util.showError(currentContext, errorBean.getReason());
                         break;
                 }
             }
@@ -885,8 +886,7 @@ public class InformationDetailActivity extends BaseActivity implements View.OnCl
                             mCommentAdapter.notifyDataSetChanged();
                             break;
                         case "failure":
-                            Util.showError(InformationDetailActivity.this, errorBean
-                                    .getReason());
+                            Util.showError(currentContext, errorBean.getReason());
                             break;
                     }
                     mListView.onLoadMoreComplete();

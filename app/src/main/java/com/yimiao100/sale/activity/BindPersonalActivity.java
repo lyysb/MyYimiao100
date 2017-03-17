@@ -10,7 +10,6 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v7.app.AlertDialog;
 import android.text.Editable;
-import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
@@ -31,6 +30,7 @@ import com.yimiao100.sale.utils.CompressUtil;
 import com.yimiao100.sale.utils.Constant;
 import com.yimiao100.sale.utils.DensityUtil;
 import com.yimiao100.sale.utils.LogUtil;
+import com.yimiao100.sale.utils.Regex;
 import com.yimiao100.sale.utils.SharePreferenceUtil;
 import com.yimiao100.sale.utils.TimeUtil;
 import com.yimiao100.sale.utils.ToastUtil;
@@ -42,6 +42,7 @@ import com.zhy.http.okhttp.callback.StringCallback;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -111,9 +112,10 @@ public class BindPersonalActivity extends BaseActivity implements TitleView
     private final String URL_GET_PERSONAL = Constant.BASE_URL + "/api/user/get_user_account";
     private final String URL_SUBMIT = Constant.BASE_URL + "/api/user/post_personal_user_account";
     private File mIdPhoto1;
-    private String mPersonalPhotoName = "personalPhoto.jpg";
     private File mIdPhoto2;
-    private String mIdPhotoName = "idPhoto.jpg";
+    private String personalPhoto = "personalPhoto";
+    private String idPhoto = "idPhoto";
+
     private HashMap<String, String> mFileMap = new HashMap<>();
     private boolean isFirst = true;
     private ArrayList<Experience> mList;
@@ -132,6 +134,7 @@ public class BindPersonalActivity extends BaseActivity implements TitleView
     private File mZipFile;
     private String mExperienceList1;
     private ProgressDialog mProgressDialog;
+    private String mAccountStatus;
 
 
     @Override
@@ -158,12 +161,12 @@ public class BindPersonalActivity extends BaseActivity implements TitleView
             public void onError(Call call, Exception e, int id) {
                 LogUtil.Companion.d("推广主体E：" + e.getLocalizedMessage());
                 Util.showTimeOutNotice(currentContext);
-                dismissLoadingProgress();
+                hideLoadingProgress();
             }
 
             @Override
             public void onResponse(String response, int id) {
-                dismissLoadingProgress();
+                hideLoadingProgress();
                 LogUtil.Companion.d("推广主体：" + response);
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
@@ -196,20 +199,40 @@ public class BindPersonalActivity extends BaseActivity implements TitleView
             // 邮箱
             mPersonalEmail.setText(personal.getEmail());
             String personalUrl = personal.getPersonalPhotoUrl();
-            LogUtil.Companion.d("personalUrl-" + personalUrl);
+            LogUtil.Companion.d("personalUrl is" + personalUrl);
             String idUrl = personal.getIdPhotoUrl();
-            LogUtil.Companion.d("idUrl-" + idUrl);
+            LogUtil.Companion.d("idUrl is" + idUrl);
+            Picasso picasso = Picasso.with(this);
             // 证件照1
-            Picasso.with(getApplicationContext()).load(personalUrl)
-                    .transform(BitmapUtil.getTransformation(mPersonalCardPhoto1))
-                    .placeholder(R.mipmap.ico_binding_account_certificates)
-                    .into(mPersonalCardPhoto1);
+            String personalPhotoPath = (String) SharePreferenceUtil.get(this, "personal" + personalPhoto, "");
+            if (!personalPhotoPath.isEmpty()) {
+                LogUtil.Companion.d("personalPhotoPath is " + personalPhotoPath);
+                picasso.load(new File(personalPhotoPath))
+                        .transform(BitmapUtil.getTransformation(mPersonalCardPhoto1))
+                        .placeholder(R.mipmap.ico_binding_account_certificates)
+                        .into(mPersonalCardPhoto1);
+            } else {
+                picasso.load(personalUrl)
+                        .transform(BitmapUtil.getTransformation(mPersonalCardPhoto1))
+                        .placeholder(R.mipmap.ico_binding_account_certificates)
+                        .into(mPersonalCardPhoto1);
+            }
             // 证件照2
-            Picasso.with(getApplicationContext()).load(idUrl)
-                    .transform(BitmapUtil.getTransformation(mPersonalCardPhoto2))
-                    .placeholder(R.mipmap.ico_binding_account_certificates_two)
-                    .error(R.mipmap.ico_binding_account_certificates_two)
-                    .into(mPersonalCardPhoto2);
+            String idPhotoPath = (String) SharePreferenceUtil.get(this, "personal" + idPhoto, "");
+            if (!idPhotoPath.isEmpty()) {
+                LogUtil.Companion.d("idPhotoPath is " + idPhotoPath);
+                picasso.load(new File(idPhotoPath))
+                        .transform(BitmapUtil.getTransformation(mPersonalCardPhoto2))
+                        .placeholder(R.mipmap.ico_binding_account_certificates_two)
+                        .error(R.mipmap.ico_binding_account_certificates_two)
+                        .into(mPersonalCardPhoto2);
+            } else {
+                picasso.load(idUrl)
+                        .transform(BitmapUtil.getTransformation(mPersonalCardPhoto2))
+                        .placeholder(R.mipmap.ico_binding_account_certificates_two)
+                        .error(R.mipmap.ico_binding_account_certificates_two)
+                        .into(mPersonalCardPhoto2);
+            }
             // 持卡人
             mPersonalOwner.setText(personal.getCnName());
             // 银行名称
@@ -225,12 +248,23 @@ public class BindPersonalActivity extends BaseActivity implements TitleView
             // 推广优势
             mPersonalAdvantage.setText(personal.getAdvantage());
             // 如果审核通过，则不再允许修任何改数据
-            if (personal.getAccountStatus() != null && TextUtils.equals("passed", personal.getAccountStatus())) {
-                LogUtil.Companion.d("已通过审核，禁止修改任何数据");
-                //禁止修改数据
-                forbidChange();
+            mAccountStatus = personal.getAccountStatus();
+            if (mAccountStatus != null) {
+                switch (mAccountStatus) {
+                    case "passed":
+                        LogUtil.Companion.d("审核已通过，不可编辑");
+                        ToastUtil.showShort(this, getString(R.string.account_passed_notice));
+                        //禁止修改数据
+                        forbidChange();
+                        break;
+                    case "auditing":
+                        LogUtil.Companion.d("信息审核中，不可编辑");
+                        ToastUtil.showShort(this, getString(R.string.account_auditing_notice));
+                        //禁止修改数据
+                        forbidChange();
+                        break;
+                }
             }
-
         } else {
             isFirst = true;
             LogUtil.Companion.d("新建个人账户");
@@ -251,7 +285,6 @@ public class BindPersonalActivity extends BaseActivity implements TitleView
         mPersonalBank.setKeyListener(null);
         mPersonalBankName.setKeyListener(null);
         mPersonalBankCard.setKeyListener(null);
-        mPersonalExperience.setEnabled(false);
         mPersonalEver.setKeyListener(null);
         mPersonalAdvantage.setKeyListener(null);
         mPersonalSubmit.setEnabled(false);
@@ -279,6 +312,9 @@ public class BindPersonalActivity extends BaseActivity implements TitleView
                 Intent intent = new Intent(this, PromotionExperienceListActivity.class);
                 intent.putParcelableArrayListExtra("experience", mList);
                 intent.putExtra("type", PERSONAL);
+                if (mAccountStatus != null) {
+                    intent.putExtra("accountStatus", mAccountStatus);
+                }
                 startActivityForResult(intent, PERSONAL);
                 break;
             case R.id.bind_personal_submit:
@@ -299,8 +335,10 @@ public class BindPersonalActivity extends BaseActivity implements TitleView
                         //打开相机
                         //拍照返回
                         Intent intentCapture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                        String personalPhotoName = personalPhoto + "_" +
+                                TimeUtil.timeStamp2Date(System.currentTimeMillis() + "", "yyyyMMddHH_mm_ss") + ".jpg";
                         mIdPhoto1 = new File(Environment.getExternalStorageDirectory(),
-                                mPersonalPhotoName);
+                                personalPhotoName);
                         intentCapture.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile
                                 (mIdPhoto1));
                         startActivityForResult(intentCapture, ID_CARD1_FROM_CAMERA);
@@ -331,8 +369,10 @@ public class BindPersonalActivity extends BaseActivity implements TitleView
                         //打开相机
                         //拍照返回
                         Intent intentCapture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                        String idPhotoName = idPhoto + "_" +
+                                TimeUtil.timeStamp2Date(System.currentTimeMillis() + "", "yyyyMMddHH_mm_ss") + ".jpg";
                         mIdPhoto2 = new File(Environment.getExternalStorageDirectory(),
-                                mIdPhotoName);
+                                idPhotoName);
                         intentCapture.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(mIdPhoto2));
                         startActivityForResult(intentCapture, ID_CARD2_FROM_CAMERA);
                         break;
@@ -361,10 +401,18 @@ public class BindPersonalActivity extends BaseActivity implements TitleView
             ToastUtil.showShort(this, "请填写推广人姓名");
             return;
         }
+        if (!mPersonalName1.matches(Regex.name)) {
+            ToastUtil.showShort(this, "姓名只允许是中文、英文、数字和“_”");
+            return;
+        }
         // 推广人身份证号
         mPersonalIdCard1 = mPersonalIdCard.getText().toString().trim();
         if (mPersonalIdCard1.isEmpty()) {
             ToastUtil.showShort(this, "请填写推广人身份证号");
+            return;
+        }
+        if (mPersonalIdCard1.matches(Regex.idCard)) {
+            ToastUtil.showShort(this, "身份证号格式不正确");
             return;
         }
         // 推广人联系电话
@@ -387,7 +435,8 @@ public class BindPersonalActivity extends BaseActivity implements TitleView
         }
         // 证件照
         if (isFirst && (mIdPhoto1 == null || mIdPhoto2 == null)) {
-            ToastUtil.showShort(this, "初次上传，请拍摄证件照");
+            ToastUtil.showShort(this, getString(R.string.account_id_photo_notice));
+            return;
         }
         // 银行名称
         mPersonalBank1 = mPersonalBank.getText().toString().trim();
@@ -409,7 +458,7 @@ public class BindPersonalActivity extends BaseActivity implements TitleView
         }
         // 推广经历
         if (mList == null || mList.isEmpty()) {
-            ToastUtil.showShort(this, "请添加推广经历");
+            ToastUtil.showShort(this, getString(R.string.account_experience_notice));
             return;
         } else {
             mExperienceList1 = JSON.toJSONString(mList);
@@ -418,13 +467,13 @@ public class BindPersonalActivity extends BaseActivity implements TitleView
         // 曾经所在公司及职位
         mPersonalEver1 = mPersonalEver.getText().toString().trim();
         if (mPersonalEver1.isEmpty()) {
-            ToastUtil.showShort(this, "请填写曾经所在公司及职位");
+            ToastUtil.showShort(this, getString(R.string.account_ever_notice));
             return;
         }
         // 推广优势
         mPersonalAdvantage1 = mPersonalAdvantage.getText().toString().trim();
         if (mPersonalAdvantage1.isEmpty()) {
-            ToastUtil.showShort(this, "请填写推广优势");
+            ToastUtil.showShort(this, getString(R.string.account_advantage_notice));
             return;
         }
         // 显示是否确定提交
@@ -453,12 +502,12 @@ public class BindPersonalActivity extends BaseActivity implements TitleView
             @Override
             public void onClick(View v) {
                 mDialog.dismiss();//压缩图片
-                mZipName = "corporatePromotions" + TimeUtil.timeStamp2Date(System.currentTimeMillis()+"", "yyyyMMdd_HHssmm") + ".zip";
+                mZipName = "personalPromotions" + TimeUtil.timeStamp2Date(System.currentTimeMillis()+"", "yyyyMMdd_HHssmm") + ".zip";
                 // 压缩文件
                 mZipFile = CompressUtil.zipANDSave(mFileMap, mZipName);
                 if (mZipFile == null) {
                     // 提示错误并返回
-                    ToastUtil.showShort(currentContext, "文件压缩出现未知错误，暂无法上传图片");
+                    ToastUtil.showShort(currentContext, getString(R.string.account_zip_error_notice));
                     return;
                 }
                 submitData();
@@ -476,7 +525,7 @@ public class BindPersonalActivity extends BaseActivity implements TitleView
         mProgressDialog = new ProgressDialog(this);
         mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
         mProgressDialog.setCancelable(false);
-        mProgressDialog.setTitle("正在上传，请稍后...");
+        mProgressDialog.setTitle(getString(R.string.upload_progress_dialog_title));
         OkHttpUtils.post().url(URL_SUBMIT).addHeader(ACCESS_TOKEN, mAccessToken)
                 .addParams(CN_NAME, mPersonalName1)
                 .addParams(ID_NUMBER, mPersonalIdCard1)
@@ -530,7 +579,9 @@ public class BindPersonalActivity extends BaseActivity implements TitleView
                     case "success":
                         // 更新本地数据
                         updateLocalData();
-                        ToastUtil.showLong(getApplicationContext(), "提交成功，请等待审核");
+                        // 更新本地存储
+                        updatePhotoData();
+                        ToastUtil.showShort(currentContext, getString(R.string.account_upload_success_notice));
                         finish();
                         break;
                     case "failure":
@@ -540,6 +591,18 @@ public class BindPersonalActivity extends BaseActivity implements TitleView
             }
         });
 
+    }
+
+    private void updatePhotoData() {
+        if (mFileMap != null) {
+            for (Map.Entry<String, String> entry : mFileMap.entrySet()) {
+                String key = entry.getKey().substring(0, entry.getKey().lastIndexOf("."));
+                LogUtil.Companion.d("key is " + key);
+                String value = entry.getValue();
+                LogUtil.Companion.d("val is " + value);
+                SharePreferenceUtil.put(currentContext, "personal" + key, value);
+            }
+        }
     }
 
     private void updateLocalData() {
@@ -561,24 +624,24 @@ public class BindPersonalActivity extends BaseActivity implements TitleView
         switch (requestCode) {
             case ID_CARD1_FROM_CAMERA:
                 if (resultCode == RESULT_OK) {
-                    handlePhoto("personalPhoto", mIdPhoto1, mPersonalCardPhoto1);
+                    handlePhoto(personalPhoto, mIdPhoto1, mPersonalCardPhoto1);
                 }
                 break;
             case ID_CARD2_FROM_CAMERA:
                 if (resultCode == RESULT_OK) {
-                    handlePhoto("idPhoto", mIdPhoto2, mPersonalCardPhoto2);
+                    handlePhoto(idPhoto, mIdPhoto2, mPersonalCardPhoto2);
                 }
                 break;
             case ID_CARD1_FROM_PHOTO:
                 if (data != null && resultCode == RESULT_OK) {
                     mIdPhoto1 = new File((BitmapUtil.getRealPathFromURI(this, data.getData())));
-                    handlePhoto("personalPhoto", mIdPhoto1, mPersonalCardPhoto1);
+                    handlePhoto(personalPhoto, mIdPhoto1, mPersonalCardPhoto1);
                 }
                 break;
             case ID_CARD2_FROM_PHOTO:
                 if (data != null && resultCode == RESULT_OK) {
                     mIdPhoto2 = new File((BitmapUtil.getRealPathFromURI(this, data.getData())));
-                    handlePhoto("idPhoto", mIdPhoto2, mPersonalCardPhoto2);
+                    handlePhoto(idPhoto, mIdPhoto2, mPersonalCardPhoto2);
                 }
                 break;
             case PERSONAL:
@@ -625,7 +688,7 @@ public class BindPersonalActivity extends BaseActivity implements TitleView
 
     @Override
     public void afterTextChanged(Editable s) {
-        mPersonalOwner.setText(s.length() == 0 ? "请输入推广人姓名" : s.toString());
+        mPersonalOwner.setText(s.length() != 0 ? s.toString() : "");
     }
 
     @Override

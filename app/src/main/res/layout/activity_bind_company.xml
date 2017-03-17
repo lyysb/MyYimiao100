@@ -10,7 +10,7 @@
         android:id="@+id/bind_company_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:title_text="绑定对公主体"
+        app:title_text="绑定公司主体"
         app:left_isShow="true"
         >
         <ImageView
@@ -80,7 +80,7 @@
                 <EditText
                     style="@style/Edit_style1"
                     android:id="@+id/bind_company_bank_card"
-                    android:hint="请输入对公账号"
+                    android:hint="请输入公司账号"
                     android:inputType="number"
                 />
             </LinearLayout>
@@ -378,6 +378,7 @@
                     android:maxLines="8"
                     android:minLines="6"
                     android:paddingLeft="12dp"
+                    android:paddingRight="12dp"
                     android:paddingBottom="12dp"
                     android:scrollbars="vertical"
                     android:textSize="12sp"
@@ -409,6 +410,7 @@
                     android:maxLines="8"
                     android:minLines="6"
                     android:paddingLeft="12dp"
+                    android:paddingRight="12dp"
                     android:paddingBottom="12dp"
                     android:scrollbars="vertical"
                     android:textSize="12sp"

@@ -194,7 +194,9 @@
                     android:text="持卡人："/>
                 <TextView
                     android:id="@+id/bind_personal_owner"
-                    android:text="请输入推广人姓名"
+                    android:hint="请输入推广人姓名"
+                    android:textColorHint="@color/color999"
+                    android:textColor="@android:color/black"
                     android:gravity="center_vertical"
                     android:textSize="12sp"
                     android:layout_weight="1"
@@ -309,6 +311,7 @@
                 android:maxLines="8"
                 android:minLines="6"
                 android:paddingLeft="12dp"
+                android:paddingRight="12dp"
                 android:paddingBottom="12dp"
                 android:scrollbars="vertical"
                 android:textSize="12sp"
@@ -334,6 +337,7 @@
                 android:maxLines="8"
                 android:minLines="6"
                 android:paddingLeft="12dp"
+                android:paddingRight="12dp"
                 android:paddingBottom="12dp"
                 android:scrollbars="vertical"
                 android:textSize="12sp"

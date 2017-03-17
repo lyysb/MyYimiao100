@@ -1,7 +1,6 @@
 package com.yimiao100.sale.activity;
 
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.View;
 import android.widget.ExpandableListView;
@@ -58,6 +57,8 @@ public class PaymentActivity extends BaseActivity implements TitleView.TitleBarO
 
         initView();
 
+        showLoadingProgress();
+
         onRefresh();
     }
 
@@ -74,7 +75,7 @@ public class PaymentActivity extends BaseActivity implements TitleView.TitleBarO
     private void initEmptyView() {
         mEmptyView = findViewById(R.id.payment_empty_view);
         TextView emptyText = (TextView) mEmptyView.findViewById(R.id.empty_text);
-        emptyText.setText("还在等什么，赶快到资源里面申请推广吧。");
+        emptyText.setText(getString(R.string.empty_view_payment));
         emptyText.setCompoundDrawablesWithIntrinsicBounds(null, getResources().getDrawable(R.mipmap.ico_deliver_goods), null, null);
     }
 
@@ -106,17 +107,13 @@ public class PaymentActivity extends BaseActivity implements TitleView.TitleBarO
             public void onError(Call call, Exception e, int id) {
                 LogUtil.Companion.d("回款累计E：" + e.getLocalizedMessage());
                 Util.showTimeOutNotice(currentContext);
+                hideLoadingProgress();
             }
 
             @Override
             public void onResponse(String response, int id) {
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        // 停止刷新
-                        mPaymentRefresh.setRefreshing(false);
-                    }
-                }, 300);
+                hideLoadingProgress();
+                mPaymentRefresh.setRefreshing(false);
                 LogUtil.Companion.d("回款累计：" + response);
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {

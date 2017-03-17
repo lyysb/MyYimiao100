@@ -47,6 +47,7 @@ public class IntegralGoodsListActivity extends BaseActivitySingleList {
         Intent intent = getIntent();
         mCategoryId = intent.getIntExtra("categoryId", -1);
         mCategoryName = intent.getStringExtra("categoryName");
+        showLoadingProgress();
         super.onCreate(savedInstanceState);
     }
 
@@ -112,12 +113,14 @@ public class IntegralGoodsListActivity extends BaseActivitySingleList {
             public void onError(Call call, Exception e, int id) {
                 LogUtil.Companion.d("商品列表E：" + e.getLocalizedMessage());
                 Util.showTimeOutNotice(currentContext);
+                hideLoadingProgress();
             }
 
             @Override
             public void onResponse(String response, int id) {
                 mSwipeRefreshLayout.setRefreshing(false);
                 LogUtil.Companion.d("商品列表：" + response);
+                hideLoadingProgress();
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":

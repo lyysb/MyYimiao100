@@ -2,7 +2,6 @@ package com.yimiao100.sale.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.View;
 import android.widget.AdapterView;
 
@@ -42,8 +41,9 @@ public class NoticeActivity extends BaseActivitySingleList {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        showLoadingProgress();
         super.onCreate(savedInstanceState);
-        setEmptyView("“kong kong”如也，快快与我发生关系吧。", R.mipmap.ico_notice);
+        setEmptyView(getString(R.string.empty_view_notice), R.mipmap.ico_notice);
     }
 
 
@@ -60,23 +60,20 @@ public class NoticeActivity extends BaseActivitySingleList {
             public void onError(Call call, Exception e, int id) {
                 LogUtil.Companion.d("通知E：" + e.getMessage());
                 Util.showTimeOutNotice(currentContext);
+                hideLoadingProgress();
             }
 
             @Override
             public void onResponse(String response, int id) {
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        // 停止刷新
-                        mSwipeRefreshLayout.setRefreshing(false);
-                    }
-                }, 1000);
+                hideLoadingProgress();
+                mSwipeRefreshLayout.setRefreshing(false);
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":
                         LogUtil.Companion.d("通知：" + response);
                         mPage = 2;
-                        NoticedResultBean pagedResult = JSON.parseObject(response, NoticeBean.class).getPagedResult();
+                        NoticedResultBean pagedResult = JSON.parseObject(response, NoticeBean
+                                .class).getPagedResult();
                         mTotalPage = pagedResult.getTotalPage();
                         //解析JSON
                         mPagedList = pagedResult.getPagedList();
@@ -95,32 +92,31 @@ public class NoticeActivity extends BaseActivitySingleList {
     @Override
     public void onLoadMore() {
         //加载更多
-        getBuild(mPage)
-                .execute(new StringCallback() {
-                    @Override
-                    public void onError(Call call, Exception e, int id) {
-                        LogUtil.Companion.d("通知E：" + e.getMessage());
-                        Util.showTimeOutNotice(currentContext);
-                    }
+        getBuild(mPage).execute(new StringCallback() {
+            @Override
+            public void onError(Call call, Exception e, int id) {
+                LogUtil.Companion.d("通知E：" + e.getMessage());
+                Util.showTimeOutNotice(currentContext);
+            }
 
-                    @Override
-                    public void onResponse(String response, int id) {
-                        ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
-                        switch (errorBean.getStatus()) {
-                            case "success":
-                                mPage++;
-                                //解析JSON
-                                mPagedList.addAll(JSON.parseObject(response, NoticeBean
-                                        .class).getPagedResult().getPagedList());
-                                mNoticeAdapter.notifyDataSetChanged();
-                                break;
-                            case "failure":
-                                Util.showError(currentContext, errorBean.getReason());
-                                break;
-                        }
-                        mListView.onLoadMoreComplete();
-                    }
-                });
+            @Override
+            public void onResponse(String response, int id) {
+                ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
+                switch (errorBean.getStatus()) {
+                    case "success":
+                        mPage++;
+                        //解析JSON
+                        mPagedList.addAll(JSON.parseObject(response, NoticeBean
+                                .class).getPagedResult().getPagedList());
+                        mNoticeAdapter.notifyDataSetChanged();
+                        break;
+                    case "failure":
+                        Util.showError(currentContext, errorBean.getReason());
+                        break;
+                }
+                mListView.onLoadMoreComplete();
+            }
+        });
     }
 
     @Override

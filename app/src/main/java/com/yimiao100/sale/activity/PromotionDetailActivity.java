@@ -15,7 +15,6 @@ import com.yimiao100.sale.bean.ReconciliationDetail;
 import com.yimiao100.sale.bean.ReconciliationDetailBean;
 import com.yimiao100.sale.utils.Constant;
 import com.yimiao100.sale.utils.LogUtil;
-import com.yimiao100.sale.utils.SharePreferenceUtil;
 import com.yimiao100.sale.utils.Util;
 import com.yimiao100.sale.view.TitleView;
 import com.zhy.http.okhttp.OkHttpUtils;
@@ -46,10 +45,7 @@ public class PromotionDetailActivity extends BaseActivity implements TitleView
     private TextView mHeadPromotionSerialNo;
 
     private final String URL_ORDER_DETAIL = Constant.BASE_URL + "/api/fund/sale_order_detail";
-    private final String ACCESS_TOKEN = "X-Authorization-Token";
     private final String ORDER_ID = "orderId";
-
-    private String mAccessToken;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +53,7 @@ public class PromotionDetailActivity extends BaseActivity implements TitleView
         setContentView(R.layout.activity_promotion_detail);
         ButterKnife.bind(this);
 
-        mAccessToken = (String) SharePreferenceUtil.get(this, Constant.ACCESSTOKEN, "");
+        showLoadingProgress();
 
         initView();
 
@@ -102,16 +98,19 @@ public class PromotionDetailActivity extends BaseActivity implements TitleView
 
         String orderId = intent.getStringExtra("orderId");
 
-        OkHttpUtils.post().url(URL_ORDER_DETAIL).addHeader(ACCESS_TOKEN, mAccessToken).addParams
-                (ORDER_ID, orderId).build().execute(new StringCallback() {
+        OkHttpUtils.post().url(URL_ORDER_DETAIL).addHeader(ACCESS_TOKEN, mAccessToken)
+                .addParams(ORDER_ID, orderId)
+                .build().execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
                 LogUtil.Companion.d("推广费提现详情E：" + e.getLocalizedMessage());
+                hideLoadingProgress();
             }
 
             @Override
             public void onResponse(String response, int id) {
                 LogUtil.Companion.d("推广费提现详情：" + response);
+                hideLoadingProgress();
                 ReconciliationDetailBean promotionDetailBean = JSON.parseObject(response,
                         ReconciliationDetailBean.class);
                 switch (promotionDetailBean.getStatus()) {

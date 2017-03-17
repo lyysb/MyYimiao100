@@ -133,7 +133,7 @@ public class ForgetPwdActivity extends BaseActivity {
             case R.id.forget_pwd_get_code:
                 //要求手机号不能为空
                 if (TextUtils.isEmpty(mFogetPwdPhone.getText().toString().trim())) {
-                    ToastUtil.showLong(this, "请输入手机号");
+                    ToastUtil.showShort(this, "请输入手机号");
                     return;
                 }
                 //如果手机号长度不是11位，则返回

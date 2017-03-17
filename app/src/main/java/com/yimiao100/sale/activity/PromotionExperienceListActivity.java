@@ -1,7 +1,10 @@
 package com.yimiao100.sale.activity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
+import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
@@ -12,6 +15,7 @@ import com.yimiao100.sale.R;
 import com.yimiao100.sale.adapter.listview.ExperienceAdapter;
 import com.yimiao100.sale.base.BaseActivity;
 import com.yimiao100.sale.bean.Experience;
+import com.yimiao100.sale.utils.LogUtil;
 import com.yimiao100.sale.utils.Util;
 import com.yimiao100.sale.view.TitleView;
 
@@ -20,6 +24,7 @@ import java.util.HashMap;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
 
 /**
  * 疫苗推广经历列表
@@ -44,6 +49,8 @@ public class PromotionExperienceListActivity extends BaseActivity implements Tit
     private ExperienceAdapter mAdapter;
     private ArrayList<Experience> mList;
     private HashMap<String, Experience> mMap = new HashMap<>();
+    private String mAccountStatus;
+    private View mEmptyView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,10 +66,15 @@ public class PromotionExperienceListActivity extends BaseActivity implements Tit
         mTitle.setOnTitleBarClick(this);
         mListView.setOnItemClickListener(this);
         mExperienceAdd.setOnClickListener(this);
+        mEmptyView = findViewById(R.id.experience_list_empty_view);
+        TextView emptyText = (TextView) mEmptyView.findViewById(R.id.empty_text);
+        emptyText.setText(getString(R.string.empty_view_experience));
+        emptyText.setCompoundDrawablesWithIntrinsicBounds(null, getResources().getDrawable(R.mipmap.ico_extension_experience), null, null);
     }
 
     private void initData() {
         TYPE = getIntent().getIntExtra("type", -1);
+        mAccountStatus = getIntent().getStringExtra("accountStatus");
         mList = getIntent().getParcelableArrayListExtra("experience");
         if (mList != null) {
             for (Experience experience : mList) {
@@ -74,14 +86,27 @@ public class PromotionExperienceListActivity extends BaseActivity implements Tit
         } else {
             mList = new ArrayList<>();
         }
+        mEmptyView.setVisibility(mList == null || mList.size() == 0 ? View.VISIBLE : View.INVISIBLE);
         mAdapter = new ExperienceAdapter(mList);
         mListView.setAdapter(mAdapter);
         mAdapter.setOnDeleteClickListener(this);
+        // 已通过审核，不能新增
+        if (TextUtils.equals("passed", mAccountStatus)) {
+            LogUtil.Companion.d("账户已通过审核，禁止新增");
+            mExperienceAdd.setVisibility(View.GONE);
+        } else {
+            mExperienceAdd.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        edit(position);
+        // 如果是已通过，则不能进入编辑
+        if (TextUtils.equals("passed", mAccountStatus)) {
+            LogUtil.Companion.d("账户已通过审核，禁止修改");
+        } else {
+            edit(position);
+        }
     }
 
     private void edit(int position) {
@@ -109,11 +134,32 @@ public class PromotionExperienceListActivity extends BaseActivity implements Tit
     }
 
     @Override
-    public void delete(int position) {
-        Experience experience = mList.get(position);
-        mMap.remove(experience.getSerialNo());
-        mList.remove(position);
-        mAdapter.notifyDataSetChanged();
+    public void delete(final int position) {
+        // 如果已通过，则不能删除
+        if (TextUtils.equals("passed", mAccountStatus)) {
+            LogUtil.Companion.d("已通过审核，禁止删除");
+        } else {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage("确定删除？");
+            builder.setPositiveButton("删除", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    Experience experience = mList.get(position);
+                    mMap.remove(experience.getSerialNo());
+                    mList.remove(position);
+                    mAdapter.notifyDataSetChanged();
+                    dialog.dismiss();
+                }
+            });
+            builder.setNegativeButton("不删除", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
+            AlertDialog dialog = builder.create();
+            dialog.show();
+        }
     }
 
     @Override

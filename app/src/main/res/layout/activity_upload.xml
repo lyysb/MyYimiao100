@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="#fbfbfb"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <TextView
+        android:id="@+id/upload_return"
+        android:text="返回"
+        android:textSize="14sp"
+        android:textColor="@color/colorMain"
+        android:padding="12dp"
+        android:gravity="center_vertical"
+        android:drawablePadding="8dp"
+        android:drawableLeft="@mipmap/ico_return_blue"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"/>
+    <LinearLayout
+        android:gravity="center_vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/upload_report"
+            android:text="不良反应申报"
+            android:drawableTop="@mipmap/ico_home_selected_report"
+            style="@style/style67"/>
+
+        <TextView
+            android:id="@+id/upload_grant"
+            android:text="申请授权书"
+            android:drawableTop="@mipmap/ico_home_selected_to_grant_authorization"
+            style="@style/style67"/>
+
+
+    </LinearLayout>
+</LinearLayout>

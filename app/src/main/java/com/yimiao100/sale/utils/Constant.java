@@ -9,6 +9,7 @@ import java.util.HashMap;
 public interface Constant {
     boolean isTest = true;     // 是否在测试环境下
     String BASE_URL_TEST = "http://161p3p2316.iask.in/ymt";
+//    String BASE_URL_TEST = "http://192.168.199.206:8080/ymt";
     String BASE_URL_OFFICAL = "http://123.56.203.55/ymt";
     String BASE_URL = isTest ? BASE_URL_TEST : BASE_URL_OFFICAL;
     String SHARE_URL = "http://www.yimiaoquan100.com/ymt";
@@ -103,6 +104,8 @@ public interface Constant {
             put(154, "操作过于频繁");
             put(155, "提交个人账户信息无效");
             put(156, "提现状态无效");
+            put(157, "不良反应申报无效");
+            put(158, "授权委托书申报无效");
         }
     };
     String DEFAULT_VIDEO = "http://oduhua0b1.bkt.clouddn.com/default_video.mp4";

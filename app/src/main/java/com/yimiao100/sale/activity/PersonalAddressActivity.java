@@ -68,7 +68,8 @@ public class PersonalAddressActivity extends BaseActivity implements AddressAdap
 
         mFrom = getIntent().getStringExtra("from");
         mAddressId = getIntent().getIntExtra("addressId", -1);
-        LogUtil.Companion.d("确定订单返回的地址id：" + mAddressId);
+        LogUtil.Companion.d("from ：" + mFrom);
+        LogUtil.Companion.d("返回的地址id：" + mAddressId);
 
         showLoadingProgress();
 
@@ -136,34 +137,27 @@ public class PersonalAddressActivity extends BaseActivity implements AddressAdap
      */
     @Override
     public void editAddress(int position) {
-        LogUtil.Companion.d("editAddress" + position);
+        LogUtil.Companion.d("editAddress position is " + position);
         Address address = mAddressList.get(position);
 
-        Bundle bundle = new Bundle();
-
-        if (!TextUtils.equals(mFrom, "integral")) {
-            //不是来自积分商城
-            bundle.putString("name", address.getCnName());
-            bundle.putString("phone", address.getPhoneNumber());
-            bundle.putString("region", address.getProvinceName() + "\t" + address.getCityName() +
-                    "\t" + address.getAreaName());
-            bundle.putString("full", address.getFullAddress());
-            bundle.putString("addressId", address.getId() + "");
-            bundle.putString("code", address.getZipCode());
-            bundle.putInt("provinceId", address.getProvinceId());
-            bundle.putInt("cityId", address.getCityId());
-            bundle.putInt("areaId", address.getAreaId());
-
-            Intent intent = new Intent(this, PersonalAddressAddActivity.class);
-            intent.putExtras(bundle);
-            startActivityForResult(intent, REQUEST_EDIT);
-        } else {
+        if (TextUtils.equals(mFrom, "integral")) {
             //来自积分商城
             Intent intent = new Intent();
             //携带选中位置返回
             intent.putExtra("position", position);
             setResult(FROM_ITEM_OK, intent);
             finish();
+        } else if (TextUtils.equals(mFrom, "authorization")) {
+            // 来自申请授权书
+            Intent intent = new Intent();
+            intent.putExtra("address", address);
+            setResult(FROM_ITEM_OK, intent);
+            finish();
+        } else {
+            //不是来自积分商城
+            Intent intent = new Intent(this, PersonalAddressAddActivity.class);
+            intent.putExtra("address", address);
+            startActivityForResult(intent, REQUEST_EDIT);
         }
     }
 

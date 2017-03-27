@@ -1,0 +1,407 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    style="@style/TitleStyle"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <com.yimiao100.sale.view.TitleView
+        android:id="@+id/authorization_detail_title"
+        app:left_isShow="true"
+        app:title_text="申请授权书"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:id="@+id/authorization_detail_record"
+            android:src="@mipmap/ico_record"
+            android:layout_alignParentRight="true"
+            android:paddingRight="12dp"
+            android:paddingLeft="12dp"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"/>
+    </com.yimiao100.sale.view.TitleView>
+    <android.support.v4.widget.NestedScrollView
+        android:background="@color/colorEee"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:text="请完善以下申请信息："
+                style="@style/style68"/>
+            <TextView
+                android:layout_marginTop="5dp"
+                android:text="产品信息："
+                android:drawableLeft="@mipmap/ico_application_authorization_product_information"
+                style="@style/style68"/>
+
+            <LinearLayout
+                android:layout_marginTop="0.5dp"
+                style="@style/style69">
+
+                <TextView
+                    android:text="生产厂家："
+                    style="@style/style70"/>
+                <TextView
+                    android:id="@+id/authorization_detail_vendor_name"
+                    android:hint="请选择疫苗生产厂家"
+                    style="@style/style71"/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_marginTop="0.5dp"
+                style="@style/style69">
+
+                <TextView
+                    android:text="疫苗种类："
+                    style="@style/style70"/>
+                <TextView
+                    android:id="@+id/authorization_detail_category"
+                    android:hint="请选择疫苗种类"
+                    style="@style/style71"/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_marginTop="0.5dp"
+                style="@style/style69">
+
+                <TextView
+                    android:text="疫苗名称："
+                    style="@style/style70"/>
+                <TextView
+                    android:id="@+id/authorization_detail_product"
+                    android:hint="请选择疫苗产品名称"
+                    style="@style/style71" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_marginTop="0.5dp"
+                style="@style/style69">
+
+                <TextView
+                    android:text="属性："
+                    style="@style/style70"
+                    android:layout_width="75dp"/>
+                <TextView
+                    android:id="@+id/authorization_detail_spec"
+                    android:hint="规格"
+                    style="@style/style71"
+                    android:background="@drawable/shape_rec_upload"
+                    android:gravity="center"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"/>
+                <TextView
+                    android:id="@+id/authorization_detail_dosage_form"
+                    android:layout_marginLeft="15dp"
+                    android:hint="剂型"
+                    android:gravity="center"
+                    android:background="@drawable/shape_rec_upload"
+                    style="@style/style71"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"/>
+            </LinearLayout>
+
+            <TextView
+                android:layout_marginTop="5dp"
+                android:text="产品授权推广区域信息："
+                android:drawableLeft="@mipmap/ico_application_authorization_region"
+                style="@style/style68"/>
+            <LinearLayout
+                android:layout_marginTop="0.5dp"
+                android:background="@android:color/white"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/authorization_detail_province"
+                    android:layout_marginLeft="25dp"
+                    android:layout_marginRight="25dp"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginBottom="12dp"
+                    android:hint="请选择已签约省份"
+                    android:gravity="center"
+                    android:background="@drawable/shape_rec_upload"
+                    style="@style/style71"/>
+
+                <EditText
+                    android:id="@+id/authorization_detail_region_remark"
+                    android:hint="请填写以上所选省份确定签约详细市/区（县）名称。"
+                    android:textSize="11sp"
+                    android:textColor="@color/color333"
+                    android:textColorHint="@color/color999"
+                    android:maxLines="5"
+                    android:minLines="3"
+                    android:gravity="top"
+                    android:inputType="textMultiLine"
+                    android:scrollbars="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="12dp"
+                    android:paddingRight="12dp"
+                    android:paddingBottom="12dp"
+                    android:background="@null"/>
+            </LinearLayout>
+            <TextView
+                android:layout_marginTop="5dp"
+                android:text="资料申请："
+                android:drawableLeft="@mipmap/ico_application_authorization_data"
+                style="@style/style68"/>
+            <LinearLayout
+                style="@style/style74"
+                android:background="@color/colorF7">
+
+                <TextView
+                    android:text="资料名称："
+                    android:gravity="center_horizontal"
+                    android:textColor="@color/color999"
+                    android:paddingBottom="5dp"
+                    android:paddingTop="5dp"
+                    style="@style/style73"/>
+
+                <View
+                    android:layout_width="0.5dp"
+                    style="@style/view_vertical"/>
+                <TextView
+                    android:text="数量："
+                    android:layout_width="120dp"
+                    android:layout_weight="0"
+                    android:paddingBottom="5dp"
+                    android:paddingTop="5dp"
+                    android:textColor="@color/color999"
+                    android:gravity="center_horizontal"
+                    style="@style/style73"/>
+
+            </LinearLayout>
+            <LinearLayout
+                style="@style/style74">
+                <TextView
+                    android:text="签约产品生产企业资质"
+                    style="@style/style73"/>
+
+                <View
+                    android:layout_width="0.5dp"
+                    style="@style/view_vertical"/>
+
+                <EditText
+                    android:id="@+id/authorization_detail_qualification_num"
+                    style="@style/style75"/>
+            </LinearLayout>
+            <LinearLayout
+                android:background="@color/colorF7"
+                style="@style/style74">
+                <TextView
+                    android:text="签约产品购销合同"
+                    style="@style/style73"/>
+
+                <View
+                    android:layout_width="0.5dp"
+                    style="@style/view_vertical"/>
+
+                <EditText
+                    android:id="@+id/authorization_detail_contract_num"
+                    style="@style/style75"/>
+            </LinearLayout>
+            <LinearLayout
+                style="@style/style74">
+                <TextView
+                    android:text="签约产品质量保证协议"
+                    style="@style/style73"/>
+
+                <View
+                    android:layout_width="0.5dp"
+                    style="@style/view_vertical"/>
+
+                <EditText
+                    android:id="@+id/authorization_detail_agreement_num"
+                    style="@style/style75"/>
+            </LinearLayout>
+            <LinearLayout
+                android:background="@color/colorF7"
+                style="@style/style74">
+                <TextView
+                    android:text="厂家授权亿苗通委托书复印件"
+                    style="@style/style73"/>
+
+                <View
+                    android:layout_width="0.5dp"
+                    style="@style/view_vertical"/>
+
+                <EditText
+                    android:id="@+id/authorization_detail_authz_copy_num"
+                    style="@style/style75"/>
+            </LinearLayout>
+            <LinearLayout
+                style="@style/style74">
+                <TextView
+                    android:text="授权委托书"
+                    style="@style/style73"/>
+
+                <View
+                    android:layout_width="0.5dp"
+                    style="@style/view_vertical"/>
+
+                <EditText
+                    android:id="@+id/authorization_detail_authz_num"
+                    style="@style/style75"/>
+            </LinearLayout>
+            <LinearLayout
+                android:background="@color/colorF7"
+                style="@style/style74">
+                <TextView
+                    android:text="签约产品介绍资料"
+                    style="@style/style73"/>
+
+                <View
+                    android:layout_width="0.5dp"
+                    style="@style/view_vertical"/>
+
+                <EditText
+                    android:id="@+id/authorization_detail_product_desc_num"
+                    style="@style/style75"/>
+            </LinearLayout>
+            <LinearLayout
+                style="@style/style74">
+                <TextView
+                    android:text="公司营业执照复印件"
+                    style="@style/style73"/>
+
+                <View
+                    android:layout_width="0.5dp"
+                    style="@style/view_vertical"/>
+
+                <EditText
+                    android:id="@+id/authorization_detail_biz_license_copy_num"
+                    style="@style/style75"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_marginTop="5dp"
+                android:background="@android:color/white"
+                android:padding="12dp"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:text="备注："
+                    android:textSize="12sp"
+                    android:textColor="@color/color666"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+                <EditText
+                    android:id="@+id/authorization_detail_remark"
+                    android:hint="请填写所要补充的内容（选填）"
+                    android:textSize="11sp"
+                    android:textColor="@color/color333"
+                    android:textColorHint="@color/color999"
+                    android:maxLines="5"
+                    android:minLines="3"
+                    android:gravity="top"
+                    android:inputType="textMultiLine"
+                    android:scrollbars="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="12dp"
+                    android:paddingRight="12dp"
+                    android:background="@null"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:paddingLeft="12dp"
+                android:paddingRight="12dp"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:text="注释："
+                    android:textSize="11sp"
+                    android:textColor="@color/colorMain"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+                <TextView
+                    android:text="@string/authorization_note"
+                    android:textSize="10sp"
+                    android:textColor="@color/color666"
+                    android:lineSpacingMultiplier="1.2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+
+            </LinearLayout>
+
+            <TextView
+                android:text="确认收货信息："
+                android:drawableLeft="@mipmap/ico_application_authorization_address"
+                style="@style/style68"/>
+            <TextView
+                android:id="@+id/authorization_detail_select_address"
+                android:layout_marginTop="0.5dp"
+                android:text="选择收货地址"
+                android:textSize="12sp"
+                android:textColor="@color/color666"
+                android:background="@android:color/white"
+                android:padding="12dp"
+                android:drawableRight="@mipmap/ico_achievement_next"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <LinearLayout
+                android:layout_marginTop="5dp"
+                style="@style/style69">
+
+                <TextView
+                    android:text="姓名："
+                    style="@style/style70"/>
+                <TextView
+                    android:id="@+id/authorization_detail_cn_name"
+                    android:hint="请填写收货人姓名"
+                    style="@style/style76"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_marginTop="0.5dp"
+                style="@style/style69">
+
+                <TextView
+                    android:text="电话："
+                    style="@style/style70"/>
+                <TextView
+                    android:id="@+id/authorization_detail_phone_number"
+                    android:hint="请填写收货人电话"
+                    style="@style/style76"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_marginTop="0.5dp"
+                style="@style/style69">
+
+                <TextView
+                    android:text="地址："
+                    style="@style/style70"/>
+                <TextView
+                    android:id="@+id/authorization_detail_full_address"
+                    android:hint="请填写收货人地址"
+                    style="@style/style76"/>
+            </LinearLayout>
+            <Button
+                android:id="@+id/authorization_detail_submit"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
+                android:layout_marginLeft="50dp"
+                android:layout_marginRight="50dp"
+                android:text="提交"
+                android:textSize="14sp"
+                android:textColor="@android:color/white"
+                android:background="@drawable/selector_button"
+                style="?android:attr/borderlessButtonStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+        </LinearLayout>
+
+    </android.support.v4.widget.NestedScrollView>
+</LinearLayout>

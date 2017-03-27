@@ -177,13 +177,13 @@
                     android:src="@drawable/selector_crm_customer"/>
 
                 <ImageButton
-                    android:id="@+id/crm_analysis"
+                    android:id="@+id/crm_upload"
                     style="?android:attr/borderlessButtonStyle"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:background="#0000"
-                    android:src="@drawable/selector_crm_analysis"/>
+                    android:src="@drawable/selector_crm_upload"/>
 
             </LinearLayout>
 

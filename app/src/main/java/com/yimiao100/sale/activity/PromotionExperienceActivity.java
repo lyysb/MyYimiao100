@@ -16,13 +16,11 @@ import com.yimiao100.sale.bean.Area;
 import com.yimiao100.sale.bean.City;
 import com.yimiao100.sale.bean.Experience;
 import com.yimiao100.sale.bean.Province;
-import com.yimiao100.sale.utils.LogUtil;
 import com.yimiao100.sale.utils.RegionUtil;
 import com.yimiao100.sale.utils.ToastUtil;
 import com.yimiao100.sale.utils.Util;
 import com.yimiao100.sale.view.TitleView;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -33,10 +31,12 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.jeesoft.widget.pickerview.CharacterPickerWindow;
 
+import static com.yimiao100.sale.utils.TimeUtil.getTime;
+
 /**
  * 绑定对公主体-添加推广经历
  */
-public class PromotionExperienceActivity extends BaseActivity implements TitleView.TitleBarOnClickListener, RegionUtil.HandleRegionListListener {
+public class PromotionExperienceActivity extends BaseActivity implements TitleView.TitleBarOnClickListener, RegionUtil.HandleRegionListListener, TimePickerView.OnTimeSelectListener {
 
     @BindView(R.id.promotion_experience_title)
     TitleView mPromotionExperienceTitle;
@@ -55,7 +55,7 @@ public class PromotionExperienceActivity extends BaseActivity implements TitleVi
     private static final int ADD_EXPERIENCE = 101;
     private static final int EDIT_EXPERIENCE = 102;
 
-    private TimePickerView mTimePickerView;
+    private TimePickerView mTimePicker;
     private CharacterPickerWindow mCharacterPickerView;
     private ArrayList<String> mOptions1Items;
     private List<List<String>> mOptions2Items;
@@ -83,15 +83,17 @@ public class PromotionExperienceActivity extends BaseActivity implements TitleVi
     }
 
     private void initTimeView() {
-        mTimePickerView = new TimePickerView(this, TimePickerView.Type.YEAR_MONTH);
-        //控制时间范围
-        Calendar calendar = Calendar.getInstance();
-        mTimePickerView.setRange(calendar.get(Calendar.YEAR) - 20, calendar.get(Calendar.YEAR) + 20);
-        mTimePickerView.setTime(new Date());
-        //设置不循环
-        mTimePickerView.setCyclic(false);
-        //可关闭
-        mTimePickerView.setCancelable(true);
+        Calendar startDate = Calendar.getInstance();
+        startDate.set(1990, 1, 1);
+        mTimePicker = new TimePickerView.Builder(this, this)
+                .setType(TimePickerView.Type.YEAR_MONTH)
+                .setContentSize(14)
+                .setSubCalSize(14)
+                .setSubmitColor(getResources().getColor(R.color.colorMain))
+                .setCancelColor(getResources().getColor(R.color.colorMain))
+                .setOutSideCancelable(false)
+                .setRangDate(startDate, Calendar.getInstance())
+                .setDate(Calendar.getInstance()).build();
     }
 
     private void initRegionView() {
@@ -132,10 +134,10 @@ public class PromotionExperienceActivity extends BaseActivity implements TitleVi
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.promotion_experience_begin:
-                showBeginTime();
+                mTimePicker.show(view);
                 break;
             case R.id.promotion_experience_end:
-                showEndTime();
+                mTimePicker.show(view);
                 break;
             case R.id.promotion_experience_provence:
             case R.id.promotion_experience_city:
@@ -144,34 +146,21 @@ public class PromotionExperienceActivity extends BaseActivity implements TitleVi
         }
     }
 
-    /**
-     * 显示开始日期选择器
-     */
-    private void showBeginTime() {
-        mTimePickerView.setOnTimeSelectListener(new TimePickerView.OnTimeSelectListener() {
-            @Override
-            public void onTimeSelect(Date date) {
-                mPromotionExperienceBegin.setText(getTime(date));
-                mExperience.setStartAtFormat(getTime(date));
-            }
-        });
-        mTimePickerView.show();
-    }
 
-    /**
-     * 显示结束日期选择器
-     */
-    private void showEndTime() {
-        mTimePickerView.setOnTimeSelectListener(new TimePickerView.OnTimeSelectListener() {
-            @Override
-            public void onTimeSelect(Date date) {
-                mPromotionExperienceEnd.setText(getTime(date));
-                mExperience.setEndAtFormat(getTime(date));
-            }
-        });
-        mTimePickerView.show();
-    }
 
+    @Override
+    public void onTimeSelect(Date date, View v) {
+        switch (v.getId()) {
+            case R.id.promotion_experience_begin:
+                mPromotionExperienceBegin.setText(getTime(date, "yyyy-MM"));
+                mExperience.setStartAtFormat(getTime(date, "yyyy-MM"));
+                break;
+            case R.id.promotion_experience_end:
+                mPromotionExperienceEnd.setText(getTime(date, "yyyy-MM"));
+                mExperience.setEndAtFormat(getTime(date, "yyyy-MM"));
+                break;
+        }
+    }
     private void showRegion(View view) {
         //设置三级联动
         mCharacterPickerView.setPicker(mOptions1Items, mOptions2Items);
@@ -205,7 +194,6 @@ public class PromotionExperienceActivity extends BaseActivity implements TitleVi
         //弹出后失去焦点
         mCharacterPickerView.setFocusable(false);
     }
-
 
     /**
      * 加工处理地域数据
@@ -244,6 +232,7 @@ public class PromotionExperienceActivity extends BaseActivity implements TitleVi
             mOptions2Items.add(mOptions2Items_temp);
         }
     }
+
     @Override
     public void rightOnClick() {
         if (TextUtils.equals(mPromotionExperienceBegin.getText().toString(), "开始日期")
@@ -268,12 +257,14 @@ public class PromotionExperienceActivity extends BaseActivity implements TitleVi
         }
     }
 
+
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         //当三级联动对话框正在显示的时候，按下返回键，其实是让对话框消失
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            if (mTimePickerView.isShowing() || mCharacterPickerView.isShowing()) {
-                mTimePickerView.dismiss();
+            if (mTimePicker.isShowing()
+                    || mCharacterPickerView.isShowing()) {
+                mTimePicker.dismiss();
                 mCharacterPickerView.dismiss();
                 return true;
             }
@@ -281,15 +272,8 @@ public class PromotionExperienceActivity extends BaseActivity implements TitleVi
         return super.onKeyDown(keyCode, event);
     }
 
-    public String getTime(Date date) {
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM");
-        return format.format(date);
-    }
-
     @Override
     public void leftOnClick() {
-        LogUtil.Companion.d("mTimePickerView-isShowing???" + mTimePickerView.isShowing() );
-        LogUtil.Companion.d("mCharacterPickerView-isShowing???" + mCharacterPickerView.isShowing() );
         finish();
     }
 }

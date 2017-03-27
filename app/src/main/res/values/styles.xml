@@ -802,6 +802,117 @@
         <item name="android:layout_height">wrap_content</item>
     </style>
 
+    <style name="style67">
+        <item name="android:layout_weight">1</item>
+        <item name="android:gravity">center_horizontal</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/color666</item>
+        <item name="android:drawablePadding">12dp</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="style68">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/color666</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:drawablePadding">8dp</item>
+        <item name="android:padding">12dp</item>
+        <item name="android:background">@android:color/white</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="style69">
+        <item name="android:orientation">horizontal</item>
+        <item name="android:background">@android:color/white</item>
+        <item name="android:padding">12dp</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="style70">
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">@color/color666</item>
+        <item name="android:layout_width">105dp</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="style71">
+        <item name="android:drawableRight">@mipmap/ico_application_authorization_open_not_active</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColorHint">@color/color999</item>
+        <item name="android:textColor">@color/color666</item>
+        <item name="android:lines">1</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:drawablePadding">8dp</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="style72">
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">@color/color666</item>
+        <item name="android:textColorHint">@color/color999</item>
+        <item name="android:background">@null</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:lines">1</item>
+        <item name="android:maxLines">1</item>
+    </style>
+
+    <style name="style73">
+        <item name="android:textSize">11sp</item>
+        <item name="android:textColor">@color/color666</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:paddingLeft">12dp</item>
+        <item name="android:paddingRight">12dp</item>
+        <item name="android:paddingTop">10dp</item>
+        <item name="android:paddingBottom">10dp</item>
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:lines">1</item>
+    </style>
+
+    <style name="style74">
+        <item name="android:layout_marginTop">0.5dp</item>
+        <item name="android:background">@android:color/white</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="style75">
+        <item name="android:hint">请输入数量</item>
+        <item name="android:inputType">number</item>
+        <item name="android:lines">1</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:textSize">11sp</item>
+        <item name="android:textColor">@color/color666</item>
+        <item name="android:textColorHint">#bbbbbb</item>
+        <item name="android:gravity">center_horizontal</item>
+        <item name="android:paddingLeft">12dp</item>
+        <item name="android:paddingRight">12dp</item>
+        <item name="android:paddingBottom">5dp</item>
+        <item name="android:paddingTop">5dp</item>
+        <item name="android:background">@null</item>
+        <item name="android:layout_width">120dp</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="style76">
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColorHint">@color/color999</item>
+        <item name="android:textColor">@color/color666</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
 
 
 

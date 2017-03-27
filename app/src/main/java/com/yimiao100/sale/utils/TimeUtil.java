@@ -1,5 +1,6 @@
 package com.yimiao100.sale.utils;
 
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -53,6 +54,18 @@ public class TimeUtil {
         } else {
             return sdf.format(new Date(milliseconds));
         }
+    }
+
+    /**
+     * @param date
+     * @return 默认格式yyyy年MM月dd日
+     */
+    public static String getTime(Date date) {
+        return getTime(date, "yyyy年MM月dd日");
+    }
+
+    public static String getTime(Date date, String format) {
+        return new SimpleDateFormat(format).format(date);
     }
 
 

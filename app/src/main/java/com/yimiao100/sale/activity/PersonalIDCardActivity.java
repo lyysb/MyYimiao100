@@ -64,9 +64,13 @@ public class PersonalIDCardActivity extends BaseActivity implements TitleView
 
     @Override
     public void rightOnClick() {
+        if (mIDCardIdCard.getText().toString().trim().isEmpty()) {
+            ToastUtil.showShort(this, "身份证号不能为空");
+            return;
+        }
         //校验身份证合法性
         if (!mIDCardIdCard.getText().toString().trim().matches(Regex.idCard)) {
-            ToastUtil.showShort(this, "身份证格式不正确");
+            ToastUtil.showShort(this, getString(R.string.regex_id_card));
             return;
         }
         OkHttpUtils.post().url(UPDATE_ID_NUMBER)

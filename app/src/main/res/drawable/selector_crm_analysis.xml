@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:state_pressed="true" android:drawable="@mipmap/ico_home_activation_analysis"/>
-    <item android:drawable="@mipmap/ico_home_default_analysis"/>
-</selector>

@@ -30,6 +30,20 @@ public class ResourceListBean implements Parcelable {
     private long bidExpiredTipAt;
     private String units;
 
+    private String totalQty;
+
+    public String getTotalQty() {
+        return totalQty;
+    }
+
+    public void setTotalQty(String totalQty) {
+        this.totalQty = totalQty;
+    }
+
+    public static Creator<ResourceListBean> getCREATOR() {
+        return CREATOR;
+    }
+
     public String getUnits() {
         return units;
     }
@@ -557,6 +571,7 @@ public class ResourceListBean implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.totalQty);
         dest.writeInt(this.resourceId);
         dest.writeInt(this.userId);
         dest.writeString(this.orderNo);
@@ -619,6 +634,7 @@ public class ResourceListBean implements Parcelable {
     }
 
     protected ResourceListBean(Parcel in) {
+        this.totalQty = in.readString();
         this.resourceId = in.readInt();
         this.userId = in.readInt();
         this.orderNo = in.readString();

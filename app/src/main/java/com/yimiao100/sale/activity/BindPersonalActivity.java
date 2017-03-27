@@ -402,7 +402,7 @@ public class BindPersonalActivity extends BaseActivity implements TitleView
             return;
         }
         if (!mPersonalName1.matches(Regex.name)) {
-            ToastUtil.showShort(this, "姓名只允许是中文、英文、数字和“_”");
+            ToastUtil.showShort(this, getString(R.string.regex_name));
             return;
         }
         // 推广人身份证号
@@ -411,8 +411,8 @@ public class BindPersonalActivity extends BaseActivity implements TitleView
             ToastUtil.showShort(this, "请填写推广人身份证号");
             return;
         }
-        if (mPersonalIdCard1.matches(Regex.idCard)) {
-            ToastUtil.showShort(this, "身份证号格式不正确");
+        if (!mPersonalIdCard1.matches(Regex.idCard)) {
+            ToastUtil.showShort(this, getString(R.string.regex_id_card));
             return;
         }
         // 推广人联系电话
@@ -431,6 +431,10 @@ public class BindPersonalActivity extends BaseActivity implements TitleView
         mPersonalEmail1 = mPersonalEmail.getText().toString().trim();
         if (mPersonalEmail1.isEmpty()) {
             ToastUtil.showShort(this, "请填写推广人邮箱");
+            return;
+        }
+        if (!mPersonalEmail1.matches(Regex.email)) {
+            ToastUtil.showShort(this, getString(R.string.regex_email));
             return;
         }
         // 证件照

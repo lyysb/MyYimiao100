@@ -1,5 +1,6 @@
 package com.yimiao100.sale.activity;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -12,12 +13,14 @@ import android.widget.TextView;
 import com.alibaba.fastjson.JSON;
 import com.yimiao100.sale.R;
 import com.yimiao100.sale.base.BaseActivity;
+import com.yimiao100.sale.bean.Address;
 import com.yimiao100.sale.bean.Area;
 import com.yimiao100.sale.bean.City;
 import com.yimiao100.sale.bean.ErrorBean;
 import com.yimiao100.sale.bean.Province;
 import com.yimiao100.sale.utils.Constant;
 import com.yimiao100.sale.utils.LogUtil;
+import com.yimiao100.sale.utils.ProgressDialogUtil;
 import com.yimiao100.sale.utils.RegionUtil;
 import com.yimiao100.sale.utils.ToastUtil;
 import com.yimiao100.sale.utils.Util;
@@ -77,6 +80,8 @@ public class PersonalAddressAddActivity extends BaseActivity implements TitleVie
     private final String FULL_ADDRESS = "fullAddress";
     private final int FROM_NEW_OK = 100;
     private final int FROM_NEW_CANCEL = 101;
+    private Address mAddress;
+    private ProgressDialog mProgressDialog;
 
 
     @Override
@@ -97,23 +102,38 @@ public class PersonalAddressAddActivity extends BaseActivity implements TitleVie
 
     private void initData() {
         Intent intent = getIntent();
-        if (intent.getExtras() != null) {
-            mBundle = intent.getExtras();
-            String name = mBundle.getString("name");
-            mAddressName.setText(name);
-            String phone = mBundle.getString("phone");
-            mAddressPhone.setText(phone);
-            String region = mBundle.getString("region");
-            mAddressAddress.setText(region);
-            String code = mBundle.getString("code");
-            mAddressCode.setText(code);
-            String full = mBundle.getString("full");
-            mAddressDetail.setText(full);
+//        if (intent.getExtras() != null) {
+//            mBundle = intent.getExtras();
+//            String name = mBundle.getString("name");
+//            String phone = mBundle.getString("phone");
+//            String region = mBundle.getString("region");
+//            String code = mBundle.getString("code");
+//            String full = mBundle.getString("full");
+//            mAddressName.setText(name);
+//            mAddressPhone.setText(phone);
+//            mAddressAddress.setText(region);
+//            mAddressCode.setText(code);
+//            mAddressDetail.setText(full);
+//
+//            mProvinceId = mBundle.getInt("provinceId");
+//            mCityId = mBundle.getInt("cityId");
+//            mCountyId = mBundle.getInt("areaId");
+//            mAddressId = mBundle.getString("addressId");
+//        }
+        mAddress = intent.getParcelableExtra("address");
+        if (mAddress != null) {
+            mAddressName.setText(mAddress.getCnName());
+            mAddressPhone.setText(mAddress.getPhoneNumber());
+            mAddressAddress.setText(mAddress.getProvinceName() + "\t" + mAddress.getCityName()
+                    + "\t" + mAddress.getAreaName());
+            mAddressCode.setText(mAddress.getZipCode());
+            mAddressDetail.setText(mAddress.getFullAddress());
 
-            mProvinceId = mBundle.getInt("provinceId");
-            mCityId = mBundle.getInt("cityId");
-            mCountyId = mBundle.getInt("areaId");
-            mAddressId = mBundle.getString("addressId");
+            mProvinceId = mAddress.getProvinceId();
+            mCityId = mAddress.getCityId();
+            mCountyId = mAddress.getAreaId();
+            mAddressId = mAddress.getId() + "";
+
         }
 
         RegionUtil.getRegionList(this, this);
@@ -233,7 +253,9 @@ public class PersonalAddressAddActivity extends BaseActivity implements TitleVie
             ToastUtil.showShort(getApplicationContext(), "请填写所有数据");
             return;
         }
-        if (mBundle != null) {
+        mProgressDialog = ProgressDialogUtil.getLoadingProgress(this, "提交中");
+        mProgressDialog.show();
+        if (mAddress != null) {
             editAddress();
         } else {
             addAddress();
@@ -257,18 +279,17 @@ public class PersonalAddressAddActivity extends BaseActivity implements TitleVie
             public void onError(Call call, Exception e, int id) {
                 LogUtil.Companion.d("编辑收货地址E：" + e.getLocalizedMessage());
                 Util.showTimeOutNotice(currentContext);
+                if (mProgressDialog.isShowing()) {
+                    mProgressDialog.dismiss();
+                }
             }
 
             @Override
             public void onResponse(String response, int id) {
-                LogUtil.Companion.d("编辑收货地址：" + response);
-                LogUtil.Companion.d("provinceId：" + mProvinceId + "");
-                LogUtil.Companion.d("cityId：" + mCityId + "");
-                LogUtil.Companion.d("areaId：" + mCountyId + "");
-                LogUtil.Companion.d("cnName：" + mAddressName.getText().toString().trim());
-                LogUtil.Companion.d("phoneNumber：" + mAddressPhone.getText().toString().trim());
-                LogUtil.Companion.d("zipCode：" + mAddressCode.getText().toString().trim());
-                LogUtil.Companion.d("fullAddress：" + mAddressDetail.getText().toString().trim());
+                LogUtil.Companion.d("edit response is ：" + response);
+                if (mProgressDialog.isShowing()) {
+                    mProgressDialog.dismiss();
+                }
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":
@@ -300,18 +321,17 @@ public class PersonalAddressAddActivity extends BaseActivity implements TitleVie
             public void onError(Call call, Exception e, int id) {
                 LogUtil.Companion.d("提交收货地址E：" + e.getLocalizedMessage());
                 Util.showTimeOutNotice(currentContext);
+                if (mProgressDialog.isShowing()) {
+                    mProgressDialog.dismiss();
+                }
             }
 
             @Override
             public void onResponse(String response, int id) {
-                LogUtil.Companion.d("提交收货地址：" + response);
-                LogUtil.Companion.d("provinceId：" + mProvinceId + "");
-                LogUtil.Companion.d("cityId：" + mCityId + "");
-                LogUtil.Companion.d("areaId：" + mCountyId + "");
-                LogUtil.Companion.d("cnName：" + mAddressName.getText().toString().trim());
-                LogUtil.Companion.d("phoneNumber：" + mAddressPhone.getText().toString().trim());
-                LogUtil.Companion.d("zipCode：" + mAddressCode.getText().toString().trim());
-                LogUtil.Companion.d("fullAddress：" + mAddressDetail.getText().toString().trim());
+                LogUtil.Companion.d("submit response is " + response);
+                if (mProgressDialog.isShowing()) {
+                    mProgressDialog.dismiss();
+                }
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":

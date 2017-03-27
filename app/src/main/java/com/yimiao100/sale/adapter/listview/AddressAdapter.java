@@ -59,8 +59,8 @@ public class AddressAdapter extends BaseAdapter {
 
         String cnName = address.getCnName();
         String phoneNumber = address.getPhoneNumber();
-        String addressFull = address.getProvinceName() + address.getCityName() + address.getAreaName() +
-                address.getFullAddress();
+        String addressFull = address.getProvinceName() + "\t" + address.getCityName() + "\t"
+                + address.getAreaName() + "\n" + address.getFullAddress();
         int isDefault = address.getIsDefault();
 
         address_person_name.setText(cnName);

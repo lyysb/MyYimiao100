@@ -20,5 +20,5 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.bigkoo:pickerview:2.1.0'
+    compile 'com.contrarywind:Android-PickerView:3.2.1'
 }

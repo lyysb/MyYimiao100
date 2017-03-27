@@ -17,11 +17,11 @@ import com.alibaba.fastjson.JSON;
 import com.yimiao100.sale.R;
 import com.yimiao100.sale.activity.CustomerActivity;
 import com.yimiao100.sale.activity.NoticeActivity;
-import com.yimiao100.sale.activity.OrderErrorActivity;
 import com.yimiao100.sale.activity.PaymentActivity;
 import com.yimiao100.sale.activity.ResourcesActivity;
 import com.yimiao100.sale.activity.RichesActivity;
 import com.yimiao100.sale.activity.ShipActivity;
+import com.yimiao100.sale.activity.UploadActivity;
 import com.yimiao100.sale.activity.VendorListActivity;
 import com.yimiao100.sale.activity.WareHouseActivity;
 import com.yimiao100.sale.activity.WholesaleActivity;
@@ -130,8 +130,8 @@ public class CRMFragment extends Fragment implements View.OnClickListener, Carou
         mView.findViewById(R.id.crm_resources).setOnClickListener(this);
         //客户
         mView.findViewById(R.id.crm_customer).setOnClickListener(this);
-        //分析
-        mView.findViewById(R.id.crm_analysis).setOnClickListener(this);
+        //申报
+        mView.findViewById(R.id.crm_upload).setOnClickListener(this);
         //对账
         mView.findViewById(R.id.crm_reconciliation).setOnClickListener(this);
         //财富
@@ -235,9 +235,10 @@ public class CRMFragment extends Fragment implements View.OnClickListener, Carou
                 //跳转到客户列表
                 startActivity(new Intent(getContext(), CustomerActivity.class));
                 break;
-            case R.id.crm_analysis:
-                //todo 跳转到分析页面
-                ToastUtil.showShort(getContext(), "敬请期待");
+            case R.id.crm_upload:
+                //申报
+//                ToastUtil.showShort(getContext(), "敬请期待");
+                startActivity(new Intent(getContext(), UploadActivity.class));
                 break;
             case R.id.crm_reconciliation:
                 //跳转到对账列表

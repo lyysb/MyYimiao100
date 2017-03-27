@@ -11,7 +11,9 @@ import com.yimiao100.sale.base.BaseActivity;
 import com.yimiao100.sale.bean.ErrorBean;
 import com.yimiao100.sale.utils.Constant;
 import com.yimiao100.sale.utils.LogUtil;
+import com.yimiao100.sale.utils.Regex;
 import com.yimiao100.sale.utils.SharePreferenceUtil;
+import com.yimiao100.sale.utils.ToastUtil;
 import com.yimiao100.sale.utils.Util;
 import com.yimiao100.sale.view.TitleView;
 import com.zhy.http.okhttp.OkHttpUtils;
@@ -61,6 +63,14 @@ public class PersonalNameActivity extends BaseActivity implements TitleView
 
     @Override
     public void rightOnClick() {
+        if (mPersonalName.getText().toString().trim().isEmpty()) {
+            ToastUtil.showShort(this, "姓名不能为空");
+            return;
+        }
+        if (!mPersonalName.getText().toString().trim().matches(Regex.name)) {
+            ToastUtil.showShort(this, getString(R.string.regex_name));
+            return;
+        }
         //保存将数据发送到服务器
         OkHttpUtils.post().url(UPDATE_CN_NAME)
                 .addHeader(ACCESS_TOKEN, mAccessToken)

@@ -401,8 +401,7 @@ public class BindCompanyActivity extends BaseActivity implements TitleView
                     ToastUtil.showShort(this, "请填写开户名称");
                     return;
                 }
-                String regex = "[\u4e00-\u9fa5\\w]+";
-                if (!companyName.matches(regex)) {
+                if (!companyName.matches(Regex.name)) {
                     ToastUtil.showShort(this, "开户名称只允许是中文、英文、数字和“_”");
                     return;
                 }
@@ -426,8 +425,8 @@ public class BindCompanyActivity extends BaseActivity implements TitleView
                     ToastUtil.showShort(this, "请填写姓名");
                     return;
                 }
-                if (!corporation.matches(regex)) {
-                    ToastUtil.showShort(this, "姓名只允许是中文、英文、数字和“_”");
+                if (!corporation.matches(Regex.name)) {
+                    ToastUtil.showShort(this, getString(R.string.regex_name));
                     return;
                 }
                 if (mCorporationIdNumber.getText().toString().trim().isEmpty()) {
@@ -435,7 +434,7 @@ public class BindCompanyActivity extends BaseActivity implements TitleView
                     return;
                 }
                 if (!mCorporationIdNumber.getText().toString().matches(Regex.idCard)) {
-                    ToastUtil.showShort(this, "身份证号格式不正确");
+                    ToastUtil.showShort(this, getString(R.string.regex_id_card));
                     return;
                 }
                 if (mCorporationPhoneNumber.getText().toString().trim().isEmpty()) {
@@ -448,6 +447,10 @@ public class BindCompanyActivity extends BaseActivity implements TitleView
                 }
                 if (mCorporationEmail.getText().toString().trim().isEmpty()) {
                     ToastUtil.showShort(this, "请填写邮箱");
+                    return;
+                }
+                if (!mCorporationEmail.getText().toString().trim().matches(Regex.email)) {
+                    ToastUtil.showShort(this, getString(R.string.regex_email));
                     return;
                 }
                 // 提示个人证件照

@@ -148,6 +148,7 @@ public class PromotionExperienceListActivity extends BaseActivity implements Tit
                     mMap.remove(experience.getSerialNo());
                     mList.remove(position);
                     mAdapter.notifyDataSetChanged();
+                    mEmptyView.setVisibility(mList == null || mList.size() == 0 ? View.VISIBLE : View.INVISIBLE);
                     dialog.dismiss();
                 }
             });
@@ -172,6 +173,7 @@ public class PromotionExperienceListActivity extends BaseActivity implements Tit
                     mList.add(experience);
                     mAdapter.notifyDataSetChanged();
                     mMap.put(experience.getSerialNo(), experience);
+                    mEmptyView.setVisibility(mList == null || mList.size() == 0 ? View.VISIBLE : View.INVISIBLE);
                 }
                 break;
             case EDIT_EXPERIENCE:
@@ -182,6 +184,7 @@ public class PromotionExperienceListActivity extends BaseActivity implements Tit
                         mList.set(position, experience);
                         mAdapter.notifyDataSetChanged();
                         mMap.put(experience.getSerialNo(), experience);
+                        mEmptyView.setVisibility(mList == null || mList.size() == 0 ? View.VISIBLE : View.INVISIBLE);
                     }
                 }
         }

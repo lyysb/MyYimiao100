@@ -1,0 +1,344 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:orientation="vertical"
+    style="@style/TitleStyle"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.yimiao100.sale.view.TitleView
+        android:id="@+id/report_detail_title"
+        app:left_isShow="true"
+        app:title_text="不良反应申报"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:id="@+id/report_detail_record"
+            android:src="@mipmap/ico_record"
+            android:layout_alignParentRight="true"
+            android:paddingRight="12dp"
+            android:paddingLeft="12dp"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"/>
+    </com.yimiao100.sale.view.TitleView>
+
+    <android.support.v4.widget.NestedScrollView
+        android:background="@color/colorEee"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:text="产品信息："
+                android:drawableLeft="@mipmap/ico_application_authorization_product_information"
+                style="@style/style68"/>
+            <LinearLayout
+                android:layout_marginTop="0.5dp"
+                style="@style/style69">
+
+                <TextView
+                    android:text="生产厂家："
+                    style="@style/style70"/>
+                <TextView
+                    android:id="@+id/report_detail_vendor_name"
+                    android:hint="请选择生产厂家"
+                    style="@style/style71"/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_marginTop="5dp"
+                style="@style/style69">
+
+                <TextView
+                    android:text="接种疫苗种类："
+                    style="@style/style70"/>
+                <TextView
+                    android:id="@+id/report_detail_category_name"
+                    android:hint="请选择疫苗种类"
+                    style="@style/style71"/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_marginTop="0.5dp"
+                style="@style/style69">
+
+                <TextView
+                    android:text="接种疫苗名称："
+                    style="@style/style70"/>
+                <TextView
+                    android:id="@+id/report_detail_product_name"
+                    android:hint="请选择疫苗名称"
+                    style="@style/style71"/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_marginTop="0.5dp"
+                style="@style/style69">
+
+                <TextView
+                    android:text="属性："
+                    style="@style/style70"
+                    android:layout_width="75dp"/>
+                <TextView
+                    android:id="@+id/report_detail_spec"
+                    android:hint="请选择规格"
+                    style="@style/style71"
+                    android:background="@drawable/shape_rec_upload"
+                    android:gravity="center"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"/>
+                <TextView
+                    android:layout_marginLeft="15dp"
+                    android:id="@+id/report_detail_dosage_form"
+                    android:hint="请选择剂型"
+                    android:gravity="center"
+                    android:background="@drawable/shape_rec_upload"
+                    style="@style/style71"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"/>
+            </LinearLayout>
+
+            <TextView
+                android:text="接种信息："
+                android:drawableLeft="@mipmap/ico_application_authorization_information"
+                android:layout_marginTop="5dp"
+                style="@style/style68"/>
+            <LinearLayout
+                android:layout_marginTop="0.5dp"
+                style="@style/style69">
+
+                <TextView
+                    android:text="注射疫苗时间："
+                    style="@style/style70"/>
+                <TextView
+                    android:id="@+id/report_detail_inject_at"
+                    android:hint="请选择注射时间"
+                    style="@style/style71"/>
+            </LinearLayout>
+            <TextView
+                android:text="注射疫苗地点："
+                android:layout_marginTop="0.5dp"
+                android:padding="12dp"
+                style="@style/style70"
+                android:background="@android:color/white"
+                android:layout_width="match_parent"/>
+            <LinearLayout
+                android:layout_marginTop="0.5dp"
+                style="@style/style69">
+
+                <TextView
+                    android:text="省："
+                    style="@style/style70"/>
+                <TextView
+                    android:id="@+id/report_detail_province"
+                    android:hint="请选择所推广的区域/省"
+                    style="@style/style71"/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_marginTop="0.5dp"
+                style="@style/style69">
+
+                <TextView
+                    android:text="市："
+                    style="@style/style70"/>
+                <TextView
+                    android:id="@+id/report_detail_city"
+                    android:hint="请选择所推广的区域/市"
+                    style="@style/style71"/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_marginTop="0.5dp"
+                style="@style/style69">
+
+                <TextView
+                    android:text="区/县："
+                    style="@style/style70"/>
+                <TextView
+                    android:id="@+id/report_detail_area"
+                    android:hint="请选择所推广的区域区/县"
+                    style="@style/style71"/>
+            </LinearLayout>
+
+            <TextView
+                android:text="不良反应发生主人公信息："
+                android:drawableLeft="@mipmap/ico_application_authorization_character_information"
+                android:layout_marginTop="5dp"
+                style="@style/style68"/>
+            <LinearLayout
+                android:layout_marginTop="0.5dp"
+                style="@style/style69">
+
+                <TextView
+                    android:text="姓名："
+                    style="@style/style70"/>
+                <EditText
+                    android:id="@+id/report_detail_patient_name"
+                    android:hint="请输入姓名"
+                    android:paddingRight="8dp"
+                    android:inputType="textPersonName"
+                    style="@style/style72"/>
+                <ImageView
+                    android:id="@+id/report_detail_patient_sex"
+                    android:src="@mipmap/ico_application_authorization_choice_two"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_marginTop="0.5dp"
+                style="@style/style69">
+
+                <TextView
+                    android:text="年龄："
+                    style="@style/style70"/>
+                <EditText
+                    android:id="@+id/report_detail_patient_age"
+                    android:hint="请输入年龄"
+                    android:inputType="number"
+                    style="@style/style72"/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_marginTop="0.5dp"
+                style="@style/style69">
+
+                <TextView
+                    android:text="不良反应描述："
+                    style="@style/style70"/>
+                <EditText
+                    android:id="@+id/report_detail_patient_adverse"
+                    android:hint="请输入不良反应"
+                    android:textSize="10sp"
+                    android:textColor="@color/color333"
+                    android:textColorHint="@color/color999"
+                    android:maxLines="5"
+                    android:minLines="3"
+                    android:gravity="top"
+                    android:inputType="textMultiLine"
+                    android:scrollbars="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/shape_rec_upload"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_marginTop="5dp"
+                style="@style/style69">
+
+                <TextView
+                    android:text="诊断医院："
+                    style="@style/style70"/>
+                <EditText
+                    android:id="@+id/report_detail_hospital"
+                    android:hint="请输入诊断医院"
+                    style="@style/style72"/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_marginTop="0.5dp"
+                style="@style/style69">
+
+                <TextView
+                    android:text="诊断结果："
+                    style="@style/style70"/>
+                <EditText
+                    android:id="@+id/report_detail_result"
+                    android:hint="请输入诊断结果"
+                    style="@style/style72"/>
+            </LinearLayout>
+
+            <TextView
+                android:text="上传诊断结果扫描件"
+                android:textSize="12sp"
+                android:background="@android:color/white"
+                android:paddingLeft="12dp"
+                android:paddingTop="9dp"
+                android:paddingBottom="9dp"
+                android:layout_marginTop="5dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <ImageView
+                android:id="@+id/report_detail_file"
+                android:src="@mipmap/ico_application_authorization_upload"
+                android:paddingLeft="12dp"
+                android:scaleType="fitStart"
+                android:background="@android:color/white"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:text="@string/report_detail_note"
+                android:textSize="10dp"
+                android:textColor="@color/colorMain"
+                android:background="@android:color/white"
+                android:paddingLeft="12dp"
+                android:paddingTop="9dp"
+                android:paddingBottom="9dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:text="联系推广人信息："
+                android:drawableLeft="@mipmap/ico_application_authorization_contacts"
+                android:layout_marginTop="10dp"
+                style="@style/style68"/>
+
+            <LinearLayout
+                android:layout_marginTop="0.5dp"
+                style="@style/style69">
+
+                <TextView
+                    android:text="姓名："
+                    style="@style/style70"/>
+                <EditText
+                    android:id="@+id/report_detail_contact_name"
+                    android:hint="请输入推广人姓名"
+                    android:inputType="textPersonName"
+                    style="@style/style72"/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_marginTop="0.5dp"
+                style="@style/style69">
+
+                <TextView
+                    android:text="联系电话："
+                    style="@style/style70"/>
+                <EditText
+                    android:id="@+id/report_detail_contact_phone_number"
+                    android:hint="请输入推广人联系电话"
+                    android:inputType="phone"
+                    style="@style/style72"/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_marginTop="0.5dp"
+                style="@style/style69">
+
+                <TextView
+                    android:text="邮箱："
+                    style="@style/style70"/>
+                <EditText
+                    android:id="@+id/report_detail_contact_email"
+                    android:hint="请输入推广人邮箱"
+                    android:inputType="textEmailAddress"
+                    style="@style/style72"/>
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/report_detail_submit"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
+                android:layout_marginLeft="50dp"
+                android:layout_marginRight="50dp"
+                android:text="提交"
+                android:textSize="14sp"
+                android:textColor="@android:color/white"
+                android:background="@drawable/selector_button"
+                style="?android:attr/borderlessButtonStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+        </LinearLayout>
+
+    </android.support.v4.widget.NestedScrollView>
+
+</LinearLayout>

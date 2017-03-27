@@ -134,12 +134,12 @@ public class OrderCompletedActivity extends BaseActivity implements TitleView.Ti
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.order_complete_into:
-                if (mOrder.getDeliveryTotalQty() > 0) {
-                    //进入到对账详情页面
-                    enterReconciliationDetail();
-                } else {
+                if (mOrder.getTotalQty() == null || mOrder.getTotalQty().isEmpty()) {
                     // 提示没有发货信息
                     ToastUtil.showShort(this, getString(R.string.order_complete_enter_reconciliation));
+                } else {
+                    //进入到对账详情页面
+                    enterReconciliationDetail();
                     return;
                 }
                 break;

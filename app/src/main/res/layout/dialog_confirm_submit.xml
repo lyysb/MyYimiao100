@@ -6,9 +6,10 @@
     <TextView
         android:id="@+id/dialog_fillet"
         android:gravity="center"
-        android:text="推广主体信息一旦提交，您将会在24小时\n内收到审核结果通知，审核通过后\n将不能再次修改。"
+        android:text="@string/dialog_confirm_submit_account"
         android:textSize="14sp"
         android:textColor="@color/color666"
+        android:lineSpacingMultiplier="1.2"
         android:background="@mipmap/ico_fillet"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:padding="12dp"
+    android:background="@android:color/white"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <LinearLayout
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/report_item_year"
+            android:text="2017年"
+            android:textSize="17sp"
+            android:textColor="@color/color999"
+            android:textStyle="bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <TextView
+            android:id="@+id/report_item_month_day"
+            android:text="09月13日"
+            android:textSize="13sp"
+            android:textColor="@color/color999"
+            android:layout_marginTop="8dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:paddingLeft="12dp"
+        android:paddingRight="12dp"
+        android:layout_height="wrap_content">
+        <TextView
+            android:id="@+id/report_item_region"
+            android:text="北京市"
+            android:textSize="13sp"
+            android:textColor="@color/color333"
+            android:lines="1"
+            android:ellipsize="end"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+        <TextView
+            android:id="@+id/report_item_vendor_name"
+            android:text="吉林迈丰生物药业有限公司"
+            android:textSize="11sp"
+            android:layout_marginTop="8dp"
+            android:textColor="@color/color333"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+    <ImageView
+        android:src="@mipmap/ico_application_record_adopt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/report_item_apply_status"/>
+</LinearLayout>

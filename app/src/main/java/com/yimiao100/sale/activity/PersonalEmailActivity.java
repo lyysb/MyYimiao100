@@ -62,9 +62,13 @@ public class PersonalEmailActivity extends BaseActivity implements TitleView
 
     @Override
     public void rightOnClick() {
+        if (mPersonalEmail.getText().toString().trim().isEmpty()) {
+            ToastUtil.showShort(this, "邮箱地址不能为空");
+            return;
+        }
         //判断邮箱合法性
         if (!mPersonalEmail.getText().toString().trim().matches(Regex.email)) {
-            ToastUtil.showShort(this, "邮箱地址格式不正确");
+            ToastUtil.showShort(this, getString(R.string.regex_email));
             return;
         }
         OkHttpUtils.post().url(UPDATE_EMAIL)

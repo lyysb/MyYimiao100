@@ -1,11 +1,14 @@
 package com.yimiao100.sale.bean;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * 常用地址
  * Created by 亿苗通 on 2016/10/27.
  */
 
-public class Address {
+public class Address implements Parcelable {
     private int id;
     private int userId;
     private int provinceId;
@@ -141,4 +144,59 @@ public class Address {
     public void setUpdatedAt(long updatedAt) {
         this.updatedAt = updatedAt;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(this.id);
+        dest.writeInt(this.userId);
+        dest.writeInt(this.provinceId);
+        dest.writeInt(this.cityId);
+        dest.writeInt(this.areaId);
+        dest.writeInt(this.isDefault);
+        dest.writeString(this.cnName);
+        dest.writeString(this.phoneNumber);
+        dest.writeString(this.zipCode);
+        dest.writeString(this.fullAddress);
+        dest.writeString(this.provinceName);
+        dest.writeString(this.cityName);
+        dest.writeString(this.areaName);
+        dest.writeLong(this.createdAt);
+        dest.writeLong(this.updatedAt);
+    }
+
+    public Address() {
+    }
+
+    protected Address(Parcel in) {
+        this.id = in.readInt();
+        this.userId = in.readInt();
+        this.provinceId = in.readInt();
+        this.cityId = in.readInt();
+        this.areaId = in.readInt();
+        this.isDefault = in.readInt();
+        this.cnName = in.readString();
+        this.phoneNumber = in.readString();
+        this.zipCode = in.readString();
+        this.fullAddress = in.readString();
+        this.provinceName = in.readString();
+        this.cityName = in.readString();
+        this.areaName = in.readString();
+        this.createdAt = in.readLong();
+        this.updatedAt = in.readLong();
+    }
+
+    public static final Parcelable.Creator<Address> CREATOR = new Parcelable.Creator<Address>() {
+        public Address createFromParcel(Parcel source) {
+            return new Address(source);
+        }
+
+        public Address[] newArray(int size) {
+            return new Address[size];
+        }
+    };
 }

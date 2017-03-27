@@ -146,10 +146,15 @@
         </activity>
         <activity android:name=".activity.ChangePwdActivity">
         </activity>
-        <activity android:name=".activity.BindPromotionActivity">
+        <activity
+            android:name=".activity.BindPromotionActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:windowSoftInputMode="adjustUnspecified|stateHidden">
         </activity>
-        <activity android:name=".activity.BindPersonalActivity"
-                  android:windowSoftInputMode="adjustPan">
+        <activity
+            android:name=".activity.BindPersonalActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:windowSoftInputMode="adjustUnspecified|stateHidden">
         </activity>
         <activity
             android:name=".activity.BindCompanyActivity"
@@ -253,7 +258,10 @@
         </activity>
         <activity android:name=".activity.PersonalAddressActivity">
         </activity>
-        <activity android:name=".activity.PersonalAddressAddActivity">
+        <activity
+            android:name=".activity.PersonalAddressAddActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:windowSoftInputMode="adjustUnspecified|stateHidden">
         </activity>
         <activity android:name=".activity.IntegralActivity">
         </activity>
@@ -334,6 +342,23 @@
         <activity android:name=".base.BaseActivityWithTab">
         </activity>
         <activity android:name=".activity.PromotionExperienceListActivity">
+        </activity>
+        <activity android:name=".activity.UploadActivity">
+        </activity>
+        <activity android:name=".base.BaseActivityListWithText">
+        </activity>
+        <activity android:name=".activity.ReportActivity">
+        </activity>
+        <activity
+            android:name=".activity.ReportDetailActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:windowSoftInputMode="adjustUnspecified|stateHidden">
+        </activity>
+        <activity android:name=".activity.AuthorizationActivity">
+        </activity>
+        <activity android:name=".activity.AuthorizationDetailActivity"
+                  android:configChanges="orientation|keyboardHidden"
+                  android:windowSoftInputMode="adjustUnspecified|stateHidden">
         </activity>
     </application>
 

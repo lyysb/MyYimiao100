@@ -43,12 +43,26 @@
     <string name="empty_view_experience">快快告诉我们你辉煌的历史</string>
     <string name="empty_view_study_collection">多收藏也不会怀孕……</string>
     <string name="empty_view_video_list">考试是可以“挣钱”的。但是，暂时没有学习任务。</string>
-    <string name="assurance_withdrawal_personal">您申请的提现金额，将在工作人员收到提现\n申请之后5个工作日内，退回到您原来的\n推广主体个人账户里，请注意查收。</string>
-    <string name="assurance_withdrawal_corporate">您申请的提现金额，将在工作人员收到提现\n申请之后5个工作日内，退回到您原来的\n推广主体对公账户里，请注意查收。</string>
-    <string name="promotion_withdrawal_personal">您申请的提现金额，将在工作人员收到提现\n申请之后5个工作日内，支付到您绑定的\n推广主体个人账户里，请注意查收。</string>
-    <string name="promotion_withdrawal_corporate">您申请的提现金额，将在工作人员收到对应\n金额发票后5个工作日内，支付到您绑定\n推广主体对公账户里，请注意查收。</string>
-    <string name="exam_withdrawal_personal">您申请的提现金额，将在工作人员收到提现\n申请之后5个工作日内，支付到您绑定的\n推广主体个人账户里，请注意查收。</string>
-    <string name="exam_withdrawal_corporate">您申请的提现金额，将在工作人员收到对应\n金额发票后5个工作日内，支付到您绑定\n推广主体对公账户里，请注意查收。</string>
+    <string name="empty_view_report">没有任何记录，求阴影面积</string>
+    <string name="empty_view_authorization">没有任何记录，求阴影面积</string>
+    <string name="assurance_withdrawal_personal">
+        您申请的提现金额，将在工作人员收到提现\n申请之后5个工作日内，退回到您原来的\n推广主体个人账户里，请注意查收。
+    </string>
+    <string name="assurance_withdrawal_corporate">
+        您申请的提现金额，将在工作人员收到提现\n申请之后5个工作日内，退回到您原来的\n推广主体对公账户里，请注意查收。
+    </string>
+    <string name="promotion_withdrawal_personal">
+        您申请的提现金额，将在工作人员收到提现\n申请之后5个工作日内，支付到您绑定的\n推广主体个人账户里，请注意查收。
+    </string>
+    <string name="promotion_withdrawal_corporate">
+        您申请的提现金额，将在工作人员收到对应\n金额发票后5个工作日内，支付到您绑定\n推广主体对公账户里，请注意查收。
+    </string>
+    <string name="exam_withdrawal_personal">
+        您申请的提现金额，将在工作人员收到提现\n申请之后5个工作日内，支付到您绑定的\n推广主体个人账户里，请注意查收。
+    </string>
+    <string name="exam_withdrawal_corporate">
+        您申请的提现金额，将在工作人员收到对应\n金额发票后5个工作日内，支付到您绑定\n推广主体对公账户里，请注意查收。
+    </string>
     <string name="news_submit_error">提交成功，谢谢反馈</string>
     <string name="exam_to_last">当前已经是第一道题</string>
     <string name="exam_to_next">当前已经是最后一道题</string>
@@ -70,5 +84,30 @@
     <string name="resources_promotion_corporate_option3">请绑定对公信息</string>
     <string name="score_detail_dialog_msg">奖学金=第一次考试成绩×当前总发货量+当前考试平均成绩×当前发货量</string>
     <string name="video_detail_dialog_msg">您的积分余额不足，请完成积分任务后再来观看此视频。</string>
+    <string name="report_detail_note">注释：请上传详细的诊断证明扫描件，要求图片是jpg格式</string>
+    <string name="dialog_confirm_submit_account">
+        推广主体信息一旦提交，您将会在24小时\n内收到审核结果通知，审核通过后\n将不能再次修改。
+    </string>
+    <string name="dialog_confirm_submit_report">
+        您确定要提交吗？\n确定提交后不得修改！
+    </string>
+    <string name="dialog_confirm_submit_authorization">
+        您确定要提交吗？\n确定提交后不得修改！
+    </string>
 
+    <string name="authorization_note">
+        请在确定有已签约推广业务基础上申请。\n相应已确定签约业务的纸质版协议，与授权委托书一并邮寄。
+    </string>
+    <string name="upload_success">
+        提交成功，请耐心等待处理结果
+    </string>
+    <string name="regex_name">
+        姓名只允许是中文、英文、数字和“_”
+    </string>
+    <string name="regex_id_card">
+        身份证号格式不正确
+    </string>
+    <string name="regex_email">
+        邮箱地址格式不正确
+    </string>
 </resources>

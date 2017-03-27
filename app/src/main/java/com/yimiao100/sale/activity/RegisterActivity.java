@@ -78,9 +78,11 @@ public class RegisterActivity extends BaseActivity implements CompoundButton
                 case 1:
                     String detail = msg.getData().getString("detail");
                     ToastUtil.showLong(RegisterActivity.this, detail);
+                    mRegisterRegister.setEnabled(true);
                     break;
                 case 2:
                     ToastUtil.showShort(getApplicationContext(), "亲可以换个手机号试试");
+                    mRegisterRegister.setEnabled(true);
                     break;
             }
         }
@@ -120,6 +122,7 @@ public class RegisterActivity extends BaseActivity implements CompoundButton
                     }
                 } else if (result == SMSSDK.RESULT_ERROR) {
                     LogUtil.Companion.d("短信验证回调出错");
+                    mRegisterRegister.setEnabled(true);
                     //错误情况
                     Throwable throwable = (Throwable) data;
                     throwable.printStackTrace();
@@ -165,11 +168,13 @@ public class RegisterActivity extends BaseActivity implements CompoundButton
                 e.printStackTrace();
                 Util.showTimeOutNotice(currentContext);
                 LogUtil.Companion.d("网络请求失败");
+                mRegisterRegister.setEnabled(true);
             }
 
             @Override
             public void onResponse(String response, int id) {
                 LogUtil.Companion.d("服务器返回--" + response);
+                mRegisterRegister.setEnabled(true);
                 SignUpBean signUpBean = JSON.parseObject(response, SignUpBean.class);
                 LogUtil.Companion.d(signUpBean.getStatus());
                 switch (signUpBean.getStatus()) {
@@ -250,6 +255,7 @@ public class RegisterActivity extends BaseActivity implements CompoundButton
             return;
         }
         LogUtil.Companion.d("提交短信验证码");
+        mRegisterRegister.setEnabled(false);
         //提交短信验证码，触发短信操作回调，验证短信验证码是否正确，然后和服务器进行交互
         SMSSDK.submitVerificationCode("86", phone, code);
 

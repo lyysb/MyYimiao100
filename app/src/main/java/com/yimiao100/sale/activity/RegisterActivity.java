@@ -1,5 +1,6 @@
 package com.yimiao100.sale.activity;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -87,6 +88,7 @@ public class RegisterActivity extends BaseActivity implements CompoundButton
             }
         }
     };
+    private ProgressDialog mProgressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -157,7 +159,7 @@ public class RegisterActivity extends BaseActivity implements CompoundButton
      * 发送注册信息到服务器
      */
     private void sendMsg() {
-        //提交验证码成功, 将注册信息提交到服务器
+        //验证码验证通过, 将注册信息提交到服务器
         OkHttpUtils.post().url(URL_SIGN_UP)
                 .addParams("accountNumber", mRegisterPhone.getText().toString().trim())
                 .addParams("password", mRegisterPassword.getText().toString().trim())
@@ -179,12 +181,19 @@ public class RegisterActivity extends BaseActivity implements CompoundButton
                 LogUtil.Companion.d(signUpBean.getStatus());
                 switch (signUpBean.getStatus()) {
                     case "success":
+                        //注册成功前先清除之前本地数据
+                        SharePreferenceUtil.clear(currentContext);
                         //保存Token
                         SharePreferenceUtil.put(currentContext, Constant.ACCESSTOKEN, signUpBean.getTokenInfo().getAccessToken());
+                        // 设置别名需要用户id
+                        SharePreferenceUtil.put(currentContext, Constant.USERID, signUpBean.getUserInfo().getId());
+                        // 保存登录状态
+                        SharePreferenceUtil.put(currentContext, Constant.LOGIN_STATUS, true);
                         //启动服务，设置别名
                         startService(new Intent(currentContext, AliasService.class));
                         //注册成功，进入主界面
                         startActivity(new Intent(RegisterActivity.this, MainActivity.class));
+                        ToastUtil.showShort(currentContext, "注册成功");
                         finish();
                         break;
                     case "failure":
@@ -203,11 +212,11 @@ public class RegisterActivity extends BaseActivity implements CompoundButton
         switch (view.getId()) {
             case R.id.show_password_parent:
                 //切换复选框（眼睛）的选中状态
-                ShowPwd();
+                showPwd();
                 break;
             case R.id.register_register:
                 //提交注册信息
-                Register();
+                register();
                 break;
             case R.id.return_login:
                 //跳回到登录界面
@@ -234,7 +243,7 @@ public class RegisterActivity extends BaseActivity implements CompoundButton
     /**
      * 提交注册信息
      */
-    private void Register() {
+    private void register() {
         String phone = mRegisterPhone.getText().toString().trim();
         String code = mRegisterCode.getText().toString().trim();
         String password = mRegisterPassword.getText().toString().trim();
@@ -264,7 +273,7 @@ public class RegisterActivity extends BaseActivity implements CompoundButton
     /**
      * 显示密码
      */
-    private void ShowPwd() {
+    private void showPwd() {
         if (pwdIsShow) {
             pwdIsShow = false;
             mShowPassword.setChecked(true);

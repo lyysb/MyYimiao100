@@ -293,7 +293,9 @@
         </activity>
         <activity android:name=".activity.ExchangeNoteActivity">
         </activity>
-        <activity android:name=".activity.PromotionExperienceActivity">
+        <activity android:name=".activity.PromotionExperienceActivity"
+                  android:configChanges="orientation|keyboardHidden"
+                  android:windowSoftInputMode="adjustUnspecified|stateHidden">
         </activity>
         <activity android:name=".activity.GuideActivity">
         </activity>

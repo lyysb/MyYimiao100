@@ -49,7 +49,7 @@
                     style="@style/style70"/>
                 <TextView
                     android:id="@+id/authorization_detail_vendor_name"
-                    android:hint="请选择疫苗生产厂家"
+                    android:hint="请选择生产厂家"
                     style="@style/style71"/>
             </LinearLayout>
             <LinearLayout
@@ -129,7 +129,7 @@
 
                 <EditText
                     android:id="@+id/authorization_detail_region_remark"
-                    android:hint="请填写以上所选省份确定签约详细市/区（县）名称。"
+                    android:hint="请填写以上所选省份确定签约详细市/区（县）名称"
                     android:textSize="11sp"
                     android:textColor="@color/color333"
                     android:textColorHint="@color/color999"
@@ -155,7 +155,7 @@
                 android:background="@color/colorF7">
 
                 <TextView
-                    android:text="资料名称："
+                    android:text="资料名称"
                     android:gravity="center_horizontal"
                     android:textColor="@color/color999"
                     android:paddingBottom="5dp"
@@ -166,7 +166,7 @@
                     android:layout_width="0.5dp"
                     style="@style/view_vertical"/>
                 <TextView
-                    android:text="数量："
+                    android:text="数量"
                     android:layout_width="120dp"
                     android:layout_weight="0"
                     android:paddingBottom="5dp"

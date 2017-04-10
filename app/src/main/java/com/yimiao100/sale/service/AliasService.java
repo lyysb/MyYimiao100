@@ -29,12 +29,12 @@ public class AliasService extends Service {
             switch (msg.what) {
                 case MSG_SET_ALIAS:
                     String alias = (String) msg.obj;
-                    LogUtil.Companion.d("通过Handler设置别名--" + alias);
+                    LogUtil.Companion.d("通过Handler设置别名 is " + alias);
                     //调用JPush接口来设置别名
                     JPushInterface.setAlias(getApplicationContext(), alias, mAliasCallback);
                     break;
                 default:
-                    LogUtil.Companion.d("Unhandled msg - " + msg.what);
+                    LogUtil.Companion.d("Unhandled msg is " + msg.what);
                     break;
             }
         }
@@ -57,7 +57,7 @@ public class AliasService extends Service {
             int userId = (int) SharePreferenceUtil.get(this, Constant.USERID, -1);
             if (userId == -1) {
                 //别名有问题
-                LogUtil.Companion.d("别名出错");
+                LogUtil.Companion.d("user id error -1");
             }
             alias = "jpush_user_alias_" + userId;
         } else {

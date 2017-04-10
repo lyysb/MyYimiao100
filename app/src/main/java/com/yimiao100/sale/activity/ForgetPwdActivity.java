@@ -89,6 +89,7 @@ public class ForgetPwdActivity extends BaseActivity {
                 if (result == SMSSDK.RESULT_COMPLETE) {
                     //回调完成
                     if (event == SMSSDK.EVENT_SUBMIT_VERIFICATION_CODE) {
+                        LogUtil.Companion.d("submit verification code success");
                         //验证通过，进入下一步界面
                         Intent intent = new Intent(ForgetPwdActivity.this, ForgetPwd2Activity
                                 .class);
@@ -96,8 +97,10 @@ public class ForgetPwdActivity extends BaseActivity {
                                 ());
                         startActivity(intent);
                         finish();
+                    } else if (event == SMSSDK.EVENT_GET_VERIFICATION_CODE) {
+                        LogUtil.Companion.d("get verification code success");
                     } else {
-                        ToastUtil.showShort(currentContext, "未知错误");
+                        LogUtil.Companion.d("event is " + event);
                     }
                 } else if (event == SMSSDK.RESULT_ERROR) {
                     Throwable throwable = (Throwable) data;

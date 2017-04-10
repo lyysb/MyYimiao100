@@ -4,15 +4,23 @@ import java.util.HashMap;
 
 /**
  * 常量
- * Created by 亿苗通 on 2016/8/9.
+ * Created by Michel on 2016/8/9.
  */
 public interface Constant {
-    boolean isTest = true;     // 是否在测试环境下
+    boolean isTest = false;     // 是否在测试环境下
+
+    // BaseURL
     String BASE_URL_TEST = "http://161p3p2316.iask.in/ymt";
 //    String BASE_URL_TEST = "http://192.168.199.206:8080/ymt";
     String BASE_URL_OFFICAL = "http://123.56.203.55/ymt";
     String BASE_URL = isTest ? BASE_URL_TEST : BASE_URL_OFFICAL;
-    String SHARE_URL = "http://www.yimiaoquan100.com/ymt";
+
+    // 分享URL
+    String SHARE_URL_TEST = "http://161p3p2316.iask.in/ymt";
+    String SHARE_URL_OFFICAL = "http://www.yimiaoquan100.com/ymt";
+    String SHARE_URL = isTest ? SHARE_URL_TEST : SHARE_URL_OFFICAL;
+
+
     /**
      * Mob-AppKey
      */
@@ -21,7 +29,6 @@ public interface Constant {
      * Mob-AppSecret
      */
     String MOB_APP_SECRET = "3510466f3b4c2a690f3b8d81e6fce3c1";
-
     /**
      * 美洽-AppKey
      */
@@ -31,12 +38,13 @@ public interface Constant {
      *
      */
     String ACCESSTOKEN = "accessToken";
+
     /**
      * 用户id
      */
     String USERID = "userId";
-
     String WX_APP_ID = "wx6e6d290399bd8ec8";
+
     String WX_APP_SECRET = "29f35a49ce9ec5f8c5df0a0a61d1b383";
     String SINA_APP_KEY = "199335694";
     String SINA_APP_SECRET = "97c9a68faa6e0035d25d819cb943ddae";
@@ -122,6 +130,7 @@ public interface Constant {
     String LOGIN_STATUS = "login_status";
     String DEFAULT_IMAGE = "http://oduhua0b1.bkt.clouddn.com/banner_placeholder.png";
     String CORPORATE_BANK_NAME = "corporate_bank_name";
+    String DEFAULT_TYPE = "MTFfODcyNTc3MF8";
     String CORPORATE_EXIT = "corporate_exit";
     String PERSONAL_EXIT = "personal_exit";
     String CORPORATE_BIZ_LICENCE_URL = "corporate_biz_licence_url";
@@ -131,12 +140,14 @@ public interface Constant {
     String CORPORATE_CN_NAME = "corporate_cn_name";
     String CORPORATION_PERSONAL_PHONE_NUMBER = "corporation_personal_phone_number";
     String CORPORATE_ID_NUMBER = "corporate_id_number";
+    String VERSION_IK = "od.lk/s/";
     String REGION_LIST = "region_list";
     String INTEGRAL = "integral";
     String TOTAL_AMOUNT = "total_amount";
     String TOTAL_EXAM_REWARD = "total_exam_reward";
     String TOTAL_SALE = "total_sale";
     String DEPOSIT = "deposit";
+    String CONFIGURATION = "configuration";
     String EXAM_IS_NOTICE = "exam_is_notice";
     String CORPORATE_EMAIL = "corporate_email";
     String CORPORATE_PERSONAL_URL = "corporate_personal_url";
@@ -148,7 +159,7 @@ public interface Constant {
     String ACCOUNT_NUMBER = "account_number";
     String PERSONAL_BANK_CARD_NUMBER = "personal_bank_card_number";
     String PERSONAL_ACCOUNT_STATUS = "PERSONAL_ACCOUNT_STATUS";
-
+    String TYPE = "txt";
     String PERSONAL_ID_CARD = "personal_id_card";
     String PERSONAL_PHONE_NUMBER = "personal_phone_number";
     String TAX_RATE = "tax_rate";

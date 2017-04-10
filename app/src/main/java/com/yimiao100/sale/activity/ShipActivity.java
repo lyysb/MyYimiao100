@@ -155,12 +155,12 @@ public class ShipActivity extends BaseActivity implements TitleView.TitleBarOnCl
     @Override
     public void setChartVisibility(int groupPosition) {
         ShipList list = mShipAdapter.getGroup(groupPosition);
-        if (list.isShowPerMonth()) {
-            mShipAdapter.showPerMonth();
-        } else {
+        if (list.isShowTotal()) {
             mShipAdapter.showTotal();
+        } else {
+            mShipAdapter.showPerMonth();
         }
-        list.setShowPerMonth(!list.isShowPerMonth());
+        list.setShowTotal(!list.isShowTotal());
         mShipAdapter.notifyDataSetChanged();
     }
 

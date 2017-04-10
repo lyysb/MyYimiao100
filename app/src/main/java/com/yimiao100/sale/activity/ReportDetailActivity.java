@@ -51,7 +51,8 @@ import static com.yimiao100.sale.utils.TimeUtil.timeStamp2Date;
  * 不良反应申报页
  */
 public class ReportDetailActivity extends BaseActivity implements TitleView
-        .TitleBarOnClickListener, OptionsPickerView.OnOptionsSelectListener {
+        .TitleBarOnClickListener, OptionsPickerView.OnOptionsSelectListener, TimePickerView
+        .OnTimeSelectListener {
 
     private final String URL_ADVERSE_APPLY = Constant.BASE_URL + "/api/apply/adverse_apply";
     private final String ADVERSE_APPLY_ID = "adverseApplyId";
@@ -66,7 +67,7 @@ public class ReportDetailActivity extends BaseActivity implements TitleView
     private final String AREA_ID = "areaId";
     private final String INJECT_AT = "injectAt";
     private final String PATIENT_NAME = "patientName";
-    private final String PATIENT_AGE = "patientAge";
+    private final String PATIENT_BIRTH_DATE = "patientBirthDate";
     private final String PATIENT_SEX = "patientSex";
     private final String ADVERSE_DESC = "adverseDesc";
     private final String DIAGNOSTIC_HOSPITAL = "diagnosticHospital";
@@ -89,8 +90,8 @@ public class ReportDetailActivity extends BaseActivity implements TitleView
     EditText mEvPatientName;
     @BindView(R.id.report_detail_patient_sex)
     ImageView mIvPatientSex;
-    @BindView(R.id.report_detail_patient_age)
-    EditText mEvPatientAge;
+    @BindView(R.id.report_detail_patient_birth_date)
+    TextView mTvPatientBirthDate;
     @BindView(R.id.report_detail_patient_adverse)
     EditText mEvPatientAdverse;
     @BindView(R.id.report_detail_hospital)
@@ -131,7 +132,7 @@ public class ReportDetailActivity extends BaseActivity implements TitleView
     private int mAreaId;
     private String mInjectAt;
     private String mPatientName;
-    private String mPatientAge;
+    private String mPatientBirthDate;
     private String mPatientSex;
     private String mAdverseDesc;
     private String mDiagnosticHospital;
@@ -143,7 +144,7 @@ public class ReportDetailActivity extends BaseActivity implements TitleView
 
     private String mDiagnosticFileName;
     private ProgressDialog mProgressDialog;
-    private TimePickerView mInjectTime;
+    private TimePickerView mTimePickerView;
     private OptionsPickerView mOptionsPicker;
     private List<AdverseApply.RegionListBean> mRegionList;
     private List<AdverseApply.RegionListBean.CityListBean> mCityList;
@@ -151,6 +152,8 @@ public class ReportDetailActivity extends BaseActivity implements TitleView
     private List<AdverseApply.BizListBean> mBizList;
     private List<AdverseApply.BizListBean.CategoryListBean> mCategoryList;
     private List<AdverseApply.BizListBean.CategoryListBean.ProductListBean> mProductList;
+    private Date mInjectDate;
+    private Date mBirthDate;
 
     @Override
 
@@ -195,15 +198,8 @@ public class ReportDetailActivity extends BaseActivity implements TitleView
 
     private void initTimePickerView() {
         Calendar startDate = Calendar.getInstance();
-        startDate.set(2000, 1, 1);
-        mInjectTime = new TimePickerView.Builder(this, new TimePickerView.OnTimeSelectListener() {
-
-            @Override
-            public void onTimeSelect(Date date, View v) {
-                mTvInjectAt.setText(TimeUtil.getTime(date));
-                mInjectAt = TimeUtil.getTime(date, "yyyy-MM-dd");
-            }
-        })
+        startDate.set(1900, 1, 1);
+        mTimePickerView = new TimePickerView.Builder(this, this)
                 .setType(TimePickerView.Type.YEAR_MONTH_DAY)
                 .setContentSize(14)
                 .setSubCalSize(14)
@@ -223,6 +219,10 @@ public class ReportDetailActivity extends BaseActivity implements TitleView
                 LogUtil.Companion.d("init data error");
                 e.printStackTrace();
                 Util.showTimeOutNotice(currentContext);
+                mBizList = new ArrayList<>();
+                mBizList.add(processingBiz());
+                mRegionList = new ArrayList<>();
+                mRegionList.add(processingRegion());
             }
 
             @Override
@@ -236,6 +236,10 @@ public class ReportDetailActivity extends BaseActivity implements TitleView
                         break;
                     case "failure":
                         Util.showError(currentContext, errorBean.getReason());
+                        mBizList = new ArrayList<>();
+                        mBizList.add(processingBiz());
+                        mRegionList = new ArrayList<>();
+                        mRegionList.add(processingRegion());
                         break;
                 }
             }
@@ -336,7 +340,7 @@ public class ReportDetailActivity extends BaseActivity implements TitleView
         mTvCity.setEnabled(false);
         mTvArea.setEnabled(false);
         mEvPatientName.setEnabled(false);
-        mEvPatientAge.setEnabled(false);
+        mTvPatientBirthDate.setEnabled(false);
         mEvPatientAdverse.setEnabled(false);
         mEvHospital.setEnabled(false);
         mEvResult.setEnabled(false);
@@ -375,7 +379,7 @@ public class ReportDetailActivity extends BaseActivity implements TitleView
                 LogUtil.Companion.d("Unknown sex");
                 break;
         }
-        mEvPatientAge.setText(adverseApply.getPatientAge());
+        mTvPatientBirthDate.setText(TimeUtil.timeStamp2Date(adverseApply.getPatientBirthDate(), "yyyy年MM月dd日"));
         mEvPatientAdverse.setText(adverseApply.getAdverseDesc());
         mEvHospital.setText(adverseApply.getDiagnosticHospital());
         mEvResult.setText(adverseApply.getDiagnosticResult());
@@ -393,12 +397,13 @@ public class ReportDetailActivity extends BaseActivity implements TitleView
     }
 
 
-    @OnClick({R.id.report_detail_record,
-            R.id.report_detail_vendor_name, R.id.report_detail_category_name,
-            R.id.report_detail_product_name, R.id.report_detail_spec,
-            R.id.report_detail_dosage_form, R.id.report_detail_inject_at,
-            R.id.report_detail_province, R.id.report_detail_city, R.id.report_detail_area,
-            R.id.report_detail_patient_sex, R.id.report_detail_file, R.id.report_detail_submit})
+    @OnClick({R.id.report_detail_record, R.id.report_detail_vendor_name,
+            R.id.report_detail_category_name, R.id.report_detail_product_name,
+            R.id.report_detail_spec, R.id.report_detail_dosage_form,
+            R.id.report_detail_inject_at, R.id.report_detail_province,
+            R.id.report_detail_city, R.id.report_detail_area,
+            R.id.report_detail_patient_sex, R.id.report_detail_patient_birth_date,
+            R.id.report_detail_file, R.id.report_detail_submit})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.report_detail_record:
@@ -414,6 +419,7 @@ public class ReportDetailActivity extends BaseActivity implements TitleView
                     ToastUtil.showShort(this, "请先选择疫苗生产厂家");
                     return;
                 }
+                mOptionsPicker.setPicker(mCategoryList);
                 mOptionsPicker.show(view);
                 break;
             case R.id.report_detail_product_name:
@@ -421,6 +427,7 @@ public class ReportDetailActivity extends BaseActivity implements TitleView
                     ToastUtil.showShort(this, "请先选择接种疫苗种类");
                     return;
                 }
+                mOptionsPicker.setPicker(mProductList);
                 mOptionsPicker.show(view);
                 break;
             case R.id.report_detail_spec:
@@ -431,8 +438,8 @@ public class ReportDetailActivity extends BaseActivity implements TitleView
                 }
                 break;
             case R.id.report_detail_inject_at:
-                // 显示时间选择器
-                mInjectTime.show();
+                // 选择注射疫苗时间
+                mTimePickerView.show(view);
                 break;
             case R.id.report_detail_province:
                 mOptionsPicker.setPicker(mRegionList);
@@ -443,6 +450,7 @@ public class ReportDetailActivity extends BaseActivity implements TitleView
                     ToastUtil.showShort(this, "请先选择省");
                     return;
                 }
+                mOptionsPicker.setPicker(mCityList);
                 mOptionsPicker.show(view);
                 break;
             case R.id.report_detail_area:
@@ -450,11 +458,16 @@ public class ReportDetailActivity extends BaseActivity implements TitleView
                     ToastUtil.showShort(this, "请先选择省/市");
                     return;
                 }
+                mOptionsPicker.setPicker(mAreaList);
                 mOptionsPicker.show(view);
                 break;
             case R.id.report_detail_patient_sex:
                 // 切换性别
                 selectSex();
+                break;
+            case R.id.report_detail_patient_birth_date:
+                // 选择出生日期
+                mTimePickerView.show(view);
                 break;
             case R.id.report_detail_file:
                 // 选择扫描件
@@ -497,6 +510,24 @@ public class ReportDetailActivity extends BaseActivity implements TitleView
         }
     }
 
+    @Override
+    public void onTimeSelect(Date date, View v) {
+        switch (v.getId()) {
+            case R.id.report_detail_inject_at:
+                mInjectDate = date;
+                // 显示疫苗注射时间
+                mTvInjectAt.setText(TimeUtil.getTime(date));
+                mInjectAt = TimeUtil.getTime(date, "yyyy-MM-dd");
+                break;
+            case R.id.report_detail_patient_birth_date:
+                mBirthDate = date;
+                // 显示出生日期
+                mTvPatientBirthDate.setText(TimeUtil.getTime(date));
+                mPatientBirthDate = TimeUtil.getTime(date, "yyyy-MM-dd");
+                break;
+        }
+    }
+
     /**
      * 选择生产厂家
      */
@@ -505,13 +536,13 @@ public class ReportDetailActivity extends BaseActivity implements TitleView
         LogUtil.Companion.d("vendorName is " + temp.getVendorName());
         mVendorId = temp.getId();
         mCategoryList = temp.getCategoryList();
-        mOptionsPicker.setPicker(mCategoryList);
         mTvVendorName.setText(temp.getVendorName());
         mTvCategoryName.setText("");
         mTvProductName.setText("");
         mTvDosageForm.setText("");
         mTvSpec.setText("");
     }
+
 
     /**
      * 选择疫苗种类
@@ -521,13 +552,11 @@ public class ReportDetailActivity extends BaseActivity implements TitleView
         LogUtil.Companion.d("category name is " + temp.getCategoryName());
         mCategoryId = temp.getId();
         mProductList = temp.getProductList();
-        mOptionsPicker.setPicker(mProductList);
         mTvCategoryName.setText(temp.getCategoryName());
         mTvProductName.setText("");
         mTvDosageForm.setText("");
         mTvSpec.setText("");
     }
-
 
     /**
      * 选择疫苗名称
@@ -553,7 +582,6 @@ public class ReportDetailActivity extends BaseActivity implements TitleView
         LogUtil.Companion.d("provinceName is " + temp.getName());
         mProvinceId = temp.getId();
         mCityList = temp.getCityList();
-        mOptionsPicker.setPicker(mCityList);
         mTvProvince.setText(temp.getName());
         mTvCity.setText("");
         mTvArea.setText("");
@@ -567,7 +595,6 @@ public class ReportDetailActivity extends BaseActivity implements TitleView
         LogUtil.Companion.d("cityName is " + temp.getName());
         mCityId = temp.getId();
         mAreaList = temp.getAreaList();
-        mOptionsPicker.setPicker(mAreaList);
         mTvCity.setText(temp.getName());
         mTvArea.setText("");
     }
@@ -686,10 +713,15 @@ public class ReportDetailActivity extends BaseActivity implements TitleView
             ToastUtil.showShort(this, "不良反应者" + getString(R.string.regex_name));
             return;
         }
-        mPatientAge = mEvPatientAge.getText().toString().trim();
-        if (mPatientAge.isEmpty()) {
-            ToastUtil.showShort(this, "请输入不良反应者年龄");
+        if (mTvPatientBirthDate.getText().toString().isEmpty()) {
+            ToastUtil.showShort(this, "请选择出生日期");
             return;
+        }
+        if (mInjectDate != null && mBirthDate != null) {
+            if (mInjectDate.before(mBirthDate)) {
+                ToastUtil.showShort(this, "注射时间不可早于出生日期");
+                return;
+            }
         }
         mAdverseDesc = mEvPatientAdverse.getText().toString().trim();
         if (mAdverseDesc.isEmpty()) {
@@ -784,7 +816,7 @@ public class ReportDetailActivity extends BaseActivity implements TitleView
                 .addParams(AREA_ID, mAreaId + "")
                 .addParams(INJECT_AT, mInjectAt)
                 .addParams(PATIENT_NAME, mPatientName)
-                .addParams(PATIENT_AGE, mPatientAge + "")
+                .addParams(PATIENT_BIRTH_DATE, mPatientBirthDate)
                 .addParams(PATIENT_SEX, mPatientSex)
                 .addParams(ADVERSE_DESC, mAdverseDesc)
                 .addParams(DIAGNOSTIC_HOSPITAL, mDiagnosticHospital)

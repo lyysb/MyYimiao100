@@ -40,6 +40,7 @@
                 <EditText
                     android:id="@+id/address_name"
                     style="@style/Personal3"
+                    android:inputType="textPersonName"
                     android:hint="请添加收货人姓名"
                 />
                 <ImageView
@@ -108,7 +109,7 @@
                     android:id="@+id/address_code"
                     style="@style/Personal3"
                     android:hint="请添加邮政编码"
-                    android:inputType="phone"
+                    android:inputType="number"
                 />
                 <ImageView
                     android:id="@+id/address_code_clear"

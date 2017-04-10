@@ -70,7 +70,7 @@ public class AdverseApply {
         private int dosageFormId;
         private int id;
         private long injectAt;
-        private String patientAge;
+        private String patientBirthDate;
         private String patientName;
         private String patientSex;
         private String patientSexName;
@@ -261,12 +261,12 @@ public class AdverseApply {
             this.injectAt = injectAt;
         }
 
-        public String getPatientAge() {
-            return patientAge;
+        public String getPatientBirthDate() {
+            return patientBirthDate;
         }
 
-        public void setPatientAge(String patientAge) {
-            this.patientAge = patientAge;
+        public void setPatientBirthDate(String patientBirthDate) {
+            this.patientBirthDate = patientBirthDate;
         }
 
         public String getPatientName() {

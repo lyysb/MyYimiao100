@@ -340,7 +340,7 @@
                 android:layout_height="wrap_content"/>
             <TextView
                 android:id="@+id/bind_company_add"
-                android:text="从事疫苗推广经历"
+                android:text="@string/account_promotion_experience"
                 android:textSize="13sp"
                 android:textColor="@color/color333"
                 android:background="@android:color/white"

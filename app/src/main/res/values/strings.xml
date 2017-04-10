@@ -4,7 +4,7 @@
     <string name="title_activity_fullscreen">FullscreenActivity</string>
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
-    <string name="expand">查看详情</string>
+    <string name="expand">展开</string>
     <string name="shrink">收起</string>
     <string name="tips">This is a custom TextView that can be expanded with a smooth transition
         animation,you can set the number of lines to expand,change its icon or text and so on\n
@@ -21,6 +21,9 @@
     <string name="account_auditing_notice">信息审核中，不可编辑</string>
     <string name="account_id_photo_notice">初次上传，请拍摄证件照</string>
     <string name="account_experience_notice">请添加推广经历</string>
+    <string name="account_promotion_experience">
+        从事疫苗或医药相关产品推广经历
+    </string>
     <string name="account_ever_notice">请填写曾经所在公司及职位</string>
     <string name="account_advantage_notice">请填写推广优势</string>
     <string name="account_zip_error_notice">文件压缩出现未知错误，暂无法上传</string>
@@ -92,7 +95,7 @@
         您确定要提交吗？\n确定提交后不得修改！
     </string>
     <string name="dialog_confirm_submit_authorization">
-        您确定要提交吗？\n确定提交后不得修改！
+        您确定要提交资料邮寄申请吗？确认提交工作人员会在1-2个工作日之内安排邮寄，请耐心等待。
     </string>
 
     <string name="authorization_note">
@@ -109,5 +112,8 @@
     </string>
     <string name="regex_email">
         邮箱地址格式不正确
+    </string>
+    <string name="dialog_tax_error">
+        税率获取失败，请联系客服人员
     </string>
 </resources>

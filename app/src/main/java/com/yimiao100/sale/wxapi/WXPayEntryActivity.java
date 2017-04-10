@@ -12,7 +12,7 @@ import com.tencent.mm.sdk.openapi.IWXAPIEventHandler;
 import com.tencent.mm.sdk.openapi.WXAPIFactory;
 import com.yimiao100.sale.base.BaseActivity;
 import com.yimiao100.sale.utils.Constant;
-
+import com.yimiao100.sale.utils.LogUtil;
 
 
 /**
@@ -25,12 +25,14 @@ public class WXPayEntryActivity extends BaseActivity implements IWXAPIEventHandl
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         //调用微信API之前需要向微信注册APP_ID
         mWeChatId = WXAPIFactory.createWXAPI(this, Constant.WX_APP_ID, false);
 
         mWeChatId.handleIntent(getIntent(), this);
-    }
 
+        LogUtil.Companion.d("WXPayEntryActivity onCreate");
+    }
     /**
      * 启动模式是SingleTop的时候，再次启动自己，调用该方法
      * @param intent
@@ -42,6 +44,7 @@ public class WXPayEntryActivity extends BaseActivity implements IWXAPIEventHandl
         setIntent(intent);
 
         mWeChatId.handleIntent(getIntent(), this);
+        LogUtil.Companion.d("WXPayEntryActivity onNewIntent");
     }
 
     @Override
@@ -56,6 +59,7 @@ public class WXPayEntryActivity extends BaseActivity implements IWXAPIEventHandl
      */
     @Override
     public void onResp(BaseResp baseResp) {
+        LogUtil.Companion.d("WXPayEntryActivity onResp");
          //检查是否由微信支付
         if (baseResp.getType() == ConstantsAPI.COMMAND_PAY_BY_WX) {
             Log.d("onResp", "onPayFinish, errCode = " + baseResp.errCode);// 支付结果码

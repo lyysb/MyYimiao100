@@ -6,14 +6,14 @@ import java.util.ArrayList;
  * Created by 亿苗通 on 2016/9/13.
  */
 public class PaymentList {
-    private boolean showPerMonth;
+    private boolean showTotal;
 
-    public boolean isShowPerMonth() {
-        return showPerMonth;
+    public boolean isShowTotal() {
+        return showTotal;
     }
 
-    public void setShowPerMonth(boolean showPerMonth) {
-        this.showPerMonth = showPerMonth;
+    public void setShowTotal(boolean showTotal) {
+        this.showTotal = showTotal;
     }
 
     private int id;

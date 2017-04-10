@@ -278,7 +278,7 @@
 
             <TextView
                 android:id="@+id/bind_personal_experience"
-                android:text="从事疫苗推广经历"
+                android:text="@string/account_promotion_experience"
                 android:textSize="13sp"
                 android:textColor="@color/color333"
                 android:drawableLeft="@mipmap/ico_personal_head"

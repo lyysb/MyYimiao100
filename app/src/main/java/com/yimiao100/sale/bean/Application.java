@@ -18,7 +18,6 @@ public class Application extends android.app.Application{
         Calendar calendar = Calendar.getInstance();
         int year = calendar.get(Calendar.YEAR);
         if (year == 2017) {
-            // 如果删了此处代码程序就炸了
             // 初始化xxx
             MultiDex.install(this);
         }

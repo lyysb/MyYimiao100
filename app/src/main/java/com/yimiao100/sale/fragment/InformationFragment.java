@@ -341,6 +341,7 @@ public class InformationFragment extends Fragment implements SwipeRefreshLayout
                     //防止Fragment点击报空指针
                     Util.showTimeOutNotice(getActivity());
                 }
+                mSwipeRefreshLayout.setRefreshing(false);
             }
 
             @Override

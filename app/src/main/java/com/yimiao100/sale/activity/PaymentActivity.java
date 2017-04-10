@@ -154,12 +154,12 @@ public class PaymentActivity extends BaseActivity implements TitleView.TitleBarO
     @Override
     public void setChartVisibility(int groupPosition) {
         PaymentList list = mPaymentAdapter.getGroup(groupPosition);
-        if (list.isShowPerMonth()) {
-            mPaymentAdapter.showPerMonth();
-        } else {
+        if (list.isShowTotal()) {
             mPaymentAdapter.showTotal();
+        } else {
+            mPaymentAdapter.showPerMonth();
         }
-        list.setShowPerMonth(!list.isShowPerMonth());
+        list.setShowTotal(!list.isShowTotal());
         mPaymentAdapter.notifyDataSetChanged();
     }
 

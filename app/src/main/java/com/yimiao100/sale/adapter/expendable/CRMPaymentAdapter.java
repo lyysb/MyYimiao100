@@ -140,10 +140,10 @@ public class CRMPaymentAdapter extends BaseExpandableListAdapter{
 
         mChangeChart = ViewHolderUtil.get(convertView, R.id.payment_change_chart);
 
-        if (paymentList.isShowPerMonth()) {
-            showPerMonth();
-        } else {
+        if (paymentList.isShowTotal()) {
             showTotal();
+        } else {
+            showPerMonth();
         }
         mChangeChart.setOnClickListener(new View.OnClickListener() {
             @Override

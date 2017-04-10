@@ -84,7 +84,7 @@ public class PromotionExperienceActivity extends BaseActivity implements TitleVi
 
     private void initTimeView() {
         Calendar startDate = Calendar.getInstance();
-        startDate.set(1990, 1, 1);
+        startDate.set(1949, 1, 1);
         mTimePicker = new TimePickerView.Builder(this, this)
                 .setType(TimePickerView.Type.YEAR_MONTH)
                 .setContentSize(14)

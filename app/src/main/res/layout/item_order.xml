@@ -75,6 +75,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center_vertical"
+                android:layout_marginLeft="2dp"
                 android:text="规格："
                 android:textColor="@color/color666"
                 android:textSize="12sp"/>
@@ -103,8 +104,6 @@
                 android:id="@+id/order_serial_no"
                 android:text="协议单号："
                 android:textSize="12sp"
-                android:lines="1"
-                android:ellipsize="end"
                 android:textColor="@color/color666"
                 android:layout_width="0dp"
                 android:layout_weight="1"

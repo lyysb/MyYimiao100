@@ -1,5 +1,6 @@
 package com.yimiao100.sale.activity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
@@ -94,13 +95,25 @@ public class ScholarshipCashConfirmPersonalActivity extends BaseActivity impleme
         double amount = intent.getDoubleExtra("amount", -1);
         mScholarshipCashMoney.setText("￥" + FormatUtils.MoneyFormat(amount));
         //根据说率计算税后金额
-        double taxRate = Double.valueOf((String)SharePreferenceUtil.get(this, TAX_RATE, "")) ;
+        double taxRate = Double.valueOf((String)SharePreferenceUtil.get(this, TAX_RATE, "-1")) ;
         if (taxRate != -1) {
             // 显示计算后金额
             mScholarshipCashFinalPersonal.setText("￥" + FormatUtils.MoneyFormat(amount * (1 - taxRate)));
         } else {
             // 提示错误
-            ToastUtil.showShort(this, "税率获取失败");
+            // 提示错误
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage(getString(R.string.dialog_tax_error));
+            builder.setCancelable(false);
+            builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                    finish();
+                }
+            });
+            AlertDialog dialog = builder.create();
+            dialog.show();
         }
 
     }

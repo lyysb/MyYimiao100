@@ -1,62 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:background="@android:color/white"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@android:color/white"
     android:gravity="center_vertical"
     android:orientation="horizontal">
+
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/head_vendor_logo"
-        android:layout_marginLeft="20dp"
-        android:src="@mipmap/ico_my_grades_logo"
         android:layout_width="50dp"
-        android:layout_height="50dp"/>
-    <LinearLayout
+        android:layout_height="50dp"
         android:layout_marginLeft="20dp"
-        android:orientation="vertical"
+        android:src="@mipmap/ico_my_grades_logo"/>
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:orientation="vertical">
         <TextView
             android:id="@+id/head_vendor_title"
-            android:layout_marginTop="8dp"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            android:textColor="@color/color333"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            />
+            android:layout_marginTop="8dp"
+            android:textColor="@color/color333"
+            android:textSize="14sp"
+            android:textStyle="bold"
+        />
         <RelativeLayout
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="15dp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="15dp"
+            android:layout_marginTop="10dp">
             <TextView
                 android:id="@+id/head_vendor_product"
-                android:text=" \n产品"
+                style="@style/style42"
                 android:drawableLeft="@mipmap/ico_my_grades_product"
-                style="@style/style42"/>
+                android:text=" \n产品"/>
             <RelativeLayout
-                android:layout_alignParentRight="true"
-                android:layout_marginRight="30dp"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="30dp">
                 <TextView
                     android:id="@+id/head_vendor_money"
-                    android:text=" \n总奖励"
+                    style="@style/style42"
                     android:drawableLeft="@mipmap/ico_my_grades_bonus"
-                    style="@style/style42"/>
+                    android:text=" \n总奖励"/>
                 <ImageView
                     android:id="@+id/head_vendor_notice"
-                    android:layout_marginTop="2dp"
-                    android:layout_marginLeft="14dp"
-                    android:visibility="gone"
-                    android:src="@mipmap/ico_my_grades_prompt"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="14dp"
+                    android:layout_marginTop="2dp"
+                    android:src="@mipmap/ico_my_grades_prompt"
+                    android:visibility="gone"/>
             </RelativeLayout>
 
 
         </RelativeLayout>
     </LinearLayout>
+
 </LinearLayout>

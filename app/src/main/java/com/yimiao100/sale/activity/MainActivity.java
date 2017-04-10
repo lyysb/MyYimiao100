@@ -31,6 +31,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import okhttp3.Call;
 
+
 /**
  * 主界面
  */
@@ -50,6 +51,8 @@ public class MainActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+
+
 
         initTabs();
 
@@ -73,23 +76,25 @@ public class MainActivity extends BaseActivity {
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":
-                        UserFundNew userFund = JSON.parseObject(response, UserFundBean.class)
-                                .getUserFund();
-                        //用户账户总金额-double
-                        SharePreferenceUtil.put(getApplicationContext(), Constant.TOTAL_AMOUNT,
-                                userFund.getTotalAmount());
-                        //用户积分-int
-                        SharePreferenceUtil.put(getApplicationContext(), Constant.INTEGRAL,
-                                 userFund.getIntegral());
-                        //用户奖学金-double
-                        SharePreferenceUtil.put(getApplicationContext(), Constant.TOTAL_EXAM_REWARD,
-                                userFund.getTotalExamReward());
-                        //用户推广费-double
-                        SharePreferenceUtil.put(getApplicationContext(), Constant.TOTAL_SALE,
-                                userFund.getTotalSale());
-                        //用户保证金-double
-                        SharePreferenceUtil.put(getApplicationContext(), Constant.DEPOSIT,
-                                userFund.getDeposit());
+                        UserFundBean userFundBean = JSON.parseObject(response, UserFundBean.class);
+                        if (userFundBean.getUserFund() != null) {
+                            UserFundNew userFund = userFundBean.getUserFund();
+                            //用户账户总金额-double
+                            SharePreferenceUtil.put(getApplicationContext(), Constant.TOTAL_AMOUNT,
+                                    userFund.getTotalAmount());
+                            //用户积分-int
+                            SharePreferenceUtil.put(getApplicationContext(), Constant.INTEGRAL,
+                                    userFund.getIntegral());
+                            //用户奖学金-double
+                            SharePreferenceUtil.put(getApplicationContext(), Constant.TOTAL_EXAM_REWARD,
+                                    userFund.getTotalExamReward());
+                            //用户推广费-double
+                            SharePreferenceUtil.put(getApplicationContext(), Constant.TOTAL_SALE,
+                                    userFund.getTotalSale());
+                            //用户保证金-double
+                            SharePreferenceUtil.put(getApplicationContext(), Constant.DEPOSIT,
+                                    userFund.getDeposit());
+                        }
                         break;
                     case "failure":
                         Util.showError(MainActivity.this, errorBean.getReason());

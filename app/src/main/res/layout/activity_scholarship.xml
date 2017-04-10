@@ -60,6 +60,7 @@
             <com.yimiao100.sale.view.PullToRefreshListView
                 android:id="@+id/scholarship_list_company_list_view"
                 style="@style/style23"
+                android:dividerHeight="5dp"
                 android:layout_above="@id/ll_scholarship_list_confirm"
                 android:background="@color/colorEee"
                 android:listSelector="?android:attr/selectableItemBackground"

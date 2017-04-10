@@ -94,6 +94,9 @@ public class PromotionExperienceListActivity extends BaseActivity implements Tit
         if (TextUtils.equals("passed", mAccountStatus)) {
             LogUtil.Companion.d("账户已通过审核，禁止新增");
             mExperienceAdd.setVisibility(View.GONE);
+        } else if (TextUtils.equals("auditing", mAccountStatus)) {
+            LogUtil.Companion.d("账户正在审核中，禁止新增");
+            mExperienceAdd.setVisibility(View.GONE);
         } else {
             mExperienceAdd.setVisibility(View.VISIBLE);
         }
@@ -101,9 +104,11 @@ public class PromotionExperienceListActivity extends BaseActivity implements Tit
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        // 如果是已通过，则不能进入编辑
+        // 根据账户状态
         if (TextUtils.equals("passed", mAccountStatus)) {
             LogUtil.Companion.d("账户已通过审核，禁止修改");
+        } else if (TextUtils.equals("auditing", mAccountStatus)) {
+            LogUtil.Companion.d("账户正在审核中，禁止修改");
         } else {
             edit(position);
         }
@@ -138,6 +143,8 @@ public class PromotionExperienceListActivity extends BaseActivity implements Tit
         // 如果已通过，则不能删除
         if (TextUtils.equals("passed", mAccountStatus)) {
             LogUtil.Companion.d("已通过审核，禁止删除");
+        } else if (TextUtils.equals("auditing", mAccountStatus)) {
+            LogUtil.Companion.d("账户正在审核中，禁止修改");
         } else {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setMessage("确定删除？");

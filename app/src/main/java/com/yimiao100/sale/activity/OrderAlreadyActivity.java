@@ -154,7 +154,7 @@ public class OrderAlreadyActivity extends BaseActivity implements TitleView
             case "personal":
                 mOrderAlreadyRe.setText("请在" + defaultExpiredAt
                         + "之前，通过已绑定的个人银行卡将产品推广保证金" + orderTotalDeposit +
-                        "转到如上账户，并且下载打印电子协议，认真阅读每一条协议内容。");
+                        "转到如上账户，并且下载电子协议，认真阅读每一条协议内容。");
                 break;
         }
         //订单id

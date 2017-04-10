@@ -140,10 +140,10 @@ public class CRMShipAdapter extends BaseExpandableListAdapter{
 
         mShip_change_chart = ViewHolderUtil.get(convertView, R.id.ship_change_chart);
 
-        if (shipList.isShowPerMonth()) {
-            showPerMonth();
-        } else {
+        if (shipList.isShowTotal()) {
             showTotal();
+        } else {
+            showPerMonth();
         }
         mShip_change_chart.setOnClickListener(new View.OnClickListener() {
             @Override

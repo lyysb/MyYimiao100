@@ -124,6 +124,7 @@ public class CommodityConfirmActivity extends BaseActivity implements TitleView
     private void initAddressData() {
         //获取用户收货地址之前不允许提交订单
         mCommodityConfirmExchange.setClickable(false);
+        showLoadingProgress();
         //获取用户收货地址数据
         OkHttpUtils.post().url(URL_ADDRESS_LIST).addHeader(ACCESS_TOKEN, mAccessToken)
                 .build().execute(new StringCallback() {
@@ -132,10 +133,12 @@ public class CommodityConfirmActivity extends BaseActivity implements TitleView
                 //获取用户地址列表失败的话，也不会允许点击提交订单
                 LogUtil.Companion.d("获取地址列表E：" + e.getLocalizedMessage());
                 Util.showTimeOutNotice(currentContext);
+                hideLoadingProgress();
             }
 
             @Override
             public void onResponse(String response, int id) {
+                hideLoadingProgress();
                 //返回数据之后才允许点击
                 mCommodityConfirmExchange.setClickable(true);
                 LogUtil.Companion.d("获取地址列表：" + response);

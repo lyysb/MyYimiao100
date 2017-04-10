@@ -226,7 +226,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="推广周期："
+                        android:text="推广周期：            "
                         android:textColor="@color/color333"
                         android:textSize="12sp"/>
 
@@ -245,7 +245,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="基础服务量："
+                        android:text="基础服务量：        "
                         android:textColor="@color/color333"
                         android:textSize="12sp"/>
 
@@ -309,7 +309,7 @@
                     app:tvea_expandLines="3"
                     app:tvea_shrinkBitmap="@mipmap/ico_study_drop_up"
                     app:tvea_textContentColor="@color/color999"
-                    app:tvea_textContentSize="14sp"
+                    app:tvea_textContentSize="12sp"
                     app:tvea_textExpand="@string/expand"
                     app:tvea_textShrink="@string/shrink"
                     app:tvea_textStateColor="@color/color999"

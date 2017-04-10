@@ -57,7 +57,7 @@
                     style="@style/style70"/>
                 <TextView
                     android:id="@+id/report_detail_category_name"
-                    android:hint="请选择疫苗种类"
+                    android:hint="请选择接种疫苗种类"
                     style="@style/style71"/>
             </LinearLayout>
             <LinearLayout
@@ -69,7 +69,7 @@
                     style="@style/style70"/>
                 <TextView
                     android:id="@+id/report_detail_product_name"
-                    android:hint="请选择疫苗名称"
+                    android:hint="请选择接种疫苗名称"
                     style="@style/style71"/>
             </LinearLayout>
             <LinearLayout
@@ -82,7 +82,7 @@
                     android:layout_width="75dp"/>
                 <TextView
                     android:id="@+id/report_detail_spec"
-                    android:hint="请选择规格"
+                    android:hint="规格"
                     style="@style/style71"
                     android:background="@drawable/shape_rec_upload"
                     android:gravity="center"
@@ -91,7 +91,7 @@
                 <TextView
                     android:layout_marginLeft="15dp"
                     android:id="@+id/report_detail_dosage_form"
-                    android:hint="请选择剂型"
+                    android:hint="剂型"
                     android:gravity="center"
                     android:background="@drawable/shape_rec_upload"
                     style="@style/style71"
@@ -113,7 +113,7 @@
                     style="@style/style70"/>
                 <TextView
                     android:id="@+id/report_detail_inject_at"
-                    android:hint="请选择注射时间"
+                    android:hint="请选择注射疫苗时间"
                     style="@style/style71"/>
             </LinearLayout>
             <TextView
@@ -132,7 +132,7 @@
                     style="@style/style70"/>
                 <TextView
                     android:id="@+id/report_detail_province"
-                    android:hint="请选择所推广的区域/省"
+                    android:hint="请选择已受权推广区域（省）"
                     style="@style/style71"/>
             </LinearLayout>
             <LinearLayout
@@ -144,7 +144,7 @@
                     style="@style/style70"/>
                 <TextView
                     android:id="@+id/report_detail_city"
-                    android:hint="请选择所推广的区域/市"
+                    android:hint="请选择已受权推广区域（市）"
                     style="@style/style71"/>
             </LinearLayout>
             <LinearLayout
@@ -156,7 +156,7 @@
                     style="@style/style70"/>
                 <TextView
                     android:id="@+id/report_detail_area"
-                    android:hint="请选择所推广的区域区/县"
+                    android:hint="请选择已受权推广区域（区/县）"
                     style="@style/style71"/>
             </LinearLayout>
 
@@ -190,13 +190,12 @@
                 style="@style/style69">
 
                 <TextView
-                    android:text="年龄："
+                    android:text="出生日期："
                     style="@style/style70"/>
-                <EditText
-                    android:id="@+id/report_detail_patient_age"
-                    android:hint="请输入年龄"
-                    android:inputType="number"
-                    style="@style/style72"/>
+                <TextView
+                    android:id="@+id/report_detail_patient_birth_date"
+                    android:hint="请选择出生日期"
+                    style="@style/style71"/>
             </LinearLayout>
             <LinearLayout
                 android:layout_marginTop="0.5dp"
@@ -207,7 +206,7 @@
                     style="@style/style70"/>
                 <EditText
                     android:id="@+id/report_detail_patient_adverse"
-                    android:hint="请输入不良反应"
+                    android:hint="请输入详细的不良反应症状"
                     android:textSize="10sp"
                     android:textColor="@color/color333"
                     android:textColorHint="@color/color999"

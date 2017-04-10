@@ -20,8 +20,8 @@ android {
         applicationId "com.yimiao100.sale"
         minSdkVersion 16
         targetSdkVersion 22
-        versionCode 21
-        versionName "1.5.4"
+        versionCode 24
+        versionName "1.5.5"
         multiDexEnabled true
 
         ndk {
@@ -40,7 +40,7 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
 
-            debuggable true
+            debuggable false
             signingConfig signingConfigs.release
         }
         debug {

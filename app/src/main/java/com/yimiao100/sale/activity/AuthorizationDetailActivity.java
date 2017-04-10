@@ -2,6 +2,7 @@ package com.yimiao100.sale.activity;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
@@ -37,12 +38,15 @@ import okhttp3.Call;
 /**
  * 申请授权书详情页
  */
-public class AuthorizationDetailActivity extends BaseActivity implements TitleView.TitleBarOnClickListener, OptionsPickerView.OnOptionsSelectListener {
+public class AuthorizationDetailActivity extends BaseActivity implements TitleView
+        .TitleBarOnClickListener, OptionsPickerView.OnOptionsSelectListener {
 
     private final String URL_APLLY = Constant.BASE_URL + "/api/apply/authz_apply";
     private final String URL_SUBMIT = Constant.BASE_URL + "/api/apply/submit_authz_apply";
 
     private final String AUTHZ_APPLY_ID = "authzApplyId";
+    @BindView(R.id.authorization_detail_select_address)
+    TextView mTvSelectAddress;
     private int mAuthzApplyId;
     @BindView(R.id.authorization_detail_title)
     TitleView mTitle;
@@ -177,6 +181,10 @@ public class AuthorizationDetailActivity extends BaseActivity implements TitleVi
                 e.printStackTrace();
                 LogUtil.Companion.d("data error");
                 Util.showTimeOutNotice(currentContext);
+                mBizList = new ArrayList<>();
+                mBizList.add(processingBizData());
+                mRegionList = new ArrayList<>();
+                mRegionList.add(processingRegionData());
             }
 
             @Override
@@ -190,6 +198,10 @@ public class AuthorizationDetailActivity extends BaseActivity implements TitleVi
                         break;
                     case "failure":
                         Util.showError(currentContext, errorBean.getReason());
+                        mBizList = new ArrayList<>();
+                        mBizList.add(processingBizData());
+                        mRegionList = new ArrayList<>();
+                        mRegionList.add(processingRegionData());
                         break;
                 }
             }
@@ -215,8 +227,6 @@ public class AuthorizationDetailActivity extends BaseActivity implements TitleVi
         }
         // 处理回显信息
         if (apply.getAuthzApply() != null) {
-            // 禁止按钮点击
-            forbidButton();
             // 回显已有数据
             processingAuthorization(apply.getAuthzApply());
         }
@@ -257,34 +267,77 @@ public class AuthorizationDetailActivity extends BaseActivity implements TitleVi
         return regionListBean;
     }
 
-    /**
-     * 禁止按钮点击
-     */
-    private void forbidButton() {
-
-    }
-
     private void processingAuthorization(AuthorizationApply.AuthzApplyBean authzApply) {
         String applyStatus = authzApply.getApplyStatus();
         LogUtil.Companion.d("apply status is " + applyStatus);
+        if ("passed".equals(applyStatus)) {
+            // 审核通过，禁止修改和提交
+            forbidButton(authzApply.getApplyStatusName());
+        }
         mTvVendorName.setText(authzApply.getVendorName());
+        mVendorId = authzApply.getVendorId();
         mTvCategory.setText(authzApply.getCategoryName());
+        mCategoryId = authzApply.getCategoryId();
         mTvProduct.setText(authzApply.getProductName());
+        mProductId = authzApply.getProductId();
         mTvSpec.setText(authzApply.getSpec());
+        mSpecId = authzApply.getSpecId();
         mTvDosageForm.setText(authzApply.getDosageForm());
+        mDosageFormId = authzApply.getDosageFormId();
         mTvProvince.setText(authzApply.getProvinceName());
+        mProvinceId = authzApply.getProvinceId();
         mEvRegionRemark.setText(authzApply.getRegionRemark());
+        mRegionRemark = authzApply.getRegionRemark();
         mEvQualificationNum.setText(authzApply.getQualificationNum());
+        mQualificationNum = authzApply.getQualificationNum();
         mEvContractNum.setText(authzApply.getContractNum());
+        mContractNum = authzApply.getContractNum();
         mEvAgreementNum.setText(authzApply.getAgreementNum());
+        mAgreementNum = authzApply.getAgreementNum();
         mEvAuthzNum.setText(authzApply.getAuthzNum());
+        mAuthzNum = authzApply.getAuthzNum();
         mEvAuthzCopyNum.setText(authzApply.getAuthzCopyNum());
+        mAuthzCopyNum = authzApply.getAuthzCopyNum();
         mEvProductDescNum.setText(authzApply.getProductDescNum());
+        mProductDescNum = authzApply.getProductDescNum();
         mEvBizLicenseCopyNum.setText(authzApply.getBizLicenseCopyNum());
+        mBizLicenseCopyNum = authzApply.getBizLicenseCopyNum();
         mEvRemark.setText(authzApply.getRemark());
+        mRemark = authzApply.getRemark();
         mTvCnName.setText(authzApply.getCnName());
+        mCnName = authzApply.getCnName();
         mTvPhoneNumber.setText(authzApply.getPhoneNumber());
+        mPhoneNumber = authzApply.getPhoneNumber();
         mTvFullAddress.setText(authzApply.getFullAddress());
+        mFullAddress = authzApply.getFullAddress();
+    }
+
+    /**
+     * 禁止按钮点击
+     * @param applyStatusName
+     */
+    private void forbidButton(String applyStatusName) {
+        ToastUtil.showShort(this, "审核通过不可编辑");
+        mTvVendorName.setEnabled(false);
+        mTvCategory.setEnabled(false);
+        mTvProduct.setEnabled(false);
+        mTvSpec.setEnabled(false);
+        mTvDosageForm.setEnabled(false);
+        mTvProvince.setEnabled(false);
+        mEvRegionRemark.setEnabled(false);
+        mEvAgreementNum.setEnabled(false);
+        mEvAuthzNum.setEnabled(false);
+        mEvContractNum.setEnabled(false);
+        mEvQualificationNum.setEnabled(false);
+        mEvAuthzCopyNum.setEnabled(false);
+        mEvProductDescNum.setEnabled(false);
+        mEvBizLicenseCopyNum.setEnabled(false);
+        mEvRemark.setEnabled(false);
+        mTvSelectAddress.setEnabled(false);
+        mBtnSubmit.setEnabled(false);
+        mBtnSubmit.setText(applyStatusName);
+        mBtnSubmit.setBackgroundResource(R.drawable.shape_button_forbid);
+        mBtnSubmit.setTextColor(Color.GRAY);
     }
 
     @OnClick({R.id.authorization_detail_record,
@@ -307,6 +360,7 @@ public class AuthorizationDetailActivity extends BaseActivity implements TitleVi
                     ToastUtil.showShort(this, "请选择疫苗生产厂家");
                     return;
                 }
+                mOptionsPickerView.setPicker(mCategoryList);
                 mOptionsPickerView.show(view);
                 break;
             case R.id.authorization_detail_product:
@@ -314,6 +368,7 @@ public class AuthorizationDetailActivity extends BaseActivity implements TitleVi
                     ToastUtil.showShort(this, "请选择疫苗种类");
                     return;
                 }
+                mOptionsPickerView.setPicker(mProductList);
                 mOptionsPickerView.show(view);
                 break;
             case R.id.authorization_detail_spec:
@@ -360,6 +415,7 @@ public class AuthorizationDetailActivity extends BaseActivity implements TitleVi
 
     /**
      * 选择生产厂家
+     *
      * @param options1
      */
     private void selectVendor(int options1) {
@@ -367,11 +423,11 @@ public class AuthorizationDetailActivity extends BaseActivity implements TitleVi
         mVendorId = temp.getId();
         mTvVendorName.setText(temp.getVendorName());
         mCategoryList = temp.getCategoryList();
-        mOptionsPickerView.setPicker(mCategoryList);
     }
 
     /**
      * 选择疫苗种类
+     *
      * @param options1
      */
     private void selectCategory(int options1) {
@@ -379,15 +435,16 @@ public class AuthorizationDetailActivity extends BaseActivity implements TitleVi
         mCategoryId = temp.getId();
         mTvCategory.setText(temp.getCategoryName());
         mProductList = temp.getProductList();
-        mOptionsPickerView.setPicker(mProductList);
     }
 
     /**
      * 选择疫苗名称
+     *
      * @param options1
      */
     private void selectProduct(int options1) {
-        AuthorizationApply.BizListBean.CategoryListBean.ProductListBean temp = mProductList.get(options1);
+        AuthorizationApply.BizListBean.CategoryListBean.ProductListBean temp = mProductList.get
+                (options1);
         mProductId = temp.getId();
         mTvProduct.setText(temp.getProductName());
         mSpecId = temp.getSpecId();
@@ -398,6 +455,7 @@ public class AuthorizationDetailActivity extends BaseActivity implements TitleVi
 
     /**
      * 选择省
+     *
      * @param options1
      */
     private void selectProvince(int options1) {
@@ -419,10 +477,10 @@ public class AuthorizationDetailActivity extends BaseActivity implements TitleVi
                         mTvCnName.setText(mCnName);
                         mPhoneNumber = address.getPhoneNumber();
                         mTvPhoneNumber.setText(mPhoneNumber);
-                        mFullAddress = address.getProvinceName() + "\t"
-                                + address.getCityName() + "\t"
-                                + address.getAreaName() + "\t"
-                                + address.getFullAddress();
+                        mFullAddress = //address.getProvinceName() + "\t" +
+                                //address.getCityName() + "\t" +
+                                //address.getAreaName() + "\t" +
+                                address.getFullAddress();
                         mTvFullAddress.setText(mFullAddress);
                     } else {
                         LogUtil.Companion.d("data is null");
@@ -521,6 +579,7 @@ public class AuthorizationDetailActivity extends BaseActivity implements TitleVi
         final ProgressDialog progressDialog = ProgressDialogUtil.getLoadingProgress(this, "提交中");
         progressDialog.show();
         OkHttpUtils.post().url(URL_SUBMIT).addHeader(ACCESS_TOKEN, mAccessToken)
+                .params(mParams)
                 .addParams(VENDOR_ID, mVendorId + "")
                 .addParams(CATEGORY_ID, mCategoryId + "")
                 .addParams(PRODUCT_ID, mProductId + "")

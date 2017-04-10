@@ -1,6 +1,7 @@
 package com.yimiao100.sale.activity;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -14,6 +15,7 @@ import com.yimiao100.sale.base.BaseActivity;
 import com.yimiao100.sale.bean.ErrorBean;
 import com.yimiao100.sale.utils.Constant;
 import com.yimiao100.sale.utils.LogUtil;
+import com.yimiao100.sale.utils.ToastUtil;
 import com.yimiao100.sale.utils.Util;
 import com.yimiao100.sale.view.TitleView;
 import com.zhy.http.okhttp.OkHttpUtils;
@@ -63,6 +65,18 @@ public class ChangePwdActivity extends BaseActivity implements TextWatcher, Titl
 
     @OnClick(R.id.change_submit)
     public void onClick() {
+        if (mChangeNowPwd.getText().toString().trim().isEmpty()) {
+            ToastUtil.showShort(this, "请输入原密码");
+            return;
+        }
+        if (mChangePwdNew.getText().toString().trim().isEmpty()) {
+            ToastUtil.showShort(this, "请输入新密码");
+            return;
+        }
+        if (mChangePwdConfirm.getText().toString().trim().isEmpty()) {
+            ToastUtil.showShort(this, "请再次输入新密码");
+            return;
+        }
         mChangeSubmit.setEnabled(false);
         OkHttpUtils.post().url(URL_UPDATE_PASSWORD)
                 .addHeader(ACCESS_TOKEN, mAccessToken)
@@ -118,9 +132,10 @@ public class ChangePwdActivity extends BaseActivity implements TextWatcher, Titl
                     .getText().toString());
         }
         //设置按钮是否可点击，背景颜色的变化
-        mChangeSubmit.setClickable(isSame);
-        mChangeSubmit.setBackgroundResource(isSame ? R.drawable.shape_getcode : R.drawable
-                .shape_getcode_loading);
+        mChangeSubmit.setEnabled(isSame);
+        mChangeSubmit.setBackgroundResource(isSame ? R.drawable.selector_button : R.drawable
+                .shape_button_forbid);
+        mChangeSubmit.setTextColor(isSame ? Color.WHITE : Color.GRAY);
     }
 
     @Override

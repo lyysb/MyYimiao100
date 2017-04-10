@@ -47,7 +47,7 @@
                     android:orientation="horizontal">
 
                     <LinearLayout
-                        android:layout_width="110dp"
+                        android:layout_width="117dp"
                         android:layout_height="100dp"
                         android:orientation="vertical"
                         android:paddingLeft="12dp">
@@ -117,7 +117,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
                     <TextView
-                        android:text="厂家    ："
+                        android:text="厂家：                    "
                         style="@style/style4"/>
                     <TextView
                         android:id="@+id/resource_promotion_vendor_name"
@@ -131,7 +131,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
                     <TextView
-                        android:text="产品    ："
+                        android:text="产品：                    "
                         style="@style/style4"/>
                     <TextView
                         android:id="@+id/resource_promotion_product_formal_name"
@@ -145,7 +145,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
                     <TextView
-                        android:text="商品名："
+                        android:text="商品名：                "
                         style="@style/style4"/>
                     <TextView
                         android:id="@+id/resource_promotion_product_common_name"
@@ -158,7 +158,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
                 <TextView
-                    android:text="推广区域："
+                    android:text="推广区域：            "
                     style="@style/style4"/>
                 <TextView
                     android:id="@+id/resource_promotion_region"
@@ -195,7 +195,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
                     <TextView
-                        android:text="基础服务量            "
+                        android:text="基础服务量：        "
                         style="@style/style4"/>
                     <TextView
                         android:id="@+id/resource_promotion_quota"
@@ -221,9 +221,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
                 <LinearLayout
-                    android:layout_weight="1"
                     android:orientation="vertical"
                     android:layout_gravity="center_vertical"
+                    android:layout_marginRight="38dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content">
                     <TextView
@@ -236,36 +236,42 @@
                         style="@style/style4_1"/>
                 </LinearLayout>
 
-
-                <LinearLayout
-                    android:background="@mipmap/ico_company_promotion_choice"
-                    android:layout_margin="12dp"
-                    android:layout_centerVertical="true"
-                    android:layout_width="wrap_content"
+                <RelativeLayout
+                    android:gravity="center"
+                    android:padding="12dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content">
-                    <Button
-                        android:id="@+id/promotion_subtract"
-                        style="?android:attr/borderlessButtonStyle"
-                        android:background="@null"
-                        android:layout_width="50dp"
-                        android:layout_height="wrap_content"/>
-                    <TextView
-                        android:id="@+id/promotion_num"
-                        android:text="0"
-                        android:gravity="center"
-                        android:textSize="12sp"
-                        android:textColor="@color/color666"
-                        android:layout_weight="1"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"/>
-                    <Button
-                        android:id="@+id/promotion_add"
-                        style="?android:attr/borderlessButtonStyle"
-                        android:background="@null"
-                        android:layout_width="50dp"
-                        android:layout_height="wrap_content"/>
 
-                </LinearLayout>
+                    <LinearLayout
+                        android:background="@mipmap/ico_company_promotion_choice"
+                        android:layout_centerInParent="true"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+                        <Button
+                            android:id="@+id/promotion_subtract"
+                            style="?android:attr/borderlessButtonStyle"
+                            android:background="@null"
+                            android:layout_width="50dp"
+                            android:layout_height="wrap_content"/>
+                        <TextView
+                            android:id="@+id/promotion_num"
+                            android:text="0"
+                            android:gravity="center"
+                            android:textSize="12sp"
+                            android:textColor="@color/color666"
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"/>
+                        <Button
+                            android:id="@+id/promotion_add"
+                            style="?android:attr/borderlessButtonStyle"
+                            android:background="@null"
+                            android:layout_width="50dp"
+                            android:layout_height="wrap_content"/>
+
+                    </LinearLayout>
+                </RelativeLayout>
+
 
             </LinearLayout>
             <View style="@style/view_horizontal"/>
@@ -276,20 +282,19 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
                 <TextView
-                    android:layout_weight="1"
-                    android:text="您的最终竞标数量："
+                    android:text="您的最终竞标数量：                    "
                     android:textSize="12sp"
                     android:textColor="@color/colorMain"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
                 <TextView
                     android:id="@+id/resource_promotion_total_count"
-                    android:text="{total_count}"
+                    android:text="0"
                     android:textSize="14sp"
+                    android:gravity="center"
                     android:textColor="@color/colorRed"
-                    android:paddingRight="50dp"
-                    android:paddingLeft="50dp"
-                    android:layout_width="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"/>
             </LinearLayout>
             <LinearLayout
@@ -306,11 +311,11 @@
                     android:layout_height="wrap_content"/>
                 <TextView
                     android:id="@+id/resource_promotion_total_amount"
-                    android:text="{total_amount}人民币"
+                    android:text="0"
                     android:textSize="14sp"
                     android:gravity="center"
-                    android:layout_weight="1"
                     android:textColor="@color/colorRed"
+                    android:layout_weight="1"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"/>
             </LinearLayout>

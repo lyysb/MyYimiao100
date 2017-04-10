@@ -109,7 +109,7 @@ public class OrderCompletedActivity extends BaseActivity implements TitleView.Ti
         mVendorName = mOrder.getVendorName();
         mOrderCompleteVendorName.setText(mVendorName);
         mCategoryName = mOrder.getCategoryName();
-        mOrderCompleteCommonName.setText(mCategoryName);
+        mOrderCompleteCommonName.setText("产品：" + mCategoryName);
         mSpec = mOrder.getSpec();
         mOrderCompleteSpec.setText("规格：" + mSpec);
         mDosageForm = mOrder.getDosageForm();

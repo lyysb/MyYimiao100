@@ -24,6 +24,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
             <TextView
+                android:text="title"
                 android:id="@+id/notice_detail_title"
                 android:layout_margin="10dp"
                 style="@style/NoticeTitle1"/>
@@ -32,9 +33,23 @@
                 android:layout_marginRight="10dp"
                 android:layout_marginBottom="10dp"
                 android:layout_marginTop="6dp"
+                android:gravity="center_vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
                 <TextView
+                    android:id="@+id/notice_detail_account_type"
+                    android:text="type"
+                    android:background="@mipmap/ico_notice_company"
+                    android:paddingTop="2dp"
+                    android:paddingBottom="2dp"
+                    android:paddingLeft="4dp"
+                    android:paddingRight="4dp"
+                    android:layout_marginRight="4dp"
+                    android:textSize="9sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+                <TextView
+                    android:text="source"
                     android:id="@+id/notice_detail_from"
                     android:textColor="@color/color666"
                     android:textSize="12sp"
@@ -42,6 +57,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"/>
                 <TextView
+                    android:text="time"
                     android:id="@+id/notice_detail_time"
                     android:textColor="@color/color666"
                     android:textSize="8sp"

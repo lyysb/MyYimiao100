@@ -208,6 +208,7 @@ public class SubmitPromotionActivity extends BaseActivity implements TitleView
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":
+                        LogUtil.Companion.d("SubmitPromotionActivity result success");
                         //从服务端获取返回信息
                         JSONObject jsonObject;
                         try {
@@ -222,6 +223,7 @@ public class SubmitPromotionActivity extends BaseActivity implements TitleView
                                 req.timeStamp = payRequest.getString("timestamp");
                                 req.packageValue = payRequest.getString("package");
                                 req.sign = payRequest.getString("sign");
+                                LogUtil.Companion.d("SubmitPromotionActivity enter wx");
                                 //去WXPayEntry做回调
                                 weChatId.sendReq(req);
                             }
@@ -249,6 +251,7 @@ public class SubmitPromotionActivity extends BaseActivity implements TitleView
     };
 
     private void handleResult(final int code) {
+        LogUtil.Companion.d("SubmitPromotionActivity receive broadcast, code is " + code);
         //0 支付成功
         //-1 发生错误 可能的原因：签名错误、未注册APPID、项目设置APPID不正确、注册的APPID与设置的不匹配、其他异常等。
         //-2 用户取消 发生场景：用户不支付了，点击取消，返回APP。

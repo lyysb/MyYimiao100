@@ -82,6 +82,7 @@ public class NoticeAdapter extends BaseAdapter {
         TextView notice_created_at = ViewHolderUtil.get(convertView, R.id.notice_created_at);
         ImageView notice_status = ViewHolderUtil.get(convertView, R.id.notice_status);
         LinearLayout ll_notice_list = ViewHolderUtil.get(convertView, R.id.ll_notice_list);
+        TextView tvAccountType = ViewHolderUtil.get(convertView, R.id.notice_account_type);
 
         //设置通知标题
         notice_list_title.setText(notice.getNoticeSource() + "：" + notice.getNoticeTitle());
@@ -99,6 +100,24 @@ public class NoticeAdapter extends BaseAdapter {
             case "high":
                 notice_level.setImageResource(R.mipmap.ico_notice_red);
                 break;
+        }
+        if (notice.getAccountType() != null) {
+            switch (notice.getAccountType()) {
+                case "corporate":
+                    tvAccountType.setVisibility(View.VISIBLE);
+                    tvAccountType.setText("对公");
+                    tvAccountType.setTextColor(mContext.getResources().getColor(R.color.colorOrigin));
+                    tvAccountType.setBackgroundResource(R.mipmap.ico_notice_company);
+                    break;
+                case "personal":
+                    tvAccountType.setText("个人");
+                    tvAccountType.setTextColor(mContext.getResources().getColor(R.color.colorMain));
+                    tvAccountType.setBackgroundResource(R.mipmap.ico_notice_personal);
+                    tvAccountType.setVisibility(View.VISIBLE);
+                    break;
+            }
+        } else {
+            tvAccountType.setVisibility(View.GONE);
         }
         //设置阅读状态
         int readStatus = notice.getReadStatus();

@@ -11,30 +11,36 @@
         android:textColor="@color/color666"
         android:lineSpacingMultiplier="1.2"
         android:background="@mipmap/ico_fillet"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
-    <Button
-        android:id="@+id/dialog_check"
-        android:gravity="center"
-        android:text="再检查一下"
-        android:textSize="15sp"
-        style="?android:attr/borderlessButtonStyle"
-        android:textColor="@color/color999"
+    <LinearLayout
         android:layout_below="@id/dialog_fillet"
-        android:background="@mipmap/ico_check"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
-    <Button
-        android:id="@+id/dialog_confirm"
-        android:gravity="center"
-        android:text="确定"
-        android:textSize="15sp"
-        style="?android:attr/borderlessButtonStyle"
-        android:textColor="@android:color/white"
-        android:layout_toRightOf="@id/dialog_check"
-        android:layout_below="@id/dialog_fillet"
-        android:background="@mipmap/ico_ok"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:background="@android:color/transparent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:layout_weight="1"
+            android:id="@+id/dialog_check"
+            android:gravity="center"
+            android:text="再检查一下"
+            android:textSize="15sp"
+            style="?android:attr/borderlessButtonStyle"
+            android:textColor="@color/color999"
+            android:background="@mipmap/ico_check"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <Button
+            android:layout_weight="1"
+            android:id="@+id/dialog_confirm"
+            android:gravity="center"
+            android:text="确定"
+            android:textSize="15sp"
+            style="?android:attr/borderlessButtonStyle"
+            android:textColor="@android:color/white"
+            android:background="@mipmap/ico_ok"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
 
 </RelativeLayout>

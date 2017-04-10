@@ -81,8 +81,14 @@ public class RichesActivity extends BaseActivity implements TitleView.TitleBarOn
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":
-                        Tax tax = JSON.parseObject(response, TaxBean.class).getTax();
-                        double taxRate = tax.getTaxRate() / 100;
+                        Tax tax =JSON.parseObject(response, TaxBean.class).getTax();
+                        double taxRate;
+                        if (tax != null) {
+                            taxRate = tax.getTaxRate() / 100;
+                        } else {
+                            // 错误税率
+                            taxRate = -1;
+                        }
                         // 保存税率
                         SharePreferenceUtil.put(currentContext, Constant.TAX_RATE, taxRate);
                         break;

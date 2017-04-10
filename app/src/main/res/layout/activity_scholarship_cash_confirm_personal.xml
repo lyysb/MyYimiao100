@@ -30,7 +30,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="个人推广"
-                    android:textColor="@color/color333"
+                    android:textColor="@color/colorBlue10"
                     android:textSize="14sp"/>
                 <TextView
                     android:id="@+id/scholarship_cash_end_personal"
@@ -38,7 +38,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
-                    android:textColor="@color/color333"
+                    android:textColor="@color/colorBlue10"
                     android:textSize="14sp"/>
             </RelativeLayout>
             <TextView
@@ -59,8 +59,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="￥"
-                    android:textColor="@color/color333"
-                    android:textSize="29sp"/>
+                    android:textColor="@color/color666"
+                    android:textStyle="bold"
+                    android:textSize="19sp"/>
             </LinearLayout>
             <View
                 style="@style/view_horizontal"/>
@@ -75,9 +76,9 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:gravity="center_vertical"
-                    android:text="扣除个税及管理费用后可提现金额："
-                    android:textColor="@color/color666"
-                    android:textSize="14sp"/>
+                    android:text="可提现金额："
+                    android:textColor="@color/color8b"
+                    android:textSize="12sp"/>
                 <TextView
                     android:id="@+id/scholarship_cash_final_personal"
                     android:layout_width="0dp"
@@ -85,10 +86,21 @@
                     android:layout_height="wrap_content"
                     android:gravity="right"
                     android:text="￥"
-                    android:textColor="@color/color666"
-                    android:textSize="14sp"/>
+                    android:textStyle="bold"
+                    android:textColor="@color/color333"
+                    android:textSize="22sp"/>
 
             </LinearLayout>
+            <TextView
+                android:background="@android:color/white"
+                android:gravity="right"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="(扣除个税及管理费用后可得)"
+                android:textColor="@color/color8b"
+                android:paddingRight="12dp"
+                android:paddingBottom="12dp"
+                android:textSize="10sp"/>
             <View
                 style="@style/view_horizontal"/>
             <TextView
@@ -98,7 +110,7 @@
                 android:background="@android:color/white"
                 android:padding="12dp"
                 android:text="联系方式："
-                android:textColor="@color/color666"
+                android:textColor="@color/color8b"
                 android:textSize="14sp"/>
             <View
                 style="@style/view_horizontal"/>

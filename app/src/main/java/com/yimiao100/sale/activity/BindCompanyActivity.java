@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -277,12 +278,14 @@ public class BindCompanyActivity extends BaseActivity implements TitleView
                 LogUtil.Companion.d("bizLicence path is " + bizLicencePath);
                 picasso.load(new File(bizLicencePath))
                         .transform(BitmapUtil.getTransformation(mBindCompanyTakePhoto))
-                        .placeholder(R.mipmap.ico_binding_account_add_photos)
+                        .placeholder(R.mipmap.ico_default_short_picture)
+                        .error(R.mipmap.ico_binding_account_add_photos)
                         .into(mBindCompanyTakePhoto);
             } else {
                 picasso.load(bizUrl)
                         .transform(BitmapUtil.getTransformation(mBindCompanyTakePhoto))
-                        .placeholder(R.mipmap.ico_binding_account_add_photos)
+                        .error(R.mipmap.ico_binding_account_add_photos)
+                        .placeholder(R.mipmap.ico_default_short_picture)
                         .into(mBindCompanyTakePhoto);
             }
             String personalPhotoPath = (String) SharePreferenceUtil.get(this, "corporate" + personalPhoto, "");
@@ -290,13 +293,13 @@ public class BindCompanyActivity extends BaseActivity implements TitleView
                 LogUtil.Companion.d("personalPhotoPath is " + personalPhotoPath);
                 picasso.load(new File(personalPhotoPath))
                         .transform(BitmapUtil.getTransformation(mBindCompanyCardPhoto1))
-                        .placeholder(R.mipmap.ico_binding_account_certificates)
+                        .placeholder(R.mipmap.ico_default_short_picture)
                         .error(R.mipmap.ico_binding_account_certificates)
                         .into(mBindCompanyCardPhoto1);
             } else {
                 picasso.load(personalUrl)
                         .transform(BitmapUtil.getTransformation(mBindCompanyCardPhoto1))
-                        .placeholder(R.mipmap.ico_binding_account_certificates)
+                        .placeholder(R.mipmap.ico_default_short_picture)
                         .error(R.mipmap.ico_binding_account_certificates)
                         .into(mBindCompanyCardPhoto1);
             }
@@ -305,13 +308,13 @@ public class BindCompanyActivity extends BaseActivity implements TitleView
                 LogUtil.Companion.d("idPhotoPath is " + idPhotoPath);
                 picasso.load(new File(idPhotoPath))
                         .transform(BitmapUtil.getTransformation(mBindCompanyCardPhoto2))
-                        .placeholder(R.mipmap.ico_binding_account_certificates_two)
+                        .placeholder(R.mipmap.ico_default_short_picture)
                         .error(R.mipmap.ico_binding_account_certificates_two)
                         .into(mBindCompanyCardPhoto2);
             } else {
                 picasso.load(idUrl)
                         .transform(BitmapUtil.getTransformation(mBindCompanyCardPhoto2))
-                        .placeholder(R.mipmap.ico_binding_account_certificates_two)
+                        .placeholder(R.mipmap.ico_default_short_picture)
                         .error(R.mipmap.ico_binding_account_certificates_two)
                         .into(mBindCompanyCardPhoto2);
             }
@@ -362,6 +365,8 @@ public class BindCompanyActivity extends BaseActivity implements TitleView
         mBindCompanyCardPhoto1.setEnabled(false);
         mBindCompanyCardPhoto2.setEnabled(false);
         mBindCompanySubmit.setEnabled(false);
+        mBindCompanySubmit.setBackgroundResource(R.drawable.shape_button_forbid);
+        mBindCompanySubmit.setTextColor(Color.GRAY);
     }
 
 

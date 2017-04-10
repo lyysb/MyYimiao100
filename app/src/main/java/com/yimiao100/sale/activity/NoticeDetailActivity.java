@@ -2,6 +2,7 @@ package com.yimiao100.sale.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSON;
@@ -41,6 +42,8 @@ public class NoticeDetailActivity extends BaseActivity implements TitleView
     TextView mNoticeDetailTime;
     @BindView(R.id.notice_detail_content)
     TextView mNoticeDetailContent;
+    @BindView(R.id.notice_detail_account_type)
+    TextView mTvAccountType;
     private int mNoticeId;
 
     private final String URL_USER_NOTICE = Constant.BASE_URL + "/api/notice/user_notice";
@@ -60,7 +63,9 @@ public class NoticeDetailActivity extends BaseActivity implements TitleView
 
         showLoadingProgress();
 
-        initData();
+        if (mNoticeId != -1) {
+            initData();
+        }
 
     }
 
@@ -85,21 +90,10 @@ public class NoticeDetailActivity extends BaseActivity implements TitleView
                     case "success":
                         LogUtil.Companion.d("通知详情：" + response);
                         //解析JSON
-                        NoticeDetailBean noticeDetailBean = JSON.parseObject(response, NoticeDetailBean.class);
+                        NoticeDetailBean noticeDetailBean = JSON.parseObject(response,
+                                NoticeDetailBean.class);
                         if (noticeDetailBean != null && noticeDetailBean.getUserNotice() != null) {
-                            NoticedListBean userNotice = noticeDetailBean.getUserNotice();
-                            if (userNotice.getNoticeTitle() != null) {
-                                mNoticeDetailTitle.setText(userNotice.getNoticeTitle());
-                            }
-                            if (userNotice.getNoticeSource() != null) {
-                                mNoticeDetailFrom.setText("来源：" + userNotice.getNoticeSource());
-                            }
-                            mNoticeDetailTime.setText(TimeUtil.timeStamp2Date(userNotice
-                                    .getCreatedAt()
-                                    + "", "yyyy年MM月dd日 HH:mm:ss"));
-                            if (userNotice.getNoticeContent() != null) {
-                                mNoticeDetailContent.setText(userNotice.getNoticeContent());
-                            }
+                            processingResult(noticeDetailBean);
                         } else {
                             //请重新登录
                             ToastUtil.showShort(currentContext, "账号异常，请重新登录");
@@ -107,7 +101,6 @@ public class NoticeDetailActivity extends BaseActivity implements TitleView
                             SharePreferenceUtil.clear(currentContext);
                             startActivity(new Intent(currentContext, LoginActivity.class));
                         }
-
                         break;
                     case "failure":
                         Util.showError(currentContext, errorBean.getReason());
@@ -115,6 +108,46 @@ public class NoticeDetailActivity extends BaseActivity implements TitleView
                 }
             }
         });
+    }
+
+    private void processingResult(NoticeDetailBean noticeDetailBean) {
+        NoticedListBean userNotice = noticeDetailBean.getUserNotice();
+        if (userNotice.getNoticeTitle() != null) {
+            mNoticeDetailTitle.setText(userNotice.getNoticeTitle());
+        } else {
+            mNoticeDetailTitle.setText("");
+        }
+        if (userNotice.getAccountType() != null) {
+            switch (userNotice.getAccountType()) {
+                case "corporate":
+                    mTvAccountType.setVisibility(View.VISIBLE);
+                    mTvAccountType.setBackgroundResource(R.mipmap.ico_notice_company);
+                    mTvAccountType.setText("对公");
+                    mTvAccountType.setTextColor(getResources().getColor(R.color.colorOrigin));
+                    break;
+                case "personal":
+                    mTvAccountType.setText("个人");
+                    mTvAccountType.setBackgroundResource(R.mipmap.ico_notice_personal);
+                    mTvAccountType.setTextColor(getResources().getColor(R.color.colorMain));
+                    mTvAccountType.setVisibility(View.VISIBLE);
+                    break;
+            }
+        } else {
+            mTvAccountType.setVisibility(View.GONE);
+        }
+        if (userNotice.getNoticeSource() != null) {
+            mNoticeDetailFrom.setText("来源：" + userNotice.getNoticeSource());
+        } else {
+            mNoticeDetailFrom.setText("来源：");
+        }
+        mNoticeDetailTime.setText(TimeUtil.timeStamp2Date(userNotice
+                .getCreatedAt()
+                + "", "yyyy年MM月dd日 HH:mm:ss"));
+        if (userNotice.getNoticeContent() != null) {
+            mNoticeDetailContent.setText(userNotice.getNoticeContent());
+        } else {
+            mNoticeDetailContent.setText("");
+        }
     }
 
     @Override
@@ -126,4 +159,6 @@ public class NoticeDetailActivity extends BaseActivity implements TitleView
     public void rightOnClick() {
 
     }
+
+
 }

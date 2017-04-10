@@ -10,9 +10,27 @@ public class NoticedListBean {
     private String noticeLevel;
     private String noticeSource;
     private String senderName;
+    private String accountType;
+    private String accountTypeName;
     private int readStatus;
     private long createdAt;
     private long readAt;
+
+    public String getAccountType() {
+        return accountType;
+    }
+
+    public void setAccountType(String accountType) {
+        this.accountType = accountType;
+    }
+
+    public String getAccountTypeName() {
+        return accountTypeName;
+    }
+
+    public void setAccountTypeName(String accountTypeName) {
+        this.accountTypeName = accountTypeName;
+    }
 
     public String getNoticeSource() {
         return noticeSource;

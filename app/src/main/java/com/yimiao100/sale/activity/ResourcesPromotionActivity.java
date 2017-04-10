@@ -26,7 +26,7 @@ import butterknife.OnClick;
 
 
 /**
- * 资源-公司推广
+ * 资源-推广
  */
 public class ResourcesPromotionActivity extends BaseActivity implements TitleView
         .TitleBarOnClickListener, View.OnClickListener, CheckUtil.CorporatePassedListener, CheckUtil.PersonalPassedListener {
@@ -208,9 +208,9 @@ public class ResourcesPromotionActivity extends BaseActivity implements TitleVie
         mPromotionNum.setText("0");
         //最终竞标数量
         mResourcePromotionTotalCount.setText(mQuota + mResourceInfo.getUnits());
-        //最终提交的保证金--（ 基础指标+竞标数量）*推广保证金基数
+        //最终提交的保证金--(基础指标+竞标数量)*推广保证金基数
         mResourcePromotionTotalAmount.setText(FormatUtils.MoneyFormat(mQuota * mSaleDeposit) +
-                "人民币");
+                "(人民币)");
 
         mChange = mQuota * increment / 100;
     }
@@ -270,7 +270,7 @@ public class ResourcesPromotionActivity extends BaseActivity implements TitleVie
                 mResourcePromotionTotalCount.setText((mQuota + mNum) + mResourceInfo.getUnits());
                 //最终提交的保证金--（ 基础指标+竞标数量）*推广保证金基数
                 mResourcePromotionTotalAmount.setText(FormatUtils.MoneyFormat((mQuota + mNum) *
-                        mSaleDeposit) + "人民币");
+                        mSaleDeposit) + "(人民币)");
                 break;
             case R.id.promotion_add:
                 //指标数增加
@@ -282,7 +282,7 @@ public class ResourcesPromotionActivity extends BaseActivity implements TitleVie
                 mResourcePromotionTotalCount.setText((mQuota + mNum) + mResourceInfo.getUnits());
                 //最终提交的保证金--（ 基础指标+竞标数量）*推广保证金基数-只是作为显示
                 mResourcePromotionTotalAmount.setText(FormatUtils.MoneyFormat((mQuota + mNum) *
-                        mSaleDeposit) + "人民币");
+                        mSaleDeposit) + "(人民币)");
                 break;
             case R.id.resources_promotion_submit:
                 //提交

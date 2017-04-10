@@ -72,8 +72,8 @@ public class LoginActivity extends BaseActivity implements CompoundButton.OnChec
         ButterKnife.bind(this);
         //设置复选框监听
         mShowPassword.setOnCheckedChangeListener(this);
-    }
 
+    }
 
     @OnClick({R.id.show_password_parent, R.id.login_forget_password, R.id.login_register, R.id
             .login_login})
@@ -147,13 +147,15 @@ public class LoginActivity extends BaseActivity implements CompoundButton.OnChec
                 //判断成功还是失败
                 switch (signUpBean.getStatus()) {
                     case "success":
+                        // 登录成功前先清空本地数据
+                        SharePreferenceUtil.clear(currentContext);
                         //保存登录状态
                         SharePreferenceUtil.put(currentContext, Constant.LOGIN_STATUS, true);
                         //保存Token
-                        SharePreferenceUtil.put(LoginActivity.this, Constant.ACCESSTOKEN,
+                        SharePreferenceUtil.put(currentContext, Constant.ACCESSTOKEN,
                                 signUpBean.getTokenInfo().getAccessToken());
                         //保存用户id
-                        SharePreferenceUtil.put(LoginActivity.this, Constant.USERID, signUpBean
+                        SharePreferenceUtil.put(currentContext, Constant.USERID, signUpBean
                                 .getUserInfo().getId());
                         //保存用户账号
                         SharePreferenceUtil.put(currentContext, Constant.ACCOUNT_NUMBER, mAccountNumber);

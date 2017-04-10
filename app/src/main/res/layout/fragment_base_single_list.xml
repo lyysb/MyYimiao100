@@ -5,6 +5,8 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
     <android.support.v4.widget.SwipeRefreshLayout
+        android:background="@color/colorEee"
+        android:paddingTop="5dp"
         android:id="@+id/base_single_swipe"
         android:layout_width="match_parent"
         android:layout_height="match_parent">

@@ -30,17 +30,32 @@ public class ShowWebImageActivity extends BaseActivity {
         final PhotoViewAttacher attacher = new PhotoViewAttacher(mWebImagePhoto);
         // 设置最大放大级别为10
         attacher.setMaximumScale(10);
-        Picasso.with(this)
-                .load(imageUrl)
-                .into(mWebImagePhoto, new Callback() {
-                    @Override
-                    public void onSuccess() {
-                        attacher.update();
-                    }
+        if (imageUrl.isEmpty()) {
+            Picasso.with(this)
+                    .load(R.mipmap.ico_test)
+                    .into(mWebImagePhoto, new Callback() {
+                        @Override
+                        public void onSuccess() {
+                            attacher.update();
+                        }
 
-                    @Override
-                    public void onError() {
-                    }
-                });
+                        @Override
+                        public void onError() {
+                        }
+                    });
+        } else {
+            Picasso.with(this)
+                    .load(imageUrl)
+                    .into(mWebImagePhoto, new Callback() {
+                        @Override
+                        public void onSuccess() {
+                            attacher.update();
+                        }
+
+                        @Override
+                        public void onError() {
+                        }
+                    });
+        }
     }
 }

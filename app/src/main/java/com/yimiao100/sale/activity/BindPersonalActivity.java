@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -209,12 +210,14 @@ public class BindPersonalActivity extends BaseActivity implements TitleView
                 LogUtil.Companion.d("personalPhotoPath is " + personalPhotoPath);
                 picasso.load(new File(personalPhotoPath))
                         .transform(BitmapUtil.getTransformation(mPersonalCardPhoto1))
-                        .placeholder(R.mipmap.ico_binding_account_certificates)
+                        .placeholder(R.mipmap.ico_default_short_picture)
+                        .error(R.mipmap.ico_binding_account_certificates)
                         .into(mPersonalCardPhoto1);
             } else {
                 picasso.load(personalUrl)
                         .transform(BitmapUtil.getTransformation(mPersonalCardPhoto1))
-                        .placeholder(R.mipmap.ico_binding_account_certificates)
+                        .placeholder(R.mipmap.ico_default_short_picture)
+                        .error(R.mipmap.ico_binding_account_certificates)
                         .into(mPersonalCardPhoto1);
             }
             // 证件照2
@@ -223,13 +226,13 @@ public class BindPersonalActivity extends BaseActivity implements TitleView
                 LogUtil.Companion.d("idPhotoPath is " + idPhotoPath);
                 picasso.load(new File(idPhotoPath))
                         .transform(BitmapUtil.getTransformation(mPersonalCardPhoto2))
-                        .placeholder(R.mipmap.ico_binding_account_certificates_two)
+                        .placeholder(R.mipmap.ico_default_short_picture)
                         .error(R.mipmap.ico_binding_account_certificates_two)
                         .into(mPersonalCardPhoto2);
             } else {
                 picasso.load(idUrl)
                         .transform(BitmapUtil.getTransformation(mPersonalCardPhoto2))
-                        .placeholder(R.mipmap.ico_binding_account_certificates_two)
+                        .placeholder(R.mipmap.ico_default_short_picture)
                         .error(R.mipmap.ico_binding_account_certificates_two)
                         .into(mPersonalCardPhoto2);
             }
@@ -288,6 +291,8 @@ public class BindPersonalActivity extends BaseActivity implements TitleView
         mPersonalEver.setKeyListener(null);
         mPersonalAdvantage.setKeyListener(null);
         mPersonalSubmit.setEnabled(false);
+        mPersonalSubmit.setBackgroundResource(R.drawable.shape_button_forbid);
+        mPersonalSubmit.setTextColor(Color.GRAY);
     }
 
 

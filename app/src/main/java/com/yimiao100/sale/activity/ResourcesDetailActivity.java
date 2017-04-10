@@ -3,7 +3,6 @@ package com.yimiao100.sale.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Html;
-import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageButton;
@@ -11,6 +10,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSON;
+import com.bigkoo.pickerview.OptionsPickerView;
+import com.bigkoo.pickerview.lib.WheelView;
+import com.bigkoo.pickerview.listener.CustomListener;
 import com.squareup.picasso.Picasso;
 import com.yimiao100.sale.R;
 import com.yimiao100.sale.base.BaseActivity;
@@ -31,7 +33,6 @@ import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import cn.jeesoft.widget.pickerview.CharacterPickerWindow;
 import fm.jiecao.jcvideoplayer_lib.JCVideoPlayer;
 import fm.jiecao.jcvideoplayer_lib.JCVideoPlayerStandard;
 import okhttp3.Call;
@@ -40,7 +41,7 @@ import okhttp3.Call;
  * 资源-资源详情
  */
 public class ResourcesDetailActivity extends BaseActivity implements TitleView
-        .TitleBarOnClickListener, View.OnClickListener {
+        .TitleBarOnClickListener, View.OnClickListener, OptionsPickerView.OnOptionsSelectListener {
 
     @BindView(R.id.resources_detail_title)
     TitleView mResourcesDetailTitle;
@@ -78,7 +79,7 @@ public class ResourcesDetailActivity extends BaseActivity implements TitleView
     private final String URL_RESOURCE_INFO = Constant.BASE_URL + "/api/resource/resource_info";
     private ResourceListBean mResourceInfo;
     private String mImageUrl;
-    private CharacterPickerWindow mPromotionType;
+    private OptionsPickerView mPromotionType;
     private ArrayList<String> mPromotionTypeItems;
     private String mUserAccountType;
 
@@ -103,7 +104,25 @@ public class ResourcesDetailActivity extends BaseActivity implements TitleView
     private void initView() {
         mResourcesDetailTitle.setOnTitleBarClick(this);
         mResourcesPromotion.setOnClickListener(this);
-        mPromotionType = new CharacterPickerWindow(this);
+        mPromotionType = new OptionsPickerView.Builder(this, this)
+                .setLayoutRes(R.layout.pickerview_custom_options, new CustomListener() {
+                    @Override
+                    public void customLayout(View v) {
+                        v.findViewById(R.id.picker_view_confirm).setOnClickListener(new View.OnClickListener() {
+
+                            @Override
+                            public void onClick(View v) {
+                                mPromotionType.returnData();
+                                mPromotionType.dismiss();
+                            }
+                        });
+                    }
+                })
+                .setContentTextSize(15)
+                .setTextColorCenter(getResources().getColor(R.color.colorMain))
+                .setDividerType(WheelView.DividerType.WRAP)
+                .setDividerColor(getResources().getColor(R.color.colorMain))
+                .build();
         mPromotionTypeItems = new ArrayList<>();
         mPromotionTypeItems.add("个人推广");
         mPromotionTypeItems.add("公司推广");
@@ -210,7 +229,8 @@ public class ResourcesDetailActivity extends BaseActivity implements TitleView
             if (!mImageUrl.isEmpty()) {
                 //图片链接不为空，则加载网络图片
                 Picasso.with(this).load(mImageUrl)
-                        .placeholder(R.mipmap.ico_default_bannner).into(mResourceDetailImage);
+                        .placeholder(R.mipmap.ico_default_bannner)
+                        .into(mResourceDetailImage);
             }
         }
     }
@@ -230,20 +250,16 @@ public class ResourcesDetailActivity extends BaseActivity implements TitleView
                     return;
                 }
                 // 选择推广方式
-                selectPromotionType(v);
+                mPromotionType.setPicker(mPromotionTypeItems);
+                mPromotionType.show(v);
                 break;
         }
     }
 
-    private void selectPromotionType(View view) {
-        mPromotionType.setPicker(mPromotionTypeItems);
-        mPromotionType.setFocusable(true);
-        mPromotionType.setCyclic(false);
-        mPromotionType.setSelectOptions(0);
-        mPromotionType.setOnoptionsSelectListener(new CharacterPickerWindow.OnOptionsSelectListener() {
-
-            @Override
-            public void onOptionsSelect(int options1, int option2, int options3) {
+    @Override
+    public void onOptionsSelect(int options1, int options2, int options3, View v) {
+        switch (v.getId()) {
+            case R.id.resources_promotion:
                 LogUtil.Companion.d("选择：" + options1);
                 Intent intent = new Intent(currentContext, ResourcesPromotionActivity.class);
                 intent.putExtra("resourceInfo", mResourceInfo);
@@ -257,11 +273,8 @@ public class ResourcesDetailActivity extends BaseActivity implements TitleView
                 }
                 intent.putExtra("userAccountType", mUserAccountType);
                 startActivity(intent);
-            }
-        });
-        mPromotionType.showAtLocation(view, Gravity.BOTTOM, 0, 0);
-        mPromotionType.setFocusable(false);
-
+                break;
+        }
     }
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -273,6 +286,7 @@ public class ResourcesDetailActivity extends BaseActivity implements TitleView
         }
         return super.onKeyDown(keyCode, event);
     }
+
     @Override
     public void onBackPressed() {
         if (JCVideoPlayer.backPress()) {
@@ -292,9 +306,8 @@ public class ResourcesDetailActivity extends BaseActivity implements TitleView
         finish();
     }
 
+
     @Override
     public void rightOnClick() {
     }
-
-
 }

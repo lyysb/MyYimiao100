@@ -188,7 +188,7 @@ public class MineFragment extends Fragment implements View.OnClickListener {
 
         //显示账户总额
         double total_amount = Double.valueOf((String) SharePreferenceUtil.get(getContext(), Constant
-                .TOTAL_AMOUNT, ""));
+                .TOTAL_AMOUNT, "0"));
         mMineAmount.setText("￥" + FormatUtils.MoneyFormat(total_amount));
 
         //显示积分
@@ -280,6 +280,7 @@ public class MineFragment extends Fragment implements View.OnClickListener {
                 ToastUtil.showShort(getContext(), "敬请期待");
                 break;
             case R.id.ll_mine_exit:
+                mLl_mine_exit.setEnabled(false);
                 //退出
                 LogOut();
                 break;
@@ -434,16 +435,8 @@ public class MineFragment extends Fragment implements View.OnClickListener {
         ConnectivityManager connectivityManager = (ConnectivityManager) getActivity()
                 .getSystemService(Context.CONNECTIVITY_SERVICE);
         if (!connectivityManager.getActiveNetworkInfo().isAvailable()) {
-            //如果没有联网，直接跳转到登录页面
-            //清空本地数据
-            SharePreferenceUtil.clear(getContext());
-            //记录不是第一次登录
-            SharePreferenceUtil.put(getContext(), Constant.IS_FIRST, false);
-            //启动服务，设置别名
-            getActivity().startService(new Intent(getActivity(), AliasService.class));
-            //跳回到登录界面
-            startActivity(new Intent(getActivity(), LoginActivity.class));
-            getActivity().finish();
+            // 登出
+            signOut();
             return;
         }
         //如果联网，登出系统
@@ -452,6 +445,8 @@ public class MineFragment extends Fragment implements View.OnClickListener {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         e.printStackTrace();
+                        // 服务器异常时，照样退出
+                        signOut();
                     }
 
                     @Override
@@ -460,23 +455,32 @@ public class MineFragment extends Fragment implements View.OnClickListener {
                         ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                         switch (errorBean.getStatus()) {
                             case "success":
-                                //退出成功，Token自然失效
-                                SharePreferenceUtil.clear(getContext());
-                                //启动服务，设置别名
-                                getActivity().startService(new Intent(getActivity(), AliasService.class));
-                                //记录不是第一次登录
-                                SharePreferenceUtil.put(getContext(), Constant.IS_FIRST, false);
-                                startActivity(new Intent(getActivity(), LoginActivity.class));
-                                getActivity().finish();
+                                // 成功退出
+                                signOut();
                                 break;
                             case "failure":
                                 //显示错误信息
                                 Util.showError(getActivity(), errorBean.getReason());
+                                signOut();
                                 break;
                         }
                     }
                 });
     }
+
+    private void signOut() {
+        mLl_mine_exit.setEnabled(true);
+        //清空本地数据
+        SharePreferenceUtil.clear(getContext());
+        //记录不是第一次登录
+        SharePreferenceUtil.put(getContext(), Constant.IS_FIRST, false);
+        //启动服务，设置别名
+        getActivity().startService(new Intent(getActivity(), AliasService.class));
+        //跳回到登录界面
+        startActivity(new Intent(getActivity(), LoginActivity.class));
+        getActivity().finish();
+    }
+
     /**
      * 解决如下问题
      * java.lang.IllegalStateException: No host

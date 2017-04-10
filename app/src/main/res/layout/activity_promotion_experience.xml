@@ -8,7 +8,7 @@
     android:layout_height="match_parent">
     <com.yimiao100.sale.view.TitleView
         android:id="@+id/promotion_experience_title"
-        app:title_text="从事疫苗推广经历"
+        app:title_text="添加推广经历"
         app:right_isShow="true"
         app:title_right="保存"
         app:left_isShow="true"
@@ -69,20 +69,32 @@
             android:layout_marginTop="1dp"
             style="@style/style58">
             <TextView
-                android:text="推广疫苗名称："
-                android:layout_marginRight="12dp"
-                android:layout_marginTop="6dp"
-                android:layout_marginBottom="6dp"
+                android:text="推广疫苗或医药相关产品名称："
+                android:paddingTop="6dp"
                 style="@style/style60"/>
+
+        </LinearLayout>
+        <FrameLayout
+            android:layout_marginTop="1dp"
+            android:background="@android:color/white"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
             <EditText
                 android:id="@+id/promotion_experience_vaccine"
-                android:hint="请输入疫苗名称"
+                android:hint="请输入推广疫苗或医药相关产品名称"
                 android:textSize="12sp"
                 android:textColor="@color/color333"
-                android:background="@null"
+                android:background="@drawable/shape_rec_address"
+                android:gravity="top"
+                android:inputType="textMultiLine"
+                android:maxLines="10"
+                android:minLines="3"
+                android:padding="8dp"
+                android:layout_margin="12dp"
+                android:scrollbars="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
-        </LinearLayout>
-
+        </FrameLayout>
     </LinearLayout>
 </LinearLayout>

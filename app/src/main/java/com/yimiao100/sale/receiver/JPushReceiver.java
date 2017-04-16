@@ -5,11 +5,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.alibaba.fastjson.JSON;
 import com.yimiao100.sale.activity.InformationDetailActivity;
 import com.yimiao100.sale.activity.MainActivity;
 import com.yimiao100.sale.activity.NoticeDetailActivity;
 import com.yimiao100.sale.bean.JPushBean;
+import com.yimiao100.sale.ext.JSON;
 import com.yimiao100.sale.utils.LogUtil;
 
 import cn.jpush.android.api.JPushInterface;

@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
-import com.alibaba.fastjson.JSON;
 import com.yimiao100.sale.R;
 import com.yimiao100.sale.base.BaseActivity;
 import com.yimiao100.sale.bean.ErrorBean;
@@ -13,6 +12,7 @@ import com.yimiao100.sale.bean.Tax;
 import com.yimiao100.sale.bean.TaxBean;
 import com.yimiao100.sale.bean.UserFundBean;
 import com.yimiao100.sale.bean.UserFundNew;
+import com.yimiao100.sale.ext.JSON;
 import com.yimiao100.sale.utils.Constant;
 import com.yimiao100.sale.utils.FormatUtils;
 import com.yimiao100.sale.utils.LogUtil;

@@ -16,7 +16,6 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
-import com.alibaba.fastjson.JSON;
 import com.umeng.socialize.ShareAction;
 import com.umeng.socialize.UMShareAPI;
 import com.umeng.socialize.UMShareListener;
@@ -32,6 +31,7 @@ import com.yimiao100.sale.bean.ErrorBean;
 import com.yimiao100.sale.bean.InformationDetailBean;
 import com.yimiao100.sale.bean.NewsBean;
 import com.yimiao100.sale.bean.TagListBean;
+import com.yimiao100.sale.ext.JSON;
 import com.yimiao100.sale.utils.Constant;
 import com.yimiao100.sale.utils.LogUtil;
 import com.yimiao100.sale.utils.SharePreferenceUtil;

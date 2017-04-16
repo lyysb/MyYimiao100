@@ -7,13 +7,13 @@ import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.alibaba.fastjson.JSON;
 import com.yimiao100.sale.R;
 import com.yimiao100.sale.adapter.listview.ReconciliationDetailAdapter;
 import com.yimiao100.sale.base.BaseActivity;
 import com.yimiao100.sale.bean.ErrorBean;
 import com.yimiao100.sale.bean.ReconciliationDetail;
 import com.yimiao100.sale.bean.ReconciliationDetailBean;
+import com.yimiao100.sale.ext.JSON;
 import com.yimiao100.sale.utils.Constant;
 import com.yimiao100.sale.utils.LogUtil;
 import com.yimiao100.sale.utils.Util;

@@ -19,7 +19,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.alibaba.fastjson.JSON;
 import com.squareup.picasso.Picasso;
 import com.yimiao100.sale.R;
 import com.yimiao100.sale.activity.BindPromotionActivity;
@@ -36,6 +35,7 @@ import com.yimiao100.sale.activity.VendorListActivity;
 import com.yimiao100.sale.bean.ErrorBean;
 import com.yimiao100.sale.bean.ImageBean;
 import com.yimiao100.sale.bean.UserAccountBean;
+import com.yimiao100.sale.ext.JSON;
 import com.yimiao100.sale.service.AliasService;
 import com.yimiao100.sale.utils.AppUtil;
 import com.yimiao100.sale.utils.BitmapUtil;
@@ -165,7 +165,7 @@ public class MineFragment extends Fragment implements View.OnClickListener {
             @Override
             public boolean onLongClick(View v) {
                 //获取当前版本号
-                String versionName = AppUtil.Companion.getVersionName(getContext());
+                String versionName = AppUtil.getVersionName(getContext());
                 ToastUtil.showShort(getContext(), "当前应用版本：V" + versionName);
                 return false;
             }

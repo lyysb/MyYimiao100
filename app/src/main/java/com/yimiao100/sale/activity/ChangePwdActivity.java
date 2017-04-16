@@ -9,10 +9,10 @@ import android.text.TextWatcher;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.alibaba.fastjson.JSON;
 import com.yimiao100.sale.R;
 import com.yimiao100.sale.base.BaseActivity;
 import com.yimiao100.sale.bean.ErrorBean;
+import com.yimiao100.sale.ext.JSON;
 import com.yimiao100.sale.utils.Constant;
 import com.yimiao100.sale.utils.LogUtil;
 import com.yimiao100.sale.utils.ToastUtil;

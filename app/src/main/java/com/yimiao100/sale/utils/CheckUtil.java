@@ -3,11 +3,11 @@ package com.yimiao100.sale.utils;
 import android.app.Activity;
 import android.app.ProgressDialog;
 
-import com.alibaba.fastjson.JSON;
 import com.yimiao100.sale.bean.CorporateBean;
 import com.yimiao100.sale.bean.ErrorBean;
 import com.yimiao100.sale.bean.PersonalBean;
 import com.yimiao100.sale.bean.UserBean;
+import com.yimiao100.sale.ext.JSON;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 

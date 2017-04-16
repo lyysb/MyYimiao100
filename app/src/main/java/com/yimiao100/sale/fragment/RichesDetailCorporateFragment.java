@@ -6,13 +6,13 @@ import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.AdapterView;
 
-import com.alibaba.fastjson.JSON;
 import com.yimiao100.sale.R;
 import com.yimiao100.sale.activity.RichItemDetailActivity;
 import com.yimiao100.sale.adapter.listview.RichesDetailAdapter;
 import com.yimiao100.sale.base.BaseFragmentSingleList;
 import com.yimiao100.sale.bean.RichesDetailBean;
 import com.yimiao100.sale.bean.RichesDetailList;
+import com.yimiao100.sale.ext.JSON;
 import com.yimiao100.sale.utils.Constant;
 import com.yimiao100.sale.utils.LogUtil;
 import com.yimiao100.sale.utils.Util;

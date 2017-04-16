@@ -3,7 +3,6 @@ package com.yimiao100.sale.utils;
 import android.app.Activity;
 import android.text.TextUtils;
 
-import com.alibaba.fastjson.JSON;
 import com.yimiao100.sale.bean.ErrorBean;
 import com.yimiao100.sale.bean.Province;
 import com.yimiao100.sale.bean.RegionListBean;
@@ -14,7 +13,8 @@ import java.util.ArrayList;
 
 import okhttp3.Call;
 
-import static com.alibaba.fastjson.JSON.parseObject;
+import static com.yimiao100.sale.ext.JSON.parseObject;
+
 
 /**
  * 刷新地域信息
@@ -64,7 +64,7 @@ public class RegionUtil {
                     case "success":
                         //保存地域信息列表
                         SharePreferenceUtil.put(activity, Constant.REGION_LIST, response);
-                        ArrayList<Province> provinceList = JSON.parseObject(response,
+                        ArrayList<Province> provinceList = parseObject(response,
                                 RegionListBean.class).getProvinceList();
                         if (listListener != null) {
                             listListener.handleRegionList(provinceList);

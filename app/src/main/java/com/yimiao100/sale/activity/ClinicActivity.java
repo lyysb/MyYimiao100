@@ -5,11 +5,11 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 
-import com.alibaba.fastjson.JSON;
 import com.yimiao100.sale.adapter.listview.ClinicAdapter;
 import com.yimiao100.sale.base.BaseActivitySingleList;
 import com.yimiao100.sale.bean.CDCBean;
 import com.yimiao100.sale.bean.CDCListBean;
+import com.yimiao100.sale.ext.JSON;
 import com.yimiao100.sale.utils.Constant;
 import com.yimiao100.sale.utils.LogUtil;
 import com.yimiao100.sale.utils.Util;

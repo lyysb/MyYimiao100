@@ -7,7 +7,6 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.alibaba.fastjson.JSON;
 import com.squareup.picasso.Picasso;
 import com.yimiao100.sale.R;
 import com.yimiao100.sale.base.BaseActivity;
@@ -15,6 +14,7 @@ import com.yimiao100.sale.bean.Address;
 import com.yimiao100.sale.bean.AddressBean;
 import com.yimiao100.sale.bean.ErrorBean;
 import com.yimiao100.sale.bean.Goods;
+import com.yimiao100.sale.ext.JSON;
 import com.yimiao100.sale.utils.Constant;
 import com.yimiao100.sale.utils.FormatUtils;
 import com.yimiao100.sale.utils.LogUtil;
@@ -146,7 +146,7 @@ public class CommodityConfirmActivity extends BaseActivity implements TitleView
                 switch (errorBean.getStatus()) {
                     case "success":
                         mAddressList = JSON.parseObject(response, AddressBean.class)
-                                .getAddresslist();
+                                .getAddressList();
                         if (mAddressList == null || mAddressList.size() == 0) {
                             //没有数据，提示用户设置收货地址
                             showAddress("", "", "");

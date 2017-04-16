@@ -1,6 +1,5 @@
 package com.yimiao100.sale.fragment;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -9,7 +8,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +16,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.alibaba.fastjson.JSON;
 import com.yimiao100.sale.R;
 import com.yimiao100.sale.activity.InformationDetailActivity;
 import com.yimiao100.sale.activity.LiveActivity;
@@ -27,10 +24,10 @@ import com.yimiao100.sale.adapter.listview.InformationAdapter;
 import com.yimiao100.sale.adapter.peger.InformationAdAdapter;
 import com.yimiao100.sale.bean.Carousel;
 import com.yimiao100.sale.bean.ErrorBean;
-import com.yimiao100.sale.bean.ImageListBean;
 import com.yimiao100.sale.bean.InformationBean;
 import com.yimiao100.sale.bean.PagedListBean;
 import com.yimiao100.sale.bean.PagedResultBean;
+import com.yimiao100.sale.ext.JSON;
 import com.yimiao100.sale.utils.CarouselUtil;
 import com.yimiao100.sale.utils.Constant;
 import com.yimiao100.sale.utils.DensityUtil;

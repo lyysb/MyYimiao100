@@ -13,7 +13,6 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.alibaba.fastjson.JSON;
 import com.yimiao100.sale.R;
 import com.yimiao100.sale.adapter.listview.InformationAdapter;
 import com.yimiao100.sale.adapter.listview.SearchAdapter;
@@ -24,6 +23,7 @@ import com.yimiao100.sale.bean.PagedListBean;
 import com.yimiao100.sale.bean.PagedResultBean;
 import com.yimiao100.sale.bean.TagListBean;
 import com.yimiao100.sale.bean.TagsBean;
+import com.yimiao100.sale.ext.JSON;
 import com.yimiao100.sale.utils.Constant;
 import com.yimiao100.sale.utils.LogUtil;
 import com.yimiao100.sale.utils.SharePreferenceUtil;

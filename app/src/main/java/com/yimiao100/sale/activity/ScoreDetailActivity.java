@@ -9,7 +9,6 @@ import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.alibaba.fastjson.JSON;
 import com.squareup.picasso.Picasso;
 import com.yimiao100.sale.R;
 import com.yimiao100.sale.adapter.expendable.ScoreDetailAdapter;
@@ -18,6 +17,7 @@ import com.yimiao100.sale.bean.ErrorBean;
 import com.yimiao100.sale.bean.ExamInfo;
 import com.yimiao100.sale.bean.ExamInfoBean;
 import com.yimiao100.sale.bean.ExamInfoStat;
+import com.yimiao100.sale.ext.JSON;
 import com.yimiao100.sale.utils.Constant;
 import com.yimiao100.sale.utils.DensityUtil;
 import com.yimiao100.sale.utils.FormatUtils;

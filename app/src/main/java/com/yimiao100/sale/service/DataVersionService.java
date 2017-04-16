@@ -6,10 +6,10 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 
-import com.alibaba.fastjson.JSON;
 import com.yimiao100.sale.base.ActivityCollector;
 import com.yimiao100.sale.bean.DataVersionBean;
 import com.yimiao100.sale.bean.ErrorBean;
+import com.yimiao100.sale.ext.JSON;
 import com.yimiao100.sale.utils.Constant;
 import com.yimiao100.sale.utils.LogUtil;
 import com.yimiao100.sale.utils.SharePreferenceUtil;

@@ -1,6 +1,5 @@
 package com.yimiao100.sale;
 
-import com.alibaba.fastjson.parser.ParserConfig;
 import com.meiqia.meiqiasdk.util.MQConfig;
 import com.tencent.bugly.crashreport.CrashReport;
 import com.umeng.socialize.Config;
@@ -34,7 +33,6 @@ public class MyApplication extends Application {
         initUMShare();
         initOkHttpUtils();
         initBugly();
-        initFastJson();
         initJPush();
         initMQ();
 //        Picasso.with(this).setIndicatorsEnabled(true);
@@ -78,13 +76,7 @@ public class MyApplication extends Application {
         CrashReport.initCrashReport(getApplicationContext(), "900059080", true);
     }
 
-    /**
-     *
-     */
-    private void initFastJson() {
-        //解决FastJson报错？？待测试--米5
-        ParserConfig.getGlobalInstance().setAsmEnable(false);
-    }
+
 
     /**
      * 极光推送

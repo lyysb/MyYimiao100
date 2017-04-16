@@ -10,7 +10,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.TextView;
 
-import com.alibaba.fastjson.JSON;
 import com.baoyz.swipemenulistview.SwipeMenu;
 import com.baoyz.swipemenulistview.SwipeMenuCreator;
 import com.baoyz.swipemenulistview.SwipeMenuItem;
@@ -22,6 +21,7 @@ import com.yimiao100.sale.bean.ErrorBean;
 import com.yimiao100.sale.bean.ImageListBean;
 import com.yimiao100.sale.bean.InformationBean;
 import com.yimiao100.sale.bean.PagedListBean;
+import com.yimiao100.sale.ext.JSON;
 import com.yimiao100.sale.utils.Constant;
 import com.yimiao100.sale.utils.DensityUtil;
 import com.yimiao100.sale.utils.LogUtil;

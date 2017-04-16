@@ -7,12 +7,12 @@ import android.widget.LinearLayout;
 import android.widget.TabHost;
 import android.widget.TextView;
 
-import com.alibaba.fastjson.JSON;
 import com.yimiao100.sale.R;
 import com.yimiao100.sale.base.BaseActivity;
 import com.yimiao100.sale.bean.ErrorBean;
 import com.yimiao100.sale.bean.UserFundBean;
 import com.yimiao100.sale.bean.UserFundNew;
+import com.yimiao100.sale.ext.JSON;
 import com.yimiao100.sale.fragment.CRMFragment;
 import com.yimiao100.sale.fragment.FragmentTabHost;
 import com.yimiao100.sale.fragment.InformationFragment;

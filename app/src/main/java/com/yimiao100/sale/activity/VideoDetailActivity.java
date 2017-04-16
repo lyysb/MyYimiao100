@@ -11,13 +11,13 @@ import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.alibaba.fastjson.JSON;
 import com.squareup.picasso.Picasso;
 import com.yimiao100.sale.R;
 import com.yimiao100.sale.base.BaseActivity;
 import com.yimiao100.sale.bean.Course;
 import com.yimiao100.sale.bean.CourseBean;
 import com.yimiao100.sale.bean.ErrorBean;
+import com.yimiao100.sale.ext.JSON;
 import com.yimiao100.sale.utils.Constant;
 import com.yimiao100.sale.utils.DensityUtil;
 import com.yimiao100.sale.utils.LogUtil;

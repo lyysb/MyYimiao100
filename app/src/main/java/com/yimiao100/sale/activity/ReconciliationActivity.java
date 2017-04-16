@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 
-import com.alibaba.fastjson.JSON;
 import com.yimiao100.sale.R;
 import com.yimiao100.sale.adapter.listview.ReconciliationAdapter;
 import com.yimiao100.sale.base.BaseActivitySingleList;
@@ -13,6 +12,7 @@ import com.yimiao100.sale.bean.ErrorBean;
 import com.yimiao100.sale.bean.ReconciliationBean;
 import com.yimiao100.sale.bean.ReconciliationList;
 import com.yimiao100.sale.bean.ReconciliationResult;
+import com.yimiao100.sale.ext.JSON;
 import com.yimiao100.sale.utils.Constant;
 import com.yimiao100.sale.utils.DensityUtil;
 import com.yimiao100.sale.utils.LogUtil;

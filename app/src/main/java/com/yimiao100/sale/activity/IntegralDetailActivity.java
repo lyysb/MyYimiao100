@@ -4,13 +4,13 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 
-import com.alibaba.fastjson.JSON;
 import com.yimiao100.sale.adapter.listview.IntegralDetailAdapter;
 import com.yimiao100.sale.base.BaseActivitySingleList;
 import com.yimiao100.sale.bean.ErrorBean;
 import com.yimiao100.sale.bean.IntegralList;
 import com.yimiao100.sale.bean.IntegralListBean;
 import com.yimiao100.sale.bean.IntegralListResult;
+import com.yimiao100.sale.ext.JSON;
 import com.yimiao100.sale.utils.Constant;
 import com.yimiao100.sale.utils.LogUtil;
 import com.yimiao100.sale.utils.Util;

@@ -18,6 +18,7 @@ class AppUtil private constructor() {
         /**
          * 获取应用程序名称
          */
+        @JvmStatic
         fun getAppName(context: Context): String? {
             try {
                 val packageManager = context.packageManager
@@ -34,9 +35,10 @@ class AppUtil private constructor() {
         /**
          * [获取应用程序版本名称信息]
          * @param context
-         * *
+         *
          * @return 当前应用的版本名称
          */
+        @JvmStatic
         fun getVersionName(context: Context): String? {
             try {
                 val packageManager = context.packageManager
@@ -56,6 +58,7 @@ class AppUtil private constructor() {
          * *
          * @return 当前应用的版本号
          */
+        @JvmStatic
         fun getVersionCode(context: Context): Int {
             // 获取包管理器
             val packageManager = context.packageManager

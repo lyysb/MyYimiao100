@@ -44,7 +44,8 @@ import java.util.List;
 import cn.jeesoft.widget.pickerview.CharacterPickerWindow;
 import okhttp3.Call;
 
-import static com.alibaba.fastjson.JSON.parseObject;
+import static com.yimiao100.sale.ext.JSON.parseObject;
+
 
 /**
  * 资源-资源列表

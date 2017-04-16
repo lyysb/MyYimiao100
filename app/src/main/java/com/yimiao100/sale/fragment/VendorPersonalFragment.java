@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 
-import com.alibaba.fastjson.JSON;
 import com.yimiao100.sale.R;
 import com.yimiao100.sale.activity.AssuranceActivity;
 import com.yimiao100.sale.activity.PromotionActivity;
@@ -20,6 +19,7 @@ import com.yimiao100.sale.base.BaseFragmentSingleList;
 import com.yimiao100.sale.bean.ErrorBean;
 import com.yimiao100.sale.bean.Vendor;
 import com.yimiao100.sale.bean.VendorListBean;
+import com.yimiao100.sale.ext.JSON;
 import com.yimiao100.sale.utils.Constant;
 import com.yimiao100.sale.utils.LogUtil;
 import com.yimiao100.sale.utils.Util;

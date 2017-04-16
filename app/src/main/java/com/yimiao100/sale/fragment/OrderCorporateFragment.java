@@ -6,7 +6,6 @@ import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.AdapterView;
 
-import com.alibaba.fastjson.JSON;
 import com.yimiao100.sale.R;
 import com.yimiao100.sale.activity.OrderAlreadyActivity;
 import com.yimiao100.sale.activity.OrderCompletedActivity;
@@ -19,6 +18,7 @@ import com.yimiao100.sale.bean.ErrorBean;
 import com.yimiao100.sale.bean.ResourceBean;
 import com.yimiao100.sale.bean.ResourceListBean;
 import com.yimiao100.sale.bean.ResourceResultBean;
+import com.yimiao100.sale.ext.JSON;
 import com.yimiao100.sale.utils.Constant;
 import com.yimiao100.sale.utils.LogUtil;
 import com.yimiao100.sale.utils.Util;

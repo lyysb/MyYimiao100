@@ -7,13 +7,13 @@ import android.text.TextUtils;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.alibaba.fastjson.JSON;
 import com.yimiao100.sale.R;
 import com.yimiao100.sale.adapter.listview.AddressAdapter;
 import com.yimiao100.sale.base.BaseActivity;
 import com.yimiao100.sale.bean.Address;
 import com.yimiao100.sale.bean.AddressBean;
 import com.yimiao100.sale.bean.ErrorBean;
+import com.yimiao100.sale.ext.JSON;
 import com.yimiao100.sale.utils.Constant;
 import com.yimiao100.sale.utils.LogUtil;
 import com.yimiao100.sale.utils.ToastUtil;
@@ -108,10 +108,11 @@ public class PersonalAddressActivity extends BaseActivity implements AddressAdap
                 LogUtil.Companion.d("常用地址列表：" + response);
                 hideLoadingProgress();
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
+                assert errorBean != null;
                 switch (errorBean.getStatus()) {
                     case "success":
                         mAddressList = JSON.parseObject(response, AddressBean
-                                .class).getAddresslist();
+                                .class).getAddressList();
                         mAddressAdapter = new AddressAdapter(mAddressList);
                         mAddressAdapter.setOnClickListener(PersonalAddressActivity.this);
                         mListView.setAdapter(mAddressAdapter);
@@ -231,9 +232,9 @@ public class PersonalAddressActivity extends BaseActivity implements AddressAdap
                         for (int i = 0; i < mAddressList.size(); i++) {
                             Address address = mAddressList.get(i);
                             if (i == position) {
-                                address.setIsDefault(1);
+                                address.setDefault(1);
                             } else {
-                                address.setIsDefault(0);
+                                address.setDefault(0);
                             }
                         }
                         mAddressAdapter.notifyDataSetChanged();
@@ -269,7 +270,7 @@ public class PersonalAddressActivity extends BaseActivity implements AddressAdap
                     case "success":
                         mSwipe.setRefreshing(false);
                         mAddressList = JSON.parseObject(response, AddressBean
-                                .class).getAddresslist();
+                                .class).getAddressList();
                         mAddressAdapter = new AddressAdapter(mAddressList);
                         mAddressAdapter.setOnClickListener(PersonalAddressActivity.this);
                         mListView.setAdapter(mAddressAdapter);

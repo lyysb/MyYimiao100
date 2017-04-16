@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 
-import com.alibaba.fastjson.JSON;
 import com.yimiao100.sale.R;
 import com.yimiao100.sale.adapter.listview.NoticeAdapter;
 import com.yimiao100.sale.base.BaseActivitySingleList;
@@ -13,6 +12,7 @@ import com.yimiao100.sale.bean.ErrorBean;
 import com.yimiao100.sale.bean.NoticeBean;
 import com.yimiao100.sale.bean.NoticedListBean;
 import com.yimiao100.sale.bean.NoticedResultBean;
+import com.yimiao100.sale.ext.JSON;
 import com.yimiao100.sale.utils.Constant;
 import com.yimiao100.sale.utils.LogUtil;
 import com.yimiao100.sale.utils.Util;

@@ -2,12 +2,12 @@ package com.yimiao100.sale.utils;
 
 import android.app.Activity;
 
-import com.alibaba.fastjson.JSON;
 import com.yimiao100.sale.base.ActivityCollector;
 import com.yimiao100.sale.bean.CorporateBean;
 import com.yimiao100.sale.bean.PersonalBean;
 import com.yimiao100.sale.bean.UserAccountBean;
 import com.yimiao100.sale.bean.UserBean;
+import com.yimiao100.sale.ext.JSON;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 

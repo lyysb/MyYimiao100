@@ -1,10 +1,10 @@
 package com.yimiao100.sale.utils
 
 import android.app.Activity
-import com.alibaba.fastjson.JSON
 import com.yimiao100.sale.bean.Carousel
 import com.yimiao100.sale.bean.CarouselBean
 import com.yimiao100.sale.bean.ErrorBean
+import com.yimiao100.sale.ext.JSON
 import com.zhy.http.okhttp.OkHttpUtils
 import com.zhy.http.okhttp.callback.StringCallback
 import okhttp3.Call
@@ -46,9 +46,9 @@ class CarouselUtil private constructor() {
                 override fun onResponse(response: String, id: Int) {
                     LogUtil.d("获取轮播图：" + response)
                     val errorBean = JSON.parseObject(response, ErrorBean::class.java)
-                    when (errorBean.status) {
+                    when (errorBean?.status) {
                         "success" -> {
-                            val carouselList = JSON.parseObject(response, CarouselBean::class.java).carouselList
+                            val carouselList = JSON.parseObject(response, CarouselBean::class.java)?.carouselList
                             if (listener != null && carouselList != null) {
 
                                 if (carouselList.size == 0) {

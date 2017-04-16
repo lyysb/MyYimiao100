@@ -18,7 +18,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.alibaba.fastjson.JSON;
 import com.squareup.picasso.Picasso;
 import com.yimiao100.sale.R;
 import com.yimiao100.sale.base.BaseActivity;
@@ -26,6 +25,7 @@ import com.yimiao100.sale.bean.ErrorBean;
 import com.yimiao100.sale.bean.Experience;
 import com.yimiao100.sale.bean.PersonalBean;
 import com.yimiao100.sale.bean.UserBean;
+import com.yimiao100.sale.ext.JSON;
 import com.yimiao100.sale.utils.BitmapUtil;
 import com.yimiao100.sale.utils.CompressUtil;
 import com.yimiao100.sale.utils.Constant;

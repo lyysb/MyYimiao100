@@ -16,7 +16,6 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.alibaba.fastjson.JSON;
 import com.squareup.picasso.Picasso;
 import com.yimiao100.sale.R;
 import com.yimiao100.sale.base.BaseActivity;
@@ -46,7 +45,8 @@ import cn.jeesoft.widget.pickerview.CharacterPickerWindow;
 import de.hdodenhof.circleimageview.CircleImageView;
 import okhttp3.Call;
 
-import static com.alibaba.fastjson.JSON.parseObject;
+import static com.yimiao100.sale.ext.JSON.parseObject;
+
 
 /**
  * 个人设置界面
@@ -173,7 +173,7 @@ public class PersonalSettingActivity extends BaseActivity implements TitleView
             refreshRegion();
         } else {
             //解析本地读取数据
-            RegionListBean regionListBean = JSON.parseObject(region_list, RegionListBean
+            RegionListBean regionListBean = parseObject(region_list, RegionListBean
                     .class);
             mProvinceList = regionListBean.getProvinceList();
             //处理数据
@@ -202,7 +202,7 @@ public class PersonalSettingActivity extends BaseActivity implements TitleView
                         //保存地域信息列表
                         SharePreferenceUtil.put(getApplicationContext(), Constant.REGION_LIST,
                                 response);
-                        mProvinceList = JSON.parseObject(response, RegionListBean.class)
+                        mProvinceList = parseObject(response, RegionListBean.class)
                                 .getProvinceList();
                         handleRegionData();
                         break;
@@ -351,10 +351,10 @@ public class PersonalSettingActivity extends BaseActivity implements TitleView
                     @Override
                     public void onResponse(String response, int id) {
                         LogUtil.Companion.d("更新头像" + response);
-                        ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
+                        ErrorBean errorBean = parseObject(response, ErrorBean.class);
                         switch (errorBean.getStatus()) {
                             case "success":
-                                ImageBean imageBean = JSON.parseObject(response,
+                                ImageBean imageBean = parseObject(response,
                                         ImageBean.class);
                                 //拿到头像的URL地址，更新本地数据
                                 String profileImageUrl = imageBean.getProfileImageUrl();
@@ -490,7 +490,7 @@ public class PersonalSettingActivity extends BaseActivity implements TitleView
                             @Override
                             public void onResponse(String response, int id) {
                                 LogUtil.Companion.d("更新用户区域信息：" + response);
-                                ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
+                                ErrorBean errorBean = parseObject(response, ErrorBean.class);
                                 switch (errorBean.getStatus()) {
                                     case "success":
                                         //提交成功，将新数据显示在用户界面

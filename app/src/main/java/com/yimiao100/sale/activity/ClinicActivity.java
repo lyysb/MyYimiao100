@@ -51,7 +51,7 @@ public class ClinicActivity extends BaseActivitySingleList{
         getBuild(1).execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.Companion.d("辖区门诊E：" + e.getLocalizedMessage());
+                LogUtil.d("辖区门诊E：" + e.getLocalizedMessage());
                 Util.showTimeOutNotice(currentContext);
                 hideLoadingProgress();
             }
@@ -60,13 +60,13 @@ public class ClinicActivity extends BaseActivitySingleList{
             public void onResponse(String response, int id) {
                 hideLoadingProgress();
                 mSwipeRefreshLayout.setRefreshing(false);
-                LogUtil.Companion.d("辖区门诊：" + response);
+                LogUtil.d("辖区门诊：" + response);
                 //暂定直接用CDC的JavaBean，后期有需求再重新写
                 CDCBean cdcBean = JSON.parseObject(response, CDCBean.class);
                 switch (cdcBean.getStatus()) {
                     case "success":
-                        mPage = 2;
-                        mTotalPage = cdcBean.getPagedResult().getTotalPage();
+                        page = 2;
+                        totalPage = cdcBean.getPagedResult().getTotalPage();
 
                         mClinicList = cdcBean.getPagedResult().getPagedList();
                         handleEmptyData(mClinicList);
@@ -111,22 +111,22 @@ public class ClinicActivity extends BaseActivitySingleList{
 
     @Override
     public void onLoadMore() {
-        getBuild(mPage).execute(new StringCallback() {
+        getBuild(page).execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.Companion.d("辖区门诊E：" + e.getLocalizedMessage());
+                LogUtil.d("辖区门诊E：" + e.getLocalizedMessage());
                 Util.showTimeOutNotice(currentContext);
             }
 
             @Override
             public void onResponse(String response, int id) {
-                LogUtil.Companion.d("辖区门诊：" + response);
+                LogUtil.d("辖区门诊：" + response);
                 mListView.onLoadMoreComplete();
                 //暂定直接用CDC的JavaBean，后期有需求再重新写
                 CDCBean cdcBean = JSON.parseObject(response, CDCBean.class);
                 switch (cdcBean.getStatus()) {
                     case "success":
-                        mPage++;
+                        page++;
                         mClinicList.addAll(cdcBean.getPagedResult().getPagedList());
                         mClinicAdapter.notifyDataSetChanged();
                         break;
@@ -139,8 +139,8 @@ public class ClinicActivity extends BaseActivitySingleList{
     }
     private RequestCall getBuild(int page) {
         return OkHttpUtils.post().url(URL_CLINIC_LIST)
-                .addHeader(ACCESS_TOKEN, mAccessToken)
-                .addParams(PAGE, page + "").addParams(PAGE_SIZE, mPageSize).addParams("cdcId", mCdcId)
+                .addHeader(ACCESS_TOKEN, accessToken)
+                .addParams(PAGE, page + "").addParams(PAGE_SIZE, pageSize).addParams("cdcId", mCdcId)
                 .build();
     }
 

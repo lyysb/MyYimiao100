@@ -152,27 +152,27 @@ public class StudyCollectionActivity extends BaseActivity implements SwipeRefres
     }
 
     private RequestCall getBuild() {
-        return OkHttpUtils.post().url(URL_COLLECTION_LIST).addHeader(ACCESS_TOKEN, mAccessToken)
+        return OkHttpUtils.post().url(URL_COLLECTION_LIST).addHeader(ACCESS_TOKEN, accessToken)
                 .build();
     }
 
 
     private void delete(final int position) {
         //取消收藏
-        OkHttpUtils.post().url(URL_CANCLE_COLLECTION).addHeader(ACCESS_TOKEN, mAccessToken)
+        OkHttpUtils.post().url(URL_CANCLE_COLLECTION).addHeader(ACCESS_TOKEN, accessToken)
                 .addParams(COURSE_ID, mCollectClasses.get(position).getId() + "")
                 .build().execute(new StringCallback() {
 
 
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.Companion.d("取消收藏E：" + e.getLocalizedMessage());
+                LogUtil.d("取消收藏E：" + e.getLocalizedMessage());
                 Util.showTimeOutNotice(currentContext);
             }
 
             @Override
             public void onResponse(String response, int id) {
-                LogUtil.Companion.d("取消收藏：" + response);
+                LogUtil.d("取消收藏：" + response);
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":
@@ -209,14 +209,14 @@ public class StudyCollectionActivity extends BaseActivity implements SwipeRefres
 
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.Companion.d("学习课程收藏列表E：" + e.getLocalizedMessage());
+                LogUtil.d("学习课程收藏列表E：" + e.getLocalizedMessage());
                 Util.showTimeOutNotice(currentContext);
                 hideLoadingProgress();
             }
 
             @Override
             public void onResponse(String response, int id) {
-                LogUtil.Companion.d("学习课程收藏列表：" + response);
+                LogUtil.d("学习课程收藏列表：" + response);
                 hideLoadingProgress();
                 mStudyCollectionSwipe.setRefreshing(false);
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
@@ -224,8 +224,8 @@ public class StudyCollectionActivity extends BaseActivity implements SwipeRefres
                     case "success":
                         OpenClassResult pagedResult = JSON.parseObject(response, OpenClassBean
                                 .class).getPagedResult();
-                        mPage = 2;
-                        mTotalPage = pagedResult.getTotalPage();
+                        page = 2;
+                        totalPage = pagedResult.getTotalPage();
                         mCollectClasses = pagedResult.getPagedList();
                         if (mCollectClasses.size() == 0) {
                             mEmptyView.setVisibility(View.VISIBLE);

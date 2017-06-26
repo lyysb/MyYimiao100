@@ -6,23 +6,36 @@ import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.text.Html;
 import android.text.Spanned;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.meiqia.core.MQManager;
+import com.meiqia.core.bean.MQMessage;
+import com.meiqia.core.callback.OnGetMessageListCallback;
 import com.yimiao100.sale.R;
 import com.yimiao100.sale.base.BaseActivity;
+import com.yimiao100.sale.bean.Event;
 import com.yimiao100.sale.bean.ResourceListBean;
 import com.yimiao100.sale.utils.Constant;
 import com.yimiao100.sale.utils.FormatUtils;
 import com.yimiao100.sale.utils.LogUtil;
 import com.yimiao100.sale.utils.TimeUtil;
+import com.yimiao100.sale.utils.Util;
 import com.yimiao100.sale.view.TitleView;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
+
+import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import okhttp3.Call;
+import q.rorbin.badgeview.Badge;
+import q.rorbin.badgeview.QBadgeView;
 
 /**
  * 我的业务第一状态-未付款
@@ -31,6 +44,8 @@ public class OrderUnpaidActivity extends BaseActivity implements TitleView.Title
 
     @BindView(R.id.order_unpaid_title)
     TitleView mTitle;
+    @BindView(R.id.order_unpaid_service)
+    ImageView mService;
     @BindView(R.id.order_unpaid_submit_time)
     TextView mTime;
     @BindView(R.id.order_unpaid_vendor_name)
@@ -57,6 +72,7 @@ public class OrderUnpaidActivity extends BaseActivity implements TitleView.Title
 
     private final String URL_CHECK = Constant.BASE_URL + "/api/order/pay_query";
     private final String ORDER_ID = "orderId";
+    private Badge mBadge;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +87,23 @@ public class OrderUnpaidActivity extends BaseActivity implements TitleView.Title
 
     private void initView() {
         mTitle.setOnTitleBarClick(this);
+        mBadge = new QBadgeView(this).bindTarget(mService)
+                .setBadgePadding(4, true)
+                .setGravityOffset(9, true)
+                .setShowShadow(false);
+        MQManager.getInstance(this).getUnreadMessages(new OnGetMessageListCallback() {
+            @Override
+            public void onSuccess(List<MQMessage> list) {
+                if (list.size() != 0) {
+                    mBadge.setBadgeNumber(-1);
+                }
+            }
+
+            @Override
+            public void onFailure(int i, String s) {
+
+            }
+        });
     }
 
     private void initData() {
@@ -112,9 +145,28 @@ public class OrderUnpaidActivity extends BaseActivity implements TitleView.Title
         //竞标有效提示日期
         long bidExpiredTipAt = mOrder.getBidExpiredTipAt();
         String expire = TimeUtil.timeStamp2Date(bidExpiredTipAt + "", "yyyy年MM月dd日");
-        mExpiredAt.setText(Html.fromHtml("（<font color=\"#4188d2\">注意：</font>本资源竞标时间截止日为\t" + expire + "）"));
+        mExpiredAt.setText(Html.fromHtml("（<font color=\"#4188d2\">注意：</font>本资源竞标时间截止日为\t" +
+                expire + "）"));
         //校验当前订单支付状态
 //        checkOrderStatus();
+    }
+
+    @Override
+    public void onEventMainThread(@NotNull Event event) {
+        super.onEventMainThread(event);
+        switch (Event.eventType) {
+            case RECEIVE_MSG:
+                // 收到客服消息，显示小圆点
+                mBadge.setBadgeNumber(-1);
+                break;
+            case READ_MSG:
+                // 设置小圆点为0
+                mBadge.setBadgeNumber(0);
+                break;
+            default:
+                LogUtil.d("unknown event type is " + Event.eventType);
+                break;
+        }
     }
 
     /**
@@ -122,18 +174,18 @@ public class OrderUnpaidActivity extends BaseActivity implements TitleView.Title
      */
     private void checkOrderStatus() {
         //请求接口，校验支付状态
-        OkHttpUtils.post().url(URL_CHECK).addHeader(ACCESS_TOKEN, mAccessToken)
+        OkHttpUtils.post().url(URL_CHECK).addHeader(ACCESS_TOKEN, accessToken)
                 .addParams(ORDER_ID, mOrder.getId() + "")
                 .build().execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
                 e.printStackTrace();
-                LogUtil.Companion.d("检查支付状态错误");
+                LogUtil.d("检查支付状态错误");
             }
 
             @Override
             public void onResponse(String response, int id) {
-                LogUtil.Companion.d("检查支付状态" + response);
+                LogUtil.d("检查支付状态" + response);
             }
         });
         //如果是支付中，弹窗提示
@@ -158,14 +210,22 @@ public class OrderUnpaidActivity extends BaseActivity implements TitleView.Title
         dialog.show();
     }
 
-    @OnClick(R.id.order_unpaid_submit)
-    public void onClick() {
-        //进入支付界面
-        Intent intent = new Intent(this, SubmitPromotionActivity.class);
-        intent.putExtra("userAccountType", mOrder.getUserAccountType());
-        intent.putExtra("order", mOrder);
-        intent.putExtra("mark", "order");
-        startActivity(intent);
+    @OnClick({R.id.order_unpaid_service, R.id.order_unpaid_submit})
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.order_unpaid_service:
+                //联系客服
+                Util.enterCustomerService(this);
+                break;
+            case R.id.order_unpaid_submit:
+                //进入支付界面
+                Intent intent = new Intent(this, SubmitPromotionActivity.class);
+                intent.putExtra("userAccountType", mOrder.getUserAccountType());
+                intent.putExtra("order", mOrder);
+                intent.putExtra("mark", "order");
+                startActivity(intent);
+                break;
+        }
     }
 
     @Override

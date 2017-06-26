@@ -16,7 +16,14 @@ import com.bigkoo.pickerview.TimePickerView;
 import com.yimiao100.sale.R;
 import com.yimiao100.sale.base.BaseActivity;
 import com.yimiao100.sale.bean.AdverseApply;
+import com.yimiao100.sale.bean.Area;
+import com.yimiao100.sale.bean.CategoryList;
+import com.yimiao100.sale.bean.City;
 import com.yimiao100.sale.bean.ErrorBean;
+import com.yimiao100.sale.bean.ProductList;
+import com.yimiao100.sale.bean.Province;
+import com.yimiao100.sale.bean.UploadBean;
+import com.yimiao100.sale.bean.VendorList;
 import com.yimiao100.sale.ext.JSON;
 import com.yimiao100.sale.utils.CompressUtil;
 import com.yimiao100.sale.utils.Constant;
@@ -146,14 +153,15 @@ public class ReportDetailActivity extends BaseActivity implements TitleView
     private ProgressDialog mProgressDialog;
     private TimePickerView mTimePickerView;
     private OptionsPickerView mOptionsPicker;
-    private List<AdverseApply.RegionListBean> mRegionList;
-    private List<AdverseApply.RegionListBean.CityListBean> mCityList;
-    private List<AdverseApply.RegionListBean.CityListBean.AreaListBean> mAreaList;
-    private List<AdverseApply.BizListBean> mBizList;
-    private List<AdverseApply.BizListBean.CategoryListBean> mCategoryList;
-    private List<AdverseApply.BizListBean.CategoryListBean.ProductListBean> mProductList;
     private Date mInjectDate;
     private Date mBirthDate;
+    private ArrayList<VendorList> mBizSelect;
+    private ArrayList<CategoryList> mCategoryList;
+    private ArrayList<ProductList> mProductList;
+    private ArrayList<Province> mProvinceList;
+    private List<City> mCityList;
+    private List<Area> mAreaList;
+
 
     @Override
 
@@ -173,7 +181,7 @@ public class ReportDetailActivity extends BaseActivity implements TitleView
 
     private void initVariable() {
         mAdverseApplyId = getIntent().getIntExtra("adverseApplyId", -1);
-        LogUtil.Companion.d("adverseApplyId is " + mAdverseApplyId);
+        LogUtil.d("adverseApplyId is " + mAdverseApplyId);
         mParams = new HashMap<>();
         if (mAdverseApplyId != -1) {
             mParams.put(ADVERSE_APPLY_ID, mAdverseApplyId + "");
@@ -188,7 +196,7 @@ public class ReportDetailActivity extends BaseActivity implements TitleView
 
     private void initOptionsPickerView() {
         mOptionsPicker = new OptionsPickerView.Builder(this, this)
-                .setContentTextSize(14)
+                .setContentTextSize(16)
                 .setSubCalSize(14)
                 .setSubmitColor(getResources().getColor(R.color.colorMain))
                 .setCancelColor(getResources().getColor(R.color.colorMain))
@@ -200,8 +208,8 @@ public class ReportDetailActivity extends BaseActivity implements TitleView
         Calendar startDate = Calendar.getInstance();
         startDate.set(1900, 1, 1);
         mTimePickerView = new TimePickerView.Builder(this, this)
-                .setType(TimePickerView.Type.YEAR_MONTH_DAY)
-                .setContentSize(14)
+                .setType(new boolean[]{true, true, true, false, false, false})
+                .setContentSize(16)
                 .setSubCalSize(14)
                 .setSubmitColor(getResources().getColor(R.color.colorMain))
                 .setCancelColor(getResources().getColor(R.color.colorMain))
@@ -211,35 +219,46 @@ public class ReportDetailActivity extends BaseActivity implements TitleView
     }
 
     private void initData() {
-        OkHttpUtils.post().url(URL_ADVERSE_APPLY).addHeader(ACCESS_TOKEN, mAccessToken)
+        OkHttpUtils.post().url(URL_ADVERSE_APPLY).addHeader(ACCESS_TOKEN, accessToken)
                 .params(mParams).build().execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
                 hideLoadingProgress();
-                LogUtil.Companion.d("init data error");
+                LogUtil.d("init data error");
                 e.printStackTrace();
                 Util.showTimeOutNotice(currentContext);
-                mBizList = new ArrayList<>();
-                mBizList.add(processingBiz());
-                mRegionList = new ArrayList<>();
-                mRegionList.add(processingRegion());
+                mBizSelect = new ArrayList<>();
+                if (mBizSelect.isEmpty()) {
+                    mBizSelect.add(new VendorList(0,null, ""));
+                }
             }
 
             @Override
             public void onResponse(String response, int id) {
                 hideLoadingProgress();
-                LogUtil.Companion.d("init data success, response is\n" + response);
-                ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
-                switch (errorBean.getStatus()) {
+                LogUtil.d("init data success, response is\n" + response);
+                UploadBean uploadBean = JSON.parseObject(response, UploadBean.class);
+                switch (uploadBean.getStatus()) {
                     case "success":
-                        echoData(response);
+                        mBizSelect = uploadBean.getBizSelect();
+                        if (mBizSelect.isEmpty()) {
+                            mBizSelect.add(new VendorList(0, null, ""));
+                        }
+                        // 默认男性
+                        if (mPatientSex == null) {
+                            mPatientSex = "male";
+                        }
+                        // 如果有数据，则回显数据
+                        if (uploadBean.getAdverseApply() != null) {
+                            echoData(uploadBean.getAdverseApply());
+                        }
                         break;
                     case "failure":
-                        Util.showError(currentContext, errorBean.getReason());
-                        mBizList = new ArrayList<>();
-                        mBizList.add(processingBiz());
-                        mRegionList = new ArrayList<>();
-                        mRegionList.add(processingRegion());
+                        Util.showError(currentContext, uploadBean.getReason());
+                        mBizSelect = new ArrayList<>();
+                        if (mBizSelect.isEmpty()) {
+                            mBizSelect.add(new VendorList(0,null, ""));
+                        }
                         break;
                 }
             }
@@ -249,85 +268,51 @@ public class ReportDetailActivity extends BaseActivity implements TitleView
     /**
      * 回显/设置数据源
      *
-     * @param response
+     * @param adverseApply
      */
-    private void echoData(String response) {
-        AdverseApply adverseApply = JSON.parseObject(response, AdverseApply.class);
-        // 处理产品信息
-        mBizList = adverseApply.getBizList();
-        if (mBizList.isEmpty()) {
-            mBizList.add(processingBiz());
+    private void echoData(AdverseApply adverseApply) {
+        forbidButton();
+        // 回显数据
+        LogUtil.d("apply status is " + adverseApply.getApplyStatus());
+        mTvVendorName.setText(adverseApply.getVendorName());
+        mTvCategoryName.setText(adverseApply.getCategoryName());
+        mTvProductName.setText(adverseApply.getProductName());
+        mTvSpec.setText(adverseApply.getSpec());
+        mTvDosageForm.setText(adverseApply.getDosageForm());
+        mTvInjectAt.setText(timeStamp2Date(adverseApply.getInjectAt() + "", "yyyy年MM月dd日"));
+        mTvProvince.setText(adverseApply.getProvinceName());
+        mTvCity.setText(adverseApply.getCityName());
+        mTvArea.setText(adverseApply.getAreaName());
+        mEvPatientName.setText(adverseApply.getPatientName());
+        switch (adverseApply.getPatientSex()) {
+            case "male":
+                mIvPatientSex.setImageResource(R.mipmap.ico_application_authorization_choice_two);
+                break;
+            case "female":
+                mIvPatientSex.setImageResource(R.mipmap.ico_application_authorization_choice);
+                break;
+            default:
+                LogUtil.d("Unknown sex");
+                break;
         }
-        // 处理接种地点信息
-        mRegionList = adverseApply.getRegionList();
-        if (mRegionList.isEmpty()) {
-            mRegionList.add(processingRegion());
+        mTvPatientBirthDate.setText(TimeUtil.timeStamp2Date(adverseApply.getPatientBirthDate(), "yyyy年MM月dd日"));
+        mEvPatientAdverse.setText(adverseApply.getAdverseDesc());
+        mEvHospital.setText(adverseApply.getDiagnosticHospital());
+        mEvResult.setText(adverseApply.getDiagnosticResult());
+        if (!adverseApply.getDiagnosticFileUrl().isEmpty()) {
+            mIvFile.setImageResource(R.mipmap.ico_application_authorization_success);
+        } else {
+            mIvFile.setImageResource(R.mipmap.ico_application_authorization_upload);
         }
-        // 处理回显信息
-        if (adverseApply.getAdverseApply() != null) {
-            // 禁止按钮点击
-            forbidButton();
-            // 回显数据
-            processingAdverse(adverseApply.getAdverseApply());
-        }
-        if (mPatientSex == null) {
-            mPatientSex = "male";
-        }
+        mEvContactName.setText(adverseApply.getContactName());
+        mEvContactPhoneNumber.setText(adverseApply.getContactPhoneNumber());
+        mEvContactEmail.setText(adverseApply.getContactEmail());
+        mSubmit.setText(adverseApply.getApplyStatusName());
+        mSubmit.setBackgroundResource(R.drawable.shape_button_forbid);
+        mSubmit.setTextColor(Color.GRAY);
+
     }
 
-    /**
-     * @return 空白假数据
-     */
-    private AdverseApply.BizListBean processingBiz() {
-        AdverseApply.BizListBean bizListBean = new AdverseApply.BizListBean();
-        AdverseApply.BizListBean.CategoryListBean categoryListBean
-                = new AdverseApply.BizListBean.CategoryListBean();
-        AdverseApply.BizListBean.CategoryListBean.ProductListBean productListBean
-                = new AdverseApply.BizListBean.CategoryListBean.ProductListBean();
-
-        productListBean.setDosageForm("");
-        productListBean.setProductName("");
-        productListBean.setSpec("");
-
-        categoryListBean.setCategoryName("");
-        ArrayList<AdverseApply.BizListBean.CategoryListBean.ProductListBean> productListBeen =
-                new ArrayList<>();
-        productListBeen.add(productListBean);
-        categoryListBean.setProductList(productListBeen);
-
-        bizListBean.setVendorName("");
-        ArrayList<AdverseApply.BizListBean.CategoryListBean> categoryList = new ArrayList<>();
-        categoryList.add(categoryListBean);
-        bizListBean.setCategoryList(categoryList);
-        return bizListBean;
-    }
-
-
-    /**
-     * @return 空白假数据
-     */
-    private AdverseApply.RegionListBean processingRegion() {
-        AdverseApply.RegionListBean regionListBean = new AdverseApply.RegionListBean();
-        AdverseApply.RegionListBean.CityListBean cityListBean
-                = new AdverseApply.RegionListBean.CityListBean();
-        AdverseApply.RegionListBean.CityListBean.AreaListBean areaListBean
-                = new AdverseApply.RegionListBean.CityListBean.AreaListBean();
-
-        areaListBean.setName("");
-
-        cityListBean.setName("");
-        ArrayList<AdverseApply.RegionListBean.CityListBean.AreaListBean> areaList
-                = new ArrayList<>();
-        areaList.add(areaListBean);
-        cityListBean.setAreaList(areaList);
-
-        regionListBean.setName("");
-        ArrayList<AdverseApply.RegionListBean.CityListBean> cityList = new ArrayList<>();
-        cityList.add(cityListBean);
-        regionListBean.setCityList(cityList);
-
-        return regionListBean;
-    }
 
     private void forbidButton() {
         mTvVendorName.setEnabled(false);
@@ -352,49 +337,7 @@ public class ReportDetailActivity extends BaseActivity implements TitleView
         mSubmit.setEnabled(false);
     }
 
-    /**
-     * 提交过数据，则回显
-     * @param adverseApply
-     */
-    private void processingAdverse(AdverseApply.AdverseApplyBean adverseApply) {
-        LogUtil.Companion.d("apply status is " + adverseApply.getApplyStatus());
-        mTvVendorName.setText(adverseApply.getVendorName());
-        mTvCategoryName.setText(adverseApply.getCategoryName());
-        mTvProductName.setText(adverseApply.getProductName());
-        mTvSpec.setText(adverseApply.getSpec());
-        mTvDosageForm.setText(adverseApply.getDosageForm());
-        mTvInjectAt.setText(timeStamp2Date(adverseApply.getInjectAt() + "", "yyyy年MM月dd日"));
-        mTvProvince.setText(adverseApply.getProvinceName());
-        mTvCity.setText(adverseApply.getCityName());
-        mTvArea.setText(adverseApply.getAreaName());
-        mEvPatientName.setText(adverseApply.getPatientName());
-        switch (adverseApply.getPatientSex()) {
-            case "male":
-                mIvPatientSex.setImageResource(R.mipmap.ico_application_authorization_choice_two);
-                break;
-            case "female":
-                mIvPatientSex.setImageResource(R.mipmap.ico_application_authorization_choice);
-                break;
-            default:
-                LogUtil.Companion.d("Unknown sex");
-                break;
-        }
-        mTvPatientBirthDate.setText(TimeUtil.timeStamp2Date(adverseApply.getPatientBirthDate(), "yyyy年MM月dd日"));
-        mEvPatientAdverse.setText(adverseApply.getAdverseDesc());
-        mEvHospital.setText(adverseApply.getDiagnosticHospital());
-        mEvResult.setText(adverseApply.getDiagnosticResult());
-        if (!adverseApply.getDiagnosticFileUrl().isEmpty()) {
-            mIvFile.setImageResource(R.mipmap.ico_application_authorization_success);
-        } else {
-            mIvFile.setImageResource(R.mipmap.ico_application_authorization_upload);
-        }
-        mEvContactName.setText(adverseApply.getContactName());
-        mEvContactPhoneNumber.setText(adverseApply.getContactPhoneNumber());
-        mEvContactEmail.setText(adverseApply.getContactEmail());
-        mSubmit.setText(adverseApply.getApplyStatusName());
-        mSubmit.setBackgroundResource(R.drawable.shape_button_forbid);
-        mSubmit.setTextColor(Color.GRAY);
-    }
+
 
 
     @OnClick({R.id.report_detail_record, R.id.report_detail_vendor_name,
@@ -407,11 +350,11 @@ public class ReportDetailActivity extends BaseActivity implements TitleView
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.report_detail_record:
-                startActivity(new Intent(this, ReportActivity.class));
-                finish();
+                // 进入不良反应申报记录
+                enterReport();
                 break;
             case R.id.report_detail_vendor_name:
-                mOptionsPicker.setPicker(mBizList);
+                mOptionsPicker.setPicker(mBizSelect);
                 mOptionsPicker.show(view);
                 break;
             case R.id.report_detail_category_name:
@@ -435,6 +378,7 @@ public class ReportDetailActivity extends BaseActivity implements TitleView
                 // 选择属性
                 if (mTvProductName.getText().toString().isEmpty()) {
                     ToastUtil.showShort(this, "请先选择接种疫苗名称");
+                    return;
                 }
                 break;
             case R.id.report_detail_inject_at:
@@ -442,7 +386,11 @@ public class ReportDetailActivity extends BaseActivity implements TitleView
                 mTimePickerView.show(view);
                 break;
             case R.id.report_detail_province:
-                mOptionsPicker.setPicker(mRegionList);
+                if (mTvProductName.getText().toString().isEmpty()) {
+                    ToastUtil.showShort(this, "请先选择接种疫苗名称");
+                    return;
+                }
+                mOptionsPicker.setPicker(mProvinceList);
                 mOptionsPicker.show(view);
                 break;
             case R.id.report_detail_city:
@@ -532,15 +480,18 @@ public class ReportDetailActivity extends BaseActivity implements TitleView
      * 选择生产厂家
      */
     private void selectVendorName(int options1) {
-        AdverseApply.BizListBean temp = mBizList.get(options1);
-        LogUtil.Companion.d("vendorName is " + temp.getVendorName());
-        mVendorId = temp.getId();
+        VendorList temp = mBizSelect.get(options1);
+        LogUtil.d("vendorName is " + temp.getVendorName());
+        mVendorId = temp.getVendorId();
         mCategoryList = temp.getCategoryList();
         mTvVendorName.setText(temp.getVendorName());
         mTvCategoryName.setText("");
         mTvProductName.setText("");
         mTvDosageForm.setText("");
         mTvSpec.setText("");
+        mTvProvince.setText("");
+        mTvCity.setText("");
+        mTvArea.setText("");
     }
 
 
@@ -548,41 +499,48 @@ public class ReportDetailActivity extends BaseActivity implements TitleView
      * 选择疫苗种类
      */
     private void selectCategoryName(int options1) {
-        AdverseApply.BizListBean.CategoryListBean temp = mCategoryList.get(options1);
-        LogUtil.Companion.d("category name is " + temp.getCategoryName());
-        mCategoryId = temp.getId();
+        CategoryList temp = mCategoryList.get(options1);
+        LogUtil.d("category name is " + temp.getCategoryName());
+        mCategoryId = temp.getCategoryId();
         mProductList = temp.getProductList();
         mTvCategoryName.setText(temp.getCategoryName());
         mTvProductName.setText("");
         mTvDosageForm.setText("");
         mTvSpec.setText("");
+        mTvProvince.setText("");
+        mTvCity.setText("");
+        mTvArea.setText("");
     }
 
     /**
      * 选择疫苗名称
      */
     private void selectProductName(int options1) {
-        AdverseApply.BizListBean.CategoryListBean.ProductListBean temp = mProductList.get(options1);
-        LogUtil.Companion.d("product name is " + temp.getProductName()
+        ProductList temp = mProductList.get(options1);
+        LogUtil.d("product name is " + temp.getProductName()
                 + "\nspec is " + temp.getSpec()
                 + "\ndosage form is " + temp.getDosageForm() );
-        mProductId = temp.getId();
+        mProvinceList = temp.getProvinceList();
+        mProductId = temp.getProductId();
         mTvProductName.setText(temp.getProductName());
         mSpecId = temp.getSpecId();
         mTvSpec.setText(temp.getSpec());
         mDosageFormId = temp.getDosageFormId();
         mTvDosageForm.setText(temp.getDosageForm());
+        mTvProvince.setText("");
+        mTvCity.setText("");
+        mTvArea.setText("");
     }
 
     /**
      * 选择省
      */
     private void selectProvince(int options1) {
-        AdverseApply.RegionListBean temp = mRegionList.get(options1);
-        LogUtil.Companion.d("provinceName is " + temp.getName());
-        mProvinceId = temp.getId();
+        Province temp = mProvinceList.get(options1);
+        LogUtil.d("provinceName is " + temp.getName());
+        mProvinceId = temp.getProvinceId();
         mCityList = temp.getCityList();
-        mTvProvince.setText(temp.getName());
+        mTvProvince.setText(temp.getProvinceName());
         mTvCity.setText("");
         mTvArea.setText("");
     }
@@ -591,11 +549,11 @@ public class ReportDetailActivity extends BaseActivity implements TitleView
      * 选择市
      */
     private void selectCity(int options1) {
-        AdverseApply.RegionListBean.CityListBean temp = mCityList.get(options1);
-        LogUtil.Companion.d("cityName is " + temp.getName());
-        mCityId = temp.getId();
+        City temp = mCityList.get(options1);
+        LogUtil.d("cityName is " + temp.getCityName());
+        mCityId = temp.getCityId();
         mAreaList = temp.getAreaList();
-        mTvCity.setText(temp.getName());
+        mTvCity.setText(temp.getCityName());
         mTvArea.setText("");
     }
 
@@ -603,10 +561,10 @@ public class ReportDetailActivity extends BaseActivity implements TitleView
      * 选择区/县
      */
     private void selectArea(int options1) {
-        AdverseApply.RegionListBean.CityListBean.AreaListBean temp = mAreaList.get(options1);
-        LogUtil.Companion.d("areaName is " + temp.getName());
-        mAreaId = temp.getId();
-        mTvArea.setText(temp.getName());
+        Area temp = mAreaList.get(options1);
+        LogUtil.d("areaName is " + temp.getAreaName());
+        mAreaId = temp.getAreaId();
+        mTvArea.setText(temp.getAreaName());
     }
 
     /**
@@ -622,7 +580,7 @@ public class ReportDetailActivity extends BaseActivity implements TitleView
             mPatientSex = "male";
             mIvPatientSex.setImageResource(R.mipmap.ico_application_authorization_choice_two);
         }
-        LogUtil.Companion.d("sex is " + mPatientSex);
+        LogUtil.d("sex is " + mPatientSex);
     }
 
     /**
@@ -645,7 +603,7 @@ public class ReportDetailActivity extends BaseActivity implements TitleView
                     if (data != null) {
                         photos = data.getStringArrayListExtra(PhotoPicker.KEY_SELECTED_PHOTOS);
                         for (String photo : photos) {
-                            LogUtil.Companion.d("photo is " + photo);
+                            LogUtil.d("photo is " + photo);
                         }
                         String mark = timeStamp2Date(System.currentTimeMillis() + "",
                                 "yyyyMMdd_HH_mm_ss");
@@ -661,7 +619,7 @@ public class ReportDetailActivity extends BaseActivity implements TitleView
                 }
                 break;
             default:
-                LogUtil.Companion.d("Unknown request");
+                LogUtil.d("Unknown request");
                 break;
         }
     }
@@ -805,7 +763,12 @@ public class ReportDetailActivity extends BaseActivity implements TitleView
         mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
         mProgressDialog.setCancelable(false);
         mProgressDialog.setTitle(getString(R.string.upload_progress_dialog_title));
-        OkHttpUtils.post().url(URL_SUBMIT_APPLY).addHeader(ACCESS_TOKEN, mAccessToken)
+        final ProgressDialog responseDialog = new ProgressDialog(this);
+        responseDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        responseDialog.setCancelable(false);
+        responseDialog.setMessage(getString(R.string.response_progress_dialog_title));
+
+        OkHttpUtils.post().url(URL_SUBMIT_APPLY).addHeader(ACCESS_TOKEN, accessToken)
                 .addParams(VENDOR_ID, mVendorId + "")
                 .addParams(CATEGORY_ID, mCategoryId + "")
                 .addParams(PRODUCT_ID, mProductId + "")
@@ -825,7 +788,9 @@ public class ReportDetailActivity extends BaseActivity implements TitleView
                 .addParams(CONTACT_NAME, mContactName)
                 .addParams(CONTACT_PHONE_NUMBER, mContactPhoneNumber)
                 .addParams(CONTACT_EMAIL, mContactEmail)
-                .build().execute(new StringCallback() {
+                .build().connTimeOut(10 * 60 * 1000)
+                .readTimeOut(10 * 60 * 1000)
+                .writeTimeOut(10 * 60 * 1000).execute(new StringCallback() {
 
             @Override
             public void onBefore(Request request, int id) {
@@ -837,30 +802,37 @@ public class ReportDetailActivity extends BaseActivity implements TitleView
             public void inProgress(float progress, long total, int id) {
                 super.inProgress(progress, total, id);
                 mProgressDialog.setProgress((int) (100 * progress + 0.5));
+                if (progress == 1f) {
+                    // 关闭上传进度dialog
+                    mProgressDialog.dismiss();
+                    // 显示处理中弹窗
+                    responseDialog.show();
+                }
             }
 
             @Override
             public void onAfter(int id) {
                 super.onAfter(id);
-                mProgressDialog.dismiss();
+                if (responseDialog.isShowing()) {
+                    responseDialog.dismiss();
+                }
             }
 
             @Override
             public void onError(Call call, Exception e, int id) {
                 e.printStackTrace();
-                LogUtil.Companion.d("submit failure");
+                LogUtil.d("submit failure");
                 Util.showTimeOutNotice(currentContext);
             }
 
             @Override
             public void onResponse(String response, int id) {
-                LogUtil.Companion.d("result is " + response);
+                LogUtil.d("result is " + response);
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":
                         ToastUtil.showShort(currentContext, getString(R.string.upload_success));
-                        setResult(RESULT_OK);
-                        finish();
+                        enterReport();
                         break;
                     case "failure":
                         Util.showError(currentContext, errorBean.getReason());
@@ -868,6 +840,11 @@ public class ReportDetailActivity extends BaseActivity implements TitleView
                 }
             }
         });
+    }
+
+    private void enterReport() {
+        startActivity(new Intent(currentContext, ReportActivity.class));
+        finish();
     }
 
     @Override

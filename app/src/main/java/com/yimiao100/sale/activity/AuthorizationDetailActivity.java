@@ -15,7 +15,12 @@ import com.yimiao100.sale.R;
 import com.yimiao100.sale.base.BaseActivity;
 import com.yimiao100.sale.bean.Address;
 import com.yimiao100.sale.bean.AuthorizationApply;
+import com.yimiao100.sale.bean.CategoryList;
 import com.yimiao100.sale.bean.ErrorBean;
+import com.yimiao100.sale.bean.ProductList;
+import com.yimiao100.sale.bean.Province;
+import com.yimiao100.sale.bean.UploadBean;
+import com.yimiao100.sale.bean.VendorList;
 import com.yimiao100.sale.ext.JSON;
 import com.yimiao100.sale.utils.Constant;
 import com.yimiao100.sale.utils.LogUtil;
@@ -28,7 +33,6 @@ import com.zhy.http.okhttp.callback.StringCallback;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -131,10 +135,11 @@ public class AuthorizationDetailActivity extends BaseActivity implements TitleVi
     private OptionsPickerView mOptionsPickerView;
     private final int REQUEST_ADDRESS = 100;
     private final int FROM_ITEM_OK = 200;
-    private List<AuthorizationApply.BizListBean> mBizList;
-    private List<AuthorizationApply.RegionListBean> mRegionList;
-    private List<AuthorizationApply.BizListBean.CategoryListBean> mCategoryList;
-    private List<AuthorizationApply.BizListBean.CategoryListBean.ProductListBean> mProductList;
+    private ArrayList<VendorList> mBizSelect;
+    private ArrayList<CategoryList> mCategoryList;
+    private ArrayList<ProductList> mProductList;
+    private ArrayList<Province> mProvinceList;
+
 
 
     @Override
@@ -145,16 +150,16 @@ public class AuthorizationDetailActivity extends BaseActivity implements TitleVi
 
         showLoadingProgress();
 
-        initVariable();
+        initVariate();
 
         initView();
 
         initData();
     }
 
-    private void initVariable() {
+    private void initVariate() {
         mAuthzApplyId = getIntent().getIntExtra("authzApplyId", -1);
-        LogUtil.Companion.d("authzApplyId is " + mAuthzApplyId);
+        LogUtil.d("authzApplyId is " + mAuthzApplyId);
         mParams = new HashMap<>();
         if (mAuthzApplyId != -1) {
             mParams.put(AUTHZ_APPLY_ID, mAuthzApplyId + "");
@@ -164,7 +169,7 @@ public class AuthorizationDetailActivity extends BaseActivity implements TitleVi
     private void initView() {
         mTitle.setOnTitleBarClick(this);
         mOptionsPickerView = new OptionsPickerView.Builder(this, this)
-                .setContentTextSize(14)
+                .setContentTextSize(16)
                 .setSubCalSize(14)
                 .setSubmitColor(getResources().getColor(R.color.colorMain))
                 .setCancelColor(getResources().getColor(R.color.colorMain))
@@ -173,35 +178,42 @@ public class AuthorizationDetailActivity extends BaseActivity implements TitleVi
     }
 
     private void initData() {
-        OkHttpUtils.post().url(URL_APLLY).addHeader(ACCESS_TOKEN, mAccessToken)
+        OkHttpUtils.post().url(URL_APLLY).addHeader(ACCESS_TOKEN, accessToken)
                 .params(mParams).build().execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
                 hideLoadingProgress();
                 e.printStackTrace();
-                LogUtil.Companion.d("data error");
+                LogUtil.d("data error");
                 Util.showTimeOutNotice(currentContext);
-                mBizList = new ArrayList<>();
-                mBizList.add(processingBizData());
-                mRegionList = new ArrayList<>();
-                mRegionList.add(processingRegionData());
+                mBizSelect = new ArrayList<>();
+                if (mBizSelect.isEmpty()) {
+                    mBizSelect.add(new VendorList(0, null, ""));
+                }
             }
 
             @Override
             public void onResponse(String response, int id) {
                 hideLoadingProgress();
-                LogUtil.Companion.d("response is \n" + response);
-                ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
-                switch (errorBean.getStatus()) {
+                LogUtil.d("response is \n" + response);
+                UploadBean uploadBean = JSON.parseObject(response, UploadBean.class);
+                switch (uploadBean.getStatus()) {
                     case "success":
-                        echoData(response);
+                        mBizSelect = uploadBean.getBizSelect();
+                        if (mBizSelect.isEmpty()) {
+                            mBizSelect.add(new VendorList(0, null, ""));
+                        }
+                        // 如果有数据，则回显数据
+                        if (uploadBean.getAuthzApply() != null) {
+                            echoData(uploadBean.getAuthzApply());
+                        }
                         break;
                     case "failure":
-                        Util.showError(currentContext, errorBean.getReason());
-                        mBizList = new ArrayList<>();
-                        mBizList.add(processingBizData());
-                        mRegionList = new ArrayList<>();
-                        mRegionList.add(processingRegionData());
+                        mBizSelect = new ArrayList<>();
+                        if (mBizSelect.isEmpty()) {
+                            mBizSelect.add(new VendorList(0, null, ""));
+                        }
+                        Util.showError(currentContext, uploadBean.getReason());
                         break;
                 }
             }
@@ -211,65 +223,11 @@ public class AuthorizationDetailActivity extends BaseActivity implements TitleVi
     /**
      * 数据回显
      *
-     * @param response
+     * @param authzApply
      */
-    private void echoData(String response) {
-        AuthorizationApply apply = JSON.parseObject(response, AuthorizationApply.class);
-        // 厂家信息
-        mBizList = apply.getBizList();
-        if (mBizList.isEmpty()) {
-            mBizList.add(processingBizData());
-        }
-        // 地域信息
-        mRegionList = apply.getRegionList();
-        if (mRegionList.isEmpty()) {
-            mRegionList.add(processingRegionData());
-        }
-        // 处理回显信息
-        if (apply.getAuthzApply() != null) {
-            // 回显已有数据
-            processingAuthorization(apply.getAuthzApply());
-        }
-    }
-
-    /**
-     * @return 空白假数据
-     */
-    private AuthorizationApply.BizListBean processingBizData() {
-        AuthorizationApply.BizListBean.CategoryListBean.ProductListBean productListBean
-                = new AuthorizationApply.BizListBean.CategoryListBean.ProductListBean();
-        productListBean.setDosageForm("");
-        productListBean.setSpec("");
-        productListBean.setProductName("");
-
-        AuthorizationApply.BizListBean.CategoryListBean categoryListBean
-                = new AuthorizationApply.BizListBean.CategoryListBean();
-        categoryListBean.setCategoryName("");
-        ArrayList<AuthorizationApply.BizListBean.CategoryListBean.ProductListBean> productList =
-                new ArrayList<>();
-        productList.add(productListBean);
-        categoryListBean.setProductList(productList);
-
-        AuthorizationApply.BizListBean bizListBean = new AuthorizationApply.BizListBean();
-        bizListBean.setVendorName("");
-        ArrayList<AuthorizationApply.BizListBean.CategoryListBean> categoryList = new ArrayList<>();
-        categoryList.add(categoryListBean);
-        bizListBean.setCategoryList(categoryList);
-        return bizListBean;
-    }
-
-    /**
-     * @return 空白假数据
-     */
-    private AuthorizationApply.RegionListBean processingRegionData() {
-        AuthorizationApply.RegionListBean regionListBean = new AuthorizationApply.RegionListBean();
-        regionListBean.setName("");
-        return regionListBean;
-    }
-
-    private void processingAuthorization(AuthorizationApply.AuthzApplyBean authzApply) {
+    private void echoData(AuthorizationApply authzApply) {
         String applyStatus = authzApply.getApplyStatus();
-        LogUtil.Companion.d("apply status is " + applyStatus);
+        LogUtil.d("apply status is " + applyStatus);
         if ("passed".equals(applyStatus)) {
             // 审核通过，禁止修改和提交
             forbidButton(authzApply.getApplyStatusName());
@@ -310,7 +268,29 @@ public class AuthorizationDetailActivity extends BaseActivity implements TitleVi
         mPhoneNumber = authzApply.getPhoneNumber();
         mTvFullAddress.setText(authzApply.getFullAddress());
         mFullAddress = authzApply.getFullAddress();
+
+        // 遍历数据，设置数据源
+        for (VendorList vendorList : mBizSelect) {
+            if (vendorList.getVendorId() == authzApply.getVendorId()) {
+                mCategoryList = vendorList.getCategoryList();
+                for (CategoryList categoryList : mCategoryList) {
+                    if (categoryList.getCategoryId() == authzApply.getCategoryId()) {
+                        mProductList = categoryList.getProductList();
+                        for (ProductList productList : mProductList) {
+                            if (productList.getProductId() == authzApply.getProductId()) {
+                                mProvinceList = productList.getProvinceList();
+                                break;
+                            }
+                        }
+                        break;
+                    }
+                }
+                break;
+            }
+        }
     }
+
+
 
     /**
      * 禁止按钮点击
@@ -348,11 +328,11 @@ public class AuthorizationDetailActivity extends BaseActivity implements TitleVi
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.authorization_detail_record:
-                startActivity(new Intent(this, AuthorizationActivity.class));
-                finish();
+                // 进入申请记录
+                enterAuthorization();
                 break;
             case R.id.authorization_detail_vendor_name:
-                mOptionsPickerView.setPicker(mBizList);
+                mOptionsPickerView.setPicker(mBizSelect);
                 mOptionsPickerView.show(view);
                 break;
             case R.id.authorization_detail_category:
@@ -379,7 +359,11 @@ public class AuthorizationDetailActivity extends BaseActivity implements TitleVi
                 }
                 break;
             case R.id.authorization_detail_province:
-                mOptionsPickerView.setPicker(mRegionList);
+                if (mTvProduct.getText().toString().isEmpty()) {
+                    ToastUtil.showShort(this, "请选择疫苗产品名称");
+                    return;
+                }
+                mOptionsPickerView.setPicker(mProvinceList);
                 mOptionsPickerView.show(view);
                 break;
             case R.id.authorization_detail_select_address:
@@ -419,9 +403,14 @@ public class AuthorizationDetailActivity extends BaseActivity implements TitleVi
      * @param options1
      */
     private void selectVendor(int options1) {
-        AuthorizationApply.BizListBean temp = mBizList.get(options1);
-        mVendorId = temp.getId();
+        VendorList temp = mBizSelect.get(options1);
+        mVendorId = temp.getVendorId();
         mTvVendorName.setText(temp.getVendorName());
+        mTvCategory.setText("");
+        mTvProduct.setText("");
+        mTvSpec.setText("");
+        mTvDosageForm.setText("");
+        mTvProvince.setText("");
         mCategoryList = temp.getCategoryList();
     }
 
@@ -431,9 +420,13 @@ public class AuthorizationDetailActivity extends BaseActivity implements TitleVi
      * @param options1
      */
     private void selectCategory(int options1) {
-        AuthorizationApply.BizListBean.CategoryListBean temp = mCategoryList.get(options1);
-        mCategoryId = temp.getId();
+        CategoryList temp = mCategoryList.get(options1);
+        mCategoryId = temp.getCategoryId();
         mTvCategory.setText(temp.getCategoryName());
+        mTvProduct.setText("");
+        mTvSpec.setText("");
+        mTvDosageForm.setText("");
+        mTvProvince.setText("");
         mProductList = temp.getProductList();
     }
 
@@ -443,14 +436,15 @@ public class AuthorizationDetailActivity extends BaseActivity implements TitleVi
      * @param options1
      */
     private void selectProduct(int options1) {
-        AuthorizationApply.BizListBean.CategoryListBean.ProductListBean temp = mProductList.get
-                (options1);
-        mProductId = temp.getId();
+        ProductList temp = mProductList.get(options1);
+        mProvinceList = temp.getProvinceList();
+        mProductId = temp.getProductId();
         mTvProduct.setText(temp.getProductName());
         mSpecId = temp.getSpecId();
         mTvSpec.setText(temp.getSpec());
         mDosageFormId = temp.getDosageFormId();
         mTvDosageForm.setText(temp.getDosageForm());
+        mTvProvince.setText("");
     }
 
     /**
@@ -459,9 +453,9 @@ public class AuthorizationDetailActivity extends BaseActivity implements TitleVi
      * @param options1
      */
     private void selectProvince(int options1) {
-        AuthorizationApply.RegionListBean regionListBean = mRegionList.get(options1);
-        mProvinceId = regionListBean.getId();
-        mTvProvince.setText(regionListBean.getName());
+        Province temp = mProvinceList.get(options1);
+        mProvinceId = temp.getProvinceId();
+        mTvProvince.setText(temp.getProvinceName());
     }
 
     @Override
@@ -483,14 +477,14 @@ public class AuthorizationDetailActivity extends BaseActivity implements TitleVi
                                 address.getFullAddress();
                         mTvFullAddress.setText(mFullAddress);
                     } else {
-                        LogUtil.Companion.d("data is null");
+                        LogUtil.d("data is null");
                     }
                 } else {
-                    LogUtil.Companion.d("Unknown result code：" + resultCode);
+                    LogUtil.d("Unknown result code：" + resultCode);
                 }
                 break;
             default:
-                LogUtil.Companion.d("Unknown request code：" + requestCode);
+                LogUtil.d("Unknown request code：" + requestCode);
                 break;
         }
     }
@@ -578,7 +572,7 @@ public class AuthorizationDetailActivity extends BaseActivity implements TitleVi
     private void submitData() {
         final ProgressDialog progressDialog = ProgressDialogUtil.getLoadingProgress(this, "提交中");
         progressDialog.show();
-        OkHttpUtils.post().url(URL_SUBMIT).addHeader(ACCESS_TOKEN, mAccessToken)
+        OkHttpUtils.post().url(URL_SUBMIT).addHeader(ACCESS_TOKEN, accessToken)
                 .params(mParams)
                 .addParams(VENDOR_ID, mVendorId + "")
                 .addParams(CATEGORY_ID, mCategoryId + "")
@@ -602,7 +596,7 @@ public class AuthorizationDetailActivity extends BaseActivity implements TitleVi
             @Override
             public void onError(Call call, Exception e, int id) {
                 e.printStackTrace();
-                LogUtil.Companion.d("submit error");
+                LogUtil.d("submit error");
                 Util.showTimeOutNotice(currentContext);
                 if (progressDialog.isShowing()) {
                     progressDialog.dismiss();
@@ -611,7 +605,7 @@ public class AuthorizationDetailActivity extends BaseActivity implements TitleVi
 
             @Override
             public void onResponse(String response, int id) {
-                LogUtil.Companion.d("response is\n" + response);
+                LogUtil.d("response is\n" + response);
                 if (progressDialog.isShowing()) {
                     progressDialog.dismiss();
                 }
@@ -619,8 +613,7 @@ public class AuthorizationDetailActivity extends BaseActivity implements TitleVi
                 switch (errorBean.getStatus()) {
                     case "success":
                         ToastUtil.showShort(currentContext, getString(R.string.upload_success));
-                        setResult(RESULT_OK);
-                        finish();
+                        enterAuthorization();
                         break;
                     case "failure":
                         Util.showError(currentContext, errorBean.getReason());
@@ -628,6 +621,15 @@ public class AuthorizationDetailActivity extends BaseActivity implements TitleVi
                 }
             }
         });
+    }
+
+    /**
+     * 进入申请记录页面
+     */
+    private void enterAuthorization() {
+        Intent intent = new Intent(currentContext, AuthorizationActivity.class);
+        startActivity(intent);
+        finish();
     }
 
     @Override

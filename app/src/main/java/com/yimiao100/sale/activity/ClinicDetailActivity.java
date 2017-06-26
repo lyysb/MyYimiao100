@@ -128,8 +128,8 @@ public class ClinicDetailActivity extends BaseActivity implements TitleView.Titl
                 LatLng location = geoCodeResult.getLocation();
                 double latitude = location.latitude;    //纬度
                 double longitude = location.longitude;  //经度
-                LogUtil.Companion.d("纬度:" + latitude);
-                LogUtil.Companion.d("经度:" + longitude);
+                LogUtil.d("纬度:" + latitude);
+                LogUtil.d("经度:" + longitude);
                 //设置标注物
                 LatLng point = new LatLng(latitude, longitude);
                 BitmapDescriptor bitmapDescriptor =

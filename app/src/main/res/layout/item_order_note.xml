@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@android:color/white"
+    android:padding="12dp"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/order_item_category_name"
+                android:text="产品名称：\t\t\t\t{productName}"
+                style="@style/style83"/>
+
+            <TextView
+                android:id="@+id/order_item_consignee_name"
+                android:layout_marginTop="11dp"
+                android:text="联系人姓名：\t\t{name}"
+                style="@style/style83"/>
+
+            <TextView
+                android:id="@+id/order_item_delivery_at"
+                android:layout_marginTop="11dp"
+                android:text="申请发货日期：\t{date}"
+                style="@style/style83"/>
+        </LinearLayout>
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:gravity="center_vertical"
+            android:layout_height="match_parent">
+            <TextView
+                android:id="@+id/order_item_customer"
+                android:text="客\t\t\t户：{customer}"
+                style="@style/style83"/>
+
+            <TextView
+                android:id="@+id/order_item_consignee_phone"
+                android:layout_marginTop="11dp"
+                android:text="联系电话：{phone}"
+                style="@style/style83"/>
+
+            <TextView
+                android:id="@+id/order_item_delivery_qty"
+                android:layout_marginTop="11dp"
+                android:text="发货数量：{qty}"
+                style="@style/style83"/>
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/order_item_address"
+        android:layout_marginTop="11dp"
+        android:text="详细地址：\t\t\t\t{address}"
+        style="@style/style83"/>
+
+</LinearLayout>

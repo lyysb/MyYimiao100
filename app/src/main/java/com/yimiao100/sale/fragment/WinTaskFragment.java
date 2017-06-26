@@ -43,7 +43,7 @@ public class WinTaskFragment extends BaseFragmentSingleList {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        setEmptyView("要学习是好事，但是……", R.mipmap.ico_curriculum);
+        setEmptyView(getString(R.string.empty_view_win), R.mipmap.ico_curriculum);
     }
 
     @Override
@@ -79,7 +79,7 @@ public class WinTaskFragment extends BaseFragmentSingleList {
 
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.Companion.d("全部任务E：" + e.getLocalizedMessage());
+                LogUtil.d("全部任务E：" + e.getLocalizedMessage());
                 if (WinTaskFragment.this.isAdded()) {
                     //防止Fragment点击报空指针
                     Util.showTimeOutNotice(getActivity());
@@ -89,7 +89,7 @@ public class WinTaskFragment extends BaseFragmentSingleList {
             @Override
             public void onResponse(String response, int id) {
                 mSwipeRefreshLayout.setRefreshing(false);
-                LogUtil.Companion.d("全部任务：" + response);
+                LogUtil.d("全部任务：" + response);
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":
@@ -116,7 +116,7 @@ public class WinTaskFragment extends BaseFragmentSingleList {
 
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.Companion.d("全部任务E：" + e.getLocalizedMessage());
+                LogUtil.d("全部任务E：" + e.getLocalizedMessage());
                 if (WinTaskFragment.this.isAdded()) {
                     //防止Fragment点击报空指针
                     Util.showTimeOutNotice(getActivity());
@@ -125,7 +125,7 @@ public class WinTaskFragment extends BaseFragmentSingleList {
 
             @Override
             public void onResponse(String response, int id) {
-                LogUtil.Companion.d("全部任务：" + response);
+                LogUtil.d("全部任务：" + response);
                 mListView.onLoadMoreComplete();
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {

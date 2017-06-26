@@ -15,45 +15,53 @@ class LogUtil private constructor() {
     companion object {
         // 是否需要打印bug，可以在application的onCreate函数里面初始化
         private val TAG = "亿苗通"
+        @JvmStatic
         var isDebug = true
 
-        // 下面四个是默认tag的函数
+        @JvmStatic
         fun i(msg: String) {
             if (isDebug)
                 Log.i(TAG, msg)
         }
 
+        @JvmStatic
         fun d(msg: String) {
             if (isDebug)
                 Log.d(TAG, msg)
         }
 
+        @JvmStatic
         fun e(msg: String) {
             if (isDebug)
                 Log.e(TAG, msg)
         }
 
+        @JvmStatic
         fun v(msg: String) {
             if (isDebug)
                 Log.v(TAG, msg)
         }
 
-        // 下面是传入自定义tag的函数
+
+        @JvmStatic
         fun i(tag: String, msg: String) {
             if (isDebug)
                 Log.i(tag, msg)
         }
 
+        @JvmStatic
         fun d(tag: String, msg: String) {
             if (isDebug)
                 Log.i(tag, msg)
         }
 
+        @JvmStatic
         fun e(tag: String, msg: String) {
             if (isDebug)
                 Log.i(tag, msg)
         }
 
+        @JvmStatic
         fun v(tag: String, msg: String) {
             if (isDebug)
                 Log.i(tag, msg)

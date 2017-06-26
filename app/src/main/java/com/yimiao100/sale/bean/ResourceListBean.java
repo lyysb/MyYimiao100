@@ -7,6 +7,7 @@ import android.os.Parcelable;
  * Created by 亿苗通 on 2016/8/19.
  */
 public class ResourceListBean implements Parcelable {
+
     private int resourceId;             //业务列表中资源id
     private int userId;                 //用户id
     private String orderNo;             //订单号
@@ -32,73 +33,49 @@ public class ResourceListBean implements Parcelable {
 
     private String totalQty;
 
-    public String getTotalQty() {
-        return totalQty;
-    }
+    private int id;         //资源列表中为资源id。业务列表中为业务id
+    /**
+     * 以下为资源列表和业务列表公用部分
+     */
+    private int vendorId;
+    private int productId;
+    private int provinceId;
+    private int cityId;
+    private int areaId;
+    private long startAt;
+    private long endAt;
+    private double bidDeposit;
+    private double saleDeposit;
+    private int quota;
+    private int unitPrice;
+    private double deliveryPrice;
+    private double paymentPrice;
+    private int incompletePercent;
+    private int reducePercent;
+    private String policyContent;
+    private String protocolFilePath;
+    private String protocolFileUrl;
+    private long expiredAt;
+    private long createdAt;
+    private long updatedAt;
+    private String vendorName;
+    private String vendorLogoImageUrl;
+    private String productFormalName;
+    private String productCommonName;
+    private String spec;
+    private String dosageForm;
+    private String provinceName;
+    private String cityName;
+    private String areaName;
+    private String customerName;
 
-    public void setTotalQty(String totalQty) {
-        this.totalQty = totalQty;
-    }
+    private String categoryName;
+    private String productName;
 
-    public static Creator<ResourceListBean> getCREATOR() {
-        return CREATOR;
-    }
+    private int increment;  //竞标增量
 
-    public String getUnits() {
-        return units;
-    }
-
-    public void setUnits(String units) {
-        this.units = units;
-    }
-
-    public long getBidExpiredTipAt() {
-        return bidExpiredTipAt;
-    }
-
-    public void setBidExpiredTipAt(long bidExpiredTipAt) {
-        this.bidExpiredTipAt = bidExpiredTipAt;
-    }
-
-    public boolean isRead() {
-        return read;
-    }
-
-    public void setRead(boolean read) {
-        this.read = read;
-    }
-
-    public String getSerialNo() {
-        return serialNo;
-    }
-
-    public void setSerialNo(String serialNo) {
-        this.serialNo = serialNo;
-    }
-
-    public String getResourceProtocolUrl() {
-        return resourceProtocolUrl;
-    }
-
-    public void setResourceProtocolUrl(String resourceProtocolUrl) {
-        this.resourceProtocolUrl = resourceProtocolUrl;
-    }
-
-    public String getOrderProtocolUrl() {
-        return orderProtocolUrl;
-    }
-
-    public void setOrderProtocolUrl(String orderProtocolUrl) {
-        this.orderProtocolUrl = orderProtocolUrl;
-    }
-
-    public double getOrderBidDeposit() {
-        return orderBidDeposit;
-    }
-
-    public void setOrderBidDeposit(double orderBidDeposit) {
-        this.orderBidDeposit = orderBidDeposit;
-    }
+    private String productImageUrl;
+    private String productVideoUrl;
 
     public int getResourceId() {
         return resourceId;
@@ -196,6 +173,14 @@ public class ResourceListBean implements Parcelable {
         this.paymentTotalAmount = paymentTotalAmount;
     }
 
+    public double getOrderBidDeposit() {
+        return orderBidDeposit;
+    }
+
+    public void setOrderBidDeposit(double orderBidDeposit) {
+        this.orderBidDeposit = orderBidDeposit;
+    }
+
     public double getOrderRemainingDeposit() {
         return orderRemainingDeposit;
     }
@@ -220,96 +205,60 @@ public class ResourceListBean implements Parcelable {
         this.defaultExpiredAt = defaultExpiredAt;
     }
 
-    private int id;         //资源列表中为资源id。业务列表中为业务id
-    /**
-     * 以下为资源列表和业务列表公用部分
-     */
-    private int vendorId;
-    private int productId;
-    private int provinceId;
-    private int cityId;
-    private int areaId;
-    private long startAt;
-    private long endAt;
-    private double bidDeposit;
-    private double saleDeposit;
-    private int quota;
-    private int unitPrice;
-    private int deliveryPrice;
-    private int paymentPrice;
-    private int incompletePercent;
-    private int reducePercent;
-    private String policyContent;
-    private String protocolFilePath;
-    private String protocolFileUrl;
-    private long expiredAt;
-    private long createdAt;
-    private long updatedAt;
-    private String vendorName;
-    private String vendorLogoImageUrl;
-    private String productFormalName;
-    private String productCommonName;
-    private String spec;
-    private String dosageForm;
-    private String provinceName;
-    private String cityName;
-    private String areaName;
-    private String customerName;
-
-    private String categoryName;
-    private String productName;
-
-    public String getCategoryName() {
-        return categoryName;
+    public String getResourceProtocolUrl() {
+        return resourceProtocolUrl;
     }
 
-    public void setCategoryName(String categoryName) {
-        this.categoryName = categoryName;
+    public void setResourceProtocolUrl(String resourceProtocolUrl) {
+        this.resourceProtocolUrl = resourceProtocolUrl;
     }
 
-    public String getProductName() {
-        return productName;
+    public String getOrderProtocolUrl() {
+        return orderProtocolUrl;
     }
 
-    public void setProductName(String productName) {
-        this.productName = productName;
+    public void setOrderProtocolUrl(String orderProtocolUrl) {
+        this.orderProtocolUrl = orderProtocolUrl;
     }
 
-    public String getCustomerName() {
-        return customerName;
+    public String getSerialNo() {
+        return serialNo;
     }
 
-    public void setCustomerName(String customerName) {
-        this.customerName = customerName;
+    public void setSerialNo(String serialNo) {
+        this.serialNo = serialNo;
     }
 
-    private int increment;  //竞标增量
-
-    private String productImageUrl;
-    private String productVideoUrl;
-
-    public String getProductImageUrl() {
-        return productImageUrl;
+    public boolean isRead() {
+        return read;
     }
 
-    public void setProductImageUrl(String productImageUrl) {
-        this.productImageUrl = productImageUrl;
+    public void setRead(boolean read) {
+        this.read = read;
     }
 
-    public String getProductVideoUrl() {
-        return productVideoUrl;
+    public long getBidExpiredTipAt() {
+        return bidExpiredTipAt;
     }
 
-    public void setProductVideoUrl(String productVideoUrl) {
-        this.productVideoUrl = productVideoUrl;
+    public void setBidExpiredTipAt(long bidExpiredTipAt) {
+        this.bidExpiredTipAt = bidExpiredTipAt;
     }
 
-    public int getIncrement() {
-        return increment;
+    public String getUnits() {
+        return units;
     }
 
-    public void setIncrement(int increment) {
-        this.increment = increment;
+    public void setUnits(String units) {
+        this.units = units;
+    }
+
+    public String getTotalQty() {
+        return totalQty;
+    }
+
+    public void setTotalQty(String totalQty) {
+        this.totalQty = totalQty;
     }
 
     public int getId() {
@@ -408,19 +357,19 @@ public class ResourceListBean implements Parcelable {
         this.unitPrice = unitPrice;
     }
 
-    public int getDeliveryPrice() {
+    public double getDeliveryPrice() {
         return deliveryPrice;
     }
 
-    public void setDeliveryPrice(int deliveryPrice) {
+    public void setDeliveryPrice(double deliveryPrice) {
         this.deliveryPrice = deliveryPrice;
     }
 
-    public int getPaymentPrice() {
+    public double getPaymentPrice() {
         return paymentPrice;
     }
 
-    public void setPaymentPrice(int paymentPrice) {
+    public void setPaymentPrice(double paymentPrice) {
         this.paymentPrice = paymentPrice;
     }
 
@@ -560,8 +509,52 @@ public class ResourceListBean implements Parcelable {
         this.areaName = areaName;
     }
 
+    public String getCustomerName() {
+        return customerName;
+    }
 
-    public ResourceListBean() {
+    public void setCustomerName(String customerName) {
+        this.customerName = customerName;
+    }
+
+    public String getCategoryName() {
+        return categoryName;
+    }
+
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
+    }
+
+    public String getProductName() {
+        return productName;
+    }
+
+    public void setProductName(String productName) {
+        this.productName = productName;
+    }
+
+    public int getIncrement() {
+        return increment;
+    }
+
+    public void setIncrement(int increment) {
+        this.increment = increment;
+    }
+
+    public String getProductImageUrl() {
+        return productImageUrl;
+    }
+
+    public void setProductImageUrl(String productImageUrl) {
+        this.productImageUrl = productImageUrl;
+    }
+
+    public String getProductVideoUrl() {
+        return productVideoUrl;
+    }
+
+    public void setProductVideoUrl(String productVideoUrl) {
+        this.productVideoUrl = productVideoUrl;
     }
 
     @Override
@@ -571,7 +564,6 @@ public class ResourceListBean implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.totalQty);
         dest.writeInt(this.resourceId);
         dest.writeInt(this.userId);
         dest.writeString(this.orderNo);
@@ -594,6 +586,7 @@ public class ResourceListBean implements Parcelable {
         dest.writeByte(read ? (byte) 1 : (byte) 0);
         dest.writeLong(this.bidExpiredTipAt);
         dest.writeString(this.units);
+        dest.writeString(this.totalQty);
         dest.writeInt(this.id);
         dest.writeInt(this.vendorId);
         dest.writeInt(this.productId);
@@ -606,8 +599,8 @@ public class ResourceListBean implements Parcelable {
         dest.writeDouble(this.saleDeposit);
         dest.writeInt(this.quota);
         dest.writeInt(this.unitPrice);
-        dest.writeInt(this.deliveryPrice);
-        dest.writeInt(this.paymentPrice);
+        dest.writeDouble(this.deliveryPrice);
+        dest.writeDouble(this.paymentPrice);
         dest.writeInt(this.incompletePercent);
         dest.writeInt(this.reducePercent);
         dest.writeString(this.policyContent);
@@ -633,8 +626,10 @@ public class ResourceListBean implements Parcelable {
         dest.writeString(this.productVideoUrl);
     }
 
+    public ResourceListBean() {
+    }
+
     protected ResourceListBean(Parcel in) {
-        this.totalQty = in.readString();
         this.resourceId = in.readInt();
         this.userId = in.readInt();
         this.orderNo = in.readString();
@@ -657,6 +652,7 @@ public class ResourceListBean implements Parcelable {
         this.read = in.readByte() != 0;
         this.bidExpiredTipAt = in.readLong();
         this.units = in.readString();
+        this.totalQty = in.readString();
         this.id = in.readInt();
         this.vendorId = in.readInt();
         this.productId = in.readInt();
@@ -669,8 +665,8 @@ public class ResourceListBean implements Parcelable {
         this.saleDeposit = in.readDouble();
         this.quota = in.readInt();
         this.unitPrice = in.readInt();
-        this.deliveryPrice = in.readInt();
-        this.paymentPrice = in.readInt();
+        this.deliveryPrice = in.readDouble();
+        this.paymentPrice = in.readDouble();
         this.incompletePercent = in.readInt();
         this.reducePercent = in.readInt();
         this.policyContent = in.readString();
@@ -696,7 +692,7 @@ public class ResourceListBean implements Parcelable {
         this.productVideoUrl = in.readString();
     }
 
-    public static final Creator<ResourceListBean> CREATOR = new Creator<ResourceListBean>() {
+    public static final Parcelable.Creator<ResourceListBean> CREATOR = new Parcelable.Creator<ResourceListBean>() {
         public ResourceListBean createFromParcel(Parcel source) {
             return new ResourceListBean(source);
         }

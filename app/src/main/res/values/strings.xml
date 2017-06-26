@@ -29,6 +29,7 @@
     <string name="account_zip_error_notice">文件压缩出现未知错误，暂无法上传</string>
     <string name="account_upload_success_notice">提交成功，请等待审核</string>
     <string name="upload_progress_dialog_title">上传中，请稍后...</string>
+    <string name="response_progress_dialog_title">正在处理，请稍后...</string>
     <string name="download_progress_dialog_title">下载中，请稍后...</string>
     <string name="download_complete_dialog_title">下载成功</string>
     <string name="download_complete_dialog_msg">下载完成，请选择文件处理方式</string>
@@ -48,6 +49,17 @@
     <string name="empty_view_video_list">考试是可以“挣钱”的。但是，暂时没有学习任务。</string>
     <string name="empty_view_report">没有任何记录，求阴影面积</string>
     <string name="empty_view_authorization">没有任何记录，求阴影面积</string>
+    <string name="empty_view_order">不是没有业务状态，只是没有申请推广而已</string>
+    <string name="empty_view_riches_detail">没有进、哪有出啊，快到资源里面申请推广吧。</string>
+    <string name="empty_view_study_achievement">考试是可以“挣钱”的。但是，暂时没有学习任务。</string>
+    <string name="empty_view_vendor_reconciliation">早起的鸟儿有虫吃，快到资源里面申请推广吧。</string>
+    <string name="empty_view_vendor_study_exam">考试是可以“挣钱”的。但是，暂时没有学习任务。</string>
+    <string name="empty_view_vendor_sale">君子爱财、取之有道，快到资源里面申请推广吧。</string>
+    <string name="empty_view_vendor_deposit">有钱使得鬼推磨，快到资源里面申请推广吧。</string>
+    <string name="empty_view_vendor_study_withdrawal">一寸光阴一寸金，快到资源里面申请推广吧。</string>
+    <string name="empty_view_win">要学习是好事，但是……</string>
+
+
     <string name="assurance_withdrawal_personal">
         您申请的提现金额，将在工作人员收到提现\n申请之后5个工作日内，退回到您原来的\n推广主体个人账户里，请注意查收。
     </string>
@@ -88,6 +100,7 @@
     <string name="score_detail_dialog_msg">奖学金=第一次考试成绩×当前总发货量+当前考试平均成绩×当前发货量</string>
     <string name="video_detail_dialog_msg">您的积分余额不足，请完成积分任务后再来观看此视频。</string>
     <string name="report_detail_note">注释：请上传详细的诊断证明扫描件，要求图片是jpg格式</string>
+    <string name="order_online_note">注释：请上传完整产品采购协议扫描件，要求图片是JPG格式</string>
     <string name="dialog_confirm_submit_account">
         推广主体信息一旦提交，您将会在24小时\n内收到审核结果通知，审核通过后\n将不能再次修改。
     </string>

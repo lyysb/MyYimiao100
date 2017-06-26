@@ -40,7 +40,7 @@ public class DataVersionService extends Service {
                     checkDataVersion();
                     break;
                 default:
-                    LogUtil.Companion.d("Unknown msg ：" + msg);
+                    LogUtil.d("Unknown msg ：" + msg);
                     break;
             }
         }
@@ -51,7 +51,7 @@ public class DataVersionService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        LogUtil.Companion.d("启动数据版本检查");
+        LogUtil.d("启动数据版本检查");
         //检查数据版本号
         checkDataVersion();
         return super.onStartCommand(intent, flags, startId);
@@ -65,7 +65,7 @@ public class DataVersionService extends Service {
         OkHttpUtils.get().url(URL_VERSION + mVersionKey).build().execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.Companion.d("数据版本链接检查超时，将于60s之后重试");
+                LogUtil.d("数据版本链接检查超时，将于60s之后重试");
                 e.printStackTrace();
                 // 延时60s继续检查
                 mHandler.sendEmptyMessageDelayed(MSG_CHECK_VERSION, 60000);
@@ -76,7 +76,7 @@ public class DataVersionService extends Service {
                 DataVersionBean dataVersionBean = JSON.parseObject(response, DataVersionBean.class);
                 switch (dataVersionBean.getStatus()) {
                     case "success":
-                        LogUtil.Companion.d("检查成功，比较本地版本号");
+                        LogUtil.d("检查成功，比较本地版本号");
                         //请求数据成功
                         onSuccess(dataVersionBean);
                         break;
@@ -101,11 +101,11 @@ public class DataVersionService extends Service {
         int versionCode = dataVersionBean.getVersion().getVersionCode();
         //比较版本号
         if (versionCodeNow < versionCode) {
-            LogUtil.Companion.d("本地版本为" + versionCodeNow + "，将进行更新数据");
+            LogUtil.d("本地版本为" + versionCodeNow + "，将进行更新数据");
             //联网更新数据
             updateRegionData(versionCode);
         } else {
-            LogUtil.Companion.d("不需要更新数据，停止服务");
+            LogUtil.d("不需要更新数据，停止服务");
             //停止服务
             stopDataVersionService();
         }
@@ -119,24 +119,24 @@ public class DataVersionService extends Service {
         OkHttpUtils.get().url(URL_REGION).build().execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.Companion.d("更新Region数据链接超时");
+                LogUtil.d("更新Region数据链接超时");
                 e.printStackTrace();
             }
 
             @Override
             public void onResponse(String response, int id) {
-                if (response.length() > 4000) {
-                    for (int i = 0; i < response.length(); i += 4000) {
-                        if (i + 4000 < response.length()) {
-                            LogUtil.Companion.d(i + "updateRegionData：" + response.substring(i, i + 4000));
-                        } else {
-                            LogUtil.Companion.d(i + "updateRegionData：" + response.substring(i, response
-                                    .length()));
-                        }
-                    }
-                } else {
-                    LogUtil.Companion.d("updateRegionData：" + response);
-                }
+//                if (response.length() > 4000) {
+//                    for (int i = 0; i < response.length(); i += 4000) {
+//                        if (i + 4000 < response.length()) {
+//                            LogUtil.d(i + "updateRegionData：" + response.substring(i, i + 4000));
+//                        } else {
+//                            LogUtil.d(i + "updateRegionData：" + response.substring(i, response
+//                                    .length()));
+//                        }
+//                    }
+//                } else {
+//                    LogUtil.d("updateRegionData：" + response);
+//                }
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":
@@ -159,7 +159,7 @@ public class DataVersionService extends Service {
      * 停止自己这个服务
      */
     private void stopDataVersionService() {
-        LogUtil.Companion.d("停止数据更新服务");
+        LogUtil.d("停止数据更新服务");
         stopService(new Intent(getApplicationContext(), DataVersionService.class));
     }
 

@@ -53,6 +53,15 @@ public class ReconciliationList implements Parcelable {
     private String customerName;
     private String categoryName;
     private String productName;
+    private int tipStatus;
+
+    public int getTipStatus() {
+        return tipStatus;
+    }
+
+    public void setTipStatus(int tipStatus) {
+        this.tipStatus = tipStatus;
+    }
 
     public String getCategoryName() {
         return categoryName;

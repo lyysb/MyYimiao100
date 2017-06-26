@@ -126,12 +126,12 @@ public class CommodityConfirmActivity extends BaseActivity implements TitleView
         mCommodityConfirmExchange.setClickable(false);
         showLoadingProgress();
         //获取用户收货地址数据
-        OkHttpUtils.post().url(URL_ADDRESS_LIST).addHeader(ACCESS_TOKEN, mAccessToken)
+        OkHttpUtils.post().url(URL_ADDRESS_LIST).addHeader(ACCESS_TOKEN, accessToken)
                 .build().execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
                 //获取用户地址列表失败的话，也不会允许点击提交订单
-                LogUtil.Companion.d("获取地址列表E：" + e.getLocalizedMessage());
+                LogUtil.d("获取地址列表E：" + e.getLocalizedMessage());
                 Util.showTimeOutNotice(currentContext);
                 hideLoadingProgress();
             }
@@ -141,7 +141,7 @@ public class CommodityConfirmActivity extends BaseActivity implements TitleView
                 hideLoadingProgress();
                 //返回数据之后才允许点击
                 mCommodityConfirmExchange.setClickable(true);
-                LogUtil.Companion.d("获取地址列表：" + response);
+                LogUtil.d("获取地址列表：" + response);
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":
@@ -193,7 +193,7 @@ public class CommodityConfirmActivity extends BaseActivity implements TitleView
                 Intent intent = new Intent(this, PersonalAddressActivity.class);
                 intent.putExtra("from", "integral");        //标识来自积分商城
                 intent.putExtra("addressId", mAddressId);   //发给下一个界面，校验是否对该地址进行操作
-                LogUtil.Companion.d("确定订单传给下一个界面的地址id：" + mAddressId);
+                LogUtil.d("确定订单传给下一个界面的地址id：" + mAddressId);
                 startActivityForResult(intent, FROM_ITEM_OK);
                 break;
         }
@@ -203,19 +203,19 @@ public class CommodityConfirmActivity extends BaseActivity implements TitleView
      * 提交积分兑换订单
      */
     private void submitOrder() {
-        OkHttpUtils.post().url(URL_ORDER).addHeader(ACCESS_TOKEN, mAccessToken)
+        OkHttpUtils.post().url(URL_ORDER).addHeader(ACCESS_TOKEN, accessToken)
                 .addParams(ADDRESS_ID, mAddressId + "").addParams(GOODS_ID, mGoodsId)
                 .build().execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.Companion.d("提交积分兑换商品E：" + e.getLocalizedMessage());
+                LogUtil.d("提交积分兑换商品E：" + e.getLocalizedMessage());
                 Util.showTimeOutNotice(currentContext);
                 e.printStackTrace();
             }
 
             @Override
             public void onResponse(String response, int id) {
-                LogUtil.Companion.d("提交积分兑换商品：" + response);
+                LogUtil.d("提交积分兑换商品：" + response);
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":

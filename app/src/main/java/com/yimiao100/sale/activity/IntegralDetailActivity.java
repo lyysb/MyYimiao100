@@ -48,7 +48,7 @@ public class IntegralDetailActivity extends BaseActivitySingleList {
         getBuild(1).execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.Companion.d("积分明细列表E：" + e.getLocalizedMessage());
+                LogUtil.d("积分明细列表E：" + e.getLocalizedMessage());
                 Util.showTimeOutNotice(currentContext);
                 hideLoadingProgress();
             }
@@ -57,14 +57,14 @@ public class IntegralDetailActivity extends BaseActivitySingleList {
             public void onResponse(String response, int id) {
                 mSwipeRefreshLayout.setRefreshing(false);
                 hideLoadingProgress();
-                LogUtil.Companion.d("积分明细列表E：" + response);
+                LogUtil.d("积分明细列表E：" + response);
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":
                         IntegralListResult pagedResult = JSON.parseObject(response,
                                 IntegralListBean.class).getPagedResult();
-                        mPage = 2;
-                        mTotalPage = pagedResult.getTotalPage();
+                        page = 2;
+                        totalPage = pagedResult.getTotalPage();
                         mIntegralLists = pagedResult.getPagedList();
                         handleEmptyData(mIntegralLists);
                         mAdapter = new IntegralDetailAdapter(mIntegralLists);
@@ -80,21 +80,21 @@ public class IntegralDetailActivity extends BaseActivitySingleList {
 
     @Override
     protected void onLoadMore() {
-        getBuild(mPage).execute(new StringCallback() {
+        getBuild(page).execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.Companion.d("积分明细列表E：" + e.getLocalizedMessage());
+                LogUtil.d("积分明细列表E：" + e.getLocalizedMessage());
                 Util.showTimeOutNotice(currentContext);
             }
 
             @Override
             public void onResponse(String response, int id) {
-                LogUtil.Companion.d("积分明细列表E：" + response);
+                LogUtil.d("积分明细列表E：" + response);
                 mListView.onLoadMoreComplete();
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":
-                        mPage++;
+                        page++;
                         mIntegralLists.addAll(JSON.parseObject(response,
                                 IntegralListBean.class).getPagedResult().getPagedList());
                         mAdapter.notifyDataSetChanged();
@@ -113,8 +113,8 @@ public class IntegralDetailActivity extends BaseActivitySingleList {
     }
 
     private RequestCall getBuild(int page) {
-        return OkHttpUtils.post().url(URL_INTEGRAL_LIST).addHeader(ACCESS_TOKEN, mAccessToken)
-                .addParams(PAGE, page + "").addParams(PAGE_SIZE, mPageSize)
+        return OkHttpUtils.post().url(URL_INTEGRAL_LIST).addHeader(ACCESS_TOKEN, accessToken)
+                .addParams(PAGE, page + "").addParams(PAGE_SIZE, pageSize)
                 .build();
     }
 }

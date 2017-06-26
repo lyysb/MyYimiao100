@@ -92,10 +92,10 @@ public class PromotionExperienceListActivity extends BaseActivity implements Tit
         mAdapter.setOnDeleteClickListener(this);
         // 已通过审核，不能新增
         if (TextUtils.equals("passed", mAccountStatus)) {
-            LogUtil.Companion.d("账户已通过审核，禁止新增");
+            LogUtil.d("账户已通过审核，禁止新增");
             mExperienceAdd.setVisibility(View.GONE);
         } else if (TextUtils.equals("auditing", mAccountStatus)) {
-            LogUtil.Companion.d("账户正在审核中，禁止新增");
+            LogUtil.d("账户正在审核中，禁止新增");
             mExperienceAdd.setVisibility(View.GONE);
         } else {
             mExperienceAdd.setVisibility(View.VISIBLE);
@@ -106,9 +106,9 @@ public class PromotionExperienceListActivity extends BaseActivity implements Tit
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         // 根据账户状态
         if (TextUtils.equals("passed", mAccountStatus)) {
-            LogUtil.Companion.d("账户已通过审核，禁止修改");
+            LogUtil.d("账户已通过审核，禁止修改");
         } else if (TextUtils.equals("auditing", mAccountStatus)) {
-            LogUtil.Companion.d("账户正在审核中，禁止修改");
+            LogUtil.d("账户正在审核中，禁止修改");
         } else {
             edit(position);
         }
@@ -142,9 +142,9 @@ public class PromotionExperienceListActivity extends BaseActivity implements Tit
     public void delete(final int position) {
         // 如果已通过，则不能删除
         if (TextUtils.equals("passed", mAccountStatus)) {
-            LogUtil.Companion.d("已通过审核，禁止删除");
+            LogUtil.d("已通过审核，禁止删除");
         } else if (TextUtils.equals("auditing", mAccountStatus)) {
-            LogUtil.Companion.d("账户正在审核中，禁止修改");
+            LogUtil.d("账户正在审核中，禁止修改");
         } else {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setMessage("确定删除？");

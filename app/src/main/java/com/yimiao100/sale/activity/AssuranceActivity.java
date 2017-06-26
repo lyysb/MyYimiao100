@@ -99,7 +99,7 @@ public class AssuranceActivity extends BaseActivity implements TitleView.TitleBa
 
         mLogUrl = getIntent().getStringExtra("logoImageUrl");
         mVendorName = getIntent().getStringExtra("vendorName");
-        LogUtil.Companion.d("userAccountType is " + mUserAccountType);
+        LogUtil.d("userAccountType is " + mUserAccountType);
 
         initView();
 
@@ -156,7 +156,7 @@ public class AssuranceActivity extends BaseActivity implements TitleView.TitleBa
         mTotalAmount = (TextView) headView.findViewById(R.id.head_vendor_money);
 
 
-        mAssuranceCompanyListView.addHeaderView(headView);
+        mAssuranceCompanyListView.addHeaderView(headView, null, false);
         mAssuranceCompanyListView.setSwipeRefreshLayoutEnabled(new PullToRefreshListView
                 .SwipeRefreshLayoutEnabledListener() {
             @Override
@@ -170,8 +170,8 @@ public class AssuranceActivity extends BaseActivity implements TitleView.TitleBa
 
 
     private RequestCall getBuild(int page) {
-        return OkHttpUtils.post().url(URL_ASSURANCE).addHeader(ACCESS_TOKEN, mAccessToken)
-                .addParams(PAGE, page + "").addParams(PAGE_SIZE, "10").addParams(VENDOR_ID,
+        return OkHttpUtils.post().url(URL_ASSURANCE).addHeader(ACCESS_TOKEN, accessToken)
+                .addParams(PAGE, page + "").addParams(PAGE_SIZE, pageSize).addParams(VENDOR_ID,
                         mVendorId + "").addParams(USER_ACCOUNT_TYPE, mUserAccountType).build();
     }
 
@@ -274,9 +274,9 @@ public class AssuranceActivity extends BaseActivity implements TitleView.TitleBa
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":
-                        mPage = 2;
+                        page = 2;
                         AssuranceBean assuranceBean = JSON.parseObject(response, AssuranceBean.class);
-                        mTotalPage = assuranceBean.getPagedResult().getTotalPage();
+                        totalPage = assuranceBean.getPagedResult().getTotalPage();
                         int productQtyStat = assuranceBean.getStat().getProductQtyStat();
                         double totalAmountStat = assuranceBean.getStat().getTotalAmountStat();
                         mProductCount.setText(productQtyStat + "\n产品");
@@ -309,8 +309,8 @@ public class AssuranceActivity extends BaseActivity implements TitleView.TitleBa
 
 
     private void loadMoreCompany() {
-        if (mPage <= mTotalPage) {
-            getBuild(mPage).execute(new StringCallback() {
+        if (page <= totalPage) {
+            getBuild(page).execute(new StringCallback() {
                 @Override
                 public void onError(Call call, Exception e, int id) {
                     LogUtil.Companion.d("保证金可提现-对公账户E：" + e.getMessage());
@@ -324,8 +324,7 @@ public class AssuranceActivity extends BaseActivity implements TitleView.TitleBa
                     mAssuranceCompanyListView.onLoadMoreComplete();
                     switch (errorBean.getStatus()) {
                         case "success":
-                            mPage++;
-
+                            page++;
                             mAssuranceLists.addAll(JSON.parseObject(response, AssuranceBean
                                     .class).getPagedResult().getPagedList());
                             mAssuranceAdapter.notifyDataSetChanged();

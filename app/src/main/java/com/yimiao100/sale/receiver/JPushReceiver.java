@@ -25,14 +25,14 @@ public class JPushReceiver extends BroadcastReceiver {
         Bundle bundle = intent.getExtras();
 
         if (JPushInterface.ACTION_NOTIFICATION_RECEIVED.equals(intent.getAction())) {
-            LogUtil.Companion.d("收到通知");
+            LogUtil.d("收到通知");
             String title = bundle.getString(JPushInterface.EXTRA_NOTIFICATION_TITLE);
             String content = bundle.getString(JPushInterface.EXTRA_ALERT);
             String type = bundle.getString(JPushInterface.EXTRA_EXTRA);
-            LogUtil.Companion.d("通知title:" + title + "content:" + content + "type:" + type);
+            LogUtil.d("通知title:" + title + "content:" + content + "type:" + type);
         } else if (JPushInterface.ACTION_NOTIFICATION_OPENED.equals(intent.getAction())) {
             //用户打开通知
-            LogUtil.Companion.d("打开通知");
+            LogUtil.d("打开通知");
             String type = bundle.getString(JPushInterface.EXTRA_EXTRA);
             //根据json数据决定打开页面
             JPushBean jPushBean = JSON.parseObject(type, JPushBean.class);
@@ -51,7 +51,7 @@ public class JPushReceiver extends BroadcastReceiver {
                     name = "newsId";
                     break;
                 default:
-                    LogUtil.Companion.d("unKnownMessageType--" + jPushBean.getMessage_type());
+                    LogUtil.d("unKnownMessageType--" + jPushBean.getMessage_type());
                     clz = MainActivity.class;
                     break;
             }
@@ -60,7 +60,7 @@ public class JPushReceiver extends BroadcastReceiver {
             i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(i);
         } else {
-            LogUtil.Companion.d("Unhandled intent - " + intent.getAction());
+            LogUtil.d("Unhandled intent - " + intent.getAction());
         }
     }
 }

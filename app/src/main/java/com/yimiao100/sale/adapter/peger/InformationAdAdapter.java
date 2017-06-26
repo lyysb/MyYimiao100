@@ -41,6 +41,7 @@ public class InformationAdAdapter extends PagerAdapter{
     public Object instantiateItem(ViewGroup container, int position) {
         position = position % mList.size();
         ImageView imageView = new ImageView(container.getContext());
+        // TODO iv设置scaleType
         String imageUrl = mList.get(position).getMediaUrl();
         if (!imageUrl.isEmpty()) {
             Picasso.with(container.getContext()).load(imageUrl + "?imageMogr2/thumbnail/960x480/")

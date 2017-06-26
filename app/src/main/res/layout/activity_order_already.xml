@@ -11,7 +11,15 @@
         app:title_text="我的业务"
         app:left_isShow="true"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content">
+        <ImageView
+            android:id="@+id/order_already_service"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_alignParentRight="true"
+            android:scaleType="center"
+            android:src="@mipmap/ico_service"/>
+    </com.yimiao100.sale.view.TitleView>
     <ScrollView
         android:background="@color/colorLoginInput"
         android:layout_width="match_parent"
@@ -107,6 +115,13 @@
                         android:text="推广保证金："
                         style="@style/style8"/>
                 </LinearLayout>
+                <TextView
+                    android:id="@+id/order_already_customer"
+                    android:text="客户："
+                    style="@style/style8"
+                    android:layout_marginTop="15dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
 
                 <TextView
                     android:id="@+id/order_already_no"

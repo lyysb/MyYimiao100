@@ -10,229 +10,214 @@
         android:layout_height="wrap_content"
         title:title_background="@color/colorMain"
         title:title_text="疫苗圈"
-        />
+    >
+        <ImageView
+            android:id="@+id/crm_service"
+            android:layout_alignParentRight="true"
+            android:src="@mipmap/ico_service"
+            android:scaleType="center"
+            android:layout_width="50dp"
+            android:layout_height="50dp"/>
+    </com.yimiao100.sale.view.TitleView>
 
-    <ScrollView
-        android:fillViewport="true"
+    <com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout
+        android:id="@+id/crm_refresh_layout"
+        title:tr_enable_loadmore="false"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <LinearLayout
+
+        <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
-            <RelativeLayout
+            android:fillViewport="true">
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <android.support.v4.view.ViewPager
-                    android:id="@+id/crm_ad"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+                <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_marginBottom="7dp"
-                    android:layout_height="160dp"/>
+                    android:layout_height="wrap_content">
+                    <android.support.v4.view.ViewPager
+                        android:id="@+id/crm_ad"
+                        android:layout_width="match_parent"
+                        android:layout_height="190dp"
+                        android:layout_marginBottom="7dp"/>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignBottom="@id/crm_ad"
+                        android:background="@color/trans_black"
+                        android:gravity="center"
+                        android:padding="6dp">
+                        <TextView
+                            android:id="@+id/crm_tv_desc"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentLeft="true"
+                            android:layout_marginLeft="10dp"
+                            android:layout_weight="1"
+                            android:ellipsize="end"
+                            android:lines="1"
+                            android:textColor="@android:color/white"
+                            android:textSize="16sp"/>
+                        <LinearLayout
+                            android:id="@+id/crm_ll_dots"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:orientation="horizontal"/>
+                    </LinearLayout>
+                </RelativeLayout>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="110dp"
+                    android:layout_marginLeft="12dp"
+                    android:layout_marginRight="12dp"
+                    android:layout_weight="1"
+                >
+
+                    <me.itangqi.waveloadingview.WaveLoadingView
+                        android:id="@+id/wave_ship"
+                        title:wlv_titleTop="发货"
+                        title:wlv_titleTopSize="12sp"
+                        title:wlv_titleCenterSize="18sp"
+                        title:wlv_shapeType="rectangle"
+                        title:wlv_borderWidth="2dp"
+                        android:background="@drawable/shape_wave"
+                        title:wlv_waveColor="#504188d2"
+                        title:wlv_waveAmplitude="50"
+                        title:wlv_round_rectangle_x_and_y="20"
+                        title:wlv_round_rectangle="true"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_marginRight="2dp"
+                        android:layout_height="110dp"/>
+                    <me.itangqi.waveloadingview.WaveLoadingView
+                        android:id="@+id/wave_payment"
+                        title:wlv_titleTop="回款"
+                        title:wlv_titleTopSize="12sp"
+                        title:wlv_titleCenterSize="18sp"
+                        title:wlv_shapeType="rectangle"
+                        title:wlv_borderWidth="2dp"
+                        android:background="@drawable/shape_wave"
+                        title:wlv_waveColor="#504188d2"
+                        title:wlv_waveAmplitude="50"
+                        title:wlv_round_rectangle_x_and_y="20"
+                        title:wlv_round_rectangle="true"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="110dp"/>
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="12dp"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:text="常用工具"
+                    android:textColor="@color/color999"/>
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_alignBottom="@id/crm_ad"
-                    android:background="@color/trans_black"
-                    android:gravity="center"
-                    android:padding="6dp" >
-                    <TextView
-                        android:id="@+id/crm_tv_desc"
-                        android:layout_marginLeft="10dp"
+                    android:layout_marginBottom="4dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_weight="1"
+                    android:orientation="horizontal">
+
+                    <ImageButton
+                        android:id="@+id/crm_notice"
+                        style="?android:attr/borderlessButtonStyle"
                         android:layout_width="0dp"
+                        android:layout_height="wrap_content"
                         android:layout_weight="1"
+                        android:background="#0000"
+                        android:src="@drawable/selector_crm_notice"/>
+
+                    <ImageButton
+                        android:id="@+id/crm_resources"
+                        style="?android:attr/borderlessButtonStyle"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentLeft="true"
-                        android:textSize="16sp"
-                        android:lines="1"
-                        android:ellipsize="end"
-                        android:textColor="@android:color/white" />
-                    <LinearLayout
-                        android:id="@+id/crm_ll_dots"
-                        android:layout_width="wrap_content"
+                        android:layout_weight="1"
+                        android:background="#0000"
+                        android:src="@drawable/selector_crm_resources"/>
+
+                    <ImageButton
+                        android:id="@+id/crm_customer"
+                        style="?android:attr/borderlessButtonStyle"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
-                        android:layout_centerVertical="true"
-                        android:orientation="horizontal" />
+                        android:layout_weight="1"
+                        android:background="#0000"
+                        android:src="@drawable/selector_crm_customer"/>
+
+                    <ImageButton
+                        android:id="@+id/crm_upload"
+                        style="?android:attr/borderlessButtonStyle"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="#0000"
+                        android:src="@drawable/selector_crm_upload"/>
+
                 </LinearLayout>
-            </RelativeLayout>
 
-
-            <LinearLayout
-                android:layout_weight="1"
-                android:layout_width="match_parent"
-                android:layout_height="110dp"
-                android:layout_marginLeft="12dp"
-                android:layout_marginRight="12dp"
-            >
-
-
-                <RelativeLayout
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginRight="2dp"
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
                     android:layout_weight="1"
-                    android:background="@drawable/shape_wave">
+                    android:orientation="horizontal"
+                    android:weightSum="4">
 
-                    <com.yimiao100.sale.view.DynamicWave
-                        android:id="@+id/wave_goods"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"/>
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerHorizontal="true"
-                        android:layout_margin="6dp"
-                        android:text="发货"
-                        android:textColor="@android:color/black"
-                        android:textSize="12dp"
-                    />
-
-                    <TextView
-                        android:id="@+id/crm_goods_ed"
-                        android:gravity="center"
-                        android:layout_width="wrap_content"
+                    <ImageButton
+                        android:id="@+id/crm_reconciliation"
+                        style="?android:attr/borderlessButtonStyle"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_centerInParent="true"
-                        android:textColor="@android:color/black"
-                        android:textSize="18dp"
-                    />
-                </RelativeLayout>
+                        android:layout_weight="1"
+                        android:background="#0000"
+                        android:src="@drawable/selector_crm_reconciliation"/>
 
-                <RelativeLayout
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1">
-
-                    <com.yimiao100.sale.view.DynamicWave
-                        android:id="@+id/wave_money"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="@drawable/shape_wave"/>
-
-                    <TextView
-                        android:layout_width="wrap_content"
+                    <ImageButton
+                        android:id="@+id/crm_riches"
+                        style="?android:attr/borderlessButtonStyle"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_centerHorizontal="true"
-                        android:layout_margin="6dp"
-                        android:text="回款"
-                        android:textColor="@android:color/black"
-                        android:textSize="12dp"
-                    />
-
-                    <TextView
-                        android:id="@+id/crm_payment_ed"
-                        android:layout_width="wrap_content"
+                        android:layout_weight="1"
+                        android:background="#0000"
+                        android:src="@drawable/selector_crm_wealth"/>
+                    <ImageButton
+                        android:id="@+id/crm_order_online"
+                        style="?android:attr/borderlessButtonStyle"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_centerInParent="true"
-                        android:gravity="center"
-                        android:textColor="@android:color/black"
-                        android:textSize="18dp"
-                    />
-                </RelativeLayout>
+                        android:layout_weight="1"
+                        android:background="#0000"
+                        android:src="@mipmap/ico_home_selected_order_online"/>
+                    <ImageButton
+                        android:id="@+id/crm_query"
+                        style="?android:attr/borderlessButtonStyle"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="#0000"
+                        android:src="@mipmap/ico_home_selected_query"/>
+
+                </LinearLayout>
             </LinearLayout>
 
-            <TextView
-                android:layout_weight="1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="12dp"
-                android:gravity="center_vertical"
-                android:text="常用工具"
-                android:textColor="@color/color999"/>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_marginBottom="4dp"
-                android:orientation="horizontal">
-
-                <ImageButton
-                    android:id="@+id/crm_notice"
-                    style="?android:attr/borderlessButtonStyle"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="#0000"
-                    android:src="@drawable/selector_crm_notice"/>
-
-                <ImageButton
-                    android:id="@+id/crm_resources"
-                    style="?android:attr/borderlessButtonStyle"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="#0000"
-                    android:src="@drawable/selector_crm_resources"/>
-
-                <ImageButton
-                    android:id="@+id/crm_customer"
-                    style="?android:attr/borderlessButtonStyle"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="#0000"
-                    android:src="@drawable/selector_crm_customer"/>
-
-                <ImageButton
-                    android:id="@+id/crm_upload"
-                    style="?android:attr/borderlessButtonStyle"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="#0000"
-                    android:src="@drawable/selector_crm_upload"/>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_marginBottom="8dp"
-                android:orientation="horizontal"
-                android:weightSum="4">
-
-                <ImageButton
-                    android:id="@+id/crm_reconciliation"
-                    style="?android:attr/borderlessButtonStyle"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="#0000"
-                    android:src="@drawable/selector_crm_reconciliation"/>
-
-                <ImageButton
-                    android:id="@+id/crm_riches"
-                    style="?android:attr/borderlessButtonStyle"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="#0000"
-                    android:src="@drawable/selector_crm_wealth"/>
-                <ImageButton
-                    android:id="@+id/crm_warehouse"
-                    style="?android:attr/borderlessButtonStyle"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="#0000"
-                    android:src="@drawable/selector_crm_warehouse"/>
-                <ImageButton
-                    android:id="@+id/crm_wholesale"
-                    style="?android:attr/borderlessButtonStyle"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="#0000"
-                    android:src="@drawable/selector_crm_wholesale"/>
-
-            </LinearLayout>
-        </LinearLayout>
-
-    </ScrollView>
+        </ScrollView>
+    </com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout>
 
 </LinearLayout>

@@ -18,10 +18,14 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.meiqia.core.MQManager;
+import com.meiqia.core.bean.MQMessage;
+import com.meiqia.core.callback.OnGetMessageListCallback;
 import com.squareup.picasso.Picasso;
 import com.yimiao100.sale.R;
 import com.yimiao100.sale.base.BaseActivity;
 import com.yimiao100.sale.bean.ErrorBean;
+import com.yimiao100.sale.bean.Event;
 import com.yimiao100.sale.bean.Experience;
 import com.yimiao100.sale.bean.PersonalBean;
 import com.yimiao100.sale.bean.UserBean;
@@ -40,9 +44,12 @@ import com.yimiao100.sale.view.TitleView;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import butterknife.BindView;
@@ -50,6 +57,8 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import okhttp3.Call;
 import okhttp3.Request;
+import q.rorbin.badgeview.Badge;
+import q.rorbin.badgeview.QBadgeView;
 
 /**
  * 推广主体-绑定个人主体
@@ -79,6 +88,8 @@ public class BindPersonalActivity extends BaseActivity implements TitleView
     private final int HEIGHT = 80;
     @BindView(R.id.bind_personal_title)
     TitleView mTitle;
+    @BindView(R.id.bind_personal_service)
+    ImageView mPersonalService;
     @BindView(R.id.bind_personal_name)
     EditText mPersonalName;
     @BindView(R.id.bind_personal_id_card)
@@ -136,6 +147,7 @@ public class BindPersonalActivity extends BaseActivity implements TitleView
     private String mExperienceList1;
     private ProgressDialog mProgressDialog;
     private String mAccountStatus;
+    private Badge mBadge;
 
 
     @Override
@@ -151,16 +163,33 @@ public class BindPersonalActivity extends BaseActivity implements TitleView
 
     private void initView() {
         mTitle.setOnTitleBarClick(this);
+        mBadge = new QBadgeView(this).bindTarget(mPersonalService)
+                .setBadgePadding(4, true)
+                .setGravityOffset(9, true)
+                .setShowShadow(false);
         mPersonalName.addTextChangedListener(this);
+        MQManager.getInstance(this).getUnreadMessages(new OnGetMessageListCallback() {
+            @Override
+            public void onSuccess(List<MQMessage> list) {
+                if (list.size() != 0) {
+                    mBadge.setBadgeNumber(-1);
+                }
+            }
+
+            @Override
+            public void onFailure(int i, String s) {
+
+            }
+        });
     }
 
     private void initData() {
         showLoadingProgress();
-        OkHttpUtils.post().url(URL_GET_PERSONAL).addHeader(ACCESS_TOKEN, mAccessToken)
+        OkHttpUtils.post().url(URL_GET_PERSONAL).addHeader(ACCESS_TOKEN, accessToken)
                 .build().execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.Companion.d("推广主体E：" + e.getLocalizedMessage());
+                LogUtil.d("推广主体E：" + e.getLocalizedMessage());
                 Util.showTimeOutNotice(currentContext);
                 hideLoadingProgress();
             }
@@ -168,7 +197,7 @@ public class BindPersonalActivity extends BaseActivity implements TitleView
             @Override
             public void onResponse(String response, int id) {
                 hideLoadingProgress();
-                LogUtil.Companion.d("推广主体：" + response);
+                LogUtil.d("推广主体：" + response);
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":
@@ -184,11 +213,29 @@ public class BindPersonalActivity extends BaseActivity implements TitleView
         });
     }
 
+    @Override
+    public void onEventMainThread(@NotNull Event event) {
+        super.onEventMainThread(event);
+        switch (Event.eventType) {
+            case RECEIVE_MSG:
+                // 收到客服消息，显示小圆点
+                mBadge.setBadgeNumber(-1);
+                break;
+            case READ_MSG:
+                // 设置小圆点为0
+                mBadge.setBadgeNumber(0);
+                break;
+            default:
+                LogUtil.d("unknown event type is " + Event.eventType);
+                break;
+        }
+    }
+
     private void echoData(PersonalBean personal) {
         if (personal != null) {
             // 不是新建账户
             isFirst = false;
-            LogUtil.Companion.d("修改个人账户");
+            LogUtil.d("修改个人账户");
             // 姓名
             mPersonalName.setText(personal.getCnName());
             // 身份证号
@@ -200,9 +247,9 @@ public class BindPersonalActivity extends BaseActivity implements TitleView
             // 邮箱
             mPersonalEmail.setText(personal.getEmail());
             String personalUrl = personal.getPersonalPhotoUrl();
-            LogUtil.Companion.d("personalUrl is" + personalUrl);
+            LogUtil.d("personalUrl is" + personalUrl);
             String idUrl = personal.getIdPhotoUrl();
-            LogUtil.Companion.d("idUrl is" + idUrl);
+            LogUtil.d("idUrl is" + idUrl);
             Picasso picasso = Picasso.with(this);
             // 证件照1
             String personalPhotoPath = (String) SharePreferenceUtil.get(this, "personal" + personalPhoto, "");
@@ -223,7 +270,7 @@ public class BindPersonalActivity extends BaseActivity implements TitleView
             // 证件照2
             String idPhotoPath = (String) SharePreferenceUtil.get(this, "personal" + idPhoto, "");
             if (!idPhotoPath.isEmpty()) {
-                LogUtil.Companion.d("idPhotoPath is " + idPhotoPath);
+                LogUtil.d("idPhotoPath is " + idPhotoPath);
                 picasso.load(new File(idPhotoPath))
                         .transform(BitmapUtil.getTransformation(mPersonalCardPhoto2))
                         .placeholder(R.mipmap.ico_default_short_picture)
@@ -255,13 +302,13 @@ public class BindPersonalActivity extends BaseActivity implements TitleView
             if (mAccountStatus != null) {
                 switch (mAccountStatus) {
                     case "passed":
-                        LogUtil.Companion.d("审核已通过，不可编辑");
+                        LogUtil.d("审核已通过，不可编辑");
                         ToastUtil.showShort(this, getString(R.string.account_passed_notice));
                         //禁止修改数据
                         forbidChange();
                         break;
                     case "auditing":
-                        LogUtil.Companion.d("信息审核中，不可编辑");
+                        LogUtil.d("信息审核中，不可编辑");
                         ToastUtil.showShort(this, getString(R.string.account_auditing_notice));
                         //禁止修改数据
                         forbidChange();
@@ -270,7 +317,7 @@ public class BindPersonalActivity extends BaseActivity implements TitleView
             }
         } else {
             isFirst = true;
-            LogUtil.Companion.d("新建个人账户");
+            LogUtil.d("新建个人账户");
         }
     }
 
@@ -471,7 +518,7 @@ public class BindPersonalActivity extends BaseActivity implements TitleView
             return;
         } else {
             mExperienceList1 = JSON.toJSONString(mList);
-            LogUtil.Companion.d("推广经历：" + mExperienceList1);
+            LogUtil.d("推广经历：" + mExperienceList1);
         }
         // 曾经所在公司及职位
         mPersonalEver1 = mPersonalEver.getText().toString().trim();
@@ -535,7 +582,12 @@ public class BindPersonalActivity extends BaseActivity implements TitleView
         mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
         mProgressDialog.setCancelable(false);
         mProgressDialog.setTitle(getString(R.string.upload_progress_dialog_title));
-        OkHttpUtils.post().url(URL_SUBMIT).addHeader(ACCESS_TOKEN, mAccessToken)
+
+        final ProgressDialog responseDialog = new ProgressDialog(this);
+        responseDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        responseDialog.setCancelable(false);
+        responseDialog.setMessage(getString(R.string.response_progress_dialog_title));
+        OkHttpUtils.post().url(URL_SUBMIT).addHeader(ACCESS_TOKEN, accessToken)
                 .addParams(CN_NAME, mPersonalName1)
                 .addParams(ID_NUMBER, mPersonalIdCard1)
                 .addParams(PERSONAL_PHONE_NUMBER, mPersonalPhone1)
@@ -555,21 +607,28 @@ public class BindPersonalActivity extends BaseActivity implements TitleView
             public void onBefore(Request request, int id) {
                 super.onBefore(request, id);
                 mProgressDialog.show();
-                LogUtil.Companion.d("onBefore");
             }
 
             @Override
             public void onAfter(int id) {
                 super.onAfter(id);
-                mProgressDialog.dismiss();
-                LogUtil.Companion.d("onAfter");
+                if (responseDialog.isShowing()) {
+                    responseDialog.dismiss();
+                }
             }
 
             @Override
             public void inProgress(float progress, long total, int id) {
                 super.inProgress(progress, total, id);
                 mProgressDialog.setProgress((int) (100 * progress + 0.5));
-                LogUtil.Companion.d("inProgress");
+                if (progress == 1f) {
+                    // 关闭进度条弹窗显示
+                    mProgressDialog.dismiss();
+                    // 显示处理弹窗
+                    responseDialog.show();
+                }
+
+
             }
 
             @Override
@@ -606,9 +665,9 @@ public class BindPersonalActivity extends BaseActivity implements TitleView
         if (mFileMap != null) {
             for (Map.Entry<String, String> entry : mFileMap.entrySet()) {
                 String key = entry.getKey().substring(0, entry.getKey().lastIndexOf("."));
-                LogUtil.Companion.d("key is " + key);
+                LogUtil.d("key is " + key);
                 String value = entry.getValue();
-                LogUtil.Companion.d("val is " + value);
+                LogUtil.d("val is " + value);
                 SharePreferenceUtil.put(currentContext, "personal" + key, value);
             }
         }
@@ -675,8 +734,8 @@ public class BindPersonalActivity extends BaseActivity implements TitleView
         // 压缩文件内单个文件的真实路径
         String val = file.getAbsolutePath();
         mFileMap.put(key, val);
-        LogUtil.Companion.d("key：" + key);
-        LogUtil.Companion.d("val：" + val);
+        LogUtil.d("key：" + key);
+        LogUtil.d("val：" + val);
         //压缩回显
         Bitmap bitmap = BitmapUtil.decodeSampledBitmapFromFile(file, DensityUtil.dp2px(this,
                 WIDTH), DensityUtil.dp2px(this, HEIGHT));

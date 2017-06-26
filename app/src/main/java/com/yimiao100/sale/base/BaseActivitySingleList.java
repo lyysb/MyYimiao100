@@ -100,7 +100,7 @@ public abstract class BaseActivitySingleList extends BaseActivity implements Tit
         mListView.setOnRefreshingListener(new PullToRefreshListView.OnRefreshingListener() {
             @Override
             public void onLoadMore() {
-                if (mPage <= mTotalPage) {
+                if (page <= totalPage) {
                     BaseActivitySingleList.this.onLoadMore();
                 } else {
                     mListView.noMore();

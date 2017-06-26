@@ -133,7 +133,7 @@ public class LoginActivity extends BaseActivity implements CompoundButton.OnChec
             @Override
             public void onError(Call call, Exception e, int id) {
                 mProgressDialog.dismiss();
-                LogUtil.Companion.d("用户登录E：" + e.getLocalizedMessage());
+                LogUtil.d("用户登录E：" + e.getLocalizedMessage());
                 Util.showTimeOutNotice(currentContext);
             }
 
@@ -141,7 +141,7 @@ public class LoginActivity extends BaseActivity implements CompoundButton.OnChec
             public void onResponse(String response, int id) {
                 mProgressDialog.dismiss();
                 //获得返回的json字符串
-                LogUtil.Companion.d("用户登录：" + response);
+                LogUtil.d("用户登录：" + response);
                 //解析json字符串
                 SignUpBean signUpBean = JSON.parseObject(response, SignUpBean.class);
                 //判断成功还是失败

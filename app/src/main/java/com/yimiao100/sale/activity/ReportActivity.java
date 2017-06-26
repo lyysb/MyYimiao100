@@ -41,6 +41,18 @@ public class ReportActivity extends BaseActivityListWithText {
     }
 
     @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        initView();
+
+        initData();
+
+        setEmptyView(getString(R.string.empty_view_report), R.mipmap.ico_blank);
+
+        showLoadingProgress();
+    }
+
+    @Override
     protected String setTitle() {
         return "申报记录";
     }
@@ -56,21 +68,21 @@ public class ReportActivity extends BaseActivityListWithText {
             @Override
             public void onError(Call call, Exception e, int id) {
                 e.printStackTrace();
-                LogUtil.Companion.d("init report list data error");
+                LogUtil.d("init report list data error");
                 hideLoadingProgress();
                 Util.showTimeOutNotice(currentContext);
             }
 
             @Override
             public void onResponse(String response, int id) {
-                LogUtil.Companion.d("init data success , response is\n" + response);
+                LogUtil.d("init data success , response is\n" + response);
                 hideLoadingProgress();
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":
                         AdverseList.PagedResult pagedResult = JSON.parseObject(response, AdverseList.class).getPagedResult();
-                        mPage = 2;
-                        mTotalPage = pagedResult.getTotalPage();
+                        page = 2;
+                        totalPage = pagedResult.getTotalPage();
                         mList = pagedResult.getPagedList();
                         mAdapter = new ReportAdapter(mList);
                         mListView.setAdapter(mAdapter);
@@ -87,8 +99,7 @@ public class ReportActivity extends BaseActivityListWithText {
 
     @Override
     protected void onBottomClick() {
-        startActivityForResult(new Intent(this, ReportDetailActivity.class), 100);
-        finish();
+        startActivity(new Intent(this, ReportDetailActivity.class));
     }
 
     @Override
@@ -98,7 +109,6 @@ public class ReportActivity extends BaseActivityListWithText {
         Intent intent = new Intent(this, ReportDetailActivity.class);
         intent.putExtra("adverseApplyId", adverseApplyId);
         startActivity(intent);
-        finish();
     }
 
     @Override
@@ -107,21 +117,21 @@ public class ReportActivity extends BaseActivityListWithText {
             @Override
             public void onError(Call call, Exception e, int id) {
                 e.printStackTrace();
-                LogUtil.Companion.d("refresh report list data error");
+                LogUtil.d("refresh report list data error");
                 mRefreshView.setRefreshing(false);
                 Util.showTimeOutNotice(currentContext);
             }
 
             @Override
             public void onResponse(String response, int id) {
-                LogUtil.Companion.d("refresh data success , response is\n" + response);
+                LogUtil.d("refresh data success , response is\n" + response);
                 mRefreshView.setRefreshing(false);
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":
                         AdverseList.PagedResult pagedResult = JSON.parseObject(response, AdverseList.class).getPagedResult();
-                        mPage = 2;
-                        mTotalPage = pagedResult.getTotalPage();
+                        page = 2;
+                        totalPage = pagedResult.getTotalPage();
                         mList = pagedResult.getPagedList();
                         mAdapter = new ReportAdapter(mList);
                         mListView.setAdapter(mAdapter);
@@ -138,23 +148,23 @@ public class ReportActivity extends BaseActivityListWithText {
 
     @Override
     protected void onLoadMore() {
-        getBuild(mPage).execute(new StringCallback() {
+        getBuild(page).execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
                 e.printStackTrace();
-                LogUtil.Companion.d("load more report list data error");
+                LogUtil.d("load more report list data error");
                 Util.showTimeOutNotice(currentContext);
             }
 
             @Override
             public void onResponse(String response, int id) {
-                LogUtil.Companion.d("load more data success , response is\n" + response);
+                LogUtil.d("load more data success , response is\n" + response);
                 mListView.onLoadMoreComplete();
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":
                         AdverseList.PagedResult pagedResult = JSON.parseObject(response, AdverseList.class).getPagedResult();
-                        mPage++;
+                        page ++;
                         mList.addAll(pagedResult.getPagedList());
                         mAdapter.notifyDataSetChanged();
                         break;
@@ -166,19 +176,9 @@ public class ReportActivity extends BaseActivityListWithText {
         });
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 100) {
-            if (resultCode == RESULT_OK) {
-                showLoadingProgress();
-                initData();
-            }
-        }
-    }
 
     private RequestCall getBuild(int page) {
-        return OkHttpUtils.post().url(URL_ADVERSE_LIST).addHeader(ACCESS_TOKEN, mAccessToken)
-                .addParams(PAGE, page + "").addParams(PAGE_SIZE, mPageSize).build();
+        return OkHttpUtils.post().url(URL_ADVERSE_LIST).addHeader(ACCESS_TOKEN, accessToken)
+                .addParams(PAGE, page + "").addParams(PAGE_SIZE, pageSize).build();
     }
 }

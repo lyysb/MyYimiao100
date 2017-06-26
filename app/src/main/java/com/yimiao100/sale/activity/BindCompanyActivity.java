@@ -16,11 +16,15 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.meiqia.core.MQManager;
+import com.meiqia.core.bean.MQMessage;
+import com.meiqia.core.callback.OnGetMessageListCallback;
 import com.squareup.picasso.Picasso;
 import com.yimiao100.sale.R;
 import com.yimiao100.sale.base.BaseActivity;
 import com.yimiao100.sale.bean.CorporateBean;
 import com.yimiao100.sale.bean.ErrorBean;
+import com.yimiao100.sale.bean.Event;
 import com.yimiao100.sale.bean.Experience;
 import com.yimiao100.sale.bean.UserBean;
 import com.yimiao100.sale.ext.JSON;
@@ -38,9 +42,12 @@ import com.yimiao100.sale.view.TitleView;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import butterknife.BindView;
@@ -48,6 +55,8 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import okhttp3.Call;
 import okhttp3.Request;
+import q.rorbin.badgeview.Badge;
+import q.rorbin.badgeview.QBadgeView;
 
 
 /**
@@ -58,6 +67,8 @@ public class BindCompanyActivity extends BaseActivity implements TitleView
 
     @BindView(R.id.bind_company_title)
     TitleView mBindCompanyTitle;
+    @BindView(R.id.bind_company_service)
+    ImageView mCompanyService;
     EditText mCompanyName;                              //账户名称
     EditText mCompanyBankCard;                          //公司账号
     EditText mCompanyBankName;                          //开户银行
@@ -140,6 +151,7 @@ public class BindCompanyActivity extends BaseActivity implements TitleView
     private ArrayList<Experience> mList;
     private AlertDialog mDialog;
     private String mAccountStatus;
+    private Badge mBadge;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -155,6 +167,23 @@ public class BindCompanyActivity extends BaseActivity implements TitleView
     }
 
     private void initView() {
+        mBadge = new QBadgeView(this).bindTarget(mCompanyService)
+                .setBadgePadding(4, true)
+                .setGravityOffset(9, true)
+                .setShowShadow(false);
+        MQManager.getInstance(this).getUnreadMessages(new OnGetMessageListCallback() {
+            @Override
+            public void onSuccess(List<MQMessage> list) {
+                if (list.size() != 0) {
+                    mBadge.setBadgeNumber(-1);
+                }
+            }
+
+            @Override
+            public void onFailure(int i, String s) {
+
+            }
+        });
         //开户名称
         mCompanyName = (EditText) findViewById(R.id.bind_company_name);
         //公司账号
@@ -199,11 +228,11 @@ public class BindCompanyActivity extends BaseActivity implements TitleView
 
 
     private void initData() {
-        OkHttpUtils.post().url(ULR_GET_CORPORATE_ACCOUNT).addHeader(ACCESS_TOKEN, mAccessToken)
+        OkHttpUtils.post().url(ULR_GET_CORPORATE_ACCOUNT).addHeader(ACCESS_TOKEN, accessToken)
                 .build().execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.Companion.d("推广主体E：" + e.getLocalizedMessage());
+                LogUtil.d("推广主体E：" + e.getLocalizedMessage());
                 Util.showTimeOutNotice(currentContext);
                 hideLoadingProgress();
             }
@@ -211,7 +240,7 @@ public class BindCompanyActivity extends BaseActivity implements TitleView
             @Override
             public void onResponse(String response, int id) {
                 hideLoadingProgress();
-                LogUtil.Companion.d("推广主体：" + response);
+                LogUtil.d("推广主体：" + response);
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":
@@ -227,6 +256,24 @@ public class BindCompanyActivity extends BaseActivity implements TitleView
         });
     }
 
+    @Override
+    public void onEventMainThread(@NotNull Event event) {
+        super.onEventMainThread(event);
+        switch (Event.eventType) {
+            case RECEIVE_MSG:
+                // 收到客服消息，显示小圆点
+                mBadge.setBadgeNumber(-1);
+                break;
+            case READ_MSG:
+                // 设置小圆点为0
+                mBadge.setBadgeNumber(0);
+                break;
+            default:
+                LogUtil.d("unknown event type is " + Event.eventType);
+                break;
+        }
+    }
+
     /**
      * 回显网络数据
      *
@@ -234,7 +281,7 @@ public class BindCompanyActivity extends BaseActivity implements TitleView
      */
     private void echoData(CorporateBean corporate) {
         if (corporate != null) {
-            LogUtil.Companion.d("已有账户提交");
+            LogUtil.d("已有账户提交");
             //不是第一次提交
             isFirst = false;
             //开户名称
@@ -266,16 +313,16 @@ public class BindCompanyActivity extends BaseActivity implements TitleView
             mPromotionAdvantage.setText(corporate.getAdvantage());
             //三张图片url
             String bizUrl = corporate.getBizLicenceUrl();
-            LogUtil.Companion.d("bizUrl is " + bizUrl);
+            LogUtil.d("bizUrl is " + bizUrl);
             String personalUrl = corporate.getPersonalPhotoUrl();
-            LogUtil.Companion.d("personalUrl is " + personalUrl);
+            LogUtil.d("personalUrl is " + personalUrl);
             String idUrl = corporate.getIdPhotoUrl();
-            LogUtil.Companion.d("idUrl is " + idUrl);
+            LogUtil.d("idUrl is " + idUrl);
 
             Picasso picasso = Picasso.with(this);
             String bizLicencePath = (String) SharePreferenceUtil.get(this, "corporate" + bizLicence, "");
             if (!bizLicencePath.isEmpty()) {
-                LogUtil.Companion.d("bizLicence path is " + bizLicencePath);
+                LogUtil.d("bizLicence path is " + bizLicencePath);
                 picasso.load(new File(bizLicencePath))
                         .transform(BitmapUtil.getTransformation(mBindCompanyTakePhoto))
                         .placeholder(R.mipmap.ico_default_short_picture)
@@ -290,7 +337,7 @@ public class BindCompanyActivity extends BaseActivity implements TitleView
             }
             String personalPhotoPath = (String) SharePreferenceUtil.get(this, "corporate" + personalPhoto, "");
             if (!personalPhotoPath.isEmpty()) {
-                LogUtil.Companion.d("personalPhotoPath is " + personalPhotoPath);
+                LogUtil.d("personalPhotoPath is " + personalPhotoPath);
                 picasso.load(new File(personalPhotoPath))
                         .transform(BitmapUtil.getTransformation(mBindCompanyCardPhoto1))
                         .placeholder(R.mipmap.ico_default_short_picture)
@@ -305,7 +352,7 @@ public class BindCompanyActivity extends BaseActivity implements TitleView
             }
             String idPhotoPath = (String) SharePreferenceUtil.get(this, "corporate" + idPhoto, "");
             if (!idPhotoPath.isEmpty()) {
-                LogUtil.Companion.d("idPhotoPath is " + idPhotoPath);
+                LogUtil.d("idPhotoPath is " + idPhotoPath);
                 picasso.load(new File(idPhotoPath))
                         .transform(BitmapUtil.getTransformation(mBindCompanyCardPhoto2))
                         .placeholder(R.mipmap.ico_default_short_picture)
@@ -324,13 +371,13 @@ public class BindCompanyActivity extends BaseActivity implements TitleView
             if (mAccountStatus != null) {
                 switch (mAccountStatus) {
                     case "passed":
-                        LogUtil.Companion.d("审核已通过，不可编辑");
+                        LogUtil.d("审核已通过，不可编辑");
                         ToastUtil.showShort(this, getString(R.string.account_passed_notice));
                         //禁止修改数据
                         forbidChange();
                         break;
                     case "auditing":
-                        LogUtil.Companion.d("信息审核中，不可编辑");
+                        LogUtil.d("信息审核中，不可编辑");
                         ToastUtil.showShort(this, getString(R.string.account_auditing_notice));
                         //禁止修改数据
                         forbidChange();
@@ -338,7 +385,7 @@ public class BindCompanyActivity extends BaseActivity implements TitleView
                 }
             }
         } else {
-            LogUtil.Companion.d("第一次提交");
+            LogUtil.d("第一次提交");
             // 是第一次提交
             isFirst = true;
         }
@@ -662,8 +709,13 @@ public class BindCompanyActivity extends BaseActivity implements TitleView
         mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
         mProgressDialog.setCancelable(false);
         mProgressDialog.setTitle(getString(R.string.upload_progress_dialog_title));
+
+        final ProgressDialog responseDialog = new ProgressDialog(this);
+        responseDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        responseDialog.setCancelable(false);
+        responseDialog.setMessage(getString(R.string.response_progress_dialog_title));
         //请求网络发送数据
-        OkHttpUtils.post().url(URL_CORPORATE_USER_ACCOUNT).addHeader(ACCESS_TOKEN, mAccessToken)
+        OkHttpUtils.post().url(URL_CORPORATE_USER_ACCOUNT).addHeader(ACCESS_TOKEN, accessToken)
                 .addParams(ACCOUNT_NAME, mAccountName)
                 .addParams(CORPORATE_ACCOUNT, mCorporateAccount)
                 .addParams(BANK_NAME, mBankName)
@@ -684,21 +736,26 @@ public class BindCompanyActivity extends BaseActivity implements TitleView
             public void onBefore(Request request, int id) {
                 super.onBefore(request, id);
                 mProgressDialog.show();
-                LogUtil.Companion.d("onBefore");
-            }
-
-            @Override
-            public void onAfter(int id) {
-                super.onAfter(id);
-                mProgressDialog.dismiss();
-                LogUtil.Companion.d("onAfter");
             }
 
             @Override
             public void inProgress(float progress, long total, int id) {
                 super.inProgress(progress, total, id);
                 mProgressDialog.setProgress((int) (100 * progress + 0.5));
-                LogUtil.Companion.d("inProgress");
+                if (progress == 1f) {
+                    // 关闭上传进度显示
+                    mProgressDialog.dismiss();
+                    // 显示处理进度
+                    responseDialog.show();
+                }
+            }
+
+            @Override
+            public void onAfter(int id) {
+                super.onAfter(id);
+                if (responseDialog.isShowing()) {
+                    responseDialog.dismiss();
+                }
             }
 
             @Override
@@ -713,8 +770,8 @@ public class BindCompanyActivity extends BaseActivity implements TitleView
             public void onResponse(String response, int id) {
                 //允许按钮点击
                 mBindCompanySubmit.setEnabled(true);
-                LogUtil.Companion.d("onResponse");
-                LogUtil.Companion.d("绑定对公主体：" + response);
+                LogUtil.d("onResponse");
+                LogUtil.d("绑定对公主体：" + response);
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":
@@ -737,9 +794,9 @@ public class BindCompanyActivity extends BaseActivity implements TitleView
         if (mFileMap != null) {
             for (Map.Entry<String, String> entry : mFileMap.entrySet()) {
                 String key = entry.getKey().substring(0, entry.getKey().lastIndexOf("."));
-                LogUtil.Companion.d("key is " + key);
+                LogUtil.d("key is " + key);
                 String value = entry.getValue();
-                LogUtil.Companion.d("val is " + value);
+                LogUtil.d("val is " + value);
                 SharePreferenceUtil.put(currentContext, "corporate" + key, value);
             }
         }
@@ -830,8 +887,8 @@ public class BindCompanyActivity extends BaseActivity implements TitleView
         // 压缩文件内单个文件的真实路径
         String val = file.getAbsolutePath();
         mFileMap.put(key, val);
-        LogUtil.Companion.d("key：" + key);
-        LogUtil.Companion.d("val：" + val);
+        LogUtil.d("key：" + key);
+        LogUtil.d("val：" + val);
         //压缩回显
         Bitmap bitmap = BitmapUtil.decodeSampledBitmapFromFile(file, DensityUtil.dp2px(this,
                 WIDTH), DensityUtil.dp2px(this, HEIGHT));

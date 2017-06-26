@@ -46,7 +46,7 @@ public class StudyAchievementFragment extends BaseFragmentSingleList {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        setEmptyView("考试是可以“挣钱”的。但是，暂时没有学习任务。", R.mipmap.ico_study_extension);
+        setEmptyView(getString(R.string.empty_view_study_achievement), R.mipmap.ico_study_extension);
     }
 
     @Override

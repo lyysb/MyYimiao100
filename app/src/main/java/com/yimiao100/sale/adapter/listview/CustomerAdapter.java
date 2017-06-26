@@ -51,6 +51,9 @@ public class CustomerAdapter extends BaseAdapter {
         TextView cdc_name = ViewHolderUtil.get(convertView, R.id.cdc_name);
         String cdcName = cdc.getCdcName();
         cdc_name.setText(cdcName);
+        // CDC-Region
+        TextView region = ViewHolderUtil.get(convertView, R.id.cdc_region);
+        region.setText("区域：" + cdc.getProvinceName() + "\t\t" + cdc.getCityName() + "\t\t" + cdc.getAreaName());
         //CDC地址
         TextView cdc_address = ViewHolderUtil.get(convertView, R.id.cdc_address);
         String address = cdc.getAddress();

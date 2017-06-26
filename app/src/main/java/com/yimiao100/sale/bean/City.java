@@ -1,7 +1,5 @@
 package com.yimiao100.sale.bean;
 
-import android.text.TextUtils;
-
 import com.bigkoo.pickerview.model.IPickerViewData;
 
 import java.util.List;
@@ -11,15 +9,11 @@ import java.util.List;
  */
 public class City implements IPickerViewData {
     private int id;
+    private int cityId;
     private String code;
     private String name;
+    private String cityName;
     private String provinceCode;
-    /**
-     * id : 1
-     * code : 110101
-     * name : 东城区
-     * cityCode : 110100
-     */
 
     private List<Area> areaList;
 
@@ -55,6 +49,22 @@ public class City implements IPickerViewData {
         this.provinceCode = provinceCode;
     }
 
+    public int getCityId() {
+        return cityId;
+    }
+
+    public void setCityId(int cityId) {
+        this.cityId = cityId;
+    }
+
+    public String getCityName() {
+        return cityName;
+    }
+
+    public void setCityName(String cityName) {
+        this.cityName = cityName;
+    }
+
     public List<Area> getAreaList() {
         return areaList;
     }
@@ -65,9 +75,6 @@ public class City implements IPickerViewData {
 
     @Override
     public String getPickerViewText() {
-        if (TextUtils.isEmpty(name)){
-            return "";
-        }
-        return name;
+        return name != null ? name :cityName;
     }
 }

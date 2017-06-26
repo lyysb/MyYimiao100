@@ -9,22 +9,25 @@
 
     <ImageView
         android:id="@+id/resource_vendor_logo"
+        android:layout_gravity="center_vertical"
         android:layout_width="88dp"
         android:layout_height="88dp"
         android:scaleType="fitCenter"/>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
         android:orientation="vertical">
 
         <TextView
+            android:text="{vendorName}"
             android:id="@+id/resource_vendor_name"
             android:gravity="center_vertical"
             android:layout_weight="1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
             android:ellipsize="end"
             android:lines="1"
             android:textColor="@color/color333"
@@ -37,11 +40,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="产品："
+            android:layout_marginBottom="5dp"
             android:textColor="@color/color666"
             android:textSize="12sp"/>
         <LinearLayout
             android:layout_weight="1"
             android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="5dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <TextView
@@ -67,10 +73,22 @@
             android:id="@+id/resource_region"
             android:gravity="center_vertical"
             android:layout_weight="1"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="区域："
+            android:layout_marginBottom="5dp"
             android:textColor="@color/color666"
+            android:textSize="12sp"/>
+
+        <TextView
+            android:id="@+id/resource_customer"
+            android:gravity="center_vertical"
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="客户："
+            android:layout_marginBottom="5dp"
+            android:textColor="@color/colorMain"
             android:textSize="12sp"/>
 
         <LinearLayout

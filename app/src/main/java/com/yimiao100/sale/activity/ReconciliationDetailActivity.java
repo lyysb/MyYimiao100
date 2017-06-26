@@ -11,6 +11,8 @@ import com.yimiao100.sale.R;
 import com.yimiao100.sale.adapter.listview.ReconciliationDetailAdapter;
 import com.yimiao100.sale.base.BaseActivity;
 import com.yimiao100.sale.bean.ErrorBean;
+import com.yimiao100.sale.bean.Event;
+import com.yimiao100.sale.bean.EventType;
 import com.yimiao100.sale.bean.ReconciliationDetail;
 import com.yimiao100.sale.bean.ReconciliationDetailBean;
 import com.yimiao100.sale.ext.JSON;
@@ -20,6 +22,8 @@ import com.yimiao100.sale.utils.Util;
 import com.yimiao100.sale.view.TitleView;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 
@@ -37,15 +41,21 @@ public class ReconciliationDetailActivity extends BaseActivity implements TitleV
     @BindView(R.id.reconciliation_detail_list)
     ListView mReconciliationDetailListView;
     private ReconciliationDetailAdapter mReconciliationDetailAdapter;
-    private String mOrderId;
 
-    private final String BALANCE_ORDER_DETAIL = "/api/order/balance_order_detail";
-
+    private final String BALANCE_ORDER_DETAIL = Constant.BASE_URL +"/api/order/balance_order_detail";
+    private final String URL_UPDATE_TIPS = Constant.BASE_URL + "/api/tip/update_tip_status";
     //订单条目发货确认
-    private final String CONFIRM_DELIVERY = "/api/order/confirm_delivery";
+    private final String CONFIRM_DELIVERY = Constant.BASE_URL + "/api/order/confirm_delivery";
     //订单条目回款确认
-    private final String CONFIRM_PAYMENT = "/api/order/confirm_payment";
+    private final String CONFIRM_PAYMENT = Constant.BASE_URL + "/api/order/confirm_payment";
     private ArrayList<ReconciliationDetail> mOrderItemList;
+
+    private final String TIP_TYPE = "tipType";
+    private String mTipType = "order_balance";
+    private final String VENDOR_ID = "vendorId";
+    private String mVendorId;
+    private final String ORDER_ID = "orderId";
+    private String mOrderId;
 
 
     @Override
@@ -111,20 +121,20 @@ public class ReconciliationDetailActivity extends BaseActivity implements TitleV
 
     private void initData() {
         //获取数据
-        OkHttpUtils.post().url(Constant.BASE_URL + BALANCE_ORDER_DETAIL)
-                .addHeader(ACCESS_TOKEN, mAccessToken)
-                .addParams("orderId", mOrderId)
+        OkHttpUtils.post().url(BALANCE_ORDER_DETAIL)
+                .addHeader(ACCESS_TOKEN, accessToken)
+                .addParams(ORDER_ID, mOrderId)
                 .build().execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.Companion.d("对账详情E：" + e.getMessage());
+                LogUtil.d("对账详情E：" + e.getMessage());
                 Util.showTimeOutNotice(currentContext);
                 hideLoadingProgress();
             }
 
             @Override
             public void onResponse(String response, int id) {
-                LogUtil.Companion.d("对账详情：" + response);
+                LogUtil.d("对账详情：" + response);
                 hideLoadingProgress();
                 ReconciliationDetailBean reconciliationDetailBean = JSON.parseObject(response, ReconciliationDetailBean.class);
                 switch (reconciliationDetailBean.getStatus()) {
@@ -134,6 +144,10 @@ public class ReconciliationDetailActivity extends BaseActivity implements TitleV
                         mReconciliationDetailAdapter = new ReconciliationDetailAdapter(getApplicationContext(), mOrderItemList);
                         mReconciliationDetailAdapter.setOnStatusClickListener(ReconciliationDetailActivity.this);
                         mReconciliationDetailListView.setAdapter(mReconciliationDetailAdapter);
+                        if (mOrderItemList.size() != 0) {
+                            // 设置消息已读
+                            updateTips();
+                        }
                         break;
                     case "failure":
                         Util.showError(ReconciliationDetailActivity.this, reconciliationDetailBean.getReason());
@@ -142,6 +156,42 @@ public class ReconciliationDetailActivity extends BaseActivity implements TitleV
             }
         });
 
+    }
+
+    /**
+     * 更新消息已读状态
+     */
+    private void updateTips() {
+        mVendorId = String.valueOf(mOrderItemList.get(0).getVendorId());
+        OkHttpUtils.post().url(URL_UPDATE_TIPS).addHeader(ACCESS_TOKEN, accessToken)
+                .addParams(TIP_TYPE, mTipType).addParams(VENDOR_ID, mVendorId)
+                .addParams(ORDER_ID, mOrderId).build().execute(new StringCallback() {
+            @Override
+            public void onError(Call call, Exception e, int id) {
+                LogUtil.d("update tips error");
+                e.printStackTrace();
+                Util.showTimeOutNotice(currentContext);
+            }
+
+            @Override
+            public void onResponse(String response, int id) {
+                LogUtil.d("update tips result is  " + response);
+                ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
+                switch (errorBean.getStatus()) {
+                    case "success":
+                        LogUtil.d("update tips success");
+                        // 发布事件
+                        Event event = new Event();
+                        Event.eventType = EventType.ORDER_BALANCE;
+                        EventBus.getDefault().post(event);
+                        break;
+                    case "failure":
+                        LogUtil.d("update tips failure");
+                        Util.showError(currentContext, errorBean.getReason());
+                        break;
+                }
+            }
+        });
     }
 
 
@@ -184,20 +234,19 @@ public class ReconciliationDetailActivity extends BaseActivity implements TitleV
                 //提交数据
                 //订单条目id
                 int orderItemId = mReconciliationDetailAdapter.getItem(position).getId();
-                String confirm_delivery_url = Constant.BASE_URL + CONFIRM_DELIVERY;
-                OkHttpUtils.post().url(confirm_delivery_url)
-                        .addHeader(ACCESS_TOKEN, mAccessToken)
+                OkHttpUtils.post().url(CONFIRM_DELIVERY)
+                        .addHeader(ACCESS_TOKEN, accessToken)
                         .addParams("orderItemId", orderItemId + "")
                         .build().execute(new StringCallback() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
-                        LogUtil.Companion.d("订单条目发货确认E：" + e.getMessage());
+                        LogUtil.d("订单条目发货确认E：" + e.getMessage());
                         Util.showTimeOutNotice(currentContext);
                     }
 
                     @Override
                     public void onResponse(String response, int id) {
-                        LogUtil.Companion.d("订单条目发货确认：" + response);
+                        LogUtil.d("订单条目发货确认：" + response);
                         ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                         switch (errorBean.getStatus()) {
                             case "success":
@@ -246,20 +295,19 @@ public class ReconciliationDetailActivity extends BaseActivity implements TitleV
             public void onClick(View v) {
                 //订单条目id
                 int orderItemId = mReconciliationDetailAdapter.getItem(position).getId();
-                String confirm_payment_url = Constant.BASE_URL + CONFIRM_PAYMENT;
-                OkHttpUtils.post().url(confirm_payment_url)
-                        .addHeader(ACCESS_TOKEN, mAccessToken)
+                OkHttpUtils.post().url(CONFIRM_PAYMENT)
+                        .addHeader(ACCESS_TOKEN, accessToken)
                         .addParams("orderItemId", orderItemId + "")
                         .build().execute(new StringCallback() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
-                        LogUtil.Companion.d("订单条目回款确认E：" + e.getMessage());
+                        LogUtil.d("订单条目回款确认E：" + e.getMessage());
                         Util.showTimeOutNotice(currentContext);
                     }
 
                     @Override
                     public void onResponse(String response, int id) {
-                        LogUtil.Companion.d("订单条目回款确认：" + response);
+                        LogUtil.d("订单条目回款确认：" + response);
                         ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                         switch (errorBean.getStatus()) {
                             case "success":

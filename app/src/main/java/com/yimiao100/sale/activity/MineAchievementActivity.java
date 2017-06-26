@@ -73,7 +73,6 @@ public class MineAchievementActivity extends BaseActivity implements TitleView
     }
 
     private void initData() {
-        mAccessToken = (String) SharePreferenceUtil.get(this, Constant.ACCESSTOKEN, "");
         mImageUrl = (String) SharePreferenceUtil.get(this, Constant.PROFILEIMAGEURL, "");
         //设置个人头像
         if (!mImageUrl.isEmpty()) {
@@ -89,18 +88,18 @@ public class MineAchievementActivity extends BaseActivity implements TitleView
         }
 
         //联网加载数据
-        OkHttpUtils.post().url(URL_EXAM_STAT).addHeader(ACCESS_TOKEN, mAccessToken).build()
+        OkHttpUtils.post().url(URL_EXAM_STAT).addHeader(ACCESS_TOKEN, accessToken).build()
                 .execute(new StringCallback() {
 
                     @Override
                     public void onError(Call call, Exception e, int id) {
-                        LogUtil.Companion.d("课程考试统计：" + e.getLocalizedMessage());
+                        LogUtil.d("课程考试统计：" + e.getLocalizedMessage());
                         Util.showTimeOutNotice(currentContext);
                     }
 
                     @Override
                     public void onResponse(String response, int id) {
-                        LogUtil.Companion.d("课程考试统计：" + response);
+                        LogUtil.d("课程考试统计：" + response);
                         ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                         switch (errorBean.getStatus()) {
                             case "success":

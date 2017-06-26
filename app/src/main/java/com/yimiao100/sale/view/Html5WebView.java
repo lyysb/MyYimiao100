@@ -29,6 +29,7 @@ public class Html5WebView extends WebView {
     private Context mContext;
     private ProgressDialog mLoadingProgress;
     public static boolean shouldOverrideUrlLoading = true;
+    public static boolean showLoadingProgress = true;
 
     public Html5WebView(Context context) {
         this(context, null);
@@ -113,7 +114,7 @@ public class Html5WebView extends WebView {
                     view.goBack();
                 }
             }
-            LogUtil.Companion.d("跳转目标url：" + url);
+            LogUtil.d("跳转目标url：" + url);
             return true;
         }
 
@@ -121,25 +122,30 @@ public class Html5WebView extends WebView {
         // 网页开始加载
         @Override
         public void onPageStarted(WebView view, String url, Bitmap favicon) {
-            LogUtil.Companion.d("网页开始加载，url:" + url);
-            if (mLoadingProgress == null) {
-                mLoadingProgress = ProgressDialogUtil.getLoadingProgress(ActivityCollector.getTopActivity());
-            }
-            if (!mLoadingProgress.isShowing()) {
-                mLoadingProgress.show();
+            LogUtil.d("网页开始加载，url:" + url);
+            LogUtil.d("showLoadingProgress is " + showLoadingProgress);
+            if (showLoadingProgress) {
+                if (mLoadingProgress == null) {
+                    mLoadingProgress = ProgressDialogUtil.getLoadingProgress(ActivityCollector.getTopActivity());
+                }
+                if (!mLoadingProgress.isShowing()) {
+                    mLoadingProgress.show();
+                }
             }
             view.getSettings().setJavaScriptEnabled(true);
             super.onPageStarted(view, url, favicon);
 
-            LogUtil.Companion.d("shouldOverrideUrlLoading:" + shouldOverrideUrlLoading);
+            LogUtil.d("shouldOverrideUrlLoading is " + shouldOverrideUrlLoading);
         }
 
         // 网页加载结束
         @Override
         public void onPageFinished(WebView view, String url) {
-            LogUtil.Companion.d("网页加载结束，url：" + url);
-            if (mLoadingProgress.isShowing() && mLoadingProgress != null) {
-                mLoadingProgress.dismiss();
+            LogUtil.d("网页加载结束，url：" + url);
+            if (showLoadingProgress) {
+                if (mLoadingProgress.isShowing() && mLoadingProgress != null) {
+                    mLoadingProgress.dismiss();
+                }
             }
             view.getSettings().setJavaScriptEnabled(true);
             super.onPageFinished(view, url);
@@ -157,8 +163,10 @@ public class Html5WebView extends WebView {
         public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError
                 error) {
             // 出现错误界面，隐藏WebView，弹出错误提示
-            if (mLoadingProgress.isShowing() && mLoadingProgress != null) {
-                mLoadingProgress.dismiss();
+            if (showLoadingProgress) {
+                if (mLoadingProgress.isShowing() && mLoadingProgress != null) {
+                    mLoadingProgress.dismiss();
+                }
             }
             view.setVisibility(view.INVISIBLE);
             ToastUtil.showShort(mContext, "请检查您的网络设置。");

@@ -72,12 +72,12 @@ public class PersonalEmailActivity extends BaseActivity implements TitleView
             return;
         }
         OkHttpUtils.post().url(UPDATE_EMAIL)
-                .addHeader(ACCESS_TOKEN, mAccessToken)
+                .addHeader(ACCESS_TOKEN, accessToken)
                 .addParams("email", mPersonalEmail.getText().toString().trim())
                 .build().execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.Companion.d("邮箱设置： " + e.getMessage());
+                LogUtil.d("邮箱设置： " + e.getMessage());
                 Util.showTimeOutNotice(currentContext);
             }
 

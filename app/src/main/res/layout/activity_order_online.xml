@@ -1,0 +1,347 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    style="@style/TitleStyle"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+>
+    <com.yimiao100.sale.view.TitleView
+        android:id="@+id/order_online_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:left_isShow="true"
+        app:title_text="在线下单">
+        <ImageView
+            android:id="@+id/order_online_note"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_alignParentRight="true"
+            android:paddingLeft="12dp"
+            android:paddingRight="12dp"
+            android:src="@mipmap/ico_order_online_record"/>
+    </com.yimiao100.sale.view.TitleView>
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorEee">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/white"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingBottom="8dp"
+                android:paddingLeft="12dp"
+                android:paddingRight="12dp"
+                android:paddingTop="8dp">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/order_online_logo"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:src="@mipmap/logo"
+                    app:civ_border_color="@color/circleImage"
+                    app:civ_border_width="1dp"/>
+
+                <TextView
+                    android:id="@+id/order_online_vendor_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:text="{vendorName}"
+                    android:textColor="@color/color333"
+                    android:textSize="14sp"
+                    android:textStyle="bold"/>
+            </LinearLayout>
+
+            <LinearLayout
+                style="@style/style77">
+
+                <TextView
+                    style="@style/style78"
+                    android:text="产品："/>
+                <TextView
+                    android:id="@+id/order_online_category_name"
+                    style="@style/style79"
+                    android:hint="请选择您要下单的产品名称"/>
+
+            </LinearLayout>
+            <LinearLayout
+                style="@style/style77">
+
+                <TextView
+                    style="@style/style78"
+                    android:text="商品名："/>
+                <TextView
+                    android:id="@+id/order_online_product_name"
+                    style="@style/style79"
+                    android:hint="请选择您要下单的商品名称"/>
+            </LinearLayout>
+            <LinearLayout
+                style="@style/style77">
+
+                <TextView
+                    style="@style/style78"
+                    android:text="规格："/>
+                <TextView
+                    android:id="@+id/order_online_spec"
+                    style="@style/style79"/>
+                <TextView
+                    style="@style/style78"
+                    android:layout_marginLeft="30dp"
+                    android:text="剂型："/>
+                <TextView
+                    android:id="@+id/order_online_dosage_form"
+                    style="@style/style79"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                style="@style/style77"
+                android:layout_marginTop="4dp">
+
+                <TextView
+                    style="@style/style78"
+                    android:text="推广区域："/>
+                <TextView
+                    android:id="@+id/order_online_province"
+                    style="@style/style79"
+                    android:hint="省"/>
+                <TextView
+                    android:id="@+id/order_online_city"
+                    style="@style/style79"
+                    android:layout_marginLeft="9dp"
+                    android:layout_marginRight="9dp"
+                    android:hint="市"/>
+                <TextView
+                    android:id="@+id/order_online_area"
+                    style="@style/style79"
+                    android:hint="县"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                style="@style/style77"
+                android:layout_marginTop="4dp">
+
+                <TextView
+                    style="@style/style78"
+                    android:text="客户："/>
+                <TextView
+                    android:id="@+id/order_online_customer"
+                    style="@style/style79"
+                    android:hint="请选择您要下单的客户名称"/>
+            </LinearLayout>
+
+            <LinearLayout
+                style="@style/style81"
+                android:layout_marginTop="4dp">
+
+                <TextView
+                    style="@style/style80"
+                    android:text="申请发货日期："/>
+                <TextView
+                    android:id="@+id/order_online_apply_delivery_at"
+                    style="@style/style82"
+                    android:drawableRight="@mipmap/ico_achievement_next"
+                    android:hint="请选择申请发货时间"/>
+            </LinearLayout>
+
+            <LinearLayout
+                style="@style/style81">
+
+                <TextView
+                    style="@style/style80"
+                    android:text="发货数量："/>
+                <EditText
+                    android:id="@+id/order_online_delivery_qty"
+                    style="@style/style82"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:background="@null"
+                    android:hint="请添加以上产品申请发货数量"
+                    android:inputType="numberDecimal"/>
+                <TextView
+                    android:id="@+id/order_online_units"
+                    style="@style/style79"
+                    android:layout_weight="0"
+                    android:layout_width="wrap_content"
+                    android:hint="单位"/>
+            </LinearLayout>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:background="@android:color/white"
+                android:paddingBottom="9dp"
+                android:paddingLeft="12dp"
+                android:paddingTop="9dp"
+                android:text="上传产品采购协议"
+                android:textColor="@color/color666"
+                android:textSize="12sp"/>
+
+            <ImageView
+                android:id="@+id/order_online_protocol"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/white"
+                android:paddingLeft="12dp"
+                android:scaleType="fitStart"
+                android:src="@mipmap/ico_application_authorization_upload"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/white"
+                android:paddingBottom="9dp"
+                android:paddingLeft="12dp"
+                android:paddingTop="9dp"
+                android:text="@string/order_online_note"
+                android:textColor="@color/colorMain"
+                android:textSize="10dp"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:background="@android:color/white"
+                android:orientation="horizontal"
+                android:padding="12dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="备注："
+                    android:textColor="@color/color666"
+                    android:textSize="12sp"/>
+
+                <EditText
+                    android:id="@+id/order_online_remark"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@null"
+                    android:gravity="top"
+                    android:hint="请填写针对本次发货需要补充的信息。"
+                    android:inputType="textMultiLine"
+                    android:maxLines="5"
+                    android:minLines="3"
+                    android:paddingLeft="12dp"
+                    android:paddingRight="12dp"
+                    android:scrollbars="vertical"
+                    android:textColor="@color/color333"
+                    android:textColorHint="@color/color999"
+                    android:textSize="12sp"/>
+            </LinearLayout>
+            <TextView
+                android:id="@+id/order_online_consignee_info"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:background="@android:color/white"
+                android:padding="12dp"
+                android:text="请填写收货人信息："
+                android:textColor="@color/color666"
+                android:textSize="14sp"/>
+            <LinearLayout
+                style="@style/style81"
+                android:layout_marginTop="0.5dp">
+
+                <TextView
+                    style="@style/style80"
+                    android:text="联系人姓名："/>
+                <EditText
+                    android:id="@+id/order_online_consignee_name"
+                    style="@style/style82"
+                    android:background="@null"
+                    android:hint="请填写联系人的姓名"/>
+            </LinearLayout>
+            <LinearLayout
+                style="@style/style81"
+                android:layout_marginTop="0.5dp">
+
+                <TextView
+                    style="@style/style80"
+                    android:text="联系电话："/>
+                <EditText
+                    android:id="@+id/order_online_consignee_phone"
+                    style="@style/style82"
+                    android:inputType="phone"
+                    android:background="@null"
+                    android:hint="请填写联系人的电话号码"/>
+            </LinearLayout>
+            <LinearLayout
+                style="@style/style81"
+                android:layout_marginTop="0.5dp">
+
+                <TextView
+                    style="@style/style80"
+                    android:text="详细地址："/>
+                <EditText
+                    android:id="@+id/order_online_consignee_address"
+                    style="@style/style82"
+                    android:background="@null"
+                    android:hint="请填写收货详细地址"/>
+            </LinearLayout>
+
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:background="@android:color/white"
+                android:padding="12dp"
+                android:text="请填写推广业务人员信息："
+                android:textColor="@color/color666"
+                android:textSize="14sp"/>
+
+            <LinearLayout
+                style="@style/style81">
+
+                <TextView
+                    style="@style/style80"
+                    android:text="推广人姓名："/>
+                <EditText
+                    android:id="@+id/order_online_biz_name"
+                    style="@style/style82"
+                    android:background="@null"
+                    android:hint="请填写推广人的姓名"/>
+            </LinearLayout>
+            <LinearLayout
+                style="@style/style81">
+
+                <TextView
+                    style="@style/style80"
+                    android:text="推广人电话："/>
+                <EditText
+                    android:id="@+id/order_online_biz_phone"
+                    style="@style/style82"
+                    android:background="@null"
+                    android:hint="请填写推广人的电话号码"
+                    android:inputType="phone"/>
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/order_online_submit"
+                style="?android:attr/borderlessButtonStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                android:layout_marginLeft="50dp"
+                android:layout_marginRight="50dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/selector_button"
+                android:text="提交"
+                android:textColor="@android:color/white"
+                android:textSize="14sp"/>
+
+
+        </LinearLayout>
+
+    </android.support.v4.widget.NestedScrollView>
+</LinearLayout>

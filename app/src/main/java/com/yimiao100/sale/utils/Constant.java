@@ -7,10 +7,11 @@ import java.util.HashMap;
  * Created by Michel on 2016/8/9.
  */
 public interface Constant {
-    boolean isTest = false;     // 是否在测试环境下
+    boolean isTest = true;     // 是否在测试环境下
 
     // BaseURL
-    String BASE_URL_TEST = "http://161p3p2316.iask.in/ymt";
+    String BASE_URL_TEST = "http://ymt.s1.natapp.cc/ymt";
+//    String BASE_URL_TEST = "http://161p3p2316.iask.in/ymt";
 //    String BASE_URL_TEST = "http://192.168.199.206:8080/ymt";
     String BASE_URL_OFFICAL = "http://123.56.203.55/ymt";
     String BASE_URL = isTest ? BASE_URL_TEST : BASE_URL_OFFICAL;
@@ -58,7 +59,7 @@ public interface Constant {
         {
             put(101, "网络状况异常，请检查网络");
             put(102, "账号无效");
-            put(103, "密码无效");
+            put(103, "密码错误");
             put(104, "验证码无效");
             put(105, "用户已存在，请不要重复注册");
             put(106, "用户不存在");
@@ -114,6 +115,7 @@ public interface Constant {
             put(156, "提现状态无效");
             put(157, "不良反应申报无效");
             put(158, "授权委托书申报无效");
+            put(159, "在线下单无效");
         }
     };
     String DEFAULT_VIDEO = "http://oduhua0b1.bkt.clouddn.com/default_video.mp4";

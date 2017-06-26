@@ -2,7 +2,6 @@ package com.yimiao100.sale.base;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +11,7 @@ import android.widget.TextView;
 
 import com.yimiao100.sale.R;
 import com.yimiao100.sale.utils.Constant;
+import com.yimiao100.sale.utils.LogUtil;
 import com.yimiao100.sale.utils.SharePreferenceUtil;
 import com.yimiao100.sale.view.PullToRefreshListView;
 
@@ -25,7 +25,7 @@ import butterknife.ButterKnife;
  * Created by 亿苗通 on 2016/10/24.
  */
 
-public abstract class BaseFragmentSingleList extends Fragment {
+public abstract class BaseFragmentSingleList extends BaseFragment {
 
     @BindView(R.id.base_single_list_view)
     protected PullToRefreshListView mListView;
@@ -39,15 +39,18 @@ public abstract class BaseFragmentSingleList extends Fragment {
     protected int mPage;
     protected final String mPageSize = "10";
     protected int mTotalPage;
+    protected View mEmptyView;
     private View mView;
-    private View mEmptyView;
     private TextView mEmptyText;
+
+    protected boolean isSetVisibleData = false; // 暂时在子类中设置为true，切换刷新数据。
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable
             Bundle savedInstanceState) {
 
+        LogUtil.d(getClass().getSimpleName() + " onCreateView");
         mView = inflater.inflate(R.layout.fragment_base_single_list, null);
 
         ButterKnife.bind(this, mView);
@@ -63,7 +66,18 @@ public abstract class BaseFragmentSingleList extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        LogUtil.d(getClass().getSimpleName() + " onViewCreated");
         onRefresh();
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isSetVisibleData && isVisibleToUser) {
+            // 如果设置根据可见性加载数据。则在可见的时候刷新数据
+            onRefresh();
+            LogUtil.d(getClass().getSimpleName() + " isVisibleToUser - true");
+        }
     }
 
     /**
@@ -93,7 +107,8 @@ public abstract class BaseFragmentSingleList extends Fragment {
             }
         });
         //设置下拉圆圈的颜色
-        mSwipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright, android.R.color
+        mSwipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright, android.R
+                .color
                         .holo_green_light,
                 android.R.color.holo_orange_light, android.R.color.holo_red_light);
         //设置手指在屏幕下拉多少距离会触发下拉刷新
@@ -122,7 +137,8 @@ public abstract class BaseFragmentSingleList extends Fragment {
 
     protected void setEmptyView(String emptyText, int id) {
         mEmptyText.setText(emptyText);
-        mEmptyText.setCompoundDrawablesWithIntrinsicBounds(null, getResources().getDrawable(id), null, null);
+        mEmptyText.setCompoundDrawablesWithIntrinsicBounds(null, getResources().getDrawable(id),
+                null, null);
     }
 
     protected void handleEmptyData(ArrayList<?> list) {

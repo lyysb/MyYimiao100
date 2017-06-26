@@ -98,18 +98,18 @@ public class PromotionDetailActivity extends BaseActivity implements TitleView
 
         String orderId = intent.getStringExtra("orderId");
 
-        OkHttpUtils.post().url(URL_ORDER_DETAIL).addHeader(ACCESS_TOKEN, mAccessToken)
+        OkHttpUtils.post().url(URL_ORDER_DETAIL).addHeader(ACCESS_TOKEN, accessToken)
                 .addParams(ORDER_ID, orderId)
                 .build().execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.Companion.d("推广费提现详情E：" + e.getLocalizedMessage());
+                LogUtil.d("推广费提现详情E：" + e.getLocalizedMessage());
                 hideLoadingProgress();
             }
 
             @Override
             public void onResponse(String response, int id) {
-                LogUtil.Companion.d("推广费提现详情：" + response);
+                LogUtil.d("推广费提现详情：" + response);
                 hideLoadingProgress();
                 ReconciliationDetailBean promotionDetailBean = JSON.parseObject(response,
                         ReconciliationDetailBean.class);
@@ -122,8 +122,7 @@ public class PromotionDetailActivity extends BaseActivity implements TitleView
                         mPromotionDetailListView.setAdapter(promotionDetailAdapter);
                         break;
                     case "failure":
-                        Util.showError(PromotionDetailActivity.this, promotionDetailBean
-                                .getReason());
+                        Util.showError(currentContext, promotionDetailBean.getReason());
                         break;
                 }
             }

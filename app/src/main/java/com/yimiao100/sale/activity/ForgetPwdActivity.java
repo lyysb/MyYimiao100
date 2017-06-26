@@ -89,7 +89,7 @@ public class ForgetPwdActivity extends BaseActivity {
                 if (result == SMSSDK.RESULT_COMPLETE) {
                     //回调完成
                     if (event == SMSSDK.EVENT_SUBMIT_VERIFICATION_CODE) {
-                        LogUtil.Companion.d("submit verification code success");
+                        LogUtil.d("submit verification code success");
                         //验证通过，进入下一步界面
                         Intent intent = new Intent(ForgetPwdActivity.this, ForgetPwd2Activity
                                 .class);
@@ -98,9 +98,9 @@ public class ForgetPwdActivity extends BaseActivity {
                         startActivity(intent);
                         finish();
                     } else if (event == SMSSDK.EVENT_GET_VERIFICATION_CODE) {
-                        LogUtil.Companion.d("get verification code success");
+                        LogUtil.d("get verification code success");
                     } else {
-                        LogUtil.Companion.d("event is " + event);
+                        LogUtil.d("event is " + event);
                     }
                 } else if (event == SMSSDK.RESULT_ERROR) {
                     Throwable throwable = (Throwable) data;
@@ -116,9 +116,9 @@ public class ForgetPwdActivity extends BaseActivity {
                         message.setData(bundle);
                         mHandler.sendMessage(message);
 
-                        LogUtil.Companion.d(detail);
+                        LogUtil.d(detail);
                         //打印错误码
-                        LogUtil.Companion.d(object.getString("status"));
+                        LogUtil.d(object.getString("status"));
                     } catch (JSONException e) {
                         e.printStackTrace();
                         mHandler.sendEmptyMessage(2);
@@ -172,7 +172,7 @@ public class ForgetPwdActivity extends BaseActivity {
             @Override
             public void onError(Call call, Exception e, int id) {
                 mForgetPwdGetCode.setEnabled(true);
-                LogUtil.Companion.d("忘记密码：" + e.getMessage());
+                LogUtil.d("忘记密码：" + e.getMessage());
                 Util.showTimeOutNotice(currentContext);
             }
 

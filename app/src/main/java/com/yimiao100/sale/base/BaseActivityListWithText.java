@@ -40,7 +40,7 @@ public abstract class BaseActivityListWithText extends BaseActivity implements T
         initData();
     }
 
-    private void initView() {
+    protected void initView() {
         initTitleView();
 
         initRefreshLayout();
@@ -95,7 +95,7 @@ public abstract class BaseActivityListWithText extends BaseActivity implements T
         mListView.setOnRefreshingListener(new PullToRefreshListView.OnRefreshingListener() {
             @Override
             public void onLoadMore() {
-                if (mPage <= mTotalPage) {
+                if (page <= totalPage) {
                     BaseActivityListWithText.this.onLoadMore();
                 } else {
                     mListView.noMore();

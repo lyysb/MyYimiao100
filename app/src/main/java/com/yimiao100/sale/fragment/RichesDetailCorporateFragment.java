@@ -46,7 +46,7 @@ public class RichesDetailCorporateFragment extends BaseFragmentSingleList {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        setEmptyView("没有进、哪有出啊，快到资源里面申请推广吧。", R.mipmap.ico_wealth_detailed);
+        setEmptyView(getString(R.string.empty_view_riches_detail), R.mipmap.ico_wealth_detailed);
     }
 
     @Override
@@ -54,13 +54,13 @@ public class RichesDetailCorporateFragment extends BaseFragmentSingleList {
         getBuild(1).execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.Companion.d("corporate riches detail error：" + e.getLocalizedMessage());
+                LogUtil.d("corporate riches detail error：" + e.getLocalizedMessage());
             }
 
             @Override
             public void onResponse(String response, int id) {
                 mSwipeRefreshLayout.setRefreshing(false);
-                LogUtil.Companion.d("corporate riches detail：" + response);
+                LogUtil.d("corporate riches detail：" + response);
                 RichesDetailBean richesDetail = JSON.parseObject(response, RichesDetailBean.class);
                 switch (richesDetail.getStatus()) {
                     case "success":
@@ -92,12 +92,12 @@ public class RichesDetailCorporateFragment extends BaseFragmentSingleList {
         getBuild(mPage).execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.Companion.d("corporate riches detail error：" + e.getLocalizedMessage());
+                LogUtil.d("corporate riches detail error：" + e.getLocalizedMessage());
             }
 
             @Override
             public void onResponse(String response, int id) {
-                LogUtil.Companion.d("corporate riches detail ：" + response);
+                LogUtil.d("corporate riches detail ：" + response);
                 RichesDetailBean richesDetail = JSON.parseObject(response, RichesDetailBean.class);
                 switch (richesDetail.getStatus()) {
                     case "success":

@@ -67,17 +67,17 @@ public class RichesActivity extends BaseActivity implements TitleView.TitleBarOn
     }
 
     private void initTax() {
-        OkHttpUtils.post().url(URL_TEX).addHeader(ACCESS_TOKEN, mAccessToken)
+        OkHttpUtils.post().url(URL_TEX).addHeader(ACCESS_TOKEN, accessToken)
                 .build().execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.Companion.d("tax error is :");
+                LogUtil.d("tax error is :");
                 e.printStackTrace();
             }
 
             @Override
             public void onResponse(String response, int id) {
-                LogUtil.Companion.d("tax :" + response);
+                LogUtil.d("tax :" + response);
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":
@@ -112,18 +112,18 @@ public class RichesActivity extends BaseActivity implements TitleView.TitleBarOn
     }
 
     private void initData() {
-        OkHttpUtils.post().url(URL_USER_FUND).addHeader(ACCESS_TOKEN, mAccessToken)
+        OkHttpUtils.post().url(URL_USER_FUND).addHeader(ACCESS_TOKEN, accessToken)
                 .build().execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.Companion.d("财富E：" + e.getMessage());
+                LogUtil.d("财富E：" + e.getMessage());
                 Util.showTimeOutNotice(currentContext);
                 hideLoadingProgress();
             }
 
             @Override
             public void onResponse(String response, int id) {
-                LogUtil.Companion.d("财富：" + response);
+                LogUtil.d("财富：" + response);
                 hideLoadingProgress();
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {

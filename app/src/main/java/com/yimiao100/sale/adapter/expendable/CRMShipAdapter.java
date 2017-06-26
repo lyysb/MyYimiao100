@@ -117,6 +117,11 @@ public class CRMShipAdapter extends BaseExpandableListAdapter{
         String spec = shipList.getSpec();
         TextView ship_spec = ViewHolderUtil.get(convertView, R.id.ship_spec);
         ship_spec.setText("规格：" + spec);
+        // 客户
+        TextView ship_customer = ViewHolderUtil.get(convertView, R.id.ship_vendor_customer);
+        if (shipList.getCustomerName() != null) {
+            ship_customer.setText(shipList.getCustomerName());
+        }
         //推广周期起止
         long startAt = shipList.getStartAt();
         long endAt = shipList.getEndAt();

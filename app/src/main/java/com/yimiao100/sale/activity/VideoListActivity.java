@@ -59,14 +59,14 @@ public class VideoListActivity extends BaseActivitySingleList {
         getBuild(1).execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.Companion.d("考试视频列表E：" + e.getLocalizedMessage());
+                LogUtil.d("考试视频列表E：" + e.getLocalizedMessage());
                 Util.showTimeOutNotice(currentContext);
                 hideLoadingProgress();
             }
 
             @Override
             public void onResponse(String response, int id) {
-                LogUtil.Companion.d("考试视频列表：" + response);
+                LogUtil.d("考试视频列表：" + response);
                 hideLoadingProgress();
                 mSwipeRefreshLayout.setRefreshing(false);
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
@@ -74,8 +74,8 @@ public class VideoListActivity extends BaseActivitySingleList {
                     case "success":
                         OpenClassResult pagedResult = JSON.parseObject(response, OpenClassBean
                                 .class).getPagedResult();
-                        mPage = 2;
-                        mTotalPage = pagedResult.getTotalPage();
+                        page =2 ;
+                        totalPage = pagedResult.getTotalPage();
                         mExamClasses = pagedResult.getPagedList();
                         handleEmptyData(mExamClasses);
                         //考试课数据
@@ -93,21 +93,21 @@ public class VideoListActivity extends BaseActivitySingleList {
 
     @Override
     protected void onLoadMore() {
-        getBuild(mPage).execute(new StringCallback() {
+        getBuild(page).execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.Companion.d("考试视频列表E：" + e.getLocalizedMessage());
+                LogUtil.d("考试视频列表E：" + e.getLocalizedMessage());
                 Util.showTimeOutNotice(currentContext);
             }
 
             @Override
             public void onResponse(String response, int id) {
-                LogUtil.Companion.d("考试视频列表：" + response);
+                LogUtil.d("考试视频列表：" + response);
                 mListView.onLoadMoreComplete();
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":
-                        mPage++;
+                        page++;
                         mExamClasses.addAll(JSON.parseObject(response, OpenClassBean.class)
                                 .getPagedResult().getPagedList());
                         //考试课数据
@@ -122,7 +122,7 @@ public class VideoListActivity extends BaseActivitySingleList {
     }
 
     private RequestCall getBuild(int page) {
-        return OkHttpUtils.post().url(URL_EXAM_LIST).addHeader(ACCESS_TOKEN, mAccessToken)
+        return OkHttpUtils.post().url(URL_EXAM_LIST).addHeader(ACCESS_TOKEN, accessToken)
                 .addParams(PAGE, page + "").addParams(PAGE_SIZE, "10").build();
     }
 

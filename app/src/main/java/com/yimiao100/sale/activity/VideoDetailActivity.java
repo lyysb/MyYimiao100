@@ -112,18 +112,18 @@ public class VideoDetailActivity extends BaseActivity implements YMVideoPlayer
     private void initData() {
         //联网请求数据，显示课程详情
         mCourseId = getIntent().getIntExtra("courseId", -1);
-        OkHttpUtils.post().url(URL_COURSE_INFO).addHeader(ACCESS_TOKEN, mAccessToken).addParams
+        OkHttpUtils.post().url(URL_COURSE_INFO).addHeader(ACCESS_TOKEN, accessToken).addParams
                 (COURSE_ID, mCourseId + "").build().execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.Companion.d("课程详情E：" + e.getLocalizedMessage());
+                LogUtil.d("课程详情E：" + e.getLocalizedMessage());
                 Util.showTimeOutNotice(currentContext);
                 hideLoadingProgress();
             }
 
             @Override
             public void onResponse(String response, int id) {
-                LogUtil.Companion.d("课程详情：" + response);
+                LogUtil.d("课程详情：" + response);
                 hideLoadingProgress();
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
@@ -150,7 +150,7 @@ public class VideoDetailActivity extends BaseActivity implements YMVideoPlayer
      */
     private void initVideoData(Course course) {
         if (course.getVideoUrl() != null) {
-            LogUtil.Companion.d("视频链接：" + course.getVideoUrl());
+            LogUtil.d("视频链接：" + course.getVideoUrl());
         }
         mVideoDetailPlayer.setUp(course.getVideoUrl() != null ? course.getVideoUrl() : Constant.DEFAULT_VIDEO,
                 JCVideoPlayerStandard.SCREEN_LAYOUT_LIST, course.getCourseName());
@@ -286,18 +286,18 @@ public class VideoDetailActivity extends BaseActivity implements YMVideoPlayer
     private void collection(final Course course) {
         //如果已经收藏，则请求网络取消收藏；如果没有收藏，则收藏课程
         OkHttpUtils.post().url(course.getCollectionStatus() == 1 ? URL_CANCEL_COLLECTION :
-                URL_COLLECTION).addHeader(ACCESS_TOKEN, mAccessToken).addParams(COURSE_ID,
+                URL_COLLECTION).addHeader(ACCESS_TOKEN, accessToken).addParams(COURSE_ID,
                 mCourseId + "").build().execute(new StringCallback() {
 
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.Companion.d("收藏课程E：" + e.getLocalizedMessage());
+                LogUtil.d("收藏课程E：" + e.getLocalizedMessage());
                 Util.showTimeOutNotice(currentContext);
             }
 
             @Override
             public void onResponse(String response, int id) {
-                LogUtil.Companion.d("收藏课程：" + response);
+                LogUtil.d("收藏课程：" + response);
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":
@@ -424,18 +424,18 @@ public class VideoDetailActivity extends BaseActivity implements YMVideoPlayer
      * 计算积分
      */
     private void calculateIntegral() {
-        OkHttpUtils.post().url(URL_INTEGRAL_CALCULATE).addHeader(ACCESS_TOKEN, mAccessToken)
+        OkHttpUtils.post().url(URL_INTEGRAL_CALCULATE).addHeader(ACCESS_TOKEN, accessToken)
                 .addParams(OBJECT_ID, mCourseId + "").addParams(OBJECT_TYPE, mObjectType)
                 .build().execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.Companion.d("积分计算E：" + e.getLocalizedMessage());
+                LogUtil.d("积分计算E：" + e.getLocalizedMessage());
                 Util.showTimeOutNotice(currentContext);
             }
 
             @Override
             public void onResponse(String response, int id) {
-                LogUtil.Companion.d("积分计算：" + response);
+                LogUtil.d("积分计算：" + response);
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":
@@ -467,20 +467,20 @@ public class VideoDetailActivity extends BaseActivity implements YMVideoPlayer
      * 增加播放次数
      */
     private void normalPlay() {
-        OkHttpUtils.post().url(URL_COURSE_PLAY).addHeader(ACCESS_TOKEN, mAccessToken).addParams
+        OkHttpUtils.post().url(URL_COURSE_PLAY).addHeader(ACCESS_TOKEN, accessToken).addParams
                 (COURSE_ID, mCourseId + "").build().execute(new StringCallback() {
 
 
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.Companion.d("增加播放次数E：" + e.getLocalizedMessage());
+                LogUtil.d("增加播放次数E：" + e.getLocalizedMessage());
                 e.printStackTrace();
                 Util.showTimeOutNotice(currentContext);
             }
 
             @Override
             public void onResponse(String response, int id) {
-                LogUtil.Companion.d("增加播放次数：" + response);
+                LogUtil.d("增加播放次数：" + response);
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":

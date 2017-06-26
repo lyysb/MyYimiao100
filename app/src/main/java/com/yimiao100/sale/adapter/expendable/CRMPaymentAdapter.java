@@ -116,6 +116,11 @@ public class CRMPaymentAdapter extends BaseExpandableListAdapter{
         String spec = paymentList.getSpec();
         TextView payment_spec = ViewHolderUtil.get(convertView, R.id.payment_spec);
         payment_spec.setText("规格：" + spec);
+        // 客户
+        TextView payment_customer = ViewHolderUtil.get(convertView, R.id.payment_vendor_customer);
+        if (paymentList.getCustomerName() != null) {
+            payment_customer.setText(paymentList.getCustomerName());
+        }
         //推广周期起止
         long startAt = paymentList.getStartAt();
         long endAt = paymentList.getEndAt();

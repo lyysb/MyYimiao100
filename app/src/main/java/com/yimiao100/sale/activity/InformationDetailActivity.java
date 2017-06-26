@@ -138,7 +138,7 @@ public class InformationDetailActivity extends BaseActivity implements View.OnCl
         Intent intent = getIntent();
         //获取资讯id
         mNewsId = intent.getIntExtra("newsId", -1);
-        LogUtil.Companion.d("newsId：" + mNewsId);
+        LogUtil.d("newsId：" + mNewsId);
         //获取用户id
         mUserId = (int) SharePreferenceUtil.get(this, Constant.USERID, -1);
         //获取用户当前积分
@@ -272,13 +272,13 @@ public class InformationDetailActivity extends BaseActivity implements View.OnCl
                 .build().execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.Companion.d("资讯详情E：" + e.getMessage());
+                LogUtil.d("资讯详情E：" + e.getMessage());
                 Util.showTimeOutNotice(currentContext);
             }
 
             @Override
             public void onResponse(String response, int id) {
-                LogUtil.Companion.d("资讯详情：" + response);
+                LogUtil.d("资讯详情：" + response);
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":
@@ -385,7 +385,7 @@ public class InformationDetailActivity extends BaseActivity implements View.OnCl
      * WebView显示资讯详情内容--富文本
      */
     private void showInformationContent(String newsContent) {
-        LogUtil.Companion.d("newsContent:\n" + newsContent);
+        LogUtil.d("newsContent:\n" + newsContent);
         WebSettings settings = mWebView.getSettings();
         settings.setJavaScriptEnabled(true);
         //自适应屏幕
@@ -415,20 +415,20 @@ public class InformationDetailActivity extends BaseActivity implements View.OnCl
      */
     private void showInformationComment() {
         OkHttpUtils.post().url(NEWS_COMMENT_LIST)
-                .addHeader(ACCESS_TOKEN, mAccessToken)
+                .addHeader(ACCESS_TOKEN, accessToken)
                 .addParams("objectId", mNewsId + "")
                 .addParams("userId", mUserId + "")
                 .addParams(PAGE, "1")
-                .addParams(PAGE_SIZE, "10")
+                .addParams(PAGE_SIZE, pageSize)
                 .build().execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.Companion.d("评论列表E：" + e.getMessage());
+                LogUtil.d("评论列表E：" + e.getMessage());
             }
 
             @Override
             public void onResponse(String response, int id) {
-                LogUtil.Companion.d("评论列表：" + response);
+                LogUtil.d("评论列表：" + response);
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":
@@ -436,13 +436,13 @@ public class InformationDetailActivity extends BaseActivity implements View.OnCl
                                 CommentBean.class).getCommentResult();
                         mCommentList = commentResult.getCommentList();
                         if (mCommentList.size() != 0) {
-                            mInformationDetailUnread.setVisibility(mPage == mTotalPage ?
+                            mInformationDetailUnread.setVisibility(page == totalPage ?
                                     View.INVISIBLE : View.VISIBLE);
                         } else {
                             mInformationDetailUnread.setVisibility(View.INVISIBLE);
                         }
-                        mTotalPage = commentResult.getTotalPage();
-                        mPage = 2;
+                        totalPage = commentResult.getTotalPage();
+                        page = 2;
                         mCommentAdapter = new CommentAdapter(getApplicationContext(),
                                 mCommentList);
                         //评论
@@ -490,7 +490,7 @@ public class InformationDetailActivity extends BaseActivity implements View.OnCl
                 break;
             case R.id.information_detail_collection:
                 //收藏或者取消收藏
-                LogUtil.Companion.d(mNews.getUserCollectionStatus() + "");
+                LogUtil.d(mNews.getUserCollectionStatus() + "");
                 if (mNews.getUserCollectionStatus() == 0) {
                     //未收藏，去收藏
                     collection();
@@ -586,7 +586,7 @@ public class InformationDetailActivity extends BaseActivity implements View.OnCl
         public void onError(SHARE_MEDIA platform, Throwable t) {
             ToastUtil.showShort(getApplicationContext(), "分享失败");
             if (t != null) {
-                LogUtil.Companion.d("分享失败E：" + t.getMessage());
+                LogUtil.d("分享失败E：" + t.getMessage());
             }
         }
 
@@ -601,18 +601,18 @@ public class InformationDetailActivity extends BaseActivity implements View.OnCl
      */
     private void addIntegral() {
         OkHttpUtils.post().url(Constant.BASE_URL + "/api/integral/calculate")
-                .addHeader(ACCESS_TOKEN, mAccessToken)
+                .addHeader(ACCESS_TOKEN, accessToken)
                 .addParams("objectId", mNewsId + "")
                 .addParams("objectType", "news")
                 .build().execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.Companion.d("分享增加积分E：" + e.getLocalizedMessage());
+                LogUtil.d("分享增加积分E：" + e.getLocalizedMessage());
             }
 
             @Override
             public void onResponse(String response, int id) {
-                LogUtil.Companion.d("分享增加积分：" + response);
+                LogUtil.d("分享增加积分：" + response);
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":
@@ -645,14 +645,14 @@ public class InformationDetailActivity extends BaseActivity implements View.OnCl
                 .execute(new StringCallback() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
-                        LogUtil.Companion.d("收藏资讯E：" + e.getMessage());
+                        LogUtil.d("收藏资讯E：" + e.getMessage());
                         Util.showTimeOutNotice(currentContext);
                         mInformationDetailCollection.setEnabled(true);
                     }
 
                     @Override
                     public void onResponse(String response, int id) {
-                        LogUtil.Companion.d("收藏资讯：" + response);
+                        LogUtil.d("收藏资讯：" + response);
                         mInformationDetailCollection.setEnabled(true);
                         ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                         switch (errorBean.getStatus()) {
@@ -680,14 +680,14 @@ public class InformationDetailActivity extends BaseActivity implements View.OnCl
                 .execute(new StringCallback() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
-                        LogUtil.Companion.d("取消收藏E：" + e.getLocalizedMessage());
+                        LogUtil.d("取消收藏E：" + e.getLocalizedMessage());
                         Util.showTimeOutNotice(currentContext);
                         mInformationDetailCollection.setEnabled(true);
                     }
 
                     @Override
                     public void onResponse(String response, int id) {
-                        LogUtil.Companion.d("取消收藏：" + response);
+                        LogUtil.d("取消收藏：" + response);
                         mInformationDetailCollection.setEnabled(true);
                         ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                         switch (errorBean.getStatus()) {
@@ -746,13 +746,13 @@ public class InformationDetailActivity extends BaseActivity implements View.OnCl
         getBuild(POST_SCORE).execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.Companion.d("资讯点赞E：" + e.getMessage());
+                LogUtil.d("资讯点赞E：" + e.getMessage());
                 Util.showTimeOutNotice(currentContext);
             }
 
             @Override
             public void onResponse(String response, int id) {
-                LogUtil.Companion.d("资讯点赞" + response);
+                LogUtil.d("资讯点赞" + response);
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":
@@ -769,7 +769,7 @@ public class InformationDetailActivity extends BaseActivity implements View.OnCl
 
     private RequestCall getBuild(String url) {
         return OkHttpUtils.post().url(url)
-                .addHeader(ACCESS_TOKEN, mAccessToken)
+                .addHeader(ACCESS_TOKEN, accessToken)
                 .addParams("newsId", mNewsId + "").build();
     }
 
@@ -783,18 +783,18 @@ public class InformationDetailActivity extends BaseActivity implements View.OnCl
     public void OnScoreClick(TextView comment_user_score, int commentId) {
         mCommentUserScore = comment_user_score;
         OkHttpUtils.post().url(POST_COMMENT_SCORE)
-                .addHeader(ACCESS_TOKEN, mAccessToken)
+                .addHeader(ACCESS_TOKEN, accessToken)
                 .addParams("commentId", commentId + "")
                 .build().execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.Companion.d("评论点赞E：" + e.getMessage());
+                LogUtil.d("评论点赞E：" + e.getMessage());
                 Util.showTimeOutNotice(currentContext);
             }
 
             @Override
             public void onResponse(String response, int id) {
-                LogUtil.Companion.d("评论点赞" + response);
+                LogUtil.d("评论点赞" + response);
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":
@@ -817,13 +817,13 @@ public class InformationDetailActivity extends BaseActivity implements View.OnCl
     public void OnPopupWindowClick(EditText comment_content) {
         String commentContent = comment_content.getText().toString();
         OkHttpUtils.post().url(POST_NEWS_COMMENT)
-                .addHeader(ACCESS_TOKEN, mAccessToken)
+                .addHeader(ACCESS_TOKEN, accessToken)
                 .addParams("objectId", mNewsId + "")
                 .addParams("commentContent", commentContent)
                 .build().execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.Companion.d("提交评论E：" + e.getMessage());
+                LogUtil.d("提交评论E：" + e.getMessage());
                 Util.showTimeOutNotice(currentContext);
             }
 
@@ -859,28 +859,28 @@ public class InformationDetailActivity extends BaseActivity implements View.OnCl
      */
     @Override
     public void onLoadMore() {
-        if (mPage <= mTotalPage) {
+        if (page <= totalPage) {
             OkHttpUtils.post().url(NEWS_COMMENT_LIST)
-                    .addHeader(ACCESS_TOKEN, mAccessToken)
+                    .addHeader(ACCESS_TOKEN, accessToken)
                     .addParams("objectId", mNewsId + "")
                     .addParams("userId", mUserId + "")
-                    .addParams(PAGE, mPage + "")
-                    .addParams(PAGE_SIZE, "10")
+                    .addParams(PAGE, page + "")
+                    .addParams(PAGE_SIZE, pageSize)
                     .build().execute(new StringCallback() {
                 @Override
                 public void onError(Call call, Exception e, int id) {
-                    LogUtil.Companion.d("评论列表E：" + e.getMessage());
+                    LogUtil.d("评论列表E：" + e.getMessage());
                 }
 
                 @Override
                 public void onResponse(String response, int id) {
-                    LogUtil.Companion.d("评论列表：" + response);
+                    LogUtil.d("评论列表：" + response);
                     ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                     switch (errorBean.getStatus()) {
                         case "success":
-                            mInformationDetailUnread.setVisibility(mPage == mTotalPage ?
+                            mInformationDetailUnread.setVisibility(page == totalPage ?
                                     View.INVISIBLE : View.VISIBLE);
-                            mPage++;
+                            page++;
                             mCommentList.addAll(JSON.parseObject(response, CommentBean
                                     .class).getCommentResult().getCommentList());
                             mCommentAdapter.notifyDataSetChanged();

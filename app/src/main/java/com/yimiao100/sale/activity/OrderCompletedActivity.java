@@ -13,9 +13,13 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.meiqia.core.MQManager;
+import com.meiqia.core.bean.MQMessage;
+import com.meiqia.core.callback.OnGetMessageListCallback;
 import com.yimiao100.sale.R;
 import com.yimiao100.sale.base.BaseActivity;
 import com.yimiao100.sale.bean.ErrorBean;
+import com.yimiao100.sale.bean.Event;
 import com.yimiao100.sale.bean.ResourceListBean;
 import com.yimiao100.sale.callback.ProtocolFileCallBack;
 import com.yimiao100.sale.ext.JSON;
@@ -29,7 +33,10 @@ import com.yimiao100.sale.view.TitleView;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.FileCallBack;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.File;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -37,6 +44,8 @@ import butterknife.OnClick;
 import okhttp3.Call;
 import okhttp3.Request;
 import okhttp3.Response;
+import q.rorbin.badgeview.Badge;
+import q.rorbin.badgeview.QBadgeView;
 
 /**
  * 我的业务-第四状态-已签约
@@ -45,6 +54,8 @@ public class OrderCompletedActivity extends BaseActivity implements TitleView.Ti
 
     @BindView(R.id.order_complete_title)
     TitleView mOrderCompleteTitle;
+    @BindView(R.id.order_complete_service)
+    ImageView mService;
     @BindView(R.id.order_complete_submit_time)
     TextView mOrderCompleteSubmitTime;
     @BindView(R.id.order_complete_vendor_name)
@@ -61,6 +72,8 @@ public class OrderCompletedActivity extends BaseActivity implements TitleView.Ti
     TextView mOrderCompleteTime;
     @BindView(R.id.order_complete_total_money)
     TextView mOrderCompleteTotalMoney;
+    @BindView(R.id.order_complete_customer)
+    TextView mOrderCompleteCustomer;
     @BindView(R.id.order_complete_serial_no)
     TextView mOrderCompleteSerialNo;
     @BindView(R.id.order_complete_into)
@@ -85,6 +98,7 @@ public class OrderCompletedActivity extends BaseActivity implements TitleView.Ti
 
     private final String URL_DOWNLOAD_FILE = Constant.BASE_URL + "/api/order/fetch_protocol";
     private final String ORDER_ID = "orderId";
+    private Badge mBadge;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,6 +113,23 @@ public class OrderCompletedActivity extends BaseActivity implements TitleView.Ti
 
     private void initView() {
         mOrderCompleteTitle.setOnTitleBarClick(this);
+        mBadge = new QBadgeView(this).bindTarget(mService)
+                .setBadgePadding(4, true)
+                .setGravityOffset(9, true)
+                .setShowShadow(false);
+        MQManager.getInstance(this).getUnreadMessages(new OnGetMessageListCallback() {
+            @Override
+            public void onSuccess(List<MQMessage> list) {
+                if (list.size() != 0) {
+                    mBadge.setBadgeNumber(-1);
+                }
+            }
+
+            @Override
+            public void onFailure(int i, String s) {
+
+            }
+        });
     }
 
     private void initData() {
@@ -121,6 +152,9 @@ public class OrderCompletedActivity extends BaseActivity implements TitleView.Ti
         String totalDeposit = FormatUtils.MoneyFormat(mOrder.getSaleDeposit());
         Spanned totalMoney = Html.fromHtml("推广保证金：" + "<font color=\"#4188d2\">" + totalDeposit + "</font>" + "(人民币)");
         mOrderCompleteTotalMoney.setText(totalMoney);
+        if (mOrder.getCustomerName() != null) {
+            mOrderCompleteCustomer.setText("客户：" + mOrder.getCustomerName());
+        }
         mSerialNo = mOrder.getSerialNo();
         mOrderCompleteSerialNo.setText("协议单号：" + mSerialNo);
         mOrderProtocolUrl = mOrder.getOrderProtocolUrl();
@@ -130,9 +164,31 @@ public class OrderCompletedActivity extends BaseActivity implements TitleView.Ti
 
     }
 
-    @OnClick({R.id.order_complete_into, R.id.order_complete_view, R.id.order_complete_download})
+    @Override
+    public void onEventMainThread(@NotNull Event event) {
+        super.onEventMainThread(event);
+        switch (Event.eventType) {
+            case RECEIVE_MSG:
+                // 收到客服消息，显示小圆点
+                mBadge.setBadgeNumber(-1);
+                break;
+            case READ_MSG:
+                // 设置小圆点为0
+                mBadge.setBadgeNumber(0);
+                break;
+            default:
+                LogUtil.d("unknown event type is " + Event.eventType);
+                break;
+        }
+    }
+
+    @OnClick({R.id.order_complete_service, R.id.order_complete_into, R.id.order_complete_view, R.id.order_complete_download})
     public void onClick(View view) {
         switch (view.getId()) {
+            case R.id.order_complete_service:
+                //联系客服
+                Util.enterCustomerService(this);
+                break;
             case R.id.order_complete_into:
                 if (mOrder.getTotalQty() == null || mOrder.getTotalQty().isEmpty()) {
                     // 提示没有发货信息
@@ -183,7 +239,7 @@ public class OrderCompletedActivity extends BaseActivity implements TitleView.Ti
         mProgressDialog.setCancelable(false);
         mProgressDialog.setTitle(getString(R.string.download_progress_dialog_title));
         String fileName = orderProtocolUrl.substring(orderProtocolUrl.lastIndexOf("/") + 1);
-        LogUtil.Companion.d("已签约协议fileName：" + fileName);
+        LogUtil.d("已签约协议fileName：" + fileName);
         OkHttpUtils.get().url(orderProtocolUrl)
                 .build().execute(
                 new FileCallBack(Environment.getExternalStorageDirectory().getAbsolutePath(), fileName) {
@@ -207,14 +263,14 @@ public class OrderCompletedActivity extends BaseActivity implements TitleView.Ti
 
                     @Override
                     public void onError(Call call, Exception e, int id) {
-                        LogUtil.Companion.d("onError：" + e.getMessage().toString());
+                        LogUtil.d("onError：" + e.getMessage().toString());
                         Util.showTimeOutNotice(currentContext);
                     }
 
                     @Override
                     public void onResponse(File response, int id) {
-                        LogUtil.Companion.d("已签约协议：onResponse：" + response.getAbsolutePath());
-                        LogUtil.Companion.d("已签约协议：response.name：" + response.getName());
+                        LogUtil.d("已签约协议：onResponse：" + response.getAbsolutePath());
+                        LogUtil.d("已签约协议：response.name：" + response.getName());
                         if (response != null && response.isFile() == true) {
                             Intent intent = new Intent();
                             intent.setAction(android.content.Intent.ACTION_VIEW);
@@ -235,7 +291,7 @@ public class OrderCompletedActivity extends BaseActivity implements TitleView.Ti
         mProgressDownloadDialog.setTitle(getString(R.string.download_progress_dialog_title));
         mProgressDownloadDialog.setCancelable(false);
         String fileHead = "推广协议" + mOrder.getProductName();
-        OkHttpUtils.post().url(URL_DOWNLOAD_FILE).addHeader(ACCESS_TOKEN, mAccessToken)
+        OkHttpUtils.post().url(URL_DOWNLOAD_FILE).addHeader(ACCESS_TOKEN, accessToken)
                 .addParams(ORDER_ID, mOrderId).build().connTimeOut(1000 * 60 * 10)
                 .readTimeOut(1000 * 60 * 10).execute(new ProtocolFileCallBack(fileHead) {
             @Override
@@ -260,11 +316,11 @@ public class OrderCompletedActivity extends BaseActivity implements TitleView.Ti
             public File parseNetworkResponse(Response response, int id) throws Exception {
                 if (200 == response.code()) {
                     //协议下载成功
-                    LogUtil.Companion.d("下载成功");
+                    LogUtil.d("下载成功");
                     return super.parseNetworkResponse(response, id);
                 } else if (400 == response.code()) {
                     //解析显示错误信息
-                    LogUtil.Companion.d("下载失败");
+                    LogUtil.d("下载失败");
                     ErrorBean errorBean = JSON.parseObject(response.body().toString(),
                             ErrorBean.class);
                     Util.showError(currentContext, errorBean.getReason());
@@ -279,8 +335,8 @@ public class OrderCompletedActivity extends BaseActivity implements TitleView.Ti
                     //如果返回来null证明下载错误
                     return;
                 }
-                LogUtil.Companion.d("onResponse：" + response.getAbsolutePath());
-                LogUtil.Companion.d("response.name：" + response.getName());
+                LogUtil.d("onResponse：" + response.getAbsolutePath());
+                LogUtil.d("response.name：" + response.getName());
                 //下载成功，显示分享或者发送出去对话框
                 showSuccessDialog(response);
             }

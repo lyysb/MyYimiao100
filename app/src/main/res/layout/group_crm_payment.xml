@@ -45,6 +45,12 @@
             android:text="规格："/>
     </RelativeLayout>
     <TextView
+        android:id="@+id/payment_vendor_customer"
+        style="@style/style29"
+        android:layout_marginBottom="12dp"
+        android:drawableLeft="@mipmap/ico_deliver_goods_customer"/>
+
+    <TextView
         android:id="@+id/payment_time"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

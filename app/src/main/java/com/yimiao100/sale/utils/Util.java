@@ -13,6 +13,10 @@ import com.meiqia.meiqiasdk.util.MQConfig;
 import com.meiqia.meiqiasdk.util.MQIntentBuilder;
 import com.yimiao100.sale.activity.BindPersonalActivity;
 import com.yimiao100.sale.activity.PersonalAddressAddActivity;
+import com.yimiao100.sale.bean.Event;
+import com.yimiao100.sale.bean.EventType;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.HashMap;
 import java.util.UUID;
@@ -145,7 +149,7 @@ public class Util {
      * 进入客服界面
      */
     public static void enterCustomerService(final Context context) {
-
+        int customerId = (int) SharePreferenceUtil.get(context, Constant.USERID, 0);
         String userName = (String) SharePreferenceUtil.get(context, Constant.CNNAME, "未知");
         String userIcon = (String) SharePreferenceUtil.get(context, Constant.PROFILEIMAGEURL,
                 "http://oduhua0b1.bkt.clouddn.com/default_avatar.png");
@@ -155,23 +159,29 @@ public class Util {
         info.put("name", userName);
         info.put("avatar", userIcon);
         info.put("tel", accountNumber);
-
+        // 初始化美洽
         MQConfig.init(context, Constant.MEI_QIA_APP_KEY, new OnInitCallback() {
             @Override
             public void onSuccess(String clientId) {
-                Toast.makeText(context, "init success", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "欢迎进入客服咨询", Toast.LENGTH_SHORT).show();
+                // 发送消息已读
+                Event event = new Event();
+                Event.eventType = EventType.READ_MSG;
+                EventBus.getDefault().post(event);
             }
 
             @Override
             public void onFailure(int code, String message) {
-                Toast.makeText(context, "int failure", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "客服系统初始化失败，请稍后重试", Toast.LENGTH_SHORT).show();
+                LogUtil.d("code = " + code + ", msg is " + message);
             }
         });
         Intent intent = new MQIntentBuilder(context)
+                .setCustomizedId(customerId + "")        // 相同的id会被识别为同一个顾客
                 .setClientInfo(info)
                 .build();
-        context.startActivity(intent);
 
+        context.startActivity(intent);
     }
 
 }

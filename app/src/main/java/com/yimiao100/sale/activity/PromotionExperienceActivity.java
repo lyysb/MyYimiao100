@@ -86,7 +86,7 @@ public class PromotionExperienceActivity extends BaseActivity implements TitleVi
         Calendar startDate = Calendar.getInstance();
         startDate.set(1949, 1, 1);
         mTimePicker = new TimePickerView.Builder(this, this)
-                .setType(TimePickerView.Type.YEAR_MONTH)
+                .setType(new boolean[]{true, true, false, false, false, false})
                 .setContentSize(14)
                 .setSubCalSize(14)
                 .setSubmitColor(getResources().getColor(R.color.colorMain))

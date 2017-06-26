@@ -102,7 +102,7 @@ public class PromotionActivity extends BaseActivity implements TitleView.TitleBa
         mUserAccountType = getIntent().getStringExtra(USER_ACCOUNT_TYPE);
         mLogUrl = getIntent().getStringExtra("logoImageUrl");
         mVendorName = getIntent().getStringExtra("vendorName");
-        LogUtil.Companion.d("userAccountType is " + mUserAccountType);
+        LogUtil.d("userAccountType is " + mUserAccountType);
 
         initView();
 
@@ -145,7 +145,7 @@ public class PromotionActivity extends BaseActivity implements TitleView.TitleBa
         //总金额
         mTotalAmount = (TextView) mHeadView.findViewById(R.id.head_vendor_money);
 
-        mPromotionRichCompanyListView.addHeaderView(mHeadView);
+        mPromotionRichCompanyListView.addHeaderView(mHeadView, null, false);
         mPromotionRichCompanyListView.setSwipeRefreshLayoutEnabled(new PullToRefreshListView
                 .SwipeRefreshLayoutEnabledListener() {
             @Override
@@ -195,7 +195,7 @@ public class PromotionActivity extends BaseActivity implements TitleView.TitleBa
         getBuild(1).execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.Companion.d("推广费可提现E：" + e.getMessage());
+                LogUtil.d("推广费可提现E：" + e.getMessage());
                 Util.showTimeOutNotice(currentContext);
                 hideLoadingProgress();
             }
@@ -204,13 +204,13 @@ public class PromotionActivity extends BaseActivity implements TitleView.TitleBa
             public void onResponse(String response, int id) {
                 mPromotionRichRefresh.setRefreshing(false);
                 hideLoadingProgress();
-                LogUtil.Companion.d("推广费提现：" + response);
+                LogUtil.d("推广费提现：" + response);
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":
-                        mPage = 2;
+                        page =2;
                         PromotionBean promotionBean = JSON.parseObject(response, PromotionBean.class);
-                        mTotalPage = promotionBean.getPagedResult().getTotalPage();
+                        totalPage = promotionBean.getPagedResult().getTotalPage();
                         int productQtyStat = promotionBean.getStat().getProductQtyStat();
                         mProductCount.setText(productQtyStat + "\n产品");
                         double totalAmountStat = promotionBean.getStat().getTotalAmountStat();
@@ -311,21 +311,21 @@ public class PromotionActivity extends BaseActivity implements TitleView.TitleBa
      */
     @Override
     public void onLoadMore() {
-        if (mPage <= mTotalPage) {
-            getBuild(mPage).execute(new StringCallback() {
+        if (page <= totalPage) {
+            getBuild(page).execute(new StringCallback() {
                 @Override
                 public void onError(Call call, Exception e, int id) {
-                    LogUtil.Companion.d("推广费提现E：" + e.getMessage());
+                    LogUtil.d("推广费提现E：" + e.getMessage());
                 }
 
                 @Override
                 public void onResponse(String response, int id) {
-                    LogUtil.Companion.d("推广费提现：" + response);
+                    LogUtil.d("推广费提现：" + response);
                     ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                     mPromotionRichCompanyListView.onLoadMoreComplete();
                     switch (errorBean.getStatus()) {
                         case "success":
-                            mPage++;
+                            page++;
                             mPromotionLists.addAll(JSON.parseObject(response,
                                     PromotionBean.class).getPagedResult().getPagedList());
                             mPromotionAdapter.notifyDataSetChanged();
@@ -363,8 +363,8 @@ public class PromotionActivity extends BaseActivity implements TitleView.TitleBa
     }
 
     private RequestCall getBuild(int page) {
-        return OkHttpUtils.post().url(URL_SALE).addHeader(ACCESS_TOKEN, mAccessToken).addParams
-                (VENDOR_ID, mVendorId + "").addParams(PAGE, page + "").addParams(PAGE_SIZE, "10")
+        return OkHttpUtils.post().url(URL_SALE).addHeader(ACCESS_TOKEN, accessToken).addParams
+                (VENDOR_ID, mVendorId + "").addParams(PAGE, page + "").addParams(PAGE_SIZE, pageSize)
                 .addParams(USER_ACCOUNT_TYPE, mUserAccountType).build();
     }
 

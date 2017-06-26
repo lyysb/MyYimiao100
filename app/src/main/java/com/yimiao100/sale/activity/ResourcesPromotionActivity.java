@@ -52,6 +52,8 @@ public class ResourcesPromotionActivity extends BaseActivity implements TitleVie
     TextView mResourcePromotionProductCommonName;
     @BindView(R.id.resource_promotion_region)
     TextView mResourcePromotionRegion;
+    @BindView(R.id.resource_promotion_customer)
+    TextView mResourcePromotionCustomer;
     @BindView(R.id.resource_promotion_time)
     TextView mResourcePromotionTime;
     @BindView(R.id.resource_promotion_quota)
@@ -157,20 +159,20 @@ public class ResourcesPromotionActivity extends BaseActivity implements TitleVie
         //资源
         mResourceInfo = intent.getParcelableExtra("resourceInfo");
         if (mResourceInfo != null) {
-            LogUtil.Companion.d("resourceId is " + mResourceInfo.getId());
+            LogUtil.d("resourceId is " + mResourceInfo.getId());
         }
         mUserAccountType = intent.getStringExtra("userAccountType");
         switch (mUserAccountType) {
             case PERSONAL:
-                LogUtil.Companion.d("personal promotion");
+                LogUtil.d("personal promotion");
                 initPersonalData();
                 break;
             case CORPORATE:
-                LogUtil.Companion.d("corporate promotion");
+                LogUtil.d("corporate promotion");
                 initCorporateData();
                 break;
             default:
-                LogUtil.Companion.d("Unknown Error");
+                LogUtil.d("Unknown Error");
                 break;
         }
         mResourcesPromotionBody.setText("推广主体详情");
@@ -187,9 +189,12 @@ public class ResourcesPromotionActivity extends BaseActivity implements TitleVie
         String productName = mResourceInfo.getProductName();
         mResourcePromotionProductCommonName.setText(productName);
         //推广区域
-        String region = mResourceInfo.getProvinceName() + "\t" + mResourceInfo.getCityName() +
-                "\t" + mResourceInfo.getAreaName();
+        String region = mResourceInfo.getProvinceName() + "\t\t" + mResourceInfo.getCityName() +
+                "\t\t" + mResourceInfo.getAreaName();
         mResourcePromotionRegion.setText(region);
+        if (mResourceInfo.getCustomerName() != null) {
+            mResourcePromotionCustomer.setText(mResourceInfo.getCustomerName());
+        }
         //完成周期
         long startTime = mResourceInfo.getStartAt();
         long endTime = mResourceInfo.getEndAt();

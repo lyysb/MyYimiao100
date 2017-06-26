@@ -17,6 +17,8 @@ import com.yimiao100.sale.activity.ScoreDetailActivity;
 import com.yimiao100.sale.adapter.listview.VendorListAdapter;
 import com.yimiao100.sale.base.BaseFragmentSingleList;
 import com.yimiao100.sale.bean.ErrorBean;
+import com.yimiao100.sale.bean.Event;
+import com.yimiao100.sale.bean.EventType;
 import com.yimiao100.sale.bean.Vendor;
 import com.yimiao100.sale.bean.VendorListBean;
 import com.yimiao100.sale.ext.JSON;
@@ -25,6 +27,8 @@ import com.yimiao100.sale.utils.LogUtil;
 import com.yimiao100.sale.utils.Util;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
@@ -62,33 +66,43 @@ public class VendorCorporateFragment extends BaseFragmentSingleList{
         return super.onCreateView(inflater, container, savedInstanceState);
     }
 
+
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        LogUtil.Companion.d("moduleType is " + mModuleType);
+        LogUtil.d("moduleType is " + mModuleType);
         switch (mModuleType) {
             case BALANCE_ORDER:
                 //来自对账
-                setEmptyView("早起的鸟儿有虫吃，快到资源里面申请推广吧。", R.mipmap.ico_reconciliation);
+                setEmptyView(getString(R.string.empty_view_vendor_reconciliation), R.mipmap.ico_reconciliation);
                 break;
             case EXAM_REWARD:
                 //来自我的成就-我的奖学金
-                setEmptyView("考试是可以“挣钱”的。但是，暂时没有学习任务。", R.mipmap.ico_study_extension);
+                setEmptyView(getString(R.string.empty_view_vendor_study_exam), R.mipmap.ico_study_extension);
                 break;
             case SALE_WITHDRAWAL:
                 //来自推广费
-                setEmptyView("君子爱财、取之有道，快到资源里面申请推广吧。", R.mipmap.ico_extension_reward);
+                setEmptyView(getString(R.string.empty_view_vendor_sale), R.mipmap.ico_extension_reward);
                 break;
             case DEPOSIT_WITHDRAWAL:
                 //来自保证金
-                setEmptyView("有钱使得鬼推磨，快到资源里面申请推广吧。", R.mipmap.ico_bond_factory_list);
+                setEmptyView(getString(R.string.empty_view_vendor_deposit), R.mipmap.ico_bond_factory_list);
                 break;
             case EXAM_REWARD_WITHDRAWAL:
                 //来自奖学金
-                setEmptyView("一寸光阴一寸金，快到资源里面申请推广吧。", R.mipmap.ico_scholarship_list);
+                setEmptyView(getString(R.string.empty_view_vendor_study_withdrawal), R.mipmap.ico_scholarship_list);
                 break;
         }
         mListView.cancleLoadMore();
+    }
+
+    @Override
+    public void onEventMainThread(@NotNull Event event) {
+        super.onEventMainThread(event);
+        if ( Event.eventType== EventType.ORDER_BALANCE) {
+            // 重新刷新提醒数据
+            onRefresh();
+        }
     }
 
     @Override
@@ -98,7 +112,8 @@ public class VendorCorporateFragment extends BaseFragmentSingleList{
                 .build().execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.Companion.d("vendor list error is :");
+                mSwipeRefreshLayout.setRefreshing(false);
+                LogUtil.d("vendor list error is :");
                 e.printStackTrace();
                 Util.showTimeOutNotice(getActivity());
             }
@@ -106,7 +121,7 @@ public class VendorCorporateFragment extends BaseFragmentSingleList{
             @Override
             public void onResponse(String response, int id) {
                 mSwipeRefreshLayout.setRefreshing(false);
-                LogUtil.Companion.d("vendor list ：" + response);
+                LogUtil.d("vendor list ：" + response);
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":

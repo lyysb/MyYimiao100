@@ -915,7 +915,82 @@
         <item name="android:layout_height">wrap_content</item>
     </style>
 
+    <style name="style77">
+        <item name="android:orientation">horizontal</item>
+        <item name="android:layout_marginTop">1dp</item>
+        <item name="android:background">@android:color/white</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:paddingLeft">12dp</item>
+        <item name="android:paddingRight">12dp</item>
+        <item name="android:paddingTop">9dp</item>
+        <item name="android:paddingBottom">9dp</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
 
+
+    <style name="style78">
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">@color/color666</item>
+        <item name="android:layout_width">70dp</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+
+    <style name="style79">
+        <item name="android:drawableRight">@mipmap/ico_order_online_down</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColorHint">@color/color999</item>
+        <item name="android:textColor">@color/color666</item>
+        <item name="android:lines">1</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:gravity">center</item>
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@drawable/shape_rec_upload</item>
+        <item name="android:layout_weight">1</item>
+    </style>
+
+    <style name="style80">
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">@color/color666</item>
+        <item name="android:layout_width">103dp</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+
+    <style name="style81">
+        <item name="android:orientation">horizontal</item>
+        <item name="android:background">@android:color/white</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:paddingLeft">12dp</item>
+        <item name="android:paddingRight">12dp</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">1dp</item>
+        <item name="android:paddingTop">12dp</item>
+        <item name="android:paddingBottom">12dp</item>
+    </style>
+
+    <style name="style82">
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">@color/color666</item>
+        <item name="android:textColorHint">@color/color999</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:lines">1</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="style83">
+        <item name="android:textSize">9sp</item>
+        <item name="android:lines">1</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:textColor">@color/color666</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
 
 
 </resources>

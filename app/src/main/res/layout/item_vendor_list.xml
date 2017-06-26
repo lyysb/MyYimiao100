@@ -2,15 +2,30 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="match_parent" xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@android:color/white"
     android:gravity="center_vertical"
     android:padding="12dp"
     android:orientation="horizontal">
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/vendor_logo"
+    <RelativeLayout
         android:layout_width="50dp"
-        android:layout_height="50dp"/>
+        android:layout_height="50dp">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/vendor_logo"
+            android:src="@mipmap/logo"
+            app:civ_border_width="1dp"
+            app:civ_border_color="@color/circleImage"
+            android:layout_width="50dp"
+            android:layout_height="50dp"/>
+        <ImageView
+            android:id="@+id/vendor_tip_status"
+            android:src="@drawable/shape_dot_red"
+            android:layout_alignParentRight="true"
+            android:visibility="invisible"
+            android:layout_width="7dp"
+            android:layout_height="7dp"/>
+    </RelativeLayout>
     <TextView
         android:id="@+id/vendor_title"
         android:textSize="14sp"

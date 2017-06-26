@@ -267,7 +267,7 @@ public class PersonalAddressAddActivity extends BaseActivity implements TitleVie
      * 编辑收货地址
      */
     private void editAddress() {
-        OkHttpUtils.post().url(URL_UPDATE_ADDRESS).addHeader(ACCESS_TOKEN, mAccessToken)
+        OkHttpUtils.post().url(URL_UPDATE_ADDRESS).addHeader(ACCESS_TOKEN, accessToken)
                 .addParams(ADDRESS_ID, mAddressId).addParams(PROVINCE_ID, mProvinceId + "")
                 .addParams(CITY_ID, mCityId + "").addParams(AREA_ID, mCountyId + "")
                 .addParams(CN_NAME, mAddressName.getText().toString().trim())
@@ -309,7 +309,7 @@ public class PersonalAddressAddActivity extends BaseActivity implements TitleVie
      * 增加收货地址
      */
     private void addAddress() {
-        OkHttpUtils.post().url(URL_ADD_ADDRESS).addHeader(ACCESS_TOKEN, mAccessToken)
+        OkHttpUtils.post().url(URL_ADD_ADDRESS).addHeader(ACCESS_TOKEN, accessToken)
                 .addParams(PROVINCE_ID, mProvinceId + "").addParams(CITY_ID, mCityId + "")
                 .addParams(AREA_ID, mCountyId + "")
                 .addParams(CN_NAME, mAddressName.getText().toString().trim())

@@ -19,6 +19,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.lcodecore.tkrefreshlayout.RefreshListenerAdapter;
+import com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout;
+import com.lcodecore.tkrefreshlayout.header.progresslayout.ProgressLayout;
 import com.squareup.picasso.Picasso;
 import com.yimiao100.sale.R;
 import com.yimiao100.sale.activity.BindPromotionActivity;
@@ -32,6 +35,7 @@ import com.yimiao100.sale.activity.PersonalSettingActivity;
 import com.yimiao100.sale.activity.RichesActivity;
 import com.yimiao100.sale.activity.StudyTaskActivity;
 import com.yimiao100.sale.activity.VendorListActivity;
+import com.yimiao100.sale.base.BaseFragment;
 import com.yimiao100.sale.bean.ErrorBean;
 import com.yimiao100.sale.bean.ImageBean;
 import com.yimiao100.sale.bean.UserAccountBean;
@@ -60,7 +64,7 @@ import okhttp3.Call;
  * 我的界面
  * Created by 亿苗通 on 2016/8/1.
  */
-public class MineFragment extends Fragment implements View.OnClickListener {
+public class MineFragment extends BaseFragment implements View.OnClickListener {
     private View mView;
     private ImageView mMine_setting;
     private TextView mPromotion;
@@ -91,6 +95,7 @@ public class MineFragment extends Fragment implements View.OnClickListener {
     private static final int PHOTO_REQUEST_CAMERA = 1;          // 拍照
     private static final int PHOTO_REQUEST_GALLERY = 2;         // 从相册中选择
     private static final int PHOTO_REQUEST_CUT = 3;             // 结果
+    private TwinklingRefreshLayout mRefreshLayout;
 
 
     @Nullable
@@ -101,28 +106,28 @@ public class MineFragment extends Fragment implements View.OnClickListener {
         mAccessToken = (String) SharePreferenceUtil.get(getContext(), Constant.ACCESSTOKEN, "");
 
         initView();
-        initData();
 
-        LogUtil.Companion.d("MineFragment:onCreateView");
+        LogUtil.d("MineFragment:onCreateView");
         return mView;
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        LogUtil.Companion.d("MineFragment:onStart");
+        LogUtil.d("MineFragment:onStart");
         //获取用户头像URL
         mUserIconUrl = (String) SharePreferenceUtil.get(getContext(), Constant.PROFILEIMAGEURL, "");
         //设置个人头像
-        if (!mUserIconUrl.isEmpty()) {
+        if (mUserIconUrl != null && !mUserIconUrl.isEmpty()) {
             Picasso.with(getContext()).load(mUserIconUrl).placeholder(R.mipmap
                     .ico_my_default_avatar).into(mMinePhoto);
         }
-
-        initAccountData();
+        initData();
     }
 
     private void initView() {
+        mRefreshLayout = (TwinklingRefreshLayout) mView.findViewById(R.id.mine_refresh_layout);
+        initRefreshLayout();
         //个人设置
         mMine_setting = (ImageView) mView.findViewById(R.id.mine_setting);
         //个人头像
@@ -170,12 +175,8 @@ public class MineFragment extends Fragment implements View.OnClickListener {
                 return false;
             }
         });
-
         //退出
         mLl_mine_exit = (LinearLayout) mView.findViewById(R.id.ll_mine_exit);
-    }
-
-    private void initData() {
         mMine_setting.setOnClickListener(this);
         mPromotion.setOnClickListener(this);
         mLl_mine_notice.setOnClickListener(this);
@@ -184,8 +185,27 @@ public class MineFragment extends Fragment implements View.OnClickListener {
         mLl_mine_order.setOnClickListener(this);
 
         mReconciliation.setOnClickListener(this);
+    }
 
+    private void initRefreshLayout() {
+        ProgressLayout header = new ProgressLayout(getActivity());
+        header.setColorSchemeResources(
+                android.R.color.holo_blue_bright, android.R.color.holo_green_light,
+                android.R.color.holo_orange_light, android.R.color.holo_red_light);
+        mRefreshLayout.setHeaderView(header);
+        mRefreshLayout.setFloatRefresh(true);
+        mRefreshLayout.setOverScrollRefreshShow(false);
+        mRefreshLayout.setOnRefreshListener(new RefreshListenerAdapter() {
+            @Override
+            public void onRefresh(TwinklingRefreshLayout refreshLayout) {
+                super.onRefresh(refreshLayout);
+                initData();
+            }
+        });
+    }
 
+    private void initData() {
+        initAccountData();
         //显示账户总额
         double total_amount = Double.valueOf((String) SharePreferenceUtil.get(getContext(), Constant
                 .TOTAL_AMOUNT, "0"));
@@ -194,13 +214,14 @@ public class MineFragment extends Fragment implements View.OnClickListener {
         //显示积分
         int integral = (int) SharePreferenceUtil.get(getContext(), Constant.INTEGRAL, 0);
         mIntegral.setText(FormatUtils.NumberFormat(integral));
-
     }
 
     private void initAccountData() {//本地显示推广主体
         int promotionCount = 0;
-        boolean corporateExit = (boolean) SharePreferenceUtil.get(getContext(), Constant.CORPORATE_EXIT, false);
-        boolean personalExit = (boolean) SharePreferenceUtil.get(getContext(), Constant.PERSONAL_EXIT, false);
+        boolean corporateExit = (boolean) SharePreferenceUtil.get(getContext(), Constant
+                .CORPORATE_EXIT, false);
+        boolean personalExit = (boolean) SharePreferenceUtil.get(getContext(), Constant
+                .PERSONAL_EXIT, false);
         if (corporateExit) {
             promotionCount += 1;
         }
@@ -209,7 +230,7 @@ public class MineFragment extends Fragment implements View.OnClickListener {
         }
         mBankCount.setText(promotionCount + "");
         // 联网刷新数据
-        DataUtil.updateUserAccount(mAccessToken, new DataUtil.onSuccessListener() {
+        DataUtil.updateUserAccount(mAccessToken, mRefreshLayout, new DataUtil.onSuccessListener() {
             @Override
             public void echoData(UserAccountBean userAccount) {
                 int promotionCount = 0;
@@ -324,6 +345,7 @@ public class MineFragment extends Fragment implements View.OnClickListener {
         mDialog = builder.create();
         mDialog.show();
     }
+
     /**
      * 剪切图片
      *
@@ -378,41 +400,40 @@ public class MineFragment extends Fragment implements View.OnClickListener {
                      */
                     String UPLOAD_PROFILE_IMAGE = "/api/user/upload_profile_image";
                     String url = Constant.BASE_URL + UPLOAD_PROFILE_IMAGE;
-                    String accessToken = (String) SharePreferenceUtil.get(getActivity(), "accessToken", "");
-                    LogUtil.Companion.d("头像设置：" + accessToken);
+                    String accessToken = (String) SharePreferenceUtil.get(getActivity(),
+                            "accessToken", "");
+                    LogUtil.d("头像设置：" + accessToken);
 
-                    OkHttpUtils
-                            .post()
-                            .url(url)
+                    OkHttpUtils.post().url(url)
                             .addHeader("X-Authorization-Token", accessToken)
                             .addFile("profileImage", "head.jpg", file)
-                            .build()
-                            .execute(new StringCallback() {
-                                @Override
-                                public void onError(Call call, Exception e, int id) {
-                                    Util.showTimeOutNotice(getActivity());
-                                }
+                            .build().execute(new StringCallback() {
+                        @Override
+                        public void onError(Call call, Exception e, int id) {
+                            Util.showTimeOutNotice(getActivity());
+                        }
 
-                                @Override
-                                public void onResponse(String response, int id) {
-                                    LogUtil.Companion.d("更新头像" + response);
-                                    ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
-                                    switch (errorBean.getStatus()) {
-                                        case "success":
-                                            ImageBean imageBean = JSON.parseObject(response,
-                                                    ImageBean.class);
-                                            //拿到头像的URL地址，更新本地数据
-                                            String profileImageUrl = imageBean.getProfileImageUrl();
-                                            Picasso.with(getContext()).load(profileImageUrl).placeholder(R.mipmap
-                                                    .ico_my_default_avatar).into(mMinePhoto);
-                                            SharePreferenceUtil.put(getActivity(), Constant.PROFILEIMAGEURL, profileImageUrl);
-                                            break;
-                                        case "failure":
-                                            Util.showError(getActivity(), errorBean.getReason());
-                                            break;
-                                    }
-                                }
-                            });
+                        @Override
+                        public void onResponse(String response, int id) {
+                            LogUtil.d("更新头像" + response);
+                            ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
+                            switch (errorBean.getStatus()) {
+                                case "success":
+                                    ImageBean imageBean = JSON.parseObject(response,
+                                            ImageBean.class);
+                                    //拿到头像的URL地址，更新本地数据
+                                    String profileImageUrl = imageBean.getProfileImageUrl();
+                                    Picasso.with(getContext()).load(profileImageUrl).placeholder
+                                            (R.mipmap.ico_my_default_avatar).into(mMinePhoto);
+                                    SharePreferenceUtil.put(getActivity(), Constant
+                                            .PROFILEIMAGEURL, profileImageUrl);
+                                    break;
+                                case "failure":
+                                    Util.showError(getActivity(), errorBean.getReason());
+                                    break;
+                            }
+                        }
+                    });
                     try {
                         // 将临时文件删除
                         tempFile.delete();
@@ -429,19 +450,20 @@ public class MineFragment extends Fragment implements View.OnClickListener {
      * 退出登录
      */
     private void LogOut() {
-        String accessToken = (String) SharePreferenceUtil.get(getContext(), Constant.ACCESSTOKEN, "");
+        String accessToken = (String) SharePreferenceUtil.get(getContext(), Constant.ACCESSTOKEN,
+                "");
 
         //获取网络状态
         ConnectivityManager connectivityManager = (ConnectivityManager) getActivity()
                 .getSystemService(Context.CONNECTIVITY_SERVICE);
-        if (!connectivityManager.getActiveNetworkInfo().isAvailable()) {
-            // 登出
-            signOut();
-            return;
-        }
-        //如果联网，登出系统
-        OkHttpUtils.post().url(URL_LOGOUT).addHeader("X-Authorization-Token", accessToken)
-                .build().execute(new StringCallback() {
+        if (connectivityManager.getActiveNetworkInfo() != null) {
+            if (!connectivityManager.getActiveNetworkInfo().isAvailable()) {
+                // 登出
+                signOut();
+            } else {
+                //如果联网，登出系统
+                OkHttpUtils.post().url(URL_LOGOUT).addHeader("X-Authorization-Token", accessToken)
+                        .build().execute(new StringCallback() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         e.printStackTrace();
@@ -451,7 +473,7 @@ public class MineFragment extends Fragment implements View.OnClickListener {
 
                     @Override
                     public void onResponse(String response, int id) {
-                        LogUtil.Companion.d("退出" + response);
+                        LogUtil.d("退出" + response);
                         ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                         switch (errorBean.getStatus()) {
                             case "success":
@@ -466,6 +488,10 @@ public class MineFragment extends Fragment implements View.OnClickListener {
                         }
                     }
                 });
+            }
+        } else {
+            signOut();
+        }
     }
 
     private void signOut() {

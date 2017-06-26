@@ -74,12 +74,12 @@ public class PersonalIDCardActivity extends BaseActivity implements TitleView
             return;
         }
         OkHttpUtils.post().url(UPDATE_ID_NUMBER)
-                .addHeader(ACCESS_TOKEN, mAccessToken)
+                .addHeader(ACCESS_TOKEN, accessToken)
                 .addParams("idNumber", mIDCardIdCard.getText().toString().trim())
                 .build().execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.Companion.d("身份证号设置： " + e.getMessage());
+                LogUtil.d("身份证号设置： " + e.getMessage());
                 Util.showTimeOutNotice(currentContext);
             }
 

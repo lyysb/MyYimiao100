@@ -77,12 +77,12 @@ public class PersonalPhoneActivity extends BaseActivity implements TitleView
         }
         //保存将数据发送到服务器
         OkHttpUtils.post().url(URL_UPDATE_PHONE_NUMBER)
-                .addHeader(ACCESS_TOKEN, mAccessToken)
+                .addHeader(ACCESS_TOKEN, accessToken)
                 .addParams("phoneNumber", mPersonalPhone.getText().toString().trim())
                 .build().execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.Companion.d("电话设置： " + e.getMessage());
+                LogUtil.d("电话设置： " + e.getMessage());
                 Util.showTimeOutNotice(currentContext);
             }
 

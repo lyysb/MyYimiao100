@@ -1,5 +1,6 @@
 package com.yimiao100.sale.fragment;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -22,6 +23,7 @@ import com.yimiao100.sale.activity.LiveActivity;
 import com.yimiao100.sale.activity.SearchActivity;
 import com.yimiao100.sale.adapter.listview.InformationAdapter;
 import com.yimiao100.sale.adapter.peger.InformationAdAdapter;
+import com.yimiao100.sale.base.BaseFragment;
 import com.yimiao100.sale.bean.Carousel;
 import com.yimiao100.sale.bean.ErrorBean;
 import com.yimiao100.sale.bean.InformationBean;
@@ -48,7 +50,7 @@ import okhttp3.Call;
  * 资讯列表界面
  * Created by 亿苗通 on 2016/8/1.
  */
-public class InformationFragment extends Fragment implements SwipeRefreshLayout
+public class InformationFragment extends BaseFragment implements SwipeRefreshLayout
         .OnRefreshListener, AdapterView.OnItemClickListener, PullToRefreshListView
         .OnRefreshingListener,InformationAdAdapter
         .OnAdClickListener, ViewPager.OnPageChangeListener, View.OnClickListener, CarouselUtil.HandleCarouselListener {
@@ -75,8 +77,6 @@ public class InformationFragment extends Fragment implements SwipeRefreshLayout
     private final String URL_NEWS_LIST = Constant.BASE_URL + "/api/news/list";
     private final String PAGE = "page";
     private final String PAGE_SIZE = "pageSize";
-    private final String URL_CAROUSEL = Constant.BASE_URL + "/api/carousel/list";
-    private final String CAROUSEL_TYPE = "carouselType";
 
 
     private PullToRefreshListView mLv_information;
@@ -85,7 +85,6 @@ public class InformationFragment extends Fragment implements SwipeRefreshLayout
 
     private int mPage;
     private int mTotalPage;
-    private String mCarouselType = "news";
 
     private ViewPager mInformationAd;
     private TextView mDesc;
@@ -108,9 +107,14 @@ public class InformationFragment extends Fragment implements SwipeRefreshLayout
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-        mHandler.sendEmptyMessageDelayed(SHOW_NEXT_PAGE, 5000);
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser) {
+            // 如果可见，滑动切换
+            mHandler.sendEmptyMessageDelayed(SHOW_NEXT_PAGE, 3000);
+        } else {
+            mHandler.removeMessages(SHOW_NEXT_PAGE);
+        }
     }
 
     private void initView() {
@@ -197,7 +201,7 @@ public class InformationFragment extends Fragment implements SwipeRefreshLayout
      */
     private void initAdContent() {
         //请求获取轮播图
-        CarouselUtil.Companion.getCarouselList(getActivity(), "news", this);
+        CarouselUtil.getCarouselList(getActivity(), "news", this);
     }
 
     /**
@@ -240,7 +244,7 @@ public class InformationFragment extends Fragment implements SwipeRefreshLayout
             @Override
             public void onError(Call call, Exception e, int id) {
                 e.printStackTrace();
-                LogUtil.Companion.d("资讯列表E：" + e.getMessage());
+                LogUtil.d("资讯列表error：" + e.getMessage());
                 if (InformationFragment.this.isAdded()) {
                     //防止Fragment点击报空指针
                     Util.showTimeOutNotice(getActivity());
@@ -249,8 +253,7 @@ public class InformationFragment extends Fragment implements SwipeRefreshLayout
 
             @Override
             public void onResponse(String response, int id) {
-
-                LogUtil.Companion.d("资讯列表：" + response);
+                LogUtil.d("资讯列表：" + response);
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":
@@ -282,7 +285,7 @@ public class InformationFragment extends Fragment implements SwipeRefreshLayout
             return;
         }
         for (int i = 0; i < mCarouselList.size(); i++) {
-            View dot = new View(getContext());
+            View dot = new View(InformationFragment.this.getContext());
 
             dot.setBackgroundResource(R.drawable.selector_dot);
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(DensityUtil.dp2px
@@ -333,7 +336,7 @@ public class InformationFragment extends Fragment implements SwipeRefreshLayout
         getBuild(1).execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.Companion.d("刷新资讯E：" + e.getMessage());
+                LogUtil.d("刷新资讯E：" + e.getMessage());
                 if (InformationFragment.this.isAdded()) {
                     //防止Fragment点击报空指针
                     Util.showTimeOutNotice(getActivity());
@@ -350,7 +353,7 @@ public class InformationFragment extends Fragment implements SwipeRefreshLayout
                         mSwipeRefreshLayout.setRefreshing(false);
                     }
                 }, 1000);
-                LogUtil.Companion.d("刷新资讯：" + response);
+                LogUtil.d("刷新资讯：" + response);
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":
@@ -425,7 +428,7 @@ public class InformationFragment extends Fragment implements SwipeRefreshLayout
             getBuild(mPage).execute(new StringCallback() {
                 @Override
                 public void onError(Call call, Exception e, int id) {
-                    LogUtil.Companion.d("资讯列表E：" + e.getMessage());
+                    LogUtil.d("资讯列表E：" + e.getMessage());
                     if (InformationFragment.this.isAdded()) {
                         //防止Fragment点击报空指针
                         Util.showTimeOutNotice(getActivity());
@@ -434,7 +437,7 @@ public class InformationFragment extends Fragment implements SwipeRefreshLayout
 
                 @Override
                 public void onResponse(String response, int id) {
-                    LogUtil.Companion.d("资讯列表：" + response);
+                    LogUtil.d("资讯列表：" + response);
                     ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                     switch (errorBean.getStatus()) {
                         case "success":
@@ -470,19 +473,13 @@ public class InformationFragment extends Fragment implements SwipeRefreshLayout
 
     @Override
     public void onPageSelected(int position) {
-        LogUtil.Companion.d("Information-position---" + position);
+        LogUtil.d("Information-position---" + position);
         changeDescAndDot(position % mCarouselList.size());
     }
 
     private RequestCall getBuild(int page) {
         return OkHttpUtils.post().url(URL_NEWS_LIST).addParams(PAGE, page + "")
                 .addParams(PAGE_SIZE, "10").build();
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        mHandler.removeMessages(SHOW_NEXT_PAGE);
     }
 
     @Override

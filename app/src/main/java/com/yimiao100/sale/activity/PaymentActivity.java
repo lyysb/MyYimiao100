@@ -105,7 +105,7 @@ public class PaymentActivity extends BaseActivity implements TitleView.TitleBarO
         getBuild(1).execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.Companion.d("回款累计E：" + e.getLocalizedMessage());
+                LogUtil.d("回款累计E：" + e.getLocalizedMessage());
                 Util.showTimeOutNotice(currentContext);
                 hideLoadingProgress();
             }
@@ -114,14 +114,14 @@ public class PaymentActivity extends BaseActivity implements TitleView.TitleBarO
             public void onResponse(String response, int id) {
                 hideLoadingProgress();
                 mPaymentRefresh.setRefreshing(false);
-                LogUtil.Companion.d("回款累计：" + response);
+                LogUtil.d("回款累计：" + response);
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":
                         PaymentResult result = JSON.parseObject(response, PaymentBean.class)
                                 .getPagedResult();
-                        mPage = 2;
-                        mTotalPage = result.getTotalPage();
+                        page =2;
+                        totalPage = result.getTotalPage();
 
                         mPaymentList = result.getPagedList();
                         if (mPaymentList.size() == 0) {
@@ -165,21 +165,21 @@ public class PaymentActivity extends BaseActivity implements TitleView.TitleBarO
 
     @Override
     public void onLoadMore() {
-        if (mPage <= mTotalPage) {
-            getBuild(mPage).execute(new StringCallback() {
+        if (page <= totalPage) {
+            getBuild(page).execute(new StringCallback() {
                 @Override
                 public void onError(Call call, Exception e, int id) {
-                    LogUtil.Companion.d("回款累计E：" + e.getLocalizedMessage());
+                    LogUtil.d("回款累计E：" + e.getLocalizedMessage());
                     Util.showTimeOutNotice(currentContext);
                 }
 
                 @Override
                 public void onResponse(String response, int id) {
-                    LogUtil.Companion.d("回款累计：" + response);
+                    LogUtil.d("回款累计：" + response);
                     ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                     switch (errorBean.getStatus()) {
                         case "success":
-                            mPage++;
+                            page++;
                             mPaymentList.addAll(JSON.parseObject(response, PaymentBean.class)
                                     .getPagedResult().getPagedList());
                             mPaymentAdapter.notifyDataSetChanged();
@@ -196,8 +196,8 @@ public class PaymentActivity extends BaseActivity implements TitleView.TitleBarO
         }
     }
     private RequestCall getBuild(int page) {
-        return OkHttpUtils.post().url(URL_PAYMENT_STAT).addHeader(ACCESS_TOKEN, mAccessToken)
-                .addParams(PAGE, page + "").addParams(PAGE_SIZE, "10").build();
+        return OkHttpUtils.post().url(URL_PAYMENT_STAT).addHeader(ACCESS_TOKEN, accessToken)
+                .addParams(PAGE, page + "").addParams(PAGE_SIZE, pageSize).build();
     }
 
     @Override

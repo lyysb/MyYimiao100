@@ -139,18 +139,18 @@ public class PromotionCashConfirmActivity extends BaseActivity implements TitleV
      * 申请提现
      */
     private void applyCash() {
-        OkHttpUtils.post().url(URL_APPLY_CASH).addHeader(ACCESS_TOKEN, mAccessToken).addParams
+        OkHttpUtils.post().url(URL_APPLY_CASH).addHeader(ACCESS_TOKEN, accessToken).addParams
                 (ORDER_IDS, mOrderIds).build().execute(new StringCallback() {
 
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.Companion.d("推广费申请提现确认E：" + e.getLocalizedMessage());
+                LogUtil.d("推广费申请提现确认E：" + e.getLocalizedMessage());
                 Util.showTimeOutNotice(currentContext);
             }
 
             @Override
             public void onResponse(String response, int id) {
-                LogUtil.Companion.d("推广费申请提现：" + response);
+                LogUtil.d("推广费申请提现：" + response);
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":

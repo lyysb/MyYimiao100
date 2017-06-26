@@ -31,7 +31,7 @@ public class WXPayEntryActivity extends BaseActivity implements IWXAPIEventHandl
 
         mWeChatId.handleIntent(getIntent(), this);
 
-        LogUtil.Companion.d("WXPayEntryActivity onCreate");
+        LogUtil.d("WXPayEntryActivity onCreate");
     }
     /**
      * 启动模式是SingleTop的时候，再次启动自己，调用该方法
@@ -44,7 +44,7 @@ public class WXPayEntryActivity extends BaseActivity implements IWXAPIEventHandl
         setIntent(intent);
 
         mWeChatId.handleIntent(getIntent(), this);
-        LogUtil.Companion.d("WXPayEntryActivity onNewIntent");
+        LogUtil.d("WXPayEntryActivity onNewIntent");
     }
 
     @Override
@@ -59,7 +59,7 @@ public class WXPayEntryActivity extends BaseActivity implements IWXAPIEventHandl
      */
     @Override
     public void onResp(BaseResp baseResp) {
-        LogUtil.Companion.d("WXPayEntryActivity onResp");
+        LogUtil.d("WXPayEntryActivity onResp");
          //检查是否由微信支付
         if (baseResp.getType() == ConstantsAPI.COMMAND_PAY_BY_WX) {
             Log.d("onResp", "onPayFinish, errCode = " + baseResp.errCode);// 支付结果码

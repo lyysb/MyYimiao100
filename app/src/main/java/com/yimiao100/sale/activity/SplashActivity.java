@@ -31,7 +31,6 @@ import java.io.File;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import cn.jpush.android.api.JPushInterface;
 import okhttp3.Call;
 import okhttp3.Request;
 
@@ -51,13 +50,7 @@ public class SplashActivity extends BaseActivity {
         setContentView(R.layout.activity_splash);
         ButterKnife.bind(this);
 
-        if (!JPushInterface.isPushStopped(this)) {
-            LogUtil.Companion.d("推送服务运行中，停止推送服务");
-            //停止推送
-            JPushInterface.stopPush(this);
-        }
-
-        //让界面停留2s
+        //让界面停留2s；
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -89,7 +82,7 @@ public class SplashActivity extends BaseActivity {
                 .build().execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.Companion.d("验证APPKey短连接错误E：" + e.getLocalizedMessage());
+                LogUtil.d("验证APPKey短连接错误E：" + e.getLocalizedMessage());
                 //访问失败，直接进入下一页
                 enterNext();
                 Util.showTimeOutNotice(currentContext);
@@ -97,7 +90,7 @@ public class SplashActivity extends BaseActivity {
 
             @Override
             public void onResponse(String response, int id) {
-                LogUtil.Companion.d("验证App短链接：" + response);
+                LogUtil.d("验证App短链接：" + response);
                 AppKeyBean.DataBean data = JSON.parseObject(response, AppKeyBean.class).getData();
                 if (data != null) {
                     //获取服务器版本号
@@ -114,7 +107,7 @@ public class SplashActivity extends BaseActivity {
                     }
                 } else {
                     //参数有误，直接进入下一页
-                    LogUtil.Companion.d("验证App短连接参数有误");
+                    LogUtil.d("验证App短连接参数有误");
                     enterNext();
                 }
             }
@@ -163,7 +156,7 @@ public class SplashActivity extends BaseActivity {
 
             @Override
             public void onResponse(String response, int id) {
-                LogUtil.Companion.d("获取版本信息:" + response);
+                LogUtil.d("获取版本信息:" + response);
                 //获取版本信息
                 final AppKeyBean.DataBean data = JSON.parseObject(response, AppKeyBean.class)
                         .getData();
@@ -225,7 +218,7 @@ public class SplashActivity extends BaseActivity {
                     dialog.show();
                 } else {
                     //参数有误，直接进入下一页
-                    LogUtil.Companion.d("获取APP信息参数有误");
+                    LogUtil.d("获取APP信息参数有误");
                     enterNext();
                 }
             }
@@ -257,7 +250,7 @@ public class SplashActivity extends BaseActivity {
                     @Override
                     public void onBefore(Request request, int id) {
                         super.onBefore(request, id);
-                        LogUtil.Companion.d("开始下载");
+                        LogUtil.d("开始下载");
                         //下载开始显示进度条
                         dialog.show();
                     }
@@ -265,7 +258,7 @@ public class SplashActivity extends BaseActivity {
                     @Override
                     public void inProgress(float progress, long total, int id) {
                         super.inProgress(progress, total, id);
-                        LogUtil.Companion.d("下载中");
+                        LogUtil.d("下载中");
                         //显示进度
                         dialog.setProgress((int) (100 * progress + 0.5));
                     }
@@ -273,7 +266,7 @@ public class SplashActivity extends BaseActivity {
                     @Override
                     public void onAfter(int id) {
                         super.onAfter(id);
-                        LogUtil.Companion.d("下载完成");
+                        LogUtil.d("下载完成");
                         //进度消失
                         dialog.dismiss();
                     }
@@ -281,7 +274,7 @@ public class SplashActivity extends BaseActivity {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         //下载失败，对话框消失，进入下一页
-                        LogUtil.Companion.d("下载失败E：" + e.getLocalizedMessage());
+                        LogUtil.d("下载失败E：" + e.getLocalizedMessage());
                         ToastUtil.showShort(currentContext, "下载出错");
                         dialog.dismiss();
                         enterNext();

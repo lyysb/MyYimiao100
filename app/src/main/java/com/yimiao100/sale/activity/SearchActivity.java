@@ -138,7 +138,7 @@ public class SearchActivity extends BaseActivity implements PullToRefreshListVie
         Intent intent = getIntent();
         String tag = intent.getStringExtra("TAG");
         if (tag != null) {
-            LogUtil.Companion.d("tag:" , tag);
+            LogUtil.d("tag:" , tag);
             mSearchInputText.setText(tag);
             mSearchInputText.setSelection(tag.length());
             search();
@@ -154,13 +154,13 @@ public class SearchActivity extends BaseActivity implements PullToRefreshListVie
                 .build().execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.Companion.d("资讯搜索-标签E：" + e.getLocalizedMessage());
+                LogUtil.d("资讯搜索-标签E：" + e.getLocalizedMessage());
                 Util.showTimeOutNotice(currentContext);
             }
 
             @Override
             public void onResponse(String response, int id) {
-                LogUtil.Companion.d("资讯搜索-标签：" + response);
+                LogUtil.d("资讯搜索-标签：" + response);
                 TagsBean tagsBean = JSON.parseObject(response, TagsBean.class);
                 switch (tagsBean.getStatus()) {
                     case "success":
@@ -185,7 +185,7 @@ public class SearchActivity extends BaseActivity implements PullToRefreshListVie
      */
     private void initHistoryList() {
         String temp = (String) SharePreferenceUtil.get(getApplicationContext(), Constant.SEARCH_HISTORY, "");
-        LogUtil.Companion.d("搜索记录：" + temp);
+        LogUtil.d("搜索记录：" + temp);
         String[] split = temp.split(",");
         if (split[0].length() != 0 && split.length != 1) {
             //遍历添加
@@ -195,7 +195,7 @@ public class SearchActivity extends BaseActivity implements PullToRefreshListVie
                 }
             }
         }
-        LogUtil.Companion.d("list长度：" + mHistoryList.size());
+        LogUtil.d("list长度：" + mHistoryList.size());
         //如果没有数据，则显示无记录
         if (mHistoryList.isEmpty()) {
             mSearchFoot.setText("无记录");
@@ -239,14 +239,14 @@ public class SearchActivity extends BaseActivity implements PullToRefreshListVie
         getBuild(1).execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.Companion.d("资讯搜索E：" + e.getLocalizedMessage());
+                LogUtil.d("资讯搜索E：" + e.getLocalizedMessage());
                 Util.showTimeOutNotice(currentContext);
             }
 
             @Override
             public void onResponse(String response, int id) {
                 mSearchResult.onLoadMoreComplete();
-                LogUtil.Companion.d("资讯搜索：" + response);
+                LogUtil.d("资讯搜索：" + response);
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":
@@ -322,13 +322,13 @@ public class SearchActivity extends BaseActivity implements PullToRefreshListVie
         getBuild(PAGE).execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.Companion.d("资讯搜索E：" + e.getLocalizedMessage());
+                LogUtil.d("资讯搜索E：" + e.getLocalizedMessage());
             }
 
             @Override
             public void onResponse(String response, int id) {
                 mSearchResult.onLoadMoreComplete();
-                LogUtil.Companion.d("资讯搜索：" + response);
+                LogUtil.d("资讯搜索：" + response);
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":
@@ -352,13 +352,13 @@ public class SearchActivity extends BaseActivity implements PullToRefreshListVie
         getBuild(TAG, PAGE).execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.Companion.d("资讯搜索E：" + e.getLocalizedMessage());
+                LogUtil.d("资讯搜索E：" + e.getLocalizedMessage());
             }
 
             @Override
             public void onResponse(String response, int id) {
                 mSearchResult.onLoadMoreComplete();
-                LogUtil.Companion.d("资讯搜索：" + response);
+                LogUtil.d("资讯搜索：" + response);
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":
@@ -398,13 +398,13 @@ public class SearchActivity extends BaseActivity implements PullToRefreshListVie
         getBuild(tag, 1).execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.Companion.d("资讯搜索E：" + e.getLocalizedMessage());
+                LogUtil.d("资讯搜索E：" + e.getLocalizedMessage());
             }
 
             @Override
             public void onResponse(String response, int id) {
                 mSearchResult.onLoadMoreComplete();
-                LogUtil.Companion.d("资讯搜索：" + response);
+                LogUtil.d("资讯搜索：" + response);
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":

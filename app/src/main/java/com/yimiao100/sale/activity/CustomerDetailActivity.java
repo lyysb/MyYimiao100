@@ -88,6 +88,8 @@ public class CustomerDetailActivity extends BaseActivity implements TitleView.Ti
     private final int RESULT_CDC_COLLECTION = 111;
     private final String URL_ADD_USER_CDC = Constant.BASE_URL + "/api/cdc/add_user_cdc";
     private final String URL_CANCEL_USER_CDC = Constant.BASE_URL + "/api/cdc/cancel_user_cdc";
+    private CDCListBean cdc;
+    private int position;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,7 +114,8 @@ public class CustomerDetailActivity extends BaseActivity implements TitleView.Ti
 
     private void initData() {
         Intent intent = getIntent();
-        CDCListBean cdc = intent.getParcelableExtra("cdc");
+        cdc = intent.getParcelableExtra("cdc");
+        position = intent.getIntExtra("position", -1);
         //CDC名称
         String cdcName = cdc.getCdcName();
         mCustomerDetailCdcName.setText(cdcName);
@@ -141,7 +144,7 @@ public class CustomerDetailActivity extends BaseActivity implements TitleView.Ti
         mCustomerDetailPhone.setText(phoneNumber);
         //和用户关系0-未收藏，1-已收藏
         mUserAddStatus = cdc.getUserAddStatus();
-        LogUtil.Companion.d("mUserAddStatus-init：" + mUserAddStatus);
+        LogUtil.d("mUserAddStatus-init：" + mUserAddStatus);
         if (mUserAddStatus == 1) {
             //表示是用户已经收藏的客户，更换图标显示
             mCustomerDetailCollection.setImageResource(R.mipmap.ico_customer_details_cancel_collection);
@@ -174,8 +177,8 @@ public class CustomerDetailActivity extends BaseActivity implements TitleView.Ti
                 LatLng location = geoCodeResult.getLocation();
                 double latitude = location.latitude;    //纬度
                 double longitude = location.longitude;  //经度
-                LogUtil.Companion.d("纬度:" + latitude);
-                LogUtil.Companion.d("经度:" + longitude);
+                LogUtil.d("纬度:" + latitude);
+                LogUtil.d("经度:" + longitude);
                 //设置标注物
                 LatLng point = new LatLng(latitude, longitude);
                 BitmapDescriptor bitmapDescriptor =
@@ -206,8 +209,6 @@ public class CustomerDetailActivity extends BaseActivity implements TitleView.Ti
             case R.id.customer_detail_collection:
                 //收藏CDC
                 collectCustomer();
-                //告诉列表页我这一页进行了刷新操作--我就是不用event_bus
-                setResult(RESULT_CDC_COLLECTION);
                 break;
             case R.id.customer_detail_map_toggle:
                 //显示地图控件
@@ -233,26 +234,33 @@ public class CustomerDetailActivity extends BaseActivity implements TitleView.Ti
         mCustomerDetailCollection.setClickable(false);
         //根据状态值不同，请求不同接口
         OkHttpUtils.post().url(mUserAddStatus == 0 ? URL_ADD_USER_CDC : URL_CANCEL_USER_CDC)
-                .addHeader(ACCESS_TOKEN, mAccessToken).addParams("cdcId", mCdcId)
+                .addHeader(ACCESS_TOKEN, accessToken).addParams("cdcId", mCdcId)
                 .build().execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
                 mCustomerDetailCollection.setClickable(true);
-                LogUtil.Companion.d("客户详情E：" + e.getMessage());
+                LogUtil.d("客户详情E：" + e.getMessage());
                 Util.showTimeOutNotice(currentContext);
             }
 
             @Override
             public void onResponse(String response, int id) {
                 mCustomerDetailCollection.setClickable(true);
-                LogUtil.Companion.d("客户详情：" + response);
+                LogUtil.d("客户详情：" + response);
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":
-                        //收藏成功
+                        //收藏或取消收藏成功
                         //更换收藏状态值
                         mUserAddStatus = mUserAddStatus == 0 ? 1 : 0;
-                        LogUtil.Companion.d("mUserAddStatus:" + mUserAddStatus);
+                        LogUtil.d("user collect status is " + mUserAddStatus);
+                        cdc.setUserAddStatus(mUserAddStatus);
+                        //告诉列表页我这一页进行了刷新操作--我就是不用event_bus
+                        // Intent只是给全部客户用来刷新对应数据
+                        Intent intent = new Intent();
+                        intent.putExtra("cdc", cdc);
+                        intent.putExtra("position", position);
+                        setResult(RESULT_CDC_COLLECTION, intent);
                         //更换收藏图标
                         mCustomerDetailCollection.setImageResource(mUserAddStatus == 0 ? R.mipmap.ico_customer_details_collection : R.mipmap.ico_customer_details_cancel_collection);
                         ToastUtil.showShort(getApplicationContext(), mUserAddStatus == 0 ? "取消收藏成功" : "收藏成功");

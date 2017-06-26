@@ -3,6 +3,8 @@ package com.yimiao100.sale.utils;
 import android.app.Activity;
 import android.text.TextUtils;
 
+import com.yimiao100.sale.bean.Area;
+import com.yimiao100.sale.bean.City;
 import com.yimiao100.sale.bean.ErrorBean;
 import com.yimiao100.sale.bean.Province;
 import com.yimiao100.sale.bean.RegionListBean;
@@ -10,6 +12,7 @@ import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import okhttp3.Call;
 
@@ -44,6 +47,26 @@ public class RegionUtil {
             //本地有数据，直接解析本地数据获取数据
             ArrayList<Province> provinceList = parseObject(region_list, RegionListBean.class).getProvinceList();
             if (listListener != null) {
+                List<City> cityList;
+                List<Area> areaList;
+                //在这里处理数据，然后直接返回三个集合
+                for (Province province : provinceList) {
+                    cityList = province.getCityList();
+                    if (cityList.size() == 0) {
+                        City cityTemp = new City();
+                        cityTemp.setName("");
+                        cityTemp.setAreaList(new ArrayList<Area>());
+                        cityList.add(cityTemp);
+                    }
+                    for (City city : cityList) {
+                        areaList = city.getAreaList();
+                        if (areaList.size() == 0) {
+                            Area areaTemp = new Area();
+                            areaTemp.setName("");
+                            areaList.add(areaTemp);
+                        }
+                    }
+                }
                 listListener.handleRegionList(provinceList);
             }
         }
@@ -52,13 +75,13 @@ public class RegionUtil {
         OkHttpUtils.get().url(URL_REGION_LIST).build().execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.Companion.d("获取地域信息E：" + e.getLocalizedMessage());
+                LogUtil.d("获取地域信息E：" + e.getLocalizedMessage());
                 e.printStackTrace();
             }
 
             @Override
             public void onResponse(String response, int id) {
-                LogUtil.Companion.d("获取地域信息：" + response);
+                LogUtil.d("获取地域信息：" + response);
                 ErrorBean errorBean = parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":
@@ -67,6 +90,26 @@ public class RegionUtil {
                         ArrayList<Province> provinceList = parseObject(response,
                                 RegionListBean.class).getProvinceList();
                         if (listListener != null) {
+                            List<City> cityList;
+                            List<Area> areaList;
+                            //在这里处理数据，然后直接返回三个集合
+                            for (Province province : provinceList) {
+                                cityList = province.getCityList();
+                                if (cityList.size() == 0) {
+                                    City cityTemp = new City();
+                                    cityTemp.setName("");
+                                    cityTemp.setAreaList(new ArrayList<Area>());
+                                    cityList.add(cityTemp);
+                                }
+                                for (City city : cityList) {
+                                    areaList = city.getAreaList();
+                                    if (areaList.size() == 0) {
+                                        Area areaTemp = new Area();
+                                        areaTemp.setName("");
+                                        areaList.add(areaTemp);
+                                    }
+                                }
+                            }
                             listListener.handleRegionList(provinceList);
                         }
                         break;

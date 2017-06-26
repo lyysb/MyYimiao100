@@ -70,7 +70,7 @@ public class IntegralGoodsListActivity extends BaseActivitySingleList {
      * 全部数据加载更多
      */
     private void AllDataLoadMore() {
-        getPostFormBuilder(mPage).build().execute(new StringCallback() {
+        getPostFormBuilder(page).build().execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
                 Util.showTimeOutNotice(currentContext);
@@ -85,7 +85,7 @@ public class IntegralGoodsListActivity extends BaseActivitySingleList {
                     case "success":
                         GoodsResult pagedResult = JSON.parseObject(response, GoodsBean.class)
                                 .getPagedResult();
-                        mPage ++;
+                        page++;
                         mGoodsList.addAll(pagedResult.getPagedList());
                         mAdapter.notifyDataSetChanged();
                         break;
@@ -111,7 +111,7 @@ public class IntegralGoodsListActivity extends BaseActivitySingleList {
         getPostFormBuilder(1).build().execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.Companion.d("商品列表E：" + e.getLocalizedMessage());
+                LogUtil.d("商品列表E：" + e.getLocalizedMessage());
                 Util.showTimeOutNotice(currentContext);
                 hideLoadingProgress();
             }
@@ -119,15 +119,15 @@ public class IntegralGoodsListActivity extends BaseActivitySingleList {
             @Override
             public void onResponse(String response, int id) {
                 mSwipeRefreshLayout.setRefreshing(false);
-                LogUtil.Companion.d("商品列表：" + response);
+                LogUtil.d("商品列表：" + response);
                 hideLoadingProgress();
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":
                         GoodsResult pagedResult = JSON.parseObject(response, GoodsBean.class)
                                 .getPagedResult();
-                        mPage = 2;
-                        mTotalPage = pagedResult.getTotalPage();
+                        page = 2;
+                        totalPage = pagedResult.getTotalPage();
                         mGoodsList = pagedResult.getPagedList();
                         //处理空数据
                         handleEmptyData(mGoodsList);
@@ -154,8 +154,8 @@ public class IntegralGoodsListActivity extends BaseActivitySingleList {
     }
 
     private PostFormBuilder getPostFormBuilder(int page) {
-        return OkHttpUtils.post().url(URL_GOODS_LIST).addHeader(ACCESS_TOKEN, mAccessToken)
+        return OkHttpUtils.post().url(URL_GOODS_LIST).addHeader(ACCESS_TOKEN, accessToken)
                 .addParams(CATEGORY_ID, mCategoryId + "").addParams(PAGE, page + "")
-                .addParams(PAGE_SIZE, mPageSize);
+                .addParams(PAGE_SIZE, pageSize);
     }
 }

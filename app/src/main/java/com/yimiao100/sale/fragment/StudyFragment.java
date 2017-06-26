@@ -11,8 +11,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ListView;
 import android.widget.TextView;
 
+import com.lcodecore.tkrefreshlayout.RefreshListenerAdapter;
+import com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout;
+import com.lcodecore.tkrefreshlayout.footer.LoadingView;
+import com.lcodecore.tkrefreshlayout.header.progresslayout.ProgressLayout;
 import com.yimiao100.sale.R;
 import com.yimiao100.sale.activity.MineAchievementActivity;
 import com.yimiao100.sale.activity.VideoDetailActivity;
@@ -20,6 +25,7 @@ import com.yimiao100.sale.activity.VideoListActivity;
 import com.yimiao100.sale.activity.WinScoreActivity;
 import com.yimiao100.sale.adapter.listview.PublicClassAdapter;
 import com.yimiao100.sale.adapter.peger.StudyAdAdapter;
+import com.yimiao100.sale.base.BaseFragment;
 import com.yimiao100.sale.bean.Carousel;
 import com.yimiao100.sale.bean.ErrorBean;
 import com.yimiao100.sale.bean.OpenClass;
@@ -30,6 +36,7 @@ import com.yimiao100.sale.utils.CarouselUtil;
 import com.yimiao100.sale.utils.Constant;
 import com.yimiao100.sale.utils.LogUtil;
 import com.yimiao100.sale.utils.SharePreferenceUtil;
+import com.yimiao100.sale.utils.ToastUtil;
 import com.yimiao100.sale.utils.Util;
 import com.yimiao100.sale.view.PullToRefreshListView;
 import com.zhy.http.okhttp.OkHttpUtils;
@@ -49,11 +56,14 @@ import okhttp3.Call;
  * 学习主页
  * Created by 亿苗通 on 2016/8/1.
  */
-public class StudyFragment extends Fragment implements View.OnClickListener, AdapterView
+public class StudyFragment extends BaseFragment implements View.OnClickListener, AdapterView
         .OnItemClickListener, ViewPager.OnPageChangeListener, StudyAdAdapter.OnClickListener,
         PullToRefreshListView.OnRefreshingListener, CarouselUtil.HandleCarouselListener {
+
     @BindView(R.id.study_class_list)
-    PullToRefreshListView mStudyClassListView;
+    ListView mStudyClassListView;
+    @BindView(R.id.study_refresh_layout)
+    TwinklingRefreshLayout mRefreshLayout;
     private ViewPager mStudyViewPager;
     private TextView mStudyClassName;
     private TextView mStudyAttribute;
@@ -77,14 +87,11 @@ public class StudyFragment extends Fragment implements View.OnClickListener, Ada
     private final String ACCESS_TOKEN = "X-Authorization-Token";
     private final String PAGE = "page";
     private final String PAGE_SIZE = "pageSize";
-    private final String URL_CAROUSEL = Constant.BASE_URL + "/api/carousel/list";
-    private final String CAROUSEL_TYPE = "carouselType";
 
 
     private String mAccessToken;
     private int mPage;
     private int mTotalPage;
-    private String mCarouselType = "course";
 
     private ArrayList<OpenClass> mOpenClasses;
     private PublicClassAdapter mOpenClassAdapter;
@@ -106,17 +113,55 @@ public class StudyFragment extends Fragment implements View.OnClickListener, Ada
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-        mHandler.sendEmptyMessageDelayed(SHOW_NEXT_PAGE, 3000);
-        //初始化公开课数据
-        initPublicClassList();
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser) {
+            // 如果可见，滑动切换
+            mHandler.sendEmptyMessageDelayed(SHOW_NEXT_PAGE, 3000);
+        } else {
+            mHandler.removeMessages(SHOW_NEXT_PAGE);
+        }
     }
 
     /**
      * 初始化显示上部界面
      */
     private void initView() {
+        initRefreshLayout();
+        initListView();
+    }
+
+    private void initRefreshLayout() {
+        ProgressLayout header = new ProgressLayout(getActivity());
+        header.setColorSchemeResources(
+                android.R.color.holo_blue_bright, android.R.color.holo_green_light,
+                android.R.color.holo_orange_light, android.R.color.holo_red_light);
+        mRefreshLayout.setHeaderView(header);
+        LoadingView loadingView = new LoadingView(getActivity());
+        mRefreshLayout.setBottomView(loadingView);
+        mRefreshLayout.setFloatRefresh(true);
+        mRefreshLayout.setOverScrollRefreshShow(false);
+        mRefreshLayout.setOnRefreshListener(new RefreshListenerAdapter() {
+            @Override
+            public void onRefresh(TwinklingRefreshLayout refreshLayout) {
+                super.onRefresh(refreshLayout);
+                initData();
+            }
+
+            @Override
+            public void onLoadMore(TwinklingRefreshLayout refreshLayout) {
+                super.onLoadMore(refreshLayout);
+                if (mPage <= mTotalPage) {
+                    StudyFragment.this.onLoadMore();
+                } else {
+                    mRefreshLayout.finishLoadmore();
+                    ToastUtil.showShort(getActivity(), "全部加载完成");
+                }
+            }
+        });
+    }
+
+    private void initListView() {
         //初始化头部布局
         View headerView = View.inflate(getContext(), R.layout.head_study, null);
         mStudyViewPager = (ViewPager) headerView.findViewById(R.id.study_view_pager);
@@ -131,44 +176,13 @@ public class StudyFragment extends Fragment implements View.OnClickListener, Ada
         headerView.findViewById(R.id.study_mine).setOnClickListener(this);
         mStudyClassListView.addHeaderView(headerView);
         mStudyClassListView.setOnItemClickListener(this);
-        //列表上拉监听
-        mStudyClassListView.setOnRefreshingListener(this);
     }
 
     private void initData() {
+        //初始化公开课数据
+        initPublicClassList();
         //请求网络，设置轮播图
-        CarouselUtil.Companion.getCarouselList(getActivity(), "course", this);
-//        OkHttpUtils.post().url(URL_CAROUSEL).addParams(CAROUSEL_TYPE, mCarouselType).build()
-//                .execute(new StringCallback() {
-//                    @Override
-//                    public void onError(Call call, Exception e, int id) {
-//                        LogUtil.Companion.d("视频轮播图E：" + e.getLocalizedMessage());
-//                        if (StudyFragment.this.isAdded()) {
-//                            //防止Fragment点击报空指针
-//                            Util.showTimeOutNotice(getActivity());
-//                        }
-//                    }
-//
-//                    @Override
-//                    public void onResponse(String response, int id) {
-//                        LogUtil.Companion.d("视频轮播图：" + response);
-//                        ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
-//                        switch (errorBean.getStatus()) {
-//                            case "success":
-//                                mCarouselList = JSON.parseObject(response,
-//                                        CarouselBean.class).getCarouselList();
-//                                StudyAdAdapter adAdapter = new StudyAdAdapter(mCarouselList);
-//                                mStudyViewPager.setAdapter(adAdapter);
-//                                adAdapter.setOnClickListener(StudyFragment.this);
-//                                //显示当前选中的界面
-//                                mStudyViewPager.setCurrentItem(adAdapter.getCount() / 2);
-//                                break;
-//                            case "failure":
-//                                Util.showError(getActivity(), errorBean.getReason());
-//                                break;
-//                        }
-//                    }
-//                });
+        CarouselUtil.getCarouselList(getActivity(), "course", this);
     }
 
     @Override
@@ -189,12 +203,18 @@ public class StudyFragment extends Fragment implements View.OnClickListener, Ada
 
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.Companion.d("公开课列表E：" + e.getLocalizedMessage());
+                LogUtil.d("公开课列表E：" + e.getLocalizedMessage());
+                if (mRefreshLayout.isShown()) {
+                    mRefreshLayout.finishRefreshing();
+                }
             }
 
             @Override
             public void onResponse(String response, int id) {
-                LogUtil.Companion.d("公开课列表：" + response);
+                LogUtil.d("公开课列表：" + response);
+                if (mRefreshLayout.isShown()) {
+                    mRefreshLayout.finishRefreshing();
+                }
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":
@@ -256,6 +276,7 @@ public class StudyFragment extends Fragment implements View.OnClickListener, Ada
 
     /**
      * 进入课程详情界面
+     *
      * @param parent
      * @param view
      * @param position
@@ -278,10 +299,12 @@ public class StudyFragment extends Fragment implements View.OnClickListener, Ada
         mStudyClassName.setText(mCarouselList.get(position).getObjectTitle());
         switch (mCarouselList.get(position).getIntegralType()) {
             case "increase":
-                mStudyAttribute.setText("+" + mCarouselList.get(position).getIntegralValue() + "积分");
+                mStudyAttribute.setText("+" + mCarouselList.get(position).getIntegralValue() +
+                        "积分");
                 break;
             case "decrease":
-                mStudyAttribute.setText("-" + mCarouselList.get(position).getIntegralValue() + "积分");
+                mStudyAttribute.setText("-" + mCarouselList.get(position).getIntegralValue() +
+                        "积分");
                 break;
             case "free":
                 mStudyAttribute.setText("免费");
@@ -291,6 +314,7 @@ public class StudyFragment extends Fragment implements View.OnClickListener, Ada
 
     /**
      * 点击轮播图跳转到详情页
+     *
      * @param position
      */
     @Override
@@ -302,38 +326,39 @@ public class StudyFragment extends Fragment implements View.OnClickListener, Ada
         startActivity(intent);
     }
 
-    @Override
     public void onLoadMore() {
-        if (mPage <= mTotalPage) {
-            getBuild(mPage).execute(new StringCallback() {
 
-                @Override
-                public void onError(Call call, Exception e, int id) {
-                    LogUtil.Companion.d("公开课列表E：" + e.getLocalizedMessage());
+        getBuild(mPage).execute(new StringCallback() {
+            @Override
+            public void onError(Call call, Exception e, int id) {
+                LogUtil.d("公开课列表E：" + e.getLocalizedMessage());
+                if (mRefreshLayout.isShown()) {
+                    mRefreshLayout.finishLoadmore();
                 }
+            }
 
-                @Override
-                public void onResponse(String response, int id) {
-                    LogUtil.Companion.d("公开课列表：" + response);
-                    mStudyClassListView.onLoadMoreComplete();
-                    ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
-                    switch (errorBean.getStatus()) {
-                        case "success":
-
-                            mPage++;
-                            mOpenClasses.addAll(JSON.parseObject(response, OpenClassBean
-                                    .class).getPagedResult().getPagedList());
-                            mOpenClassAdapter.notifyDataSetChanged();
-                            break;
-                        case "failure":
-                            Util.showError(getActivity(), errorBean.getReason());
-                            break;
-                    }
+            @Override
+            public void onResponse(String response, int id) {
+                LogUtil.d("公开课列表：" + response);
+                if (mRefreshLayout.isShown()) {
+                    mRefreshLayout.finishLoadmore();
                 }
-            });
-        } else {
-            mStudyClassListView.noMore();
-        }
+                ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
+                switch (errorBean.getStatus()) {
+                    case "success":
+
+                        mPage++;
+                        mOpenClasses.addAll(JSON.parseObject(response, OpenClassBean
+                                .class).getPagedResult().getPagedList());
+                        mOpenClassAdapter.notifyDataSetChanged();
+                        break;
+                    case "failure":
+                        Util.showError(getActivity(), errorBean.getReason());
+                        break;
+                }
+            }
+        });
+
     }
 
     @Override
@@ -344,11 +369,6 @@ public class StudyFragment extends Fragment implements View.OnClickListener, Ada
     @Override
     public void onPageScrollStateChanged(int state) {
 
-    }
-    @Override
-    public void onStop() {
-        super.onStop();
-        mHandler.removeMessages(SHOW_NEXT_PAGE);
     }
 
 

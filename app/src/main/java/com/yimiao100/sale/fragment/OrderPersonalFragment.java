@@ -45,7 +45,7 @@ public class OrderPersonalFragment extends BaseFragmentSingleList {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        setEmptyView("不是没有业务状态，只是没有申请推广而已", R.mipmap.ico_my_business);
+        setEmptyView(getString(R.string.empty_view_order), R.mipmap.ico_my_business);
     }
 
     @Override
@@ -70,7 +70,7 @@ public class OrderPersonalFragment extends BaseFragmentSingleList {
 
             @Override
             public void onResponse(String response, int id) {
-                LogUtil.Companion.d("personal oder ：" + response);
+                LogUtil.d("personal oder ：" + response);
                 mSwipeRefreshLayout.setRefreshing(false);
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
@@ -145,12 +145,12 @@ public class OrderPersonalFragment extends BaseFragmentSingleList {
         getBuild(mPage).execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.Companion.d("personal oder error：" + e.getLocalizedMessage());
+                LogUtil.d("personal oder error：" + e.getLocalizedMessage());
             }
 
             @Override
             public void onResponse(String response, int id) {
-                LogUtil.Companion.d("personal oder ：" + response);
+                LogUtil.d("personal oder ：" + response);
                 mListView.onLoadMoreComplete();
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {

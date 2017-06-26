@@ -115,25 +115,25 @@ public class ScoreDetailActivity extends BaseActivity implements SwipeRefreshLay
         imageView.setOnClickListener(this);
 
 
-        mScoreExpandableListView.addHeaderView(headView);
+        mScoreExpandableListView.addHeaderView(headView, null, false);
     }
 
     private void initData() {
         //联网请求数据
-        OkHttpUtils.post().url(URL_EXAM_INFO).addHeader(ACCESS_TOKEN, mAccessToken)
+        OkHttpUtils.post().url(URL_EXAM_INFO).addHeader(ACCESS_TOKEN, accessToken)
                 .addParams(VENDOR_ID, mVendorId + "")
                 .addParams(USER_ACCOUNT_TYPE, mUserAccountType)
                 .build().execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.Companion.d("课程考试结果E：" + e.getLocalizedMessage());
+                LogUtil.d("课程考试结果E：" + e.getLocalizedMessage());
                 Util.showTimeOutNotice(currentContext);
                 hideLoadingProgress();
             }
 
             @Override
             public void onResponse(String response, int id) {
-                LogUtil.Companion.d("课程考试结果：" + response);
+                LogUtil.d("课程考试结果：" + response);
                 hideLoadingProgress();
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
@@ -158,19 +158,19 @@ public class ScoreDetailActivity extends BaseActivity implements SwipeRefreshLay
     @Override
     public void onRefresh() {
         //联网请求数据
-        OkHttpUtils.post().url(URL_EXAM_INFO).addHeader(ACCESS_TOKEN, mAccessToken)
+        OkHttpUtils.post().url(URL_EXAM_INFO).addHeader(ACCESS_TOKEN, accessToken)
                 .addParams(VENDOR_ID, mVendorId + "")
                 .addParams(USER_ACCOUNT_TYPE, mUserAccountType)
                 .build().execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.Companion.d("课程考试结果E：" + e.getLocalizedMessage());
+                LogUtil.d("课程考试结果E：" + e.getLocalizedMessage());
                 Util.showTimeOutNotice(currentContext);
             }
 
             @Override
             public void onResponse(String response, int id) {
-                LogUtil.Companion.d("课程考试结果：" + response);
+                LogUtil.d("课程考试结果：" + response);
                 mScoreSwipe.setRefreshing(false);
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {

@@ -56,19 +56,19 @@ public class IntegralShopActivity extends BaseActivitySingleList {
 
     @Override
     protected void onRefresh() {
-        OkHttpUtils.post().url(URL_CATEGORY_LIST).addHeader(ACCESS_TOKEN, mAccessToken).build()
+        OkHttpUtils.post().url(URL_CATEGORY_LIST).addHeader(ACCESS_TOKEN, accessToken).build()
                 .execute(new StringCallback() {
 
                     @Override
                     public void onError(Call call, Exception e, int id) {
-                        LogUtil.Companion.d("积分商城列表E：" + e.getLocalizedMessage());
+                        LogUtil.d("积分商城列表E：" + e.getLocalizedMessage());
                         Util.showTimeOutNotice(currentContext);
                         hideLoadingProgress();
                     }
 
                     @Override
                     public void onResponse(String response, int id) {
-                        LogUtil.Companion.d("积分商城列表：" + response);
+                        LogUtil.d("积分商城列表：" + response);
                         mSwipeRefreshLayout.setRefreshing(false);
                         hideLoadingProgress();
                         ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);

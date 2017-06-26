@@ -72,7 +72,7 @@ public class ChangeErrorActivity extends BaseActivity implements TitleView.Title
                 .build().execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.Companion.d("资讯详情-纠错E：" + e.getMessage());
+                LogUtil.d("资讯详情-纠错E：" + e.getMessage());
                 Util.showTimeOutNotice(currentContext);
             }
 
@@ -131,7 +131,7 @@ public class ChangeErrorActivity extends BaseActivity implements TitleView.Title
         mErrorSubmit.setEnabled(false);
         //提交错误信息
         OkHttpUtils.post().url(URL_SUBMIT_NEWS_ERROR)
-                .addHeader(ACCESS_TOKEN, mAccessToken)
+                .addHeader(ACCESS_TOKEN, accessToken)
                 .addParams("newsId", mNewsId + "")
                 .addParams("errorReasonId", mErrorList.getCheckedRadioButtonId() + "")
                 .build().execute(new StringCallback() {

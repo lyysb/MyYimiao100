@@ -104,7 +104,7 @@ public class InformationAdapter extends BaseAdapter {
                 List<ImageListBean> imageList1 = pagedListBean.getImageList();
                 if (imageList1.size() > 0) {
                     String imageUrl_1 = imageList1.get(0).getImageUrl();
-                    Picasso.with(context).load(imageUrl_1)
+                    Picasso.with(context).load(imageUrl_1 + "?imageMogr2/thumbnail/270x225")
                             .placeholder(R.mipmap.ico_default_short_picture).into(mType1_image);
                 }
                 ImageView type1_top = ViewHolderUtil.get(convertView, R.id.type1_top);

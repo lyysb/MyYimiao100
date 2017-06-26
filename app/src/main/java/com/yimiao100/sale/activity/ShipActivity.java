@@ -103,7 +103,7 @@ public class ShipActivity extends BaseActivity implements TitleView.TitleBarOnCl
         getBuild(1).execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.Companion.d("发货累计E：" + e.getLocalizedMessage());
+                LogUtil.d("发货累计E：" + e.getLocalizedMessage());
                 Util.showTimeOutNotice(currentContext);
                 hideLoadingProgress();
             }
@@ -112,14 +112,14 @@ public class ShipActivity extends BaseActivity implements TitleView.TitleBarOnCl
             public void onResponse(String response, int id) {
                 mShipRefresh.setRefreshing(false);
                 hideLoadingProgress();
-                LogUtil.Companion.d("发货累计：" + response);
+                LogUtil.d("发货累计：" + response);
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":
                         ShipResult result = JSON.parseObject(response, ShipBean.class)
                                 .getPagedResult();
-                        mPage = 2;
-                        mTotalPage = result.getTotalPage();
+                        page = 2;
+                        totalPage = result.getTotalPage();
 
                         mShipList = result.getPagedList();
                         if (mShipList.size() == 0) {
@@ -143,7 +143,7 @@ public class ShipActivity extends BaseActivity implements TitleView.TitleBarOnCl
     }
 
     private RequestCall getBuild(int page) {
-        return OkHttpUtils.post().url(URL_DELIVERY_STAT).addHeader(ACCESS_TOKEN, mAccessToken)
+        return OkHttpUtils.post().url(URL_DELIVERY_STAT).addHeader(ACCESS_TOKEN,accessToken)
                 .addParams(PAGE, page + "").addParams(PAGE_SIZE, "10").build();
     }
 
@@ -182,21 +182,21 @@ public class ShipActivity extends BaseActivity implements TitleView.TitleBarOnCl
 
     @Override
     public void onLoadMore() {
-        if (mPage <= mTotalPage) {
-            getBuild(mPage).execute(new StringCallback() {
+        if (page <= totalPage) {
+            getBuild(page).execute(new StringCallback() {
                 @Override
                 public void onError(Call call, Exception e, int id) {
-                    LogUtil.Companion.d("发货累计E：" + e.getLocalizedMessage());
+                    LogUtil.d("发货累计E：" + e.getLocalizedMessage());
                     Util.showTimeOutNotice(currentContext);
                 }
 
                 @Override
                 public void onResponse(String response, int id) {
-                    LogUtil.Companion.d("发货累计：" + response);
+                    LogUtil.d("发货累计：" + response);
                     ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                     switch (errorBean.getStatus()) {
                         case "success":
-                            mPage++;
+                            page++;
                             mShipList.addAll(JSON.parseObject(response, ShipBean.class)
                                     .getPagedResult().getPagedList());
                             mShipAdapter.notifyDataSetChanged();

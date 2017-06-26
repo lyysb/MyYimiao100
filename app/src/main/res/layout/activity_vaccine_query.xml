@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/TitleStyle"
+    android:background="#fbfbfb"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <TextView
+        android:id="@+id/vaccine_query_return"
+        android:text="返回"
+        android:textSize="14sp"
+        android:textColor="@color/colorMain"
+        android:padding="12dp"
+        android:gravity="center_vertical"
+        android:drawablePadding="8dp"
+        android:drawableLeft="@mipmap/ico_return_blue"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"/>
+    <LinearLayout
+        android:gravity="center_vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/vaccine_query_warehouse"
+            android:text="疫苗库"
+            android:drawableTop="@mipmap/ico_home_selected_warehouse"
+            style="@style/style67"/>
+
+        <TextView
+            android:id="@+id/vaccine_query_wholesale"
+            android:text="批签发"
+            android:drawableTop="@mipmap/ico_home_selected_wholesale"
+            style="@style/style67"/>
+
+
+    </LinearLayout>
+</LinearLayout>

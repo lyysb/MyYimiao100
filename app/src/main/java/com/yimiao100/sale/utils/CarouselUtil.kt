@@ -34,6 +34,7 @@ class CarouselUtil private constructor() {
          * 获取轮播图列表
          * @param carouselType
          */
+        @JvmStatic
         fun getCarouselList(activity: Activity, carouselType: String, listener: HandleCarouselListener?) {
             OkHttpUtils.post().url(URL_CAROUSEL_LIST).addParams(CAROUSEL_TYPE, carouselType)
                     .build().execute(object : StringCallback() {
@@ -55,6 +56,7 @@ class CarouselUtil private constructor() {
                                     //没有数据，设置假数据
                                     val carousel = Carousel()
                                     carousel.mediaUrl = "http://oduhua0b1.bkt.clouddn.com/banner_placeholder.png"
+                                    carousel.objectTitle = "测试图片"
                                     carouselList.add(carousel)
                                 }
                                 listener.handleCarouselList(carouselList)

@@ -2,9 +2,10 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:orientation="horizontal"
     android:background="@android:color/white"
+    android:gravity="center_vertical"
     android:padding="10dp">
 
     <LinearLayout
@@ -30,13 +31,14 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
         android:orientation="vertical">
 
         <TextView
+            android:layout_marginBottom="5dp"
             android:id="@+id/order_vendor_name"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:ellipsize="end"
@@ -46,6 +48,7 @@
             android:textSize="14sp"/>
 
         <TextView
+            android:layout_marginBottom="5dp"
             android:id="@+id/order_product_commonName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -55,6 +58,7 @@
             android:textColor="@color/color666"
             android:textSize="12sp"/>
         <LinearLayout
+            android:layout_marginBottom="5dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -85,6 +89,7 @@
                 android:layout_height="wrap_content"/>
         </LinearLayout>
         <TextView
+            android:layout_marginBottom="5dp"
             android:id="@+id/order_region"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -93,6 +98,18 @@
             android:text="区域："
             android:textColor="@color/color666"
             android:textSize="12sp"/>
+
+        <TextView
+            android:layout_marginBottom="5dp"
+            android:id="@+id/order_customer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:text="客户："
+            android:textColor="@color/color666"
+            android:textSize="12sp"/>
+
 
         <LinearLayout
             android:layout_width="match_parent"

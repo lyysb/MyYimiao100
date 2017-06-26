@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
+<android.support.v4.widget.NestedScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:padding="10dp"
+    android:scrollbars="vertical"
     android:background="@drawable/shape_dialog2"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
@@ -26,6 +27,8 @@
             android:text="感谢您诚意参与本次推广资源的竞标，为了维护您的合法权益，避免和减少签订协议时产生不必要的麻烦和损失，请在签订协议之前仔细阅读本须知。"
             android:padding="12dp"
             style="@style/style57"/>
+
+
         <TextView
             android:text="正式完成签约还需要完成两个操作："
             android:paddingLeft="12dp"
@@ -75,4 +78,4 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
     </LinearLayout>
-</FrameLayout>
+</android.support.v4.widget.NestedScrollView>

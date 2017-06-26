@@ -1,13 +1,18 @@
 package com.yimiao100.sale;
 
+import android.util.DisplayMetrics;
+
+import com.facebook.drawee.backends.pipeline.Fresco;
 import com.meiqia.meiqiasdk.util.MQConfig;
 import com.tencent.bugly.crashreport.CrashReport;
 import com.umeng.socialize.Config;
 import com.umeng.socialize.PlatformConfig;
 import com.umeng.socialize.UMShareAPI;
+import com.uuch.adlibrary.utils.DisplayUtil;
 import com.yimiao100.sale.bean.Application;
 import com.yimiao100.sale.utils.Constant;
 import com.zhy.http.okhttp.OkHttpUtils;
+import com.zhy.http.okhttp.log.LoggerInterceptor;
 
 import java.util.concurrent.TimeUnit;
 
@@ -36,6 +41,18 @@ public class MyApplication extends Application {
         initJPush();
         initMQ();
 //        Picasso.with(this).setIndicatorsEnabled(true);
+        Fresco.initialize(this);
+        initDisplayOpinion();
+    }
+
+    private void initDisplayOpinion() {
+        DisplayMetrics dm = getResources().getDisplayMetrics();
+        DisplayUtil.density = dm.density;
+        DisplayUtil.densityDPI = dm.densityDpi;
+        DisplayUtil.screenWidthPx = dm.widthPixels;
+        DisplayUtil.screenhightPx = dm.heightPixels;
+        DisplayUtil.screenWidthDip = DisplayUtil.px2dip(getApplicationContext(), dm.widthPixels);
+        DisplayUtil.screenHightDip = DisplayUtil.px2dip(getApplicationContext(), dm.heightPixels);
     }
 
     /**
@@ -44,6 +61,7 @@ public class MyApplication extends Application {
     private void initMQ() {
         //显示客户头像
         MQConfig.isShowClientAvatar = true;
+
     }
 
     /**
@@ -61,6 +79,7 @@ public class MyApplication extends Application {
     private void initOkHttpUtils() {
         //初始化OKHttp
         OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                .addInterceptor(new LoggerInterceptor("TAG"))
                 .connectTimeout(10000L, TimeUnit.MILLISECONDS)
                 .readTimeout(10000L, TimeUnit.MILLISECONDS)
                 //其他配置

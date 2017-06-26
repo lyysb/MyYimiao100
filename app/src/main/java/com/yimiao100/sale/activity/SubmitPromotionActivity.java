@@ -98,10 +98,10 @@ public class SubmitPromotionActivity extends BaseActivity implements TitleView
         mParams = new HashMap<>();
         Intent intent = getIntent();
         mUserAccountType = intent.getStringExtra("userAccountType");
-        LogUtil.Companion.d("userAccountType is " + mUserAccountType);
+        LogUtil.d("userAccountType is " + mUserAccountType);
         //根据不同的来源添加不同的参数，显示不同的数据
         mMark = intent.getStringExtra("mark");
-        LogUtil.Companion.d("mark is " + mMark);
+        LogUtil.d("mark is " + mMark);
         switch (mMark) {
             case "resource":
                 URL_PAY = Constant.BASE_URL + "/api/order/place_order";
@@ -122,7 +122,7 @@ public class SubmitPromotionActivity extends BaseActivity implements TitleView
                 ResourceListBean order = intent.getParcelableExtra("order");
                 mAmount.setText("实付款：￥" + order.getBidDeposit());
                 mOrderId = order.getId() + "";
-                LogUtil.Companion.d(mOrderId);
+                LogUtil.d(mOrderId);
                 //添加参数
                 mParams.put(ORDER_ID, mOrderId);
                 break;
@@ -187,7 +187,7 @@ public class SubmitPromotionActivity extends BaseActivity implements TitleView
         mProgressDialog.setCancelable(false);
         mProgressDialog.show();
         //链接服务器，生成支付订单
-        OkHttpUtils.post().url(URL_PAY).addHeader(ACCESS_TOKEN, mAccessToken)
+        OkHttpUtils.post().url(URL_PAY).addHeader(ACCESS_TOKEN, accessToken)
                 .params(mParams)
                 .addParams(USER_ACCOUNT_TYPE, mUserAccountType).addParams(CHANNEL, mChannel)
                 .build().connTimeOut(30000L).readTimeOut(30000L).execute(new StringCallback() {
@@ -204,11 +204,11 @@ public class SubmitPromotionActivity extends BaseActivity implements TitleView
             public void onResponse(String response, int id) {
                 mProgressDialog.dismiss();
                 mSubmitPromotionPay.setEnabled(true);
-                LogUtil.Companion.d(response);
+                LogUtil.d(response);
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":
-                        LogUtil.Companion.d("SubmitPromotionActivity result success");
+                        LogUtil.d("SubmitPromotionActivity result success");
                         //从服务端获取返回信息
                         JSONObject jsonObject;
                         try {
@@ -223,7 +223,7 @@ public class SubmitPromotionActivity extends BaseActivity implements TitleView
                                 req.timeStamp = payRequest.getString("timestamp");
                                 req.packageValue = payRequest.getString("package");
                                 req.sign = payRequest.getString("sign");
-                                LogUtil.Companion.d("SubmitPromotionActivity enter wx");
+                                LogUtil.d("SubmitPromotionActivity enter wx");
                                 //去WXPayEntry做回调
                                 weChatId.sendReq(req);
                             }
@@ -251,7 +251,7 @@ public class SubmitPromotionActivity extends BaseActivity implements TitleView
     };
 
     private void handleResult(final int code) {
-        LogUtil.Companion.d("SubmitPromotionActivity receive broadcast, code is " + code);
+        LogUtil.d("SubmitPromotionActivity receive broadcast, code is " + code);
         //0 支付成功
         //-1 发生错误 可能的原因：签名错误、未注册APPID、项目设置APPID不正确、注册的APPID与设置的不匹配、其他异常等。
         //-2 用户取消 发生场景：用户不支付了，点击取消，返回APP。

@@ -100,7 +100,7 @@ public class CollectionActivity extends BaseActivity implements TitleView.TitleB
 
     private RequestCall getBuild() {
         return OkHttpUtils.post().url(URL_COLLECTION_LIST)
-                .addHeader(ACCESS_TOKEN, mAccessToken)
+                .addHeader(ACCESS_TOKEN, accessToken)
                 .build();
     }
 
@@ -109,7 +109,7 @@ public class CollectionActivity extends BaseActivity implements TitleView.TitleB
         getBuild().execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.Companion.d("收藏列表E：" + e.getMessage());
+                LogUtil.d("收藏列表E：" + e.getMessage());
                 Util.showTimeOutNotice(currentContext);
             }
 
@@ -122,7 +122,7 @@ public class CollectionActivity extends BaseActivity implements TitleView.TitleB
                         mCollectionSwipe.setRefreshing(false);
                     }
                 }, 300);
-                LogUtil.Companion.d("收藏列表：" + response);
+                LogUtil.d("收藏列表：" + response);
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()){
                     case "success":
@@ -133,7 +133,7 @@ public class CollectionActivity extends BaseActivity implements TitleView.TitleB
                         } else {
                             mEmptyView.setVisibility(View.GONE);
                         }
-                        LogUtil.Companion.d(mPagedList.size() + "");
+                        LogUtil.d(mPagedList.size() + "");
                         mCollectionAdapter = new CollectionAdapter(getApplicationContext(), mPagedList);
                         mCollectionListView.setAdapter(mCollectionAdapter);
                         break;
@@ -185,18 +185,18 @@ public class CollectionActivity extends BaseActivity implements TitleView.TitleB
     private void delete(PagedListBean collectionInfo, final int position) {
         //删除收藏
         OkHttpUtils.post().url(URL_CANCEL_COLLECTION)
-                .addHeader(ACCESS_TOKEN, mAccessToken)
+                .addHeader(ACCESS_TOKEN, accessToken)
                 .addParams("newsId", collectionInfo.getId() + "")
                 .build().execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.Companion.d("取消收藏E：" + e.getMessage());
+                LogUtil.d("取消收藏E：" + e.getMessage());
                 Util.showTimeOutNotice(currentContext);
             }
 
             @Override
             public void onResponse(String response, int id) {
-                LogUtil.Companion.d("取消收藏：" + response);
+                LogUtil.d("取消收藏：" + response);
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":

@@ -79,21 +79,21 @@ public class ChangePwdActivity extends BaseActivity implements TextWatcher, Titl
         }
         mChangeSubmit.setEnabled(false);
         OkHttpUtils.post().url(URL_UPDATE_PASSWORD)
-                .addHeader(ACCESS_TOKEN, mAccessToken)
+                .addHeader(ACCESS_TOKEN, accessToken)
                 .addParams("oldPass", mChangeNowPwd.getText().toString().trim())
                 .addParams("newPass", mChangePwdNew.getText().toString().trim())
                 .build().execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
                 mChangeSubmit.setEnabled(true);
-                LogUtil.Companion.d("修改密码：" + e.getMessage());
+                LogUtil.d("修改密码：" + e.getMessage());
                 Util.showTimeOutNotice(currentContext);
             }
 
             @Override
             public void onResponse(String response, int id) {
                 mChangeSubmit.setEnabled(true);
-                LogUtil.Companion.d("提交修改密码：" + response);
+                LogUtil.d("提交修改密码：" + response);
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":

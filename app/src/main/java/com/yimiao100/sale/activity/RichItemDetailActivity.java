@@ -81,17 +81,17 @@ public class RichItemDetailActivity extends BaseActivity implements TitleView
     }
 
     private void initData() {
-        OkHttpUtils.post().url(URL_ACCOUNT_DETAIL).addHeader(ACCESS_TOKEN, mAccessToken)
+        OkHttpUtils.post().url(URL_ACCOUNT_DETAIL).addHeader(ACCESS_TOKEN, accessToken)
                 .addParams(ID, mId + "").build().execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.Companion.d("提现明细详情E：" + e.getLocalizedMessage());
+                LogUtil.d("提现明细详情E：" + e.getLocalizedMessage());
                 hideLoadingProgress();
             }
 
             @Override
             public void onResponse(String response, int id) {
-                LogUtil.Companion.d("提现明细详情：" + response);
+                LogUtil.d("提现明细详情：" + response);
                 hideLoadingProgress();
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {

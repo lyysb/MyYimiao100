@@ -40,6 +40,18 @@ public class AuthorizationActivity extends BaseActivityListWithText {
     }
 
     @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        initView();
+
+        initData();
+
+        setEmptyView(getString(R.string.empty_view_report), R.mipmap.ico_blank);
+
+        showLoadingProgress();
+    }
+
+    @Override
     protected String setTitle() {
         return "申请记录";
     }
@@ -56,20 +68,20 @@ public class AuthorizationActivity extends BaseActivityListWithText {
             public void onError(Call call, Exception e, int id) {
                 hideLoadingProgress();
                 e.printStackTrace();
-                LogUtil.Companion.d("AuthorizationActivity init data error");
+                LogUtil.d("AuthorizationActivity init data error");
             }
 
             @Override
             public void onResponse(String response, int id) {
                 hideLoadingProgress();
-                LogUtil.Companion.d("response is \n" + response);
+                LogUtil.d("response is \n" + response);
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":
                         AuthorizationList.PagedResultBean pagedResult = JSON.parseObject
                                 (response, AuthorizationList.class).getPagedResult();
-                        mPage = 2;
-                        mTotalPage = pagedResult.getTotalPage();
+                        page = 2;
+                        totalPage = pagedResult.getTotalPage();
                         mList = pagedResult.getPagedList();
                         handleEmptyData(mList);
                         mAdapter = new AuthorizationAdapter(mList);
@@ -85,8 +97,7 @@ public class AuthorizationActivity extends BaseActivityListWithText {
 
     @Override
     protected void onBottomClick() {
-        startActivityForResult(new Intent(this, AuthorizationDetailActivity.class), 100);
-        finish();
+        startActivity(new Intent(this, AuthorizationDetailActivity.class));
     }
 
     @Override
@@ -94,26 +105,8 @@ public class AuthorizationActivity extends BaseActivityListWithText {
         Intent intent = new Intent(this, AuthorizationDetailActivity.class);
         intent.putExtra("authzApplyId", mList.get(position).getId());
         startActivity(intent);
-        finish();
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        switch (requestCode) {
-            case 100:
-                if (resultCode == RESULT_OK) {
-                    showLoadingProgress();
-                    initData();
-                } else {
-                    LogUtil.Companion.d("Unknown result code is " + resultCode);
-                }
-                break;
-            default:
-                LogUtil.Companion.d("Unknown request code is " + requestCode);
-                break;
-        }
-    }
 
     @Override
     protected void onRefresh() {
@@ -122,20 +115,20 @@ public class AuthorizationActivity extends BaseActivityListWithText {
             public void onError(Call call, Exception e, int id) {
                 mRefreshView.setRefreshing(false);
                 e.printStackTrace();
-                LogUtil.Companion.d("AuthorizationActivity refresh data error");
+                LogUtil.d("AuthorizationActivity refresh data error");
             }
 
             @Override
             public void onResponse(String response, int id) {
                 mRefreshView.setRefreshing(false);
-                LogUtil.Companion.d("response is \n" + response);
+                LogUtil.d("response is \n" + response);
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":
                         AuthorizationList.PagedResultBean pagedResult = JSON.parseObject
                                 (response, AuthorizationList.class).getPagedResult();
-                        mPage = 2;
-                        mTotalPage = pagedResult.getTotalPage();
+                        page = 2;
+                        totalPage = pagedResult.getTotalPage();
                         mList = pagedResult.getPagedList();
                         mAdapter = new AuthorizationAdapter(mList);
                         handleEmptyData(mList);
@@ -151,24 +144,24 @@ public class AuthorizationActivity extends BaseActivityListWithText {
 
     @Override
     protected void onLoadMore() {
-        getBuild(mPage).execute(new StringCallback() {
+        getBuild(page).execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
                 mListView.onLoadMoreComplete();
                 e.printStackTrace();
-                LogUtil.Companion.d("AuthorizationActivity load more data error");
+                LogUtil.d("AuthorizationActivity load more data error");
             }
 
             @Override
             public void onResponse(String response, int id) {
                 mListView.onLoadMoreComplete();
-                LogUtil.Companion.d("response is \n" + response);
+                LogUtil.d("response is \n" + response);
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":
                         AuthorizationList.PagedResultBean pagedResult = JSON.parseObject
                                 (response, AuthorizationList.class).getPagedResult();
-                        mPage ++;
+                        page++;
                         mList.addAll(pagedResult.getPagedList());
                         mAdapter.notifyDataSetChanged();
                         break;
@@ -181,7 +174,7 @@ public class AuthorizationActivity extends BaseActivityListWithText {
     }
 
     private RequestCall getBuild(int page) {
-        return OkHttpUtils.post().url(URL_AUTHZ_LIST).addHeader(ACCESS_TOKEN, mAccessToken)
-                .addParams(PAGE, page + "").addParams(PAGE_SIZE, mPageSize).build();
+        return OkHttpUtils.post().url(URL_AUTHZ_LIST).addHeader(ACCESS_TOKEN, accessToken)
+                .addParams(PAGE, page + "").addParams(PAGE_SIZE, pageSize).build();
     }
 }

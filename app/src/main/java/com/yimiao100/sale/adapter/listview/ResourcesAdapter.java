@@ -64,8 +64,13 @@ public class ResourcesAdapter extends BaseAdapter{
         resource_spec.setText("规格：" + resource.getSpec());
         //区域
         TextView resource_region = ViewHolderUtil.get(convertView, R.id.resource_region);
-        resource_region.setText("区域：" + resource.getProvinceName() + "\t" + resource.getCityName()
-                    + "\t" + resource.getAreaName());
+        resource_region.setText("区域：" + resource.getProvinceName() + "\t\t" + resource.getCityName()
+                    + "\t\t" + resource.getAreaName());
+
+        TextView customerName = ViewHolderUtil.get(convertView, R.id.resource_customer);
+        if (resource.getCustomerName() != null) {
+            customerName.setText("客户：" + resource.getCustomerName());
+        }
         //更新时间
         TextView resource_updated_at = ViewHolderUtil.get(convertView, R.id.resource_updated_at);
         long updatedAt = resource.getUpdatedAt();

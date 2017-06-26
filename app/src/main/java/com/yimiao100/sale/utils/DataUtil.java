@@ -2,6 +2,7 @@ package com.yimiao100.sale.utils;
 
 import android.app.Activity;
 
+import com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout;
 import com.yimiao100.sale.base.ActivityCollector;
 import com.yimiao100.sale.bean.CorporateBean;
 import com.yimiao100.sale.bean.PersonalBean;
@@ -36,7 +37,7 @@ public class DataUtil {
 
             @Override
             public void onResponse(String response, int id) {
-                LogUtil.Companion.d("updateUserAccount：" + response);
+                LogUtil.d("updateUserAccount：" + response);
                 UserBean userBean = JSON.parseObject(response, UserBean.class);
                 Activity topActivity = ActivityCollector.getTopActivity();
                 switch (userBean.getStatus()) {
@@ -70,7 +71,7 @@ public class DataUtil {
 
             @Override
             public void onResponse(String response, int id) {
-                LogUtil.Companion.d("updateUserAccount：" + response);
+                LogUtil.d("updateUserAccount：" + response);
                 UserBean userBean = JSON.parseObject(response, UserBean.class);
                 Activity topActivity = ActivityCollector.getTopActivity();
                 switch (userBean.getStatus()) {
@@ -109,6 +110,48 @@ public class DataUtil {
         SharePreferenceUtil.put(activity, Constant.PERSONAL_ID_CARD, personal.getIdNumber());
         // 联系电话
         SharePreferenceUtil.put(activity, Constant.PERSONAL_PHONE_NUMBER, personal.getPersonalPhoneNumber());
+    }
+
+    public static void updateUserAccount(String accessToken, final TwinklingRefreshLayout refreshLayout, final onSuccessListener listener) {
+        post().url(URL_USER_ACCOUNT).addHeader(ACCESS_TOKEN, accessToken)
+                .build().execute(new StringCallback() {
+            @Override
+            public void onError(Call call, Exception e, int id) {
+                e.printStackTrace();
+                if (refreshLayout.isShown()) {
+                    refreshLayout.finishRefreshing();
+                }
+            }
+
+            @Override
+            public void onResponse(String response, int id) {
+                LogUtil.d("updateUserAccount：" + response);
+                if (refreshLayout.isShown()) {
+                    refreshLayout.finishRefreshing();
+                }
+                UserBean userBean = JSON.parseObject(response, UserBean.class);
+                Activity topActivity = ActivityCollector.getTopActivity();
+                switch (userBean.getStatus()) {
+                    case "success":
+                        UserAccountBean userAccount = userBean.getUserAccount();
+                        if (userAccount.getCorporate() != null) {
+                            //更新对公账户数据
+                            updateCorporate(topActivity, userAccount.getCorporate());
+                        }
+                        if (userAccount.getPersonal() != null) {
+                            // 更新个人主体数据
+                            updatePersonal(topActivity, userAccount.getPersonal());
+                        }
+                        if (listener != null) {
+                            listener.echoData(userAccount);
+                        }
+                        break;
+                    case "failure":
+                        Util.showError(topActivity, userBean.getReason());
+                        break;
+                }
+            }
+        });
     }
 
     public interface onSuccessListener {

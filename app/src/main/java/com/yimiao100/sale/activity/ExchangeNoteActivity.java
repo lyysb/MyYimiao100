@@ -52,7 +52,7 @@ public class ExchangeNoteActivity extends BaseActivitySingleList {
         getBuild(1).execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.Companion.d("兑换列表E：" + e.getLocalizedMessage());
+                LogUtil.d("兑换列表E：" + e.getLocalizedMessage());
                 Util.showTimeOutNotice(currentContext);
                 hideLoadingProgress();
             }
@@ -67,8 +67,8 @@ public class ExchangeNoteActivity extends BaseActivitySingleList {
                     case "success":
                         GoodsResult pagedResult = JSON.parseObject(response, GoodsBean.class)
                                 .getPagedResult();
-                        mPage = 2;
-                        mTotalPage = pagedResult.getTotalPage();
+                        page = 2;
+                        totalPage = pagedResult.getTotalPage();
                         mGoodsList = pagedResult.getPagedList();
                         handleEmptyData(mGoodsList);
                         mNoteListAdapter = new NoteListAdapter(mGoodsList);
@@ -84,10 +84,10 @@ public class ExchangeNoteActivity extends BaseActivitySingleList {
 
     @Override
     protected void onLoadMore() {
-        getBuild(mPage).execute(new StringCallback() {
+        getBuild(page).execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.Companion.d("兑换列表E：" + e.getLocalizedMessage());
+                LogUtil.d("兑换列表E：" + e.getLocalizedMessage());
                 Util.showTimeOutNotice(currentContext);
             }
 
@@ -98,7 +98,7 @@ public class ExchangeNoteActivity extends BaseActivitySingleList {
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":
-                        mPage++;
+                        page ++ ;
                         mGoodsList.addAll(JSON.parseObject(response, GoodsBean.class).getPagedResult().getPagedList());
                         mNoteListAdapter.notifyDataSetChanged();
                         break;
@@ -110,8 +110,8 @@ public class ExchangeNoteActivity extends BaseActivitySingleList {
         });
     }
     private RequestCall getBuild(int page) {
-        return OkHttpUtils.post().url(URL_EXCHANGE_LIST).addHeader(ACCESS_TOKEN, mAccessToken)
-                .addParams(PAGE, page + "").addParams(PAGE_SIZE, mPageSize).build();
+        return OkHttpUtils.post().url(URL_EXCHANGE_LIST).addHeader(ACCESS_TOKEN, accessToken)
+                .addParams(PAGE, page + "").addParams(PAGE_SIZE, pageSize).build();
     }
     @Override
     protected void onItemClick(AdapterView<?> parent, View view, int position, long id) {

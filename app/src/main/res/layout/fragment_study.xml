@@ -10,10 +10,17 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:title_text="学习"/>
-    <com.yimiao100.sale.view.PullToRefreshListView
-        android:id="@+id/study_class_list"
-        style="@style/list_view"
+    <com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout
+        android:id="@+id/study_refresh_layout"
         android:background="@android:color/white"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent">
+
+        <ListView
+            android:id="@+id/study_class_list"
+            style="@style/list_view"
+            android:background="@android:color/white"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+    </com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout>
 </LinearLayout>

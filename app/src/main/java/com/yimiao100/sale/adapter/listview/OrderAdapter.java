@@ -76,6 +76,11 @@ public class OrderAdapter extends BaseAdapter {
         if (resource.getVendorLogoImageUrl() != null && resource.getVendorLogoImageUrl().length() != 0) {
             Picasso.with(mContext).load(resource.getVendorLogoImageUrl()).into(order_vendor_logo);
         }
+        // 客户
+        TextView order_customer = ViewHolderUtil.get(convertView, R.id.order_customer);
+        if (resource.getCustomerName() != null) {
+            order_customer.setText("客户：" + resource.getCustomerName());
+        }
 
         //协议单号
         TextView order_serial_no = ViewHolderUtil.get(convertView, R.id.order_serial_no);

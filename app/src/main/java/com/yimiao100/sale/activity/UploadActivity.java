@@ -27,11 +27,11 @@ public class UploadActivity extends BaseActivity {
                 finish();
                 break;
             case R.id.upload_report:
-                LogUtil.Companion.d("进入 不良反应申报");
+                LogUtil.d("进入 不良反应申报");
                 startActivity(new Intent(this, ReportDetailActivity.class));
                 break;
             case R.id.upload_grant:
-                LogUtil.Companion.d("进入 申请授权书");
+                LogUtil.d("进入 申请授权书");
                 startActivity(new Intent(this, AuthorizationDetailActivity.class));
                 break;
         }

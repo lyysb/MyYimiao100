@@ -78,11 +78,11 @@ public class AssuranceCompanyActivity extends BaseActivity implements TitleView
                 phone = (String) SharePreferenceUtil.get(this, Constant.CORPORATION_PERSONAL_PHONE_NUMBER, "");
                 break;
         }
-        LogUtil.Companion.d(phone);
+        LogUtil.d(phone);
         mAssuranceCompanyPhone.setText("联系方式：" + phone);
 
         mOrderIds = intent.getStringExtra("orderIds");
-        LogUtil.Companion.d("mOrderIds:" + mOrderIds);
+        LogUtil.d("mOrderIds:" + mOrderIds);
     }
 
     @OnClick({R.id.assurance_apply_cash, R.id.assurance_apply_service})
@@ -144,7 +144,7 @@ public class AssuranceCompanyActivity extends BaseActivity implements TitleView
     private void applyCash() {
         //禁止点击按钮，避免重复点击造成重复请求
         mAssuranceApplyCash.setEnabled(false);
-        OkHttpUtils.post().url(URL_CASH_WITHDRAWAL).addHeader(ACCESS_TOKEN, mAccessToken)
+        OkHttpUtils.post().url(URL_CASH_WITHDRAWAL).addHeader(ACCESS_TOKEN, accessToken)
                 .addParams(ORDER_ID, mOrderIds).build().execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {

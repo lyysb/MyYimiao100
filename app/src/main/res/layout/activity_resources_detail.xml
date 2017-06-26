@@ -177,7 +177,6 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="7dp"
                 android:layout_marginTop="7dp"
                 android:background="@android:color/white"
                 android:orientation="horizontal"
@@ -192,6 +191,30 @@
 
                 <TextView
                     android:id="@+id/resource_detail_region"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="28dp"
+                    android:textColor="@color/color666"
+                    android:textSize="12sp"/>
+
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="7dp"
+                android:background="@android:color/white"
+                android:orientation="horizontal"
+                android:padding="10dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="客户：        "
+                    android:textColor="@color/color333"
+                    android:textSize="12sp"/>
+
+                <TextView
+                    android:id="@+id/resource_detail_customer"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="28dp"

@@ -114,17 +114,22 @@ public class RegisterActivity extends BaseActivity implements CompoundButton
             public void afterEvent(int event, int result, Object data) {
                 super.afterEvent(event, result, data);
                 if (result == SMSSDK.RESULT_COMPLETE) {
-                    LogUtil.Companion.d("短信验证回调完成");
+                    LogUtil.d("短信验证回调完成");
                     //回调完成
                     if (event == SMSSDK.EVENT_SUBMIT_VERIFICATION_CODE) {
-                        LogUtil.Companion.d("验证码验证通过");
+                        LogUtil.d("验证码验证通过");
                         //提交验证码成功
                         //发送数据到服务器
                         sendMsg();
                     }
                 } else if (result == SMSSDK.RESULT_ERROR) {
-                    LogUtil.Companion.d("短信验证回调出错");
-                    mRegisterRegister.setEnabled(true);
+                    LogUtil.d("短信验证回调出错");
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            mRegisterRegister.setEnabled(true);
+                        }
+                    });
                     //错误情况
                     Throwable throwable = (Throwable) data;
                     throwable.printStackTrace();
@@ -140,9 +145,9 @@ public class RegisterActivity extends BaseActivity implements CompoundButton
                         message.setData(bundle);
                         mHandler.sendMessage(message);
 
-                        LogUtil.Companion.d(detail);
+                        LogUtil.d(detail);
                         //打印错误码
-                        LogUtil.Companion.d(object.getString("status"));
+                        LogUtil.d(object.getString("status"));
                     } catch (JSONException e) {
                         e.printStackTrace();
                         //发送消息，甩锅
@@ -169,16 +174,16 @@ public class RegisterActivity extends BaseActivity implements CompoundButton
             public void onError(Call call, Exception e, int id) {
                 e.printStackTrace();
                 Util.showTimeOutNotice(currentContext);
-                LogUtil.Companion.d("网络请求失败");
+                LogUtil.d("网络请求失败");
                 mRegisterRegister.setEnabled(true);
             }
 
             @Override
             public void onResponse(String response, int id) {
-                LogUtil.Companion.d("服务器返回--" + response);
+                LogUtil.d("服务器返回--" + response);
                 mRegisterRegister.setEnabled(true);
                 SignUpBean signUpBean = JSON.parseObject(response, SignUpBean.class);
-                LogUtil.Companion.d(signUpBean.getStatus());
+                LogUtil.d(signUpBean.getStatus());
                 switch (signUpBean.getStatus()) {
                     case "success":
                         //注册成功前先清除之前本地数据
@@ -197,7 +202,7 @@ public class RegisterActivity extends BaseActivity implements CompoundButton
                         finish();
                         break;
                     case "failure":
-                        LogUtil.Companion.d("服务器验证失败");
+                        LogUtil.d("服务器验证失败");
                         //注册失败，显示失败原因
                         Util.showError(currentContext, signUpBean.getReason());
                         break;
@@ -263,7 +268,7 @@ public class RegisterActivity extends BaseActivity implements CompoundButton
             ToastUtil.showShort(this, "密码长度不得少于6位");
             return;
         }
-        LogUtil.Companion.d("提交短信验证码");
+        LogUtil.d("提交短信验证码");
         mRegisterRegister.setEnabled(false);
         //提交短信验证码，触发短信操作回调，验证短信验证码是否正确，然后和服务器进行交互
         SMSSDK.submitVerificationCode("86", phone, code);

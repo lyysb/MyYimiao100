@@ -1,18 +1,28 @@
 package com.yimiao100.sale.fragment;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.lcodecore.tkrefreshlayout.RefreshListenerAdapter;
+import com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout;
+import com.lcodecore.tkrefreshlayout.header.progresslayout.ProgressLayout;
+import com.meiqia.core.MQManager;
+import com.meiqia.core.bean.MQMessage;
+import com.meiqia.core.callback.OnGetMessageListCallback;
 import com.yimiao100.sale.R;
 import com.yimiao100.sale.activity.CustomerActivity;
 import com.yimiao100.sale.activity.NoticeActivity;
@@ -21,12 +31,17 @@ import com.yimiao100.sale.activity.ResourcesActivity;
 import com.yimiao100.sale.activity.RichesActivity;
 import com.yimiao100.sale.activity.ShipActivity;
 import com.yimiao100.sale.activity.UploadActivity;
+import com.yimiao100.sale.activity.VaccineQueryActivity;
 import com.yimiao100.sale.activity.VendorListActivity;
-import com.yimiao100.sale.activity.WareHouseActivity;
-import com.yimiao100.sale.activity.WholesaleActivity;
+import com.yimiao100.sale.activity.VendorOrderOnlineActivity;
 import com.yimiao100.sale.adapter.peger.CRMAdAdapter;
+import com.yimiao100.sale.base.BaseFragment;
 import com.yimiao100.sale.bean.Carousel;
 import com.yimiao100.sale.bean.ErrorBean;
+import com.yimiao100.sale.bean.Event;
+import com.yimiao100.sale.bean.EventType;
+import com.yimiao100.sale.bean.Tips;
+import com.yimiao100.sale.bean.TipsBean;
 import com.yimiao100.sale.bean.WaveBean;
 import com.yimiao100.sale.bean.WaveStat;
 import com.yimiao100.sale.ext.JSON;
@@ -41,10 +56,16 @@ import com.yimiao100.sale.view.DynamicWave;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.HashMap;
 
+import me.itangqi.waveloadingview.WaveLoadingView;
 import okhttp3.Call;
+import q.rorbin.badgeview.Badge;
+import q.rorbin.badgeview.QBadgeView;
 
 
 
@@ -52,7 +73,8 @@ import okhttp3.Call;
  * CRM
  * Created by 亿苗通 on 2016/8/1.
  */
-public class CRMFragment extends Fragment implements View.OnClickListener, CarouselUtil.HandleCarouselListener {
+public class CRMFragment extends BaseFragment implements View.OnClickListener, CarouselUtil
+        .HandleCarouselListener, ViewPager.OnPageChangeListener {
 
 
     private View mView;
@@ -60,7 +82,9 @@ public class CRMFragment extends Fragment implements View.OnClickListener, Carou
 
     private final String URL_SALE_STAT = Constant.BASE_URL + "/api/stat/sale_stat";
     private final String BALANCE_ORDER = "balance_order";                   //对账订单
+    private final String ORDER_ONLINE = "order_online";                     // 在线下单
     private final String ACCESS_TOKEN = "X-Authorization-Token";
+    private final String USER_TIPS = Constant.BASE_URL + "/api/tip/user_tips";
 
     private String mAccessToken;
     /**
@@ -79,52 +103,101 @@ public class CRMFragment extends Fragment implements View.OnClickListener, Carou
             }
         }
     };
-    private DynamicWave mWaveGoods;
-    private TextView mCrmGoodsEd;
-    private DynamicWave mWaveMoney;
-    private TextView mCrmPaymentEd;
     private TextView mCrmDesc;
     private LinearLayout mCrmDots;
     private ArrayList<Carousel> mCarouselList;
+    private TwinklingRefreshLayout mRefreshLayout;
+    private ImageButton mNotice;
+    private ImageButton mReconciliation;
+    private HashMap<String, ArrayList<String>> mDetails;
+    private ImageView mCustomer;
+    private Badge mBadge;
+    private WaveLoadingView mWaveShip;
+    private WaveLoadingView mWavePayment;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle
             savedInstanceState) {
         mView = View.inflate(getContext(), R.layout.fragment_crm, null);
-        LogUtil.Companion.d("onCreateView");
-        initContentView();
+        initView();
         return mView;
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        initData();
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser) {
+            // 如果可见，滑动切换
+            mHandler.sendEmptyMessageDelayed(SHOW_NEXT_PAGE, 3000);
+        } else {
+            mHandler.removeMessages(SHOW_NEXT_PAGE);
+        }
+        LogUtil.d("setUserVisibleHint isVisibleToUser is " + isVisibleToUser);
+        LogUtil.d("setUserVisibleHint handler has msg is " + mHandler.hasMessages(SHOW_NEXT_PAGE));
     }
 
     @Override
     public void onStart() {
         super.onStart();
-
-        mHandler.sendEmptyMessageDelayed(SHOW_NEXT_PAGE, 3000);
-        //初始化水波纹数据
-        initWave(mWaveGoods, mCrmGoodsEd, mWaveMoney, mCrmPaymentEd);
+        LogUtil.d("onStart handler has msg is " + mHandler.hasMessages(SHOW_NEXT_PAGE));
     }
 
-    private void initContentView() {
+    @Override
+    public void onStop() {
+        super.onStop();
+        LogUtil.d("onStop handler has msg is " + mHandler.hasMessages(SHOW_NEXT_PAGE));
+    }
+
+    private void initView() {
         mAccessToken = (String) SharePreferenceUtil.get(getContext(), Constant.ACCESSTOKEN, "");
+        // 客服
+        mCustomer = (ImageView) mView.findViewById(R.id.crm_service);
+        mBadge = new QBadgeView(getContext()).bindTarget(mCustomer)
+                .setBadgePadding(4, true)
+                .setGravityOffset(9, true)
+                .setShowShadow(false);
+
+        mCustomer.setOnClickListener(this);
+        // 刷新控件
+        mRefreshLayout = (TwinklingRefreshLayout) mView.findViewById(R.id.crm_refresh_layout);
+        ProgressLayout header = new ProgressLayout(getActivity());
+        header.setColorSchemeResources(android.R.color.holo_blue_bright, android.R.color
+                .holo_green_light,
+                android.R.color.holo_orange_light, android.R.color.holo_red_light);
+        mRefreshLayout.setHeaderView(header);
+        mRefreshLayout.setFloatRefresh(true);
+        mRefreshLayout.setOverScrollRefreshShow(false);
+        mRefreshLayout.setOnRefreshListener(new RefreshListenerAdapter() {
+
+            @Override
+            public void onRefresh(TwinklingRefreshLayout refreshLayout) {
+                super.onRefresh(refreshLayout);
+                // 重新加载数据
+                initData();
+            }
+        });
         //广告
         mCrm_ad = (ViewPager) mView.findViewById(R.id.crm_ad);
+        mCrm_ad.addOnPageChangeListener(this);
         //广告标题
         mCrmDesc = (TextView) mView.findViewById(R.id.crm_tv_desc);
         //广告小圆点
         mCrmDots = (LinearLayout) mView.findViewById(R.id.crm_ll_dots);
-        //获取广告轮播图
-        CarouselUtil.Companion.getCarouselList(getActivity(), "biz", this);
         //水波纹统计
-        mWaveGoods = (DynamicWave) mView.findViewById(R.id.wave_goods);
-        mCrmGoodsEd = (TextView) mView.findViewById(R.id.crm_goods_ed);
-        mWaveGoods.setOnClickListener(this);
-        mWaveMoney = (DynamicWave) mView.findViewById(R.id.wave_money);
-        mCrmPaymentEd = (TextView) mView.findViewById(R.id.crm_payment_ed);
-        mWaveMoney.setOnClickListener(this);
+        mWaveShip = (WaveLoadingView) mView.findViewById(R.id.wave_ship);
+        mWaveShip.setOnClickListener(this);
+        mWavePayment = (WaveLoadingView) mView.findViewById(R.id.wave_payment);
+        mWavePayment.setOnClickListener(this);
 
         //通知
-        mView.findViewById(R.id.crm_notice).setOnClickListener(this);
+        mNotice = (ImageButton) mView.findViewById(R.id.crm_notice);
+        mNotice.setOnClickListener(this);
         //资源
         mView.findViewById(R.id.crm_resources).setOnClickListener(this);
         //客户
@@ -132,37 +205,107 @@ public class CRMFragment extends Fragment implements View.OnClickListener, Carou
         //申报
         mView.findViewById(R.id.crm_upload).setOnClickListener(this);
         //对账
-        mView.findViewById(R.id.crm_reconciliation).setOnClickListener(this);
+        mReconciliation = (ImageButton) mView.findViewById(R.id.crm_reconciliation);
+        mReconciliation.setOnClickListener(this);
         //财富
         mView.findViewById(R.id.crm_riches).setOnClickListener(this);
-        //疫苗库
-        mView.findViewById(R.id.crm_warehouse).setOnClickListener(this);
-        //批签发
-        mView.findViewById(R.id.crm_wholesale).setOnClickListener(this);
+        // 在线下单
+        mView.findViewById(R.id.crm_order_online).setOnClickListener(this);
+        // 疫苗查询
+        mView.findViewById(R.id.crm_query).setOnClickListener(this);
+    }
+
+    private void initData() {
+        //获取广告轮播图
+        CarouselUtil.getCarouselList(getActivity(), "biz", this);
+        //初始化水波纹数据
+        initWave();
+        // 获取相关提示
+        initUserTips();
+    }
+
+    private void initUserTips() {
+        OkHttpUtils.post().url(USER_TIPS).addHeader(ACCESS_TOKEN, mAccessToken)
+                .build().execute(new StringCallback() {
+            @Override
+            public void onError(Call call, Exception e, int id) {
+                LogUtil.d("user tips is error");
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(String response, int id) {
+                LogUtil.d("get user tips success : " + response);
+                ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
+                switch (errorBean.getStatus()) {
+                    case "success":
+                        // 解析
+                        Tips tips = JSON.parseObject(response, TipsBean.class).getTips();
+                        if (tips.getNotice() == 1) {
+                            mNotice.setImageResource(R.drawable.selector_crm_notice_unread);
+                        } else {
+                            mNotice.setImageResource(R.drawable.selector_crm_notice);
+                        }
+                        if (tips.getOrder_balance() == 1) {
+                            mReconciliation.setImageResource(R.drawable.selector_crm_reconciliation_unread);
+                        } else {
+                            mReconciliation.setImageResource(R.drawable.selector_crm_reconciliation);
+                        }
+                        mDetails = tips.getDetails();
+                        LogUtil.d(mDetails.entrySet().toString());
+                        break;
+                    case "failure":
+                        Util.showError(getActivity(), errorBean.getReason());
+                        break;
+                }
+
+            }
+        });
+    }
+
+    @Override
+    public void onEventMainThread(@NotNull Event event) {
+        super.onEventMainThread(event);
+        switch (Event.eventType) {
+            case NOTICE:
+            case ORDER_BALANCE:
+                // 重新刷新提醒数据
+                initUserTips();
+                break;
+            case RECEIVE_MSG:
+                // 收到客服消息，显示小圆点
+                mBadge.setBadgeNumber(-1);
+                break;
+            case READ_MSG:
+                // 设置小圆点为0
+                mBadge.setBadgeNumber(0);
+                break;
+            default:
+                LogUtil.d("unknown event type is " + Event.eventType);
+                break;
+        }
     }
 
     /**
      * 初始化水波纹
-     * @param waveGoods
-     * @param crm_goods_ed
-     * @param waveMoney
-     * @param crm_payment_ed
+     *
      */
-    private void initWave(final DynamicWave waveGoods, final TextView crm_goods_ed, final
-    DynamicWave waveMoney, final TextView crm_payment_ed) {
-        OkHttpUtils.post().url(URL_SALE_STAT).addHeader(ACCESS_TOKEN, mAccessToken).build()
-                .execute(new StringCallback() {
+    private void initWave() {
+        OkHttpUtils.post().url(URL_SALE_STAT).addHeader(ACCESS_TOKEN, mAccessToken)
+                .build().execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                if (CRMFragment.this.isAdded()) {
-                    //防止Fragment点击报空指针
-                    Util.showTimeOutNotice(getActivity());
+                if (mRefreshLayout.isShown()) {
+                    mRefreshLayout.finishRefreshing();
                 }
             }
 
             @Override
             public void onResponse(String response, int id) {
-                LogUtil.Companion.d("CRM-Wave：" + response);
+                if (mRefreshLayout.isShown()) {
+                    mRefreshLayout.finishRefreshing();
+                }
+                LogUtil.d("CRM-Wave：" + response);
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":
@@ -188,12 +331,15 @@ public class CRMFragment extends Fragment implements View.OnClickListener, Carou
                         } else {
                             paymentPercent = 0;
                         }
-                        waveGoods.setPercent(goodsPercent);
-                        crm_goods_ed.setTextColor(goodsPercent >= 0.55 ? Color.parseColor("#ffffff") : Color.parseColor("#000000"));
-                        crm_goods_ed.setText(FormatUtils.PercentFormat(goodsPercent * 100) + "%");
-                        waveMoney.setPercent(paymentPercent);
-                        crm_payment_ed.setTextColor(paymentPercent >= 0.55 ? Color.parseColor("#ffffff") : Color.parseColor("#000000"));
-                        crm_payment_ed.setText(FormatUtils.PercentFormat(paymentPercent * 100) + "%");
+                        mWaveShip.setProgressValue((int) (goodsPercent * 100));
+                        mWaveShip.setCenterTitleColor(goodsPercent >= 0.55 ? Color.parseColor
+                                ("#ffffff") : Color.parseColor("#000000"));
+                        mWaveShip.setCenterTitle(FormatUtils.PercentFormat(goodsPercent * 100) + "%");
+
+                        mWavePayment.setProgressValue((int) (paymentPercent * 100));
+                        mWavePayment.setCenterTitleColor(paymentPercent >= 0.55 ? Color.parseColor
+                                ("#ffffff") : Color.parseColor("#000000"));
+                        mWavePayment.setCenterTitle(FormatUtils.PercentFormat(paymentPercent * 100) + "%");
                         break;
                     case "failure":
                         Util.showError(getActivity(), errorBean.getReason());
@@ -214,11 +360,15 @@ public class CRMFragment extends Fragment implements View.OnClickListener, Carou
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.wave_goods:
-                //进入发货统计
-                startActivity(new Intent(getContext(),  ShipActivity.class));
+            case R.id.crm_service:
+                // 进入客服
+                Util.enterCustomerService(getContext());
                 break;
-            case R.id.wave_money:
+            case R.id.wave_ship:
+                //进入发货统计
+                startActivity(new Intent(getContext(), ShipActivity.class));
+                break;
+            case R.id.wave_payment:
                 //进入回款统计
                 startActivity(new Intent(getContext(), PaymentActivity.class));
                 break;
@@ -236,7 +386,6 @@ public class CRMFragment extends Fragment implements View.OnClickListener, Carou
                 break;
             case R.id.crm_upload:
                 //申报
-//                ToastUtil.showShort(getContext(), "敬请期待");
                 startActivity(new Intent(getContext(), UploadActivity.class));
                 break;
             case R.id.crm_reconciliation:
@@ -249,53 +398,34 @@ public class CRMFragment extends Fragment implements View.OnClickListener, Carou
                 //跳转到财富列表
                 startActivity(new Intent(getContext(), RichesActivity.class));
                 break;
-            case R.id.crm_warehouse:
-                //跳转到疫苗库
-                startActivity(new Intent(getContext(), WareHouseActivity.class));
+            case R.id.crm_order_online:
+                // 跳转到在线下单
+                Intent orderOnlineIntent = new Intent(getContext(), VendorOrderOnlineActivity.class);
+                orderOnlineIntent.putExtra("moduleType", ORDER_ONLINE);
+                startActivity(orderOnlineIntent);
                 break;
-            case R.id.crm_wholesale:
-                //跳转到批签发
-                startActivity(new Intent(getContext(), WholesaleActivity.class));
+            case R.id.crm_query:
+                // 进入疫苗查询
+                startActivity(new Intent(getContext(), VaccineQueryActivity.class));
                 break;
 
         }
     }
 
-    @Override
-    public void onStop() {
-        super.onStop();
-        mHandler.removeMessages(SHOW_NEXT_PAGE);
-    }
 
     /**
      * 处理广告轮播图数据
+     *
      * @param carouselList
      */
     @Override
     public void handleCarouselList(ArrayList<Carousel> carouselList) {
+        LogUtil.d("list size is " + carouselList.size());
         //填充数据
         mCarouselList = carouselList;
         CRMAdAdapter crmAdAdapter = new CRMAdAdapter(mCarouselList);
         mCrm_ad.setAdapter(crmAdAdapter);
         mCrm_ad.setCurrentItem(mCrm_ad.getAdapter().getCount() / 2);
-        mCrm_ad.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int
-                    positionOffsetPixels) {
-
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                LogUtil.Companion.d("CRM-position---" + position);
-                changeDescAndDot(position % mCarouselList.size());
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-        });
         //初始化小圆点
         initDots(carouselList);
         //选中小圆点并且设置文字描述
@@ -304,9 +434,11 @@ public class CRMFragment extends Fragment implements View.OnClickListener, Carou
 
     /**
      * 初始化小圆点
+     *
      * @param carouselList
      */
     private void initDots(ArrayList<Carousel> carouselList) {
+        mCrmDots.removeAllViews();
         for (int i = 0; i < carouselList.size(); i++) {
             View dot = new View(getContext());
             dot.setBackgroundResource(R.drawable.selector_dot);
@@ -321,6 +453,7 @@ public class CRMFragment extends Fragment implements View.OnClickListener, Carou
 
     /**
      * 选中小圆点并且设置文字描述
+     *
      * @param position
      */
     private void changeDescAndDot(int position) {
@@ -331,6 +464,7 @@ public class CRMFragment extends Fragment implements View.OnClickListener, Carou
             mCrmDots.getChildAt(i).setSelected(i == position);
         }
     }
+
     /**
      * 解决如下问题
      * java.lang.IllegalStateException: No host
@@ -347,5 +481,21 @@ public class CRMFragment extends Fragment implements View.OnClickListener, Carou
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+    }
+
+    @Override
+    public void onPageSelected(int position) {
+        LogUtil.d("CRM-position---" + position);
+        changeDescAndDot(position % mCarouselList.size());
+    }
+
+    @Override
+    public void onPageScrollStateChanged(int state) {
+
     }
 }

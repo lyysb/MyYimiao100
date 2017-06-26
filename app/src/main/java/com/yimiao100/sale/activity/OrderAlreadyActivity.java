@@ -16,9 +16,13 @@ import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.meiqia.core.MQManager;
+import com.meiqia.core.bean.MQMessage;
+import com.meiqia.core.callback.OnGetMessageListCallback;
 import com.yimiao100.sale.R;
 import com.yimiao100.sale.base.BaseActivity;
 import com.yimiao100.sale.bean.ErrorBean;
+import com.yimiao100.sale.bean.Event;
 import com.yimiao100.sale.bean.ResourceListBean;
 import com.yimiao100.sale.callback.ProtocolFileCallBack;
 import com.yimiao100.sale.ext.JSON;
@@ -34,8 +38,11 @@ import com.yimiao100.sale.view.TitleView;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -45,6 +52,8 @@ import me.iwf.photopicker.PhotoPreview;
 import okhttp3.Call;
 import okhttp3.Request;
 import okhttp3.Response;
+import q.rorbin.badgeview.Badge;
+import q.rorbin.badgeview.QBadgeView;
 
 /**
  * 我的业务-第三状态-待签约
@@ -54,6 +63,8 @@ public class OrderAlreadyActivity extends BaseActivity implements TitleView
 
     @BindView(R.id.order_already_title)
     TitleView mOrderAlreadyTitle;
+    @BindView(R.id.order_already_service)
+    ImageView mService;
     @BindView(R.id.order_already_submit_time)
     TextView mOrderAlreadySubmitTime;
     @BindView(R.id.order_already_vendor_name)
@@ -76,6 +87,8 @@ public class OrderAlreadyActivity extends BaseActivity implements TitleView
     TextView mOrderAlreadyRe;
     @BindView(R.id.order_already_upload)
     Button mOrderAlreadyUpload;
+    @BindView(R.id.order_already_customer)
+    TextView mOrderAlreadyCustomer;
     @BindView(R.id.order_already_no)
     TextView mOrderAlreadyNo;
     private AlertDialog mDialog;
@@ -90,6 +103,7 @@ public class OrderAlreadyActivity extends BaseActivity implements TitleView
     private String mOrderId;
     private ResourceListBean mOrder;
     private File mFile;
+    private Badge mBadge;
 
 
     @Override
@@ -105,6 +119,23 @@ public class OrderAlreadyActivity extends BaseActivity implements TitleView
 
     private void initView() {
         mOrderAlreadyTitle.setOnTitleBarClick(this);
+        mBadge = new QBadgeView(this).bindTarget(mService)
+                .setBadgePadding(4, true)
+                .setGravityOffset(9, true)
+                .setShowShadow(false);
+        MQManager.getInstance(this).getUnreadMessages(new OnGetMessageListCallback() {
+            @Override
+            public void onSuccess(List<MQMessage> list) {
+                if (list.size() != 0) {
+                    mBadge.setBadgeNumber(-1);
+                }
+            }
+
+            @Override
+            public void onFailure(int i, String s) {
+
+            }
+        });
     }
 
     private void initData() {
@@ -137,6 +168,10 @@ public class OrderAlreadyActivity extends BaseActivity implements TitleView
         Spanned totalMoney = Html.fromHtml("推广保证金：" + "<font color=\"#4188d2\">" + totalDeposit +
                 "</font>" + "(人民币)");
         mOrderAlreadyTotalMoney.setText(totalMoney);
+        // 客户
+        if (mOrder.getCustomerName() != null) {
+            mOrderAlreadyCustomer.setText("客户：" + mOrder.getCustomerName());
+        }
         //协议单号
         String serialNo = mOrder.getSerialNo();
         mOrderAlreadyNo.setText("协议单号：" + serialNo);
@@ -223,11 +258,32 @@ public class OrderAlreadyActivity extends BaseActivity implements TitleView
         mDialog.show();
     }
 
+    @Override
+    public void onEventMainThread(@NotNull Event event) {
+        super.onEventMainThread(event);
+        switch (Event.eventType) {
+            case RECEIVE_MSG:
+                // 收到客服消息，显示小圆点
+                mBadge.setBadgeNumber(-1);
+                break;
+            case READ_MSG:
+                // 设置小圆点为0
+                mBadge.setBadgeNumber(0);
+                break;
+            default:
+                LogUtil.d("unknown event type is " + Event.eventType);
+                break;
+        }
+    }
 
-    @OnClick({R.id.order_already_download, R.id.order_already_upload, R.id
-            .order_already_show_account})
+    @OnClick({R.id.order_already_service, R.id.order_already_download, R.id.order_already_upload,
+            R.id.order_already_show_account})
     public void onClick(View view) {
         switch (view.getId()) {
+            case R.id.order_already_service:
+                //联系客服
+                Util.enterCustomerService(this);
+                break;
             case R.id.order_already_download:
                 //下载电子协议
                 downloadAgreement();
@@ -252,7 +308,7 @@ public class OrderAlreadyActivity extends BaseActivity implements TitleView
         mProgressDownloadDialog.setTitle(getString(R.string.download_progress_dialog_title));
         mProgressDownloadDialog.setCancelable(false);
         String fileHead = "推广协议" + mOrder.getProductName();
-        OkHttpUtils.post().url(URL_DOWNLOAD_FILE).addHeader(ACCESS_TOKEN, mAccessToken)
+        OkHttpUtils.post().url(URL_DOWNLOAD_FILE).addHeader(ACCESS_TOKEN, accessToken)
                 .addParams(ORDER_ID, mOrderId).build()      //使用私人定制版FileCallBack
                 .connTimeOut(1000 * 60 * 10).readTimeOut(1000 * 60 * 10).execute(new ProtocolFileCallBack(fileHead) {
 
@@ -265,8 +321,8 @@ public class OrderAlreadyActivity extends BaseActivity implements TitleView
             @Override
             public void inProgress(float progress, long total, int id) {
                 super.inProgress(progress, total, id);
-                LogUtil.Companion.d("progress：" + progress);
-                LogUtil.Companion.d("total：" + total);
+                LogUtil.d("progress：" + progress);
+                LogUtil.d("total：" + total);
             }
 
             @Override
@@ -284,11 +340,11 @@ public class OrderAlreadyActivity extends BaseActivity implements TitleView
             public File parseNetworkResponse(Response response, int id) throws Exception {
                 if (200 == response.code()) {
                     //协议下载成功
-                    LogUtil.Companion.d("下载成功");
+                    LogUtil.d("下载成功");
                     return super.parseNetworkResponse(response, id);
                 } else if (400 == response.code()) {
                     //解析显示错误信息
-                    LogUtil.Companion.d("下载失败");
+                    LogUtil.d("下载失败");
                     ErrorBean errorBean = JSON.parseObject(response.body().toString(),
                             ErrorBean.class);
                     Util.showError(currentContext, errorBean.getReason());
@@ -303,8 +359,8 @@ public class OrderAlreadyActivity extends BaseActivity implements TitleView
                     //如果返回来null证明下载错误
                     return;
                 }
-                LogUtil.Companion.d("onResponse：" + response.getAbsolutePath());
-                LogUtil.Companion.d("response.name：" + response.getName());
+                LogUtil.d("onResponse：" + response.getAbsolutePath());
+                LogUtil.d("response.name：" + response.getName());
                 //下载成功，显示分享或者发送出去对话框
                 showSuccessDialog(response);
             }
@@ -392,7 +448,7 @@ public class OrderAlreadyActivity extends BaseActivity implements TitleView
             if (data != null) {
                 photos = data.getStringArrayListExtra(PhotoPicker.KEY_SELECTED_PHOTOS);
                 for (String photo : photos) {
-                    LogUtil.Companion.d(photo);
+                    LogUtil.d(photo);
                 }
                 String fileName = "order" + System.currentTimeMillis() + ".zip";
                 //将文件压缩到本地
@@ -419,8 +475,12 @@ public class OrderAlreadyActivity extends BaseActivity implements TitleView
         mProgressUploadDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
         mProgressUploadDialog.setCancelable(false);
         mProgressUploadDialog.setTitle(getString(R.string.upload_progress_dialog_title));
+        final ProgressDialog responseDialog = new ProgressDialog(this);
+        responseDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        responseDialog.setCancelable(false);
+        responseDialog.setMessage(getString(R.string.response_progress_dialog_title));
         OkHttpUtils.post().url(URL_UPLOAD_FILE)
-                .addHeader(ACCESS_TOKEN, mAccessToken)
+                .addHeader(ACCESS_TOKEN, accessToken)
                 .addFile(ZIP_FILE, fileName, file)
                 .addParams(ORDER_ID, mOrderId).build()
                 .connTimeOut(1000 * 60 * 10)
@@ -441,19 +501,25 @@ public class OrderAlreadyActivity extends BaseActivity implements TitleView
             @Override
             public void inProgress(float progress, long total, int id) {
                 super.inProgress(progress, total, id);
-                LogUtil.Companion.d("progress" + progress);
+                LogUtil.d("progress" + progress);
                 mProgressUploadDialog.setProgress((int) (100 * progress - 0.5));
+                if (progress == 1f) {
+                    mProgressUploadDialog.dismiss();
+                    responseDialog.show();
+                }
             }
 
             @Override
             public void onAfter(int id) {
                 super.onAfter(id);
-                mProgressUploadDialog.dismiss();
+                if (responseDialog.isShowing()) {
+                    responseDialog.dismiss();
+                }
             }
 
             @Override
             public void onResponse(String response, int id) {
-                LogUtil.Companion.d(response);
+                LogUtil.d(response);
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":

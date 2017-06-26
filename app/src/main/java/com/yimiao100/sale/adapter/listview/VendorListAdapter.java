@@ -14,6 +14,7 @@ import com.yimiao100.sale.utils.ViewHolderUtil;
 import java.util.ArrayList;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import q.rorbin.badgeview.QBadgeView;
 
 /**
  * 厂家列表Adapter
@@ -51,11 +52,19 @@ public class VendorListAdapter extends BaseAdapter {
         }
         CircleImageView logo = ViewHolderUtil.get(convertView, R.id.vendor_logo);
         TextView title = ViewHolderUtil.get(convertView, R.id.vendor_title);
-
-        Picasso.with(parent.getContext()).load(vendor.getLogoImageUrl()).placeholder(R.mipmap
-                .ico_default_short_picture).resize(DensityUtil.dp2px(parent.getContext(), 50),
-                DensityUtil.dp2px(parent.getContext(), 50)).into(logo);
+        Picasso.with(parent.getContext()).load(vendor.getLogoImageUrl())
+                .placeholder(R.mipmap.ico_default_short_picture)
+                .resize(DensityUtil.dp2px(parent.getContext(), 50), DensityUtil.dp2px(parent.getContext(), 50))
+                .into(logo);
         title.setText(vendor.getVendorName());
+        new QBadgeView(parent.getContext())
+                .bindTarget(convertView.findViewById(R.id.vendor_logo))
+                .setBadgePadding(4, true)
+                .setGravityOffset(0, true)
+                .setBadgeNumber(vendor.getTipStatus() == 1 ? -1 : 0);
+        //设置小圆点可见性
+//        ImageView tipStatus = ViewHolderUtil.get(convertView, R.id.vendor_tip_status);
+//        tipStatus.setVisibility(vendor.getTipStatus() == 1 ? View.VISIBLE : View.INVISIBLE);
         return convertView;
     }
 }

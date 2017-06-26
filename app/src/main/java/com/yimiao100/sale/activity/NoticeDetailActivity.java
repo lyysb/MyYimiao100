@@ -3,6 +3,8 @@ package com.yimiao100.sale.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.yimiao100.sale.R;
@@ -13,11 +15,13 @@ import com.yimiao100.sale.bean.NoticeDetailBean;
 import com.yimiao100.sale.bean.NoticedListBean;
 import com.yimiao100.sale.ext.JSON;
 import com.yimiao100.sale.utils.Constant;
+import com.yimiao100.sale.utils.DensityUtil;
 import com.yimiao100.sale.utils.LogUtil;
 import com.yimiao100.sale.utils.SharePreferenceUtil;
 import com.yimiao100.sale.utils.TimeUtil;
 import com.yimiao100.sale.utils.ToastUtil;
 import com.yimiao100.sale.utils.Util;
+import com.yimiao100.sale.view.Html5WebView;
 import com.yimiao100.sale.view.TitleView;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
@@ -41,12 +45,14 @@ public class NoticeDetailActivity extends BaseActivity implements TitleView
     @BindView(R.id.notice_detail_time)
     TextView mNoticeDetailTime;
     @BindView(R.id.notice_detail_content)
-    TextView mNoticeDetailContent;
+    LinearLayout mNoticeDetailContent;
     @BindView(R.id.notice_detail_account_type)
     TextView mTvAccountType;
     private int mNoticeId;
 
     private final String URL_USER_NOTICE = Constant.BASE_URL + "/api/notice/user_notice";
+    private Html5WebView mWebView;
+    private TextView mTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,11 +63,12 @@ public class NoticeDetailActivity extends BaseActivity implements TitleView
         Intent intent = getIntent();
         mNoticeId = intent.getIntExtra("noticeId", -1);
 
-        mAccessToken = (String) SharePreferenceUtil.get(this, Constant.ACCESSTOKEN, "");
 
         mNoticeDetailHead.setOnTitleBarClick(this);
 
         showLoadingProgress();
+
+        initView();
 
         if (mNoticeId != -1) {
             initData();
@@ -69,15 +76,32 @@ public class NoticeDetailActivity extends BaseActivity implements TitleView
 
     }
 
+    private void initView() {
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams
+                .MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        mWebView = new Html5WebView(this);
+        Html5WebView.showLoadingProgress = false;
+        mWebView.setLayoutParams(params);
+
+        LinearLayout.LayoutParams tvParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams
+                .MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        mTextView = new TextView(this);
+        mTextView.setTextColor(getResources().getColor(R.color.color333));
+        mTextView.setLineSpacing(0, 1.2f);
+        int _10dp = DensityUtil.dp2px(this, 10);
+        tvParams.setMargins(_10dp, _10dp, _10dp, _10dp);
+        mTextView.setLayoutParams(tvParams);
+    }
+
 
     private void initData() {
         OkHttpUtils.post().url(URL_USER_NOTICE)
-                .addHeader(ACCESS_TOKEN, mAccessToken)
+                .addHeader(ACCESS_TOKEN, accessToken)
                 .addParams("noticeId", mNoticeId + "")
                 .build().execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.Companion.d("通知详情E：" + e.getMessage());
+                LogUtil.d("通知详情E：" + e.getMessage());
                 Util.showTimeOutNotice(currentContext);
                 hideLoadingProgress();
             }
@@ -88,7 +112,7 @@ public class NoticeDetailActivity extends BaseActivity implements TitleView
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":
-                        LogUtil.Companion.d("通知详情：" + response);
+                        LogUtil.d("通知详情：" + response);
                         //解析JSON
                         NoticeDetailBean noticeDetailBean = JSON.parseObject(response,
                                 NoticeDetailBean.class);
@@ -144,9 +168,15 @@ public class NoticeDetailActivity extends BaseActivity implements TitleView
                 .getCreatedAt()
                 + "", "yyyy年MM月dd日 HH:mm:ss"));
         if (userNotice.getNoticeContent() != null) {
-            mNoticeDetailContent.setText(userNotice.getNoticeContent());
-        } else {
-            mNoticeDetailContent.setText("");
+            if (userNotice.getNoticeContent().contains("<html>")) {
+                LogUtil.d("加载网页通知");
+                mNoticeDetailContent.addView(mWebView);
+                mWebView.loadData(userNotice.getNoticeContent(), "text/html; charset=UTF-8", null);
+            } else {
+                LogUtil.d("加载文本通知");
+                mNoticeDetailContent.addView(mTextView);
+                mTextView.setText(userNotice.getNoticeContent());
+            }
         }
     }
 

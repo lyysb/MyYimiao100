@@ -10,7 +10,7 @@ import android.content.pm.PackageManager
 class AppUtil private constructor() {
     init {
         /* cannot be instantiated */
-        throw UnsupportedOperationException("cannot be instantiated")
+        throw UnsupportedOperationException("cannot be instantiated") as Throwable
     }
 
     companion object {

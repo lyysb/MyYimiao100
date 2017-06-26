@@ -59,6 +59,8 @@ public class ResourcesDetailActivity extends BaseActivity implements TitleView
     TextView mResourceDetailDosageForm;
     @BindView(R.id.resource_detail_region)
     TextView mResourceDetailRegion;
+    @BindView(R.id.resource_detail_customer)
+    TextView mResourceDetailCustomer;
     @BindView(R.id.resource_detail_time)
     TextView mResourceDetailTime;
     @BindView(R.id.resource_detail_quota)
@@ -94,7 +96,7 @@ public class ResourcesDetailActivity extends BaseActivity implements TitleView
 
         mResourceID = getIntent().getIntExtra("resourceID", -1);
 
-        LogUtil.Companion.d("mResourceId-" + mResourceID);
+        LogUtil.d("mResourceId-" + mResourceID);
 
         initView();
 
@@ -133,7 +135,7 @@ public class ResourcesDetailActivity extends BaseActivity implements TitleView
     }
 
     private void loadDetail() {
-        OkHttpUtils.post().url(URL_RESOURCE_INFO).addHeader(ACCESS_TOKEN, mAccessToken)
+        OkHttpUtils.post().url(URL_RESOURCE_INFO).addHeader(ACCESS_TOKEN, accessToken)
                 .addParams("resourceId", mResourceID + "")
                 .build().execute(new StringCallback() {
             @Override
@@ -145,7 +147,7 @@ public class ResourcesDetailActivity extends BaseActivity implements TitleView
 
             @Override
             public void onResponse(String response, int id) {
-                LogUtil.Companion.d("资源详情：" + response);
+                LogUtil.d("资源详情：" + response);
                 hideLoadingProgress();
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
@@ -183,7 +185,11 @@ public class ResourcesDetailActivity extends BaseActivity implements TitleView
         String provinceName = resourceInfo.getProvinceName();
         String cityName = resourceInfo.getCityName();
         String areaName = resourceInfo.getAreaName();
-        mResourceDetailRegion.setText(provinceName + "\t" + cityName + "\t" + areaName);
+        mResourceDetailRegion.setText(provinceName + "\t\t" + cityName + "\t\t" + areaName);
+        // 客户
+        if (resourceInfo.getCustomerName() != null) {
+            mResourceDetailCustomer.setText(resourceInfo.getCustomerName());
+        }
         //完成周期
         long startTime = resourceInfo.getStartAt();
         long endTime = resourceInfo.getEndAt();
@@ -260,7 +266,7 @@ public class ResourcesDetailActivity extends BaseActivity implements TitleView
     public void onOptionsSelect(int options1, int options2, int options3, View v) {
         switch (v.getId()) {
             case R.id.resources_promotion:
-                LogUtil.Companion.d("选择：" + options1);
+                LogUtil.d("选择：" + options1);
                 Intent intent = new Intent(currentContext, ResourcesPromotionActivity.class);
                 intent.putExtra("resourceInfo", mResourceInfo);
                 switch (options1) {

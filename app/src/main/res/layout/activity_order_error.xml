@@ -11,7 +11,15 @@
         app:title_text="我的订单"
         app:left_isShow="true"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content">
+        <ImageView
+            android:id="@+id/order_error_service"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_alignParentRight="true"
+            android:scaleType="center"
+            android:src="@mipmap/ico_service"/>
+    </com.yimiao100.sale.view.TitleView>
     <FrameLayout
         android:padding="12dp"
         android:background="@android:color/white"

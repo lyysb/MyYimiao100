@@ -98,8 +98,8 @@ public class ScholarshipActivity extends BaseActivity implements SwipeRefreshLay
         mLogUrl = getIntent().getStringExtra("logoImageUrl");
         mVendorName = getIntent().getStringExtra("vendorName");
 
-        LogUtil.Companion.d("vendorId is " + mVendorId);
-        LogUtil.Companion.d("userAccountType is " + mUserAccountType);
+        LogUtil.d("vendorId is " + mVendorId);
+        LogUtil.d("userAccountType is " + mUserAccountType);
 
         showLoadingProgress();
 
@@ -142,7 +142,7 @@ public class ScholarshipActivity extends BaseActivity implements SwipeRefreshLay
         //右侧view设置隐藏
         mHeadView.findViewById(R.id.head_vendor_money).setVisibility(View.GONE);
 
-        mScholarshipListCompanyListView.addHeaderView(mHeadView);
+        mScholarshipListCompanyListView.addHeaderView(mHeadView, null, false);
         mScholarshipListCompanyListView.setSwipeRefreshLayoutEnabled(new PullToRefreshListView
                 .SwipeRefreshLayoutEnabledListener() {
             @Override
@@ -217,7 +217,7 @@ public class ScholarshipActivity extends BaseActivity implements SwipeRefreshLay
         getBuild().execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.Companion.d("奖学金提现E：" + e.getMessage());
+                LogUtil.d("奖学金提现E：" + e.getMessage());
                 Util.showTimeOutNotice(currentContext);
                 hideLoadingProgress();
             }
@@ -225,7 +225,7 @@ public class ScholarshipActivity extends BaseActivity implements SwipeRefreshLay
             @Override
             public void onResponse(String response, int id) {
                 mScholarshipListRefresh.setRefreshing(false);
-                LogUtil.Companion.d("奖学金提现：" + response);
+                LogUtil.d("奖学金提现：" + response);
                 hideLoadingProgress();
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
@@ -276,7 +276,7 @@ public class ScholarshipActivity extends BaseActivity implements SwipeRefreshLay
     }
 
     private RequestCall getBuild() {
-        return OkHttpUtils.post().url(URL_EXAM_REWARD_LIST).addHeader(ACCESS_TOKEN, mAccessToken)
+        return OkHttpUtils.post().url(URL_EXAM_REWARD_LIST).addHeader(ACCESS_TOKEN, accessToken)
                 .addParams(VENDOR_ID, mVendorId + "")
                 .addParams(USER_ACCOUNT_TYPE, mUserAccountType).build();
     }

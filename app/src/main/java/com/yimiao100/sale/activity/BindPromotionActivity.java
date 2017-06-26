@@ -62,12 +62,11 @@ public class BindPromotionActivity extends BaseActivity implements TitleView
 
         initPersonalData();
         //请求网络，获取推广账户信息
-        DataUtil.updateUserAccount(mAccessToken);
+        DataUtil.updateUserAccount(accessToken);
     }
 
     private void initCorporateData() {
-        boolean corporateExit = (boolean) SharePreferenceUtil.get(currentContext,
-                Constant.CORPORATE_EXIT, false);
+        boolean corporateExit = (boolean) SharePreferenceUtil.get(currentContext, Constant.CORPORATE_EXIT, false);
         String accountName = (String) SharePreferenceUtil.get(currentContext,
                 Constant.CORPORATE_ACCOUNT_NAME, "");
         String corporateBankNumber = (String) SharePreferenceUtil.get(currentContext,

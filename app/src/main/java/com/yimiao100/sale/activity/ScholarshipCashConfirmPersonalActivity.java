@@ -90,7 +90,7 @@ public class ScholarshipCashConfirmPersonalActivity extends BaseActivity impleme
         Intent intent = getIntent();
         //获取订单号串
         mOrderIds = intent.getStringExtra("orderIds");
-        LogUtil.Companion.d("mOrderIds are :" + mOrderIds);
+        LogUtil.d("mOrderIds are :" + mOrderIds);
         //获取提现金额
         double amount = intent.getDoubleExtra("amount", -1);
         mScholarshipCashMoney.setText("￥" + FormatUtils.MoneyFormat(amount));
@@ -168,19 +168,19 @@ public class ScholarshipCashConfirmPersonalActivity extends BaseActivity impleme
      * 申请提现
      */
     private void applyCash() {
-        OkHttpUtils.post().url(URL_APPLY_CASH).addHeader(ACCESS_TOKEN, mAccessToken).addParams
+        OkHttpUtils.post().url(URL_APPLY_CASH).addHeader(ACCESS_TOKEN, accessToken).addParams
                 (ORDER_IDS, mOrderIds).build().execute(new StringCallback() {
 
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.Companion.d("推广费申请提现确认E：" + e.getLocalizedMessage());
+                LogUtil.d("推广费申请提现确认E：" + e.getLocalizedMessage());
                 Util.showTimeOutNotice(currentContext);
             }
 
             @Override
             public void onResponse(String response, int id) {
-                LogUtil.Companion.d("mOrderIds" + mOrderIds);
-                LogUtil.Companion.d("推广费申请提现：" + response);
+                LogUtil.d("mOrderIds" + mOrderIds);
+                LogUtil.d("推广费申请提现：" + response);
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":

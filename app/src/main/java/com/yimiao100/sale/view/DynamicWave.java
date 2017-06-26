@@ -85,7 +85,7 @@ public class DynamicWave extends View {
         super.onDraw(canvas);
         // 从canvas层面去除绘制时锯齿
         canvas.setDrawFilter(mDrawFilter);
-        resetPositonY();
+        resetPositionY();
         mWaveHight = (int) (mTotalHeight * mPercent);
         for (int i = 0; i < mTotalWidth; i++) {
 
@@ -116,7 +116,7 @@ public class DynamicWave extends View {
         // 引发view重绘，一般可以考虑延迟20-30ms重绘，空出时间片
         postInvalidate();
     }
-    private void resetPositonY() {
+    private void resetPositionY() {
         // mXOneOffset代表当前第一条水波纹要移动的距离
         int yOneInterval = mYPositions.length - mXOneOffset;
         // 使用System.arraycopy方式重新填充第一条波纹的数据

@@ -108,7 +108,9 @@ open class BaseActivity : AppCompatActivity() {
                 val adBean = JSON.parseObject(response, AdBean::class.java)
                 when (adBean?.status) {
                     "success" -> {
-                        showAdDialog(adBean.activity)
+                        adBean.activity?.let {
+                            showAdDialog(it)
+                        }
                     }
                     "failure" -> LogUtil.d("服务器返回数据失败${adBean.reason}")
                 }

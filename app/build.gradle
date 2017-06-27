@@ -38,8 +38,8 @@ android {
         applicationId "com.yimiao100.sale"
         minSdkVersion 16
         targetSdkVersion 22
-        versionCode 33
-        versionName "1.5.6.7"
+        versionCode 34
+        versionName "1.7"
         multiDexEnabled true
 
         ndk {

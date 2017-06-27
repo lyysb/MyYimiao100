@@ -6,5 +6,5 @@ package com.yimiao100.sale.bean
 data class AdBean(
         var status: String,
         var reason: Int,
-        var activity: Ad
+        var activity: Ad?
 )

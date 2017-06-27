@@ -3,7 +3,9 @@ package com.yimiao100.sale.activity
 import android.graphics.Color
 import android.os.Bundle
 import android.view.View
+import android.view.ViewGroup
 import android.widget.AdapterView
+import android.widget.RelativeLayout
 import android.widget.TextView
 import com.yimiao100.sale.R
 import com.yimiao100.sale.adapter.listview.VendorListAdapter
@@ -13,6 +15,7 @@ import com.yimiao100.sale.bean.Vendor
 import com.yimiao100.sale.bean.VendorListBean
 import com.yimiao100.sale.ext.JSON
 import com.yimiao100.sale.utils.Constant
+import com.yimiao100.sale.utils.DensityUtil
 import com.yimiao100.sale.utils.LogUtil
 import com.yimiao100.sale.utils.Util
 import com.yimiao100.sale.view.TitleView
@@ -56,6 +59,11 @@ class VendorOrderOnlineActivity: BaseActivitySingleList() {
         headerView.compoundDrawablePadding = dip(8)
         headerView.setCompoundDrawablesWithIntrinsicBounds(R.mipmap.ico_order_online_order, 0, 0, 0)
         mListView.addHeaderView(headerView, null, false)
+
+        val layoutParams = RelativeLayout.LayoutParams(ViewGroup
+                .LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+        layoutParams.setMargins(0, DensityUtil.dp2px(this, 40f), 0, 0)
+        mEmptyView.layoutParams = layoutParams
     }
     override fun onRefresh() {
         OkHttpUtils.post().url(URL_VENDOR_LIST).addHeader(ACCESS_TOKEN, accessToken)

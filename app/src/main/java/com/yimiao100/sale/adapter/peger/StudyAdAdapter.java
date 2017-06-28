@@ -38,7 +38,7 @@ public class StudyAdAdapter extends PagerAdapter {
         ImageView imageView = new ImageView(container.getContext());
         if (mCarouselList.get(position).getMediaUrl() != null &&
                 !mCarouselList.get(position).getMediaUrl().isEmpty()) {
-            String url = mCarouselList.get(position).getMediaUrl() + "?imageMogr2/thumbnail/480x240/";
+            String url = mCarouselList.get(position).getMediaUrl() + "?imageMogr2/thumbnail/960x480/";
             Picasso.with(container.getContext()).load(url).placeholder(R.mipmap.ico_default_bannner)
                     .resize(ScreenUtil.getScreenWidth(container.getContext()),
                             DensityUtil.dp2px(container.getContext(), 190))

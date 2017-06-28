@@ -43,10 +43,10 @@ public class CRMAdAdapter extends PagerAdapter {
         String imageUrl = mList.get(position).getMediaUrl();
         if (!imageUrl.isEmpty()) {
             Picasso.with(container.getContext())
-                    .load(imageUrl + "?imageMogr2/thumbnail/480x240/")
+                    .load(imageUrl + "?imageMogr2/thumbnail/960x480/")
                     //.transform(BitmapUtil.getTransformation(imageView))
                     .placeholder(R.mipmap.ico_default_bannner)
-                    .resize(ScreenUtil.getScreenWidth(container.getContext()), DensityUtil.dp2px(container.getContext(), 190))
+                    .resize(ScreenUtil.getScreenWidth(container.getContext()), DensityUtil.dp2px(container.getContext(), 160))
                     .into(imageView);
         }
         container.addView(imageView);

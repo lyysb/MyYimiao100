@@ -2,6 +2,7 @@
 <resources>
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
+        <item name="android:windowIsTranslucent">true</item>
         <item name="windowNoTitle">true</item>
         <!--状态栏透明-->
         <item name="android:windowTranslucentStatus">true</item>

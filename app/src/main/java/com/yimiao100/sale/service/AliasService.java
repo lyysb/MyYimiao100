@@ -29,7 +29,7 @@ public class AliasService extends Service {
             switch (msg.what) {
                 case MSG_SET_ALIAS:
                     String alias = (String) msg.obj;
-                    LogUtil.d("通过Handler设置别名 is " + alias);
+                    LogUtil.d("通过Handler设置别名，别名是： " + alias);
                     //调用JPush接口来设置别名
                     JPushInterface.setAlias(getApplicationContext(), alias, mAliasCallback);
                     break;
@@ -51,8 +51,9 @@ public class AliasService extends Service {
         String alias = "";
         // 根据登录状态判断设置别名/别名置空
         boolean loginStatus = (boolean) SharePreferenceUtil.get(this, Constant.LOGIN_STATUS, false);
+        LogUtil.d("登录状态：" + loginStatus);
         if (loginStatus) {
-            LogUtil.d("已登录账号，根据规则设置别名");
+            LogUtil.d("设置别名");
             // 别名= “jpush_user_alias_加上用户id”
             int userId = (int) SharePreferenceUtil.get(this, Constant.USERID, -1);
             if (userId == -1) {
@@ -62,11 +63,19 @@ public class AliasService extends Service {
             alias = "jpush_user_alias_" + userId;
         } else {
             //置空别名
-            LogUtil.d("未登录-置空别名");
+            LogUtil.d("置空别名");
         }
         //设置别名
         setAlias(alias);
         return super.onStartCommand(intent, flags, startId);
+    }
+
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mHandler.removeMessages(MSG_SET_ALIAS);
+        LogUtil.d("onDestroy");
     }
 
     /**
@@ -85,9 +94,9 @@ public class AliasService extends Service {
             switch (code) {
                 case 0:
                     //成功
-                    LogUtil.d("设置别名成功，停止别名服务");
+                    LogUtil.d("设置别名成功，停止设置别名服务");
                     //停止服务
-                    stopService(new Intent(getApplicationContext(), AliasService.class));
+                    stopSelf();
                     break;
                 case 6002:
                     LogUtil.d("设置别名超时，将在60s后重试");

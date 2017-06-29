@@ -18,6 +18,8 @@ import com.yimiao100.sale.R;
 import com.yimiao100.sale.base.BaseActivity;
 import com.yimiao100.sale.bean.ErrorBean;
 import com.yimiao100.sale.bean.SignUpBean;
+import com.yimiao100.sale.bean.TokenInfoBean;
+import com.yimiao100.sale.bean.UserInfoBean;
 import com.yimiao100.sale.ext.JSON;
 import com.yimiao100.sale.service.AliasService;
 import com.yimiao100.sale.utils.Constant;
@@ -140,81 +142,19 @@ public class LoginActivity extends BaseActivity implements CompoundButton.OnChec
             @Override
             public void onResponse(String response, int id) {
                 mProgressDialog.dismiss();
-                //获得返回的json字符串
-                LogUtil.d("用户登录：" + response);
-                //解析json字符串
+                LogUtil.d("用户登录onResponse：" + response);
                 SignUpBean signUpBean = JSON.parseObject(response, SignUpBean.class);
                 //判断成功还是失败
                 switch (signUpBean.getStatus()) {
                     case "success":
-                        // 登录成功前先清空本地数据
+                        // step1: 清空所有数据
                         SharePreferenceUtil.clear(currentContext);
-                        //保存登录状态
-                        SharePreferenceUtil.put(currentContext, Constant.LOGIN_STATUS, true);
-                        //保存Token
-                        SharePreferenceUtil.put(currentContext, Constant.ACCESSTOKEN,
-                                signUpBean.getTokenInfo().getAccessToken());
-                        //保存用户id
-                        SharePreferenceUtil.put(currentContext, Constant.USERID, signUpBean
-                                .getUserInfo().getId());
-                        //保存用户账号
-                        SharePreferenceUtil.put(currentContext, Constant.ACCOUNT_NUMBER, mAccountNumber);
-
-                        //保存或移除本地用户姓名
-                        if (signUpBean.getUserInfo().getCnName() != null) {
-                            SharePreferenceUtil.put(getApplicationContext(), Constant.CNNAME,
-                                    signUpBean.getUserInfo().getCnName());
-                        } else {
-                            SharePreferenceUtil.remove(getApplicationContext(), Constant.CNNAME);
-                        }
-                        //保存或移除本地用户电话
-                        if (signUpBean.getUserInfo().getPhoneNumber() != null) {
-                            SharePreferenceUtil.put(getApplicationContext(), Constant
-                                    .PHONENUMBER, signUpBean.getUserInfo().getPhoneNumber());
-                        } else {
-                            SharePreferenceUtil.remove(getApplicationContext(), Constant
-                                    .PHONENUMBER);
-                        }
-                        //保存或移除本地用户邮箱
-                        if (signUpBean.getUserInfo().getEmail() != null) {
-                            SharePreferenceUtil.put(getApplicationContext(), Constant.EMAIL,
-                                    signUpBean.getUserInfo().getEmail());
-                        } else {
-                            SharePreferenceUtil.remove(getApplicationContext(), Constant.EMAIL);
-                        }
-                        //保存或移除本地用户地域信息
-                        if (signUpBean.getUserInfo().getProvinceName() != null && signUpBean
-                                .getUserInfo().getCityName() != null
-                                && signUpBean.getUserInfo().getAreaName() != null) {
-                            SharePreferenceUtil.put(getApplicationContext(), Constant.REGION,
-                                    signUpBean.getUserInfo().getProvinceName()
-                                    + "\t" + signUpBean.getUserInfo().getCityName()
-                                    + "\t" + signUpBean.getUserInfo().getAreaName());
-                        } else {
-                            SharePreferenceUtil.remove(getApplicationContext(), Constant.REGION);
-                        }
-                        //保存或移除本地用户身份证号
-                        if (signUpBean.getUserInfo().getIdNumber() != null) {
-                            SharePreferenceUtil.put(getApplicationContext(), Constant.IDNUMBER,
-                                    signUpBean.getUserInfo().getIdNumber());
-                        } else {
-                            SharePreferenceUtil.remove(getApplicationContext(), Constant.IDNUMBER);
-                        }
-                        //保存或移除本地用户头像地址
-                        if (signUpBean.getUserInfo().getProfileImageUrl() != null) {
-                            SharePreferenceUtil.put(getApplicationContext(), Constant
-                                    .PROFILEIMAGEURL, signUpBean.getUserInfo().getProfileImageUrl
-                                    ());
-                        } else {
-                            SharePreferenceUtil.remove(getApplicationContext(), Constant
-                                    .PROFILEIMAGEURL);
-                        }
-                        //登录成功，启动服务，设置别名
-                        startService(new Intent(currentContext, AliasService.class));
-                        LogUtil.Companion.d("登录成功，启动服务，设置别名");
-                        //登录成功，进入主界面
-                        startActivity(new Intent(LoginActivity.this, MainActivity.class));
-                        finish();
+                        // step2：保存当前用户数据
+                        saveUserData(signUpBean);
+                        // step3：启动别名服务
+                        startAliasService();
+                        // step4：进入主界面
+                        enterHome();
                         break;
                     case "failure":
                         //失败,显示错误原因
@@ -224,6 +164,68 @@ public class LoginActivity extends BaseActivity implements CompoundButton.OnChec
                 }
             }
         });
+    }
+
+    /**
+     * 保存当前用户数据
+     * @param user
+     */
+    private void saveUserData(SignUpBean user) {
+        // 保存登录状态
+        SharePreferenceUtil.put(currentContext, Constant.LOGIN_STATUS, true);
+        // 保存Token信息
+        TokenInfoBean tokenInfo = user.getTokenInfo();
+        SharePreferenceUtil.put(currentContext, Constant.ACCESSTOKEN, tokenInfo.getAccessToken());
+        // 保存用户信息
+        UserInfoBean userInfo = user.getUserInfo();
+        //用户id
+        SharePreferenceUtil.put(currentContext, Constant.USERID, userInfo.getId());
+        //用户账号
+        SharePreferenceUtil.put(currentContext, Constant.ACCOUNT_NUMBER, mAccountNumber);
+        //用户姓名
+        if (userInfo.getCnName() != null && !userInfo.getCnName().isEmpty()) {
+            SharePreferenceUtil.put(currentContext, Constant.CNNAME, userInfo.getCnName());
+        }
+        //用户电话
+        if (userInfo.getPhoneNumber() != null && !userInfo.getPhoneNumber().isEmpty()) {
+            SharePreferenceUtil.put(currentContext, Constant.PHONENUMBER, userInfo.getPhoneNumber());
+        }
+        //用户邮箱
+        if (userInfo.getEmail() != null && !userInfo.getEmail().isEmpty()) {
+            SharePreferenceUtil.put(currentContext, Constant.EMAIL, userInfo.getEmail());
+        }
+        //用户地域信息
+        if (userInfo.getProvinceName() != null && !userInfo.getProvinceName().isEmpty()
+                && userInfo.getCityName() != null && !userInfo.getCityName().isEmpty()
+                && userInfo.getAreaName() != null && !userInfo.getAreaName().isEmpty()) {
+            SharePreferenceUtil.put(currentContext, Constant.REGION, userInfo.getProvinceName()
+                            + "\t" + userInfo.getCityName()
+                            + "\t" + userInfo.getAreaName());
+        }
+        //用户身份证号
+        if (userInfo.getIdNumber() != null && !userInfo.getIdNumber().isEmpty()) {
+            SharePreferenceUtil.put(currentContext, Constant.IDNUMBER, userInfo.getIdNumber());
+        }
+        //用户头像地址
+        if (userInfo.getProfileImageUrl() != null && !userInfo.getProfileImageUrl().isEmpty()) {
+            SharePreferenceUtil.put(currentContext, Constant.PROFILEIMAGEURL, userInfo.getProfileImageUrl());
+        }
+    }
+
+    /**
+     * 开启设置别名
+     */
+    private void startAliasService() {
+        startService(new Intent(currentContext, AliasService.class));
+        LogUtil.d("登录成功，启动服务，设置别名");
+    }
+
+    /**
+     * 进入主界面
+     */
+    private void enterHome() {
+        startActivity(new Intent(LoginActivity.this, MainActivity.class));
+        finish();
     }
 
     /**

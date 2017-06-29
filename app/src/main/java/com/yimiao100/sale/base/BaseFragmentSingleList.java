@@ -31,7 +31,6 @@ public abstract class BaseFragmentSingleList extends BaseFragment {
     protected PullToRefreshListView mListView;
     @BindView(R.id.base_single_swipe)
     protected SwipeRefreshLayout mSwipeRefreshLayout;
-    protected final String ACCESS_TOKEN = "X-Authorization-Token";
     protected final String PAGE = "page";
     protected final String PAGE_SIZE = "pageSize";
 

@@ -143,15 +143,9 @@ public class CRMFragment extends BaseFragment implements View.OnClickListener, C
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-        LogUtil.d("onStart handler has msg is " + mHandler.hasMessages(SHOW_NEXT_PAGE));
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        LogUtil.d("onStop handler has msg is " + mHandler.hasMessages(SHOW_NEXT_PAGE));
+    public void onDestroy() {
+        super.onDestroy();
+        mHandler.removeMessages(SHOW_NEXT_PAGE);
     }
 
     private void initView() {

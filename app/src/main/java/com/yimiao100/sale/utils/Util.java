@@ -15,6 +15,7 @@ import com.yimiao100.sale.activity.BindPersonalActivity;
 import com.yimiao100.sale.activity.PersonalAddressAddActivity;
 import com.yimiao100.sale.bean.Event;
 import com.yimiao100.sale.bean.EventType;
+import com.yimiao100.sale.service.AliasService;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -74,17 +75,36 @@ public class Util {
      */
     public static void showError(final Activity activity, int reason) {
         if (reason == 116) {
+            // 异地登录
             AlertDialog dialog = ActivityAlertDialogManager.getDialog(activity);
-            LogUtil.Companion.d("dialog:" + dialog.toString());
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                if (activity.isDestroyed()) {
-                    return;
-                }
+            // 限制只弹窗一次，以下操作只执行一次
+            if (dialog.isShowing()) {
+                return;
             }
-            dialog.show();
+            // step1：弹窗显示退出/重新登录
+            showDialog(activity, dialog);
+            // step2：清空本地所有数据
+            SharePreferenceUtil.clear(activity);
+            // step3：启动别名服务
+            activity.startService(new Intent(activity, AliasService.class));
         } else {
-            ToastUtil.showLong(activity, Constant.ERROR_INFORMATION.get(reason));
+            ToastUtil.showShort(activity, Constant.ERROR_INFORMATION.get(reason));
         }
+    }
+
+    /**
+     * 弹窗显示退出/重新登录
+     * @param activity
+     * @param dialog
+     */
+    private static void showDialog(Activity activity, AlertDialog dialog) {
+        LogUtil.d("dialog:" + dialog.toString());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            if (activity.isDestroyed()) {
+                return;
+            }
+        }
+        dialog.show();
     }
 
     public static void showTimeOutNotice(Activity activity) {

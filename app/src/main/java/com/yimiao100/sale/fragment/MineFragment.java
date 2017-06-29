@@ -35,6 +35,7 @@ import com.yimiao100.sale.activity.PersonalSettingActivity;
 import com.yimiao100.sale.activity.RichesActivity;
 import com.yimiao100.sale.activity.StudyTaskActivity;
 import com.yimiao100.sale.activity.VendorListActivity;
+import com.yimiao100.sale.base.ActivityCollector;
 import com.yimiao100.sale.base.BaseFragment;
 import com.yimiao100.sale.bean.ErrorBean;
 import com.yimiao100.sale.bean.ImageBean;
@@ -400,12 +401,8 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
                      */
                     String UPLOAD_PROFILE_IMAGE = "/api/user/upload_profile_image";
                     String url = Constant.BASE_URL + UPLOAD_PROFILE_IMAGE;
-                    String accessToken = (String) SharePreferenceUtil.get(getActivity(),
-                            "accessToken", "");
-                    LogUtil.d("头像设置：" + accessToken);
-
                     OkHttpUtils.post().url(url)
-                            .addHeader("X-Authorization-Token", accessToken)
+                            .addHeader(ACCESS_TOKEN, accessToken)
                             .addFile("profileImage", "head.jpg", file)
                             .build().execute(new StringCallback() {
                         @Override
@@ -450,61 +447,55 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
      * 退出登录
      */
     private void LogOut() {
-        String accessToken = (String) SharePreferenceUtil.get(getContext(), Constant.ACCESSTOKEN,
-                "");
-
         //获取网络状态
         ConnectivityManager connectivityManager = (ConnectivityManager) getActivity()
                 .getSystemService(Context.CONNECTIVITY_SERVICE);
-        if (connectivityManager.getActiveNetworkInfo() != null) {
-            if (!connectivityManager.getActiveNetworkInfo().isAvailable()) {
-                // 登出
-                signOut();
-            } else {
-                //如果联网，登出系统
-                OkHttpUtils.post().url(URL_LOGOUT).addHeader("X-Authorization-Token", accessToken)
-                        .build().execute(new StringCallback() {
-                    @Override
-                    public void onError(Call call, Exception e, int id) {
-                        e.printStackTrace();
-                        // 服务器异常时，照样退出
-                        signOut();
-                    }
+        if (connectivityManager != null
+                && connectivityManager.getActiveNetworkInfo() != null
+                && connectivityManager.getActiveNetworkInfo().isAvailable()) {
+            //如果联网，登出系统
+            OkHttpUtils.post().url(URL_LOGOUT).addHeader(ACCESS_TOKEN, accessToken)
+                    .build().execute(new StringCallback() {
+                @Override
+                public void onError(Call call, Exception e, int id) {
+                    e.printStackTrace();
+                    // 服务器异常时，照样退出
+                    signOut();
+                }
 
-                    @Override
-                    public void onResponse(String response, int id) {
-                        LogUtil.d("退出" + response);
-                        ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
-                        switch (errorBean.getStatus()) {
-                            case "success":
-                                // 成功退出
-                                signOut();
-                                break;
-                            case "failure":
-                                //显示错误信息
-                                Util.showError(getActivity(), errorBean.getReason());
-                                signOut();
-                                break;
-                        }
+                @Override
+                public void onResponse(String response, int id) {
+                    LogUtil.d("退出" + response);
+                    ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
+                    switch (errorBean.getStatus()) {
+                        case "success":
+                            // 成功退出
+                            signOut();
+                            break;
+                        case "failure":
+                            //显示错误信息
+                            Util.showError(getActivity(), errorBean.getReason());
+                            signOut();
+                            break;
                     }
-                });
-            }
+                }
+            });
         } else {
             signOut();
         }
+
     }
 
     private void signOut() {
         mLl_mine_exit.setEnabled(true);
-        //清空本地数据
+        // step1:清空本地数据
         SharePreferenceUtil.clear(getContext());
-        //记录不是第一次登录
-        SharePreferenceUtil.put(getContext(), Constant.IS_FIRST, false);
-        //启动服务，设置别名
+        // step2:启动服务，设置别名
         getActivity().startService(new Intent(getActivity(), AliasService.class));
-        //跳回到登录界面
-        startActivity(new Intent(getActivity(), LoginActivity.class));
         getActivity().finish();
+        ActivityCollector.finishAll();
+        // step3:跳回到登录界面
+        startActivity(new Intent(getActivity(), LoginActivity.class));
     }
 
     /**

@@ -117,6 +117,12 @@ public class InformationFragment extends BaseFragment implements SwipeRefreshLay
         }
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mHandler.removeMessages(SHOW_NEXT_PAGE);
+    }
+
     private void initView() {
         mHeadView = View.inflate(getContext(), R.layout.head_information, null);
 

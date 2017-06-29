@@ -123,6 +123,12 @@ public class StudyFragment extends BaseFragment implements View.OnClickListener,
         }
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mHandler.removeMessages(SHOW_NEXT_PAGE);
+    }
+
     /**
      * 初始化显示上部界面
      */

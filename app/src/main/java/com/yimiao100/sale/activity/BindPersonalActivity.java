@@ -1,13 +1,15 @@
 package com.yimiao100.sale.activity;
 
+import android.Manifest;
 import android.app.ProgressDialog;
+import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v7.app.AlertDialog;
 import android.text.Editable;
@@ -57,6 +59,8 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import okhttp3.Call;
 import okhttp3.Request;
+import pub.devrel.easypermissions.AfterPermissionGranted;
+import pub.devrel.easypermissions.EasyPermissions;
 import q.rorbin.badgeview.Badge;
 import q.rorbin.badgeview.QBadgeView;
 
@@ -64,7 +68,7 @@ import q.rorbin.badgeview.QBadgeView;
  * 推广主体-绑定个人主体
  */
 public class BindPersonalActivity extends BaseActivity implements TitleView
-        .TitleBarOnClickListener, TextWatcher {
+        .TitleBarOnClickListener, TextWatcher, EasyPermissions.PermissionCallbacks {
 
 
     private static final int ID_CARD1_FROM_CAMERA = 101;
@@ -378,29 +382,18 @@ public class BindPersonalActivity extends BaseActivity implements TitleView
 
     private void getPhoto1() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        CharSequence[] items = {"拍照", "从相册选择"};
+        CharSequence[] items = {getString(R.string.open_camera), getString(R.string.open_DCIM)};
         builder.setItems(items, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 switch (which) {
                     case 0:
                         //打开相机
-                        //拍照返回
-                        Intent intentCapture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                        String personalPhotoName = personalPhoto + "_" +
-                                TimeUtil.timeStamp2Date(System.currentTimeMillis() + "", "yyyyMMddHH_mm_ss") + ".jpg";
-                        mIdPhoto1 = new File(Environment.getExternalStorageDirectory(),
-                                personalPhotoName);
-                        intentCapture.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile
-                                (mIdPhoto1));
-                        startActivityForResult(intentCapture, ID_CARD1_FROM_CAMERA);
+                        openCamera1();
                         break;
                     case 1:
                         //打开相册
-                        //激活系统图库，选择一张图片
-                        Intent intentPick = new Intent(Intent.ACTION_PICK);
-                        intentPick.setType("image/*");
-                        startActivityForResult(intentPick, ID_CARD1_FROM_PHOTO);
+                        openDCIM(ID_CARD1_FROM_PHOTO);
                         break;
                 }
                 dialog.dismiss();
@@ -410,30 +403,84 @@ public class BindPersonalActivity extends BaseActivity implements TitleView
         dialog.show();
     }
 
+    @AfterPermissionGranted(1)
+    public void openCamera1() {
+        String personalPhotoName = personalPhoto + "_" +
+                TimeUtil.timeStamp2Date(System.currentTimeMillis() + "", "yyyyMMddHH_mm_ss") + ".jpg";
+        if (!EasyPermissions.hasPermissions(this, Manifest.permission.CAMERA)) {
+            // 如果没有权限则申请权限
+            EasyPermissions.requestPermissions(this, getString(R.string.rationale_camera), 1, Manifest.permission.CAMERA);
+            return;
+        }
+        Intent intentCapture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        mIdPhoto1 = Util.createFile(personalPhotoName);
+        // 从文件中创建uri
+        Uri uri;
+        if (Build.VERSION.SDK_INT >= 24) {
+            ContentValues contentValues = new ContentValues(1);
+            contentValues.put(MediaStore.Images.Media.DATA, mIdPhoto1.getAbsolutePath());
+            uri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues);
+        } else {
+            uri = Uri.fromFile(mIdPhoto1);
+        }
+        intentCapture.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+        startActivityForResult(intentCapture, ID_CARD1_FROM_CAMERA);
+    }
+
+    /**
+     * 打开相册
+     * @param requestCode
+     */
+    public void openDCIM(int requestCode) {
+        Intent intentPick = new Intent(Intent.ACTION_PICK);
+        intentPick.setType("image/*");
+        startActivityForResult(intentPick, requestCode);
+    }
+
+    /**
+     * 申请成功
+     * @param requestCode
+     * @param perms
+     */
+    @Override
+    public void onPermissionsGranted(int requestCode, List<String> perms) {
+        LogUtil.d("申请成功：" + perms);
+    }
+
+    /**
+     * 失败
+     * @param requestCode
+     * @param perms
+     */
+    @Override
+    public void onPermissionsDenied(int requestCode, List<String> perms) {
+        LogUtil.d("申请失败：" + perms);
+        if (EasyPermissions.somePermissionDenied(this, Manifest.permission.CAMERA)) {
+            // 如果用户拒绝了相机权限
+            LogUtil.d("用户拒绝相机权限");
+        }
+        if (EasyPermissions.somePermissionPermanentlyDenied(this, perms)) {
+            // 如果用户选择了不再询问，则要去设置界面打开权限
+            LogUtil.d("用户选择了不再询问");
+            showSettingDialog();
+        }
+    }
+
+
     private void getPhoto2() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        CharSequence[] items = {"拍照", "从相册选择"};
+        CharSequence[] items = {getString(R.string.open_camera), getString(R.string.open_DCIM)};
         builder.setItems(items, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 switch (which) {
                     case 0:
                         //打开相机
-                        //拍照返回
-                        Intent intentCapture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                        String idPhotoName = idPhoto + "_" +
-                                TimeUtil.timeStamp2Date(System.currentTimeMillis() + "", "yyyyMMddHH_mm_ss") + ".jpg";
-                        mIdPhoto2 = new File(Environment.getExternalStorageDirectory(),
-                                idPhotoName);
-                        intentCapture.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(mIdPhoto2));
-                        startActivityForResult(intentCapture, ID_CARD2_FROM_CAMERA);
+                        openCamera2();
                         break;
                     case 1:
                         //打开相册
-                        //激活系统图库，选择一张图片
-                        Intent intentPick = new Intent(Intent.ACTION_PICK);
-                        intentPick.setType("image/*");
-                        startActivityForResult(intentPick, ID_CARD2_FROM_PHOTO);
+                        openDCIM(ID_CARD2_FROM_PHOTO);
                         break;
                 }
                 dialog.dismiss();
@@ -441,6 +488,31 @@ public class BindPersonalActivity extends BaseActivity implements TitleView
         });
         AlertDialog dialog = builder.create();
         dialog.show();
+    }
+
+    @AfterPermissionGranted(2)
+    public void openCamera2() {
+        Intent intentCapture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        String idPhotoName = idPhoto + "_" +
+                TimeUtil.timeStamp2Date(System.currentTimeMillis() + "", "yyyyMMddHH_mm_ss") + ".jpg";
+        startActivityForResult(intentCapture, ID_CARD2_FROM_CAMERA);
+        if (!EasyPermissions.hasPermissions(this, Manifest.permission.CAMERA)) {
+            // 如果没有权限则申请权限
+            EasyPermissions.requestPermissions(this, getString(R.string.rationale_camera), 2, Manifest.permission.CAMERA);
+            return;
+        }
+        mIdPhoto2 = Util.createFile(idPhotoName);
+        // 从文件中创建uri
+        Uri uri;
+        if (Build.VERSION.SDK_INT >= 24) {
+            ContentValues contentValues = new ContentValues(1);
+            contentValues.put(MediaStore.Images.Media.DATA, mIdPhoto2.getAbsolutePath());
+            uri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues);
+        } else {
+            uri = Uri.fromFile(mIdPhoto2);
+        }
+        intentCapture.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+        startActivityForResult(intentCapture, ID_CARD2_FROM_CAMERA);
     }
 
     /**
@@ -655,6 +727,12 @@ public class BindPersonalActivity extends BaseActivity implements TitleView
                     case "failure":
                         Util.showError(currentContext, errorBean.getReason());
                         break;
+                }
+                try {
+                    // 删除压缩包
+//                    mZipFile.delete();
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
         });

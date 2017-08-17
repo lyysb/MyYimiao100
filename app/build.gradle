@@ -7,7 +7,7 @@ ext{
     pickerview_version = "3.2.5"
     butterknife_version = "8.2.1"
     circleimageview_version = "2.1.0"
-    jiecaovideoplayer_version = "5.2.1"
+    jiecaovideoplayer_version = "5.8.1"
     gson_version = "2.8.0"
     picasso_version = "2.5.2"
     okhttputils_version = "2.6.2"
@@ -19,27 +19,35 @@ ext{
     tkrefreshlayout_version = "1.0.7"
     badgeview_version = "1.1.1"
     eventbus_version = "3.0.0"
+//    agentweb_version = "1.2.5"
+    easypermissions_version = "0.4.2"
 }
 
 android {
-    compileSdkVersion 23
-    buildToolsVersion '23.0.3'
+    compileSdkVersion 25
+    buildToolsVersion '25.0.2'
     signingConfigs {
         release {
             keyAlias 'yimiao'
             keyPassword 'yimiao100'
             storePassword 'yimiaotong'
             storeFile file('E:/AndroidKeyStore/Key.store.jks')
+            v2SigningEnabled false
         }
+    }
+
+    lintOptions{
+        // 禁止多语言
+        disable 'MissingTranslation'
     }
 
 
     defaultConfig {
         applicationId "com.yimiao100.sale"
         minSdkVersion 16
-        targetSdkVersion 22
-        versionCode 35
-        versionName "1.7.1"
+        targetSdkVersion 25
+        versionCode 36
+        versionName "1.7.3"
         multiDexEnabled true
 
         ndk {
@@ -74,18 +82,24 @@ android {
     }
 
 }
-repositories{
+repositories {
     flatDir{
         dirs 'libs' //就是你放aar的目录地址
     }
     mavenCentral()
 }
 dependencies {
-    compile 'com.android.support:appcompat-v7:23.0.3'
-    compile 'com.android.support:design:23.2.1'
-    compile 'com.android.support:support-v4:23.0.3'
+    compile 'com.android.support:appcompat-v7:25.3.1'
+    compile 'com.android.support:design:25.3.1'
+    compile 'com.android.support:support-v4:25.3.1'
     compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
+    // multidex不存在问题
+    compile 'com.android.support:multidex:1.0.1'
+    // Google官方动态权限申请
+    compile "pub.devrel:easypermissions:$easypermissions_version"
+    // 高度封装的 Android WebView
+    //    compile "com.just.agentweb:agentweb:$agentweb_version"
     compile "com.jakewharton:butterknife:$butterknife_version"
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     compile "org.jetbrains.anko:anko-commons:$anko_version"
@@ -126,7 +140,6 @@ dependencies {
     compile 'com.github.chrisbanes.photoview:library:1.2.4'
     compile files('libs/SocialSDK_WeiXin_1.jar')
     compile 'me.iwf.photopicker:PhotoPicker:0.9.0@aar'
-    compile 'com.android.support:design:23.4.0'
     compile 'com.nineoldandroids:library:2.4.0'
     compile 'com.github.bumptech.glide:glide:3.7.0'
     compile 'cn.yipianfengye.android:ad-library:1.0'

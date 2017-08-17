@@ -31,7 +31,7 @@ public class NetStatusUtil {
      * 是否有网
      */
     public static boolean isConnected(Context context) {
-        return netSatus(context) != NetState.NET_NO;
+        return netStatus(context) != NetState.NET_NO;
     }
 
     /**
@@ -48,7 +48,7 @@ public class NetStatusUtil {
      * @param context 上下文
      * @return 状态码
      */
-    public static NetState netSatus(Context context) {
+    public static NetState netStatus(Context context) {
         NetState stateCode = NetState.NET_NO;
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo ni = cm.getActiveNetworkInfo();

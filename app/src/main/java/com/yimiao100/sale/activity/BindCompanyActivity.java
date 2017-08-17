@@ -1,13 +1,15 @@
 package com.yimiao100.sale.activity;
 
+import android.Manifest;
 import android.app.ProgressDialog;
+import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
@@ -55,6 +57,8 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import okhttp3.Call;
 import okhttp3.Request;
+import pub.devrel.easypermissions.AfterPermissionGranted;
+import pub.devrel.easypermissions.EasyPermissions;
 import q.rorbin.badgeview.Badge;
 import q.rorbin.badgeview.QBadgeView;
 
@@ -63,7 +67,7 @@ import q.rorbin.badgeview.QBadgeView;
  * 推广主体-绑定对公主体界面
  */
 public class BindCompanyActivity extends BaseActivity implements TitleView
-        .TitleBarOnClickListener, View.OnClickListener {
+        .TitleBarOnClickListener, View.OnClickListener, EasyPermissions.PermissionCallbacks {
 
     @BindView(R.id.bind_company_title)
     TitleView mBindCompanyTitle;
@@ -105,7 +109,7 @@ public class BindCompanyActivity extends BaseActivity implements TitleView
     private final String EXPERIENCE_LIST = "experienceList";                //推广经历
     private final String ZIP_FILE = "zipFile";                              //压缩文件
 
-    private final String bizLicence =  "bizLicence";
+    private final String bizLicence = "bizLicence";
     private final String personalPhoto = "personalPhoto";
     private final String idPhoto = "idPhoto";
 
@@ -120,7 +124,6 @@ public class BindCompanyActivity extends BaseActivity implements TitleView
 
     private final int WIDTH = 300;
     private final int HEIGHT = 80;
-    private final int MAX_SIZE = 250;
 
 
     private String mAccountName;
@@ -195,7 +198,8 @@ public class BindCompanyActivity extends BaseActivity implements TitleView
         //姓名
         mCorporation = (EditText) findViewById(R.id.bind_company_corporation);
         //电话
-        mCorporationPhoneNumber = (EditText) findViewById(R.id.bind_company_corporation_phone_number);
+        mCorporationPhoneNumber = (EditText) findViewById(R.id
+                .bind_company_corporation_phone_number);
         //QQ
         mCorporationQQ = (EditText) findViewById(R.id.bind_company_corporation_qq);
         //邮箱
@@ -320,7 +324,8 @@ public class BindCompanyActivity extends BaseActivity implements TitleView
             LogUtil.d("idUrl is " + idUrl);
 
             Picasso picasso = Picasso.with(this);
-            String bizLicencePath = (String) SharePreferenceUtil.get(this, "corporate" + bizLicence, "");
+            String bizLicencePath = (String) SharePreferenceUtil.get(this, "corporate" +
+                    bizLicence, "");
             if (!bizLicencePath.isEmpty()) {
                 LogUtil.d("bizLicence path is " + bizLicencePath);
                 picasso.load(new File(bizLicencePath))
@@ -335,7 +340,8 @@ public class BindCompanyActivity extends BaseActivity implements TitleView
                         .placeholder(R.mipmap.ico_default_short_picture)
                         .into(mBindCompanyTakePhoto);
             }
-            String personalPhotoPath = (String) SharePreferenceUtil.get(this, "corporate" + personalPhoto, "");
+            String personalPhotoPath = (String) SharePreferenceUtil.get(this, "corporate" +
+                    personalPhoto, "");
             if (!personalPhotoPath.isEmpty()) {
                 LogUtil.d("personalPhotoPath is " + personalPhotoPath);
                 picasso.load(new File(personalPhotoPath))
@@ -534,12 +540,14 @@ public class BindCompanyActivity extends BaseActivity implements TitleView
                 //Dialog消失
                 mDialog.dismiss();
                 //压缩图片
-                mZipName = "corporatePromotions" + TimeUtil.timeStamp2Date(System.currentTimeMillis()+"", "yyyyMMdd_HHssmm") + ".zip";
+                mZipName = "corporatePromotions" + TimeUtil.timeStamp2Date(System
+                        .currentTimeMillis() + "", "yyyyMMdd_HHssmm") + ".zip";
                 // 压缩文件
                 mZipFile = CompressUtil.zipANDSave(mFileMap, mZipName);
                 if (mZipFile == null) {
                     // 提示错误并返回
-                    ToastUtil.showShort(currentContext, getString(R.string.account_zip_error_notice));
+                    ToastUtil.showShort(currentContext, getString(R.string
+                            .account_zip_error_notice));
                     return;
                 }
                 //提交数据
@@ -569,27 +577,18 @@ public class BindCompanyActivity extends BaseActivity implements TitleView
      */
     private void getBiz() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        CharSequence[] items = {"拍照", "从相册选择"};
+        CharSequence[] items = {getString(R.string.open_camera), getString(R.string.open_DCIM)};
         builder.setItems(items, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 switch (which) {
                     case 0:
                         //打开相机
-                        //拍照返回
-                        Intent intentCapture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                        String bizLicenceName = bizLicence + "_" +
-                                TimeUtil.timeStamp2Date(System.currentTimeMillis() + "", "yyyyMMddHH_mm_ss")+ ".jpg";
-                        mBizLicence = new File(Environment.getExternalStorageDirectory(), bizLicenceName);
-                        intentCapture.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(mBizLicence));
-                        startActivityForResult(intentCapture, BIZ_FROM_CAMERA);
+                        openCameraBiz();
                         break;
                     case 1:
                         //打开相册
-                        //激活系统图库，选择一张图片
-                        Intent intentPick = new Intent(Intent.ACTION_PICK);
-                        intentPick.setType("image/*");
-                        startActivityForResult(intentPick, BIZ_FROM_PHOTO);
+                        openDCIM(BIZ_FROM_PHOTO);
                         break;
                 }
                 dialog.dismiss();
@@ -597,6 +596,32 @@ public class BindCompanyActivity extends BaseActivity implements TitleView
         });
         AlertDialog dialog = builder.create();
         dialog.show();
+    }
+
+    @AfterPermissionGranted(0)
+    private void openCameraBiz() {
+        if (!EasyPermissions.hasPermissions(this, Manifest.permission.CAMERA)) {
+            // 如果没有权限则申请权限
+            EasyPermissions.requestPermissions(this, getString(R.string.rationale_camera), 0,
+                    Manifest.permission.CAMERA);
+            return;
+        }
+        Intent intentCapture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        String bizLicenceName = bizLicence + "_" +
+                TimeUtil.timeStamp2Date(System.currentTimeMillis() + "", "yyyyMMddHH_mm_ss") + "" +
+                ".jpg";
+        mBizLicence =  Util.createFile(bizLicenceName);
+        // 从文件中创建uri
+        Uri uri;
+        if (Build.VERSION.SDK_INT >= 24) {
+            ContentValues contentValues = new ContentValues(1);
+            contentValues.put(MediaStore.Images.Media.DATA, mBizLicence.getAbsolutePath());
+            uri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues);
+        } else {
+            uri = Uri.fromFile(mBizLicence);
+        }
+        intentCapture.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+        startActivityForResult(intentCapture, BIZ_FROM_CAMERA);
     }
 
     /**
@@ -604,29 +629,18 @@ public class BindCompanyActivity extends BaseActivity implements TitleView
      */
     private void getPhoto1() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        CharSequence[] items = {"拍照", "从相册选择"};
+        CharSequence[] items = {getString(R.string.open_camera), getString(R.string.open_DCIM)};
         builder.setItems(items, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 switch (which) {
                     case 0:
                         //打开相机
-                        //拍照返回
-                        Intent intentCapture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                        String personalPhotoName = personalPhoto + "_" +
-                                TimeUtil.timeStamp2Date(System.currentTimeMillis() + "", "yyyyMMddHH_mm_ss")+ ".jpg";
-                        mPersonalPhoto = new File(Environment.getExternalStorageDirectory(),
-                                personalPhotoName);
-                        intentCapture.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile
-                                (mPersonalPhoto));
-                        startActivityForResult(intentCapture, PERSONAL_FROM_CAMERA);
+                        openCamera1();
                         break;
                     case 1:
                         //打开相册
-                        //激活系统图库，选择一张图片
-                        Intent intentPick = new Intent(Intent.ACTION_PICK);
-                        intentPick.setType("image/*");
-                        startActivityForResult(intentPick, PERSONAL_FROM_PHOTO);
+                        openDCIM(PERSONAL_FROM_PHOTO);
                         break;
                 }
                 dialog.dismiss();
@@ -636,32 +650,50 @@ public class BindCompanyActivity extends BaseActivity implements TitleView
         dialog.show();
     }
 
+    @AfterPermissionGranted(1)
+    private void openCamera1() {
+        if (!EasyPermissions.hasPermissions(this, Manifest.permission.CAMERA)) {
+            // 如果没有权限则申请权限
+            EasyPermissions.requestPermissions(this, getString(R.string.rationale_camera), 1,
+                    Manifest.permission.CAMERA);
+            return;
+        }
+        Intent intentCapture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        String personalPhotoName = personalPhoto + "_" +
+                TimeUtil.timeStamp2Date(System.currentTimeMillis() + "", "yyyyMMddHH_mm_ss") + "" +
+                ".jpg";
+        mPersonalPhoto = Util.createFile(personalPhotoName);
+        // 从文件中创建uri
+        Uri uri;
+        if (Build.VERSION.SDK_INT >= 24) {
+            ContentValues contentValues = new ContentValues(1);
+            contentValues.put(MediaStore.Images.Media.DATA, mPersonalPhoto.getAbsolutePath());
+            uri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                    contentValues);
+        } else {
+            uri = Uri.fromFile(mPersonalPhoto);
+        }
+        intentCapture.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+        startActivityForResult(intentCapture, PERSONAL_FROM_CAMERA);
+    }
+
     /**
      * 获取身份证照片
      */
     private void getPhoto2() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        CharSequence[] items = {"拍照", "从相册选择"};
+        CharSequence[] items = {getString(R.string.open_camera), getString(R.string.open_DCIM)};
         builder.setItems(items, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 switch (which) {
                     case 0:
                         //打开相机
-                        //拍照返回
-                        Intent intentCapture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                        String idPhotoName = idPhoto + "_" +
-                                TimeUtil.timeStamp2Date(System.currentTimeMillis() + "", "yyyyMMddHH_mm_ss")+ ".jpg";
-                        mIdPhoto = new File(Environment.getExternalStorageDirectory(), idPhotoName);
-                        intentCapture.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(mIdPhoto));
-                        startActivityForResult(intentCapture, ID_FROM_CAMERA);
+                        openCamera2();
                         break;
                     case 1:
                         //打开相册
-                        //激活系统图库，选择一张图片
-                        Intent intentPick = new Intent(Intent.ACTION_PICK);
-                        intentPick.setType("image/*");
-                        startActivityForResult(intentPick, ID_FROM_PHOTO);
+                        openDCIM(ID_FROM_PHOTO);
                         break;
                 }
                 dialog.dismiss();
@@ -669,6 +701,75 @@ public class BindCompanyActivity extends BaseActivity implements TitleView
         });
         AlertDialog dialog = builder.create();
         dialog.show();
+    }
+
+    @AfterPermissionGranted(2)
+    private void openCamera2() {
+        if (!EasyPermissions.hasPermissions(this, Manifest.permission.CAMERA)) {
+            // 如果没有权限则申请权限
+            EasyPermissions.requestPermissions(this, getString(R.string.rationale_camera), 2,
+                    Manifest.permission.CAMERA);
+            return;
+        }
+        Intent intentCapture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        String idPhotoName = idPhoto + "_" +
+                TimeUtil.timeStamp2Date(System.currentTimeMillis() + "", "yyyyMMddHH_mm_ss") + "" +
+                ".jpg";
+        mIdPhoto = Util.createFile(idPhotoName);
+        // 从文件中创建uri
+        Uri uri;
+        if (Build.VERSION.SDK_INT >= 24) {
+            ContentValues contentValues = new ContentValues(1);
+            contentValues.put(MediaStore.Images.Media.DATA, mIdPhoto.getAbsolutePath());
+            uri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                    contentValues);
+        } else {
+            uri = Uri.fromFile(mIdPhoto);
+        }
+        intentCapture.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+        startActivityForResult(intentCapture, ID_FROM_CAMERA);
+    }
+
+    /**
+     * 打开相册
+     *
+     * @param requestCode
+     */
+    public void openDCIM(int requestCode) {
+        Intent intentPick = new Intent(Intent.ACTION_PICK);
+        intentPick.setType("image/*");
+        startActivityForResult(intentPick, requestCode);
+    }
+
+    /**
+     * 申请成功
+     *
+     * @param requestCode
+     * @param perms
+     */
+    @Override
+    public void onPermissionsGranted(int requestCode, List<String> perms) {
+        LogUtil.d("申请成功：" + perms);
+    }
+
+    /**
+     * 失败
+     *
+     * @param requestCode
+     * @param perms
+     */
+    @Override
+    public void onPermissionsDenied(int requestCode, List<String> perms) {
+        LogUtil.d("申请失败：" + perms);
+        if (EasyPermissions.somePermissionDenied(this, Manifest.permission.CAMERA)) {
+            // 如果用户拒绝了相机权限
+            LogUtil.d("用户拒绝相机权限");
+        }
+        if (EasyPermissions.somePermissionPermanentlyDenied(this, perms)) {
+            // 如果用户选择了不再询问，则要去设置界面打开权限
+            LogUtil.d("用户选择了不再询问");
+            showSettingDialog();
+        }
     }
 
 
@@ -779,7 +880,8 @@ public class BindCompanyActivity extends BaseActivity implements TitleView
                         updateLocalData();
                         // 更新本地记录文件
                         updatePhotoData();
-                        ToastUtil.showShort(currentContext, getString(R.string.account_upload_success_notice));
+                        ToastUtil.showShort(currentContext, getString(R.string
+                                .account_upload_success_notice));
                         finish();
                         break;
                     case "failure":
@@ -808,15 +910,18 @@ public class BindCompanyActivity extends BaseActivity implements TitleView
         //账户名称
         SharePreferenceUtil.put(currentContext, Constant.CORPORATE_ACCOUNT_NAME, mAccountName);
         //公司账号
-        SharePreferenceUtil.put(currentContext, Constant.CORPORATE_ACCOUNT_NUMBER, mCorporateAccount);
+        SharePreferenceUtil.put(currentContext, Constant.CORPORATE_ACCOUNT_NUMBER,
+                mCorporateAccount);
         //开户银行
         SharePreferenceUtil.put(currentContext, Constant.CORPORATE_BANK_NAME, mBankName);
         //公司电话号码
-        SharePreferenceUtil.put(currentContext, Constant.CORPORATE_PHONE_NUMBER, mCorporatePhoneNumber);
+        SharePreferenceUtil.put(currentContext, Constant.CORPORATE_PHONE_NUMBER,
+                mCorporatePhoneNumber);
         //个人姓名
         SharePreferenceUtil.put(currentContext, Constant.CORPORATE_CN_NAME, mCnName);
         //个人电话号码
-        SharePreferenceUtil.put(currentContext, Constant.CORPORATION_PERSONAL_PHONE_NUMBER, mPersonalPhoneNumber);
+        SharePreferenceUtil.put(currentContext, Constant.CORPORATION_PERSONAL_PHONE_NUMBER,
+                mPersonalPhoneNumber);
         //邮箱
         SharePreferenceUtil.put(currentContext, Constant.CORPORATE_EMAIL, mEmail);
         //身份证号
@@ -857,7 +962,8 @@ public class BindCompanyActivity extends BaseActivity implements TitleView
                 break;
             case PERSONAL_FROM_PHOTO:
                 if (data != null && resultCode == RESULT_OK) {
-                    mPersonalPhoto = new File((BitmapUtil.getRealPathFromURI(this, data.getData())));
+                    mPersonalPhoto = new File((BitmapUtil.getRealPathFromURI(this, data.getData()
+                    )));
                     handlePhoto(personalPhoto, mPersonalPhoto, mBindCompanyCardPhoto1);
                 }
                 break;
@@ -877,13 +983,15 @@ public class BindCompanyActivity extends BaseActivity implements TitleView
 
     /**
      * 添加到压缩文件集合中
+     *
      * @param childFileName 压缩文件中单个文件的名字
-     * @param file  压缩文件中的单个文件
-     * @param imageView 前台回显数据
+     * @param file          压缩文件中的单个文件
+     * @param imageView     前台回显数据
      */
     private void handlePhoto(String childFileName, File file, ImageView imageView) {
         // 压缩文件内单个文件的名字
-        String key = childFileName + file.getAbsolutePath().substring(file.getAbsolutePath().lastIndexOf("."));
+        String key = childFileName + file.getAbsolutePath().substring(file.getAbsolutePath()
+                .lastIndexOf("."));
         // 压缩文件内单个文件的真实路径
         String val = file.getAbsolutePath();
         mFileMap.put(key, val);

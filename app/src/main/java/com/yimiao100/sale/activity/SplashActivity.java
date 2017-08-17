@@ -1,5 +1,6 @@
 package com.yimiao100.sale.activity;
 
+import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -8,6 +9,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
 import android.widget.ImageView;
 
@@ -28,21 +30,29 @@ import com.zhy.http.okhttp.callback.FileCallBack;
 import com.zhy.http.okhttp.callback.StringCallback;
 
 import java.io.File;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import okhttp3.Call;
 import okhttp3.Request;
+import pub.devrel.easypermissions.AfterPermissionGranted;
+import pub.devrel.easypermissions.EasyPermissions;
 
 /**
  * 欢迎界面
  */
-public class SplashActivity extends BaseActivity {
+public class SplashActivity extends BaseActivity implements EasyPermissions.PermissionCallbacks{
 
     @BindView(R.id.splash)
     ImageView mSplash;
 
     private static final int REQUEST_CODE_INSTALL = 100;
+    private static final int RC_STORAGE_PERM = 124;
+    private final String URL_GET_APP_KEY = "http://www.pgyer.com/apiv1/app/getAppKeyByShortcut";
+    private final String URL_INSTALL = "http://www.pgyer.com/apiv1/app/install";
+    private final String SHORTCUT = "shortcut";
+    private final String API_KEY = "_api_key";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +60,14 @@ public class SplashActivity extends BaseActivity {
         setContentView(R.layout.activity_splash);
         ButterKnife.bind(this);
 
+        //开启服务，检查相关数据（区域信息）版本信息
+        checkDataVersion();
+
+        // 检查权限
+        checkPermissions();
+    }
+
+    private void doNext() {
         //让界面停留2s；
         new Handler().postDelayed(new Runnable() {
             @Override
@@ -58,10 +76,45 @@ public class SplashActivity extends BaseActivity {
                 checkVersion();
             }
         }, 2000);
-
-        //开启服务，检查相关数据（区域信息）版本信息
-        checkDataVersion();
     }
+
+    @AfterPermissionGranted(RC_STORAGE_PERM)
+    private void checkPermissions() {
+        if (EasyPermissions.hasPermissions(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+            LogUtil.d("已获取存储空间权限");
+            // do next
+            doNext();
+        } else {
+            // 申请权限
+            LogUtil.d("没有权限，申请权限");
+            EasyPermissions.requestPermissions(this, getString(R.string.rationale_storage), RC_STORAGE_PERM, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        }
+    }
+
+
+    // 成功
+    @Override
+    public void onPermissionsGranted(int requestCode, List<String> perms) {
+        LogUtil.d("申请成功：" + perms);
+    }
+
+    // 失败
+    @Override
+    public void onPermissionsDenied(int requestCode, List<String> perms) {
+        LogUtil.d("申请失败：" + perms);
+        if (EasyPermissions.somePermissionDenied(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+            LogUtil.d("用户拒绝了存储空间权限");
+            // 如果用户拒绝了权限，则进入权限设置界面进行设置
+            showSettingDialog();
+        }
+        if (EasyPermissions.somePermissionPermanentlyDenied(this, perms)) {
+            LogUtil.d("用户用户点击了“不再询问”");
+            // 如果用户点击了“不再询问”
+            showSettingDialog();
+        }
+    }
+
+
 
     /**
      * 开启服务，检查相关数据（区域信息）版本信息
@@ -76,9 +129,9 @@ public class SplashActivity extends BaseActivity {
      */
     private void checkVersion() {
         //请求网络获取数据，解析数据
-        OkHttpUtils.post().url("http://www.pgyer.com/apiv1/app/getAppKeyByShortcut")
-                .addParams("shortcut", "EH4S")
-                .addParams("_api_key", "6160ef2a74b29ad9a9d537866936fd79")
+        OkHttpUtils.post().url(URL_GET_APP_KEY)
+                .addParams(SHORTCUT, Constant.SHORTCUT)
+                .addParams(API_KEY, Constant.UPDATE_API_KEY)
                 .build().execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
@@ -145,7 +198,7 @@ public class SplashActivity extends BaseActivity {
      */
     private void checkUpdateInformation(String appKey) {
         OkHttpUtils.post().url("http://www.pgyer.com/apiv1/app/view")
-                .addParams("aKey", appKey).addParams("_api_key", "6160ef2a74b29ad9a9d537866936fd79")
+                .addParams("aKey", appKey).addParams(API_KEY, Constant.UPDATE_API_KEY)
                 .build().execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
@@ -239,14 +292,13 @@ public class SplashActivity extends BaseActivity {
         final ProgressDialog dialog = new ProgressDialog(SplashActivity.this);
         //禁止关闭进度条
         dialog.setCancelable(false);
-        dialog.setTitle("正在下载，请稍后");
+        dialog.setTitle(getString(R.string.download_progress_dialog_title));
         dialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
         //Get请求下载Apk
-        OkHttpUtils.get().url("http://www.pgyer.com/apiv1/app/install")
-                .addParams("aKey", appKey).addParams("_api_key", Constant.PGYER_API_KEY)
+        OkHttpUtils.get().url(URL_INSTALL)
+                .addParams("aKey", appKey).addParams(API_KEY, Constant.PGYER_API_KEY)
                 .build()
-                .execute(new FileCallBack(Environment.getExternalStorageDirectory()
-                        .getAbsolutePath(), "yimiaoquan.apk") {
+                .execute(new FileCallBack(Util.getApkPath(), "VaccineCircle.apk") {
                     @Override
                     public void onBefore(Request request, int id) {
                         super.onBefore(request, id);
@@ -295,16 +347,32 @@ public class SplashActivity extends BaseActivity {
         // intent.setAction("android.intent.action.VIEW");
         intent.setAction(Intent.ACTION_VIEW);
         intent.addCategory(Intent.CATEGORY_DEFAULT);
-        intent.setDataAndType(Uri.fromFile(apk),
-                "application/vnd.android.package-archive");
+        Uri apkUri;
+        if (Build.VERSION.SDK_INT >= 24) {
+            //添加这一句表示对目标应用临时授权该Uri所代表的文件
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            apkUri = FileProvider.getUriForFile(this, "com.yimiao100.sale.fileprovider", apk);
+        } else {
+            apkUri = Uri.fromFile(apk);
+        }
+        intent.setDataAndType(apkUri, "application/vnd.android.package-archive");
         startActivityForResult(intent, REQUEST_CODE_INSTALL);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_CODE_INSTALL) {// 从安装页面返回
+        if (requestCode == REQUEST_CODE_INSTALL) {
+            // 从安装页面返回
+            if (resultCode == RESULT_CANCELED) {
+                ActivityCollector.finishAll();
+                return;
+            }
             enterNext();
+        } else if (requestCode == RC_SETTINGS_SCREEN) {
+            // 从设置权限界面返回
+            LogUtil.d("从权限设置界面返回");
+            checkPermissions();
         }
     }
 
@@ -332,4 +400,7 @@ public class SplashActivity extends BaseActivity {
         startActivity(new Intent(this, MainActivity.class));
         finish();
     }
+
+
+
 }

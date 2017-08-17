@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
+import android.os.Environment;
 import android.support.v7.app.AlertDialog;
 import android.widget.Toast;
 
@@ -19,6 +20,7 @@ import com.yimiao100.sale.service.AliasService;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -30,6 +32,21 @@ public class Util {
     public Util() {
          /* cannot be instantiated */
         throw new UnsupportedOperationException("cannot be instantiated");
+    }
+
+
+    public static String getApkPath(){
+        return Environment.getExternalStorageDirectory().getAbsolutePath() + "/VaccineCircle";
+    }
+
+    public static File createFile(String destFileName) {
+        File dir = new File(Util.getApkPath());
+        if(!dir.exists()) {
+            dir.mkdirs();
+        }
+        File file = new File(dir, destFileName);
+        LogUtil.d("file exit? + " + file.exists());
+        return file;
     }
 
     /**

@@ -1,7 +1,5 @@
 package com.yimiao100.sale.utils;
 
-import android.os.Environment;
-
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -28,8 +26,7 @@ public class CompressUtil {
     public static File zipANDSave(ArrayList<String> files, String zipFileName) {
         File zipFile = null;
         try {
-            zipFile= new File(Environment.getExternalStorageDirectory().getAbsolutePath(),
-                    zipFileName);
+            zipFile= Util.createFile(zipFileName);
             FileOutputStream fos = new FileOutputStream(zipFile);
             ZipOutputStream out = new ZipOutputStream(new BufferedOutputStream(fos));
 
@@ -47,7 +44,7 @@ public class CompressUtil {
             }
             out.close();
             fos.close();
-            LogUtil.Companion.d("success");
+            LogUtil.d("success");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -62,8 +59,7 @@ public class CompressUtil {
     public static File zipANDSave(HashMap<String, String> files, String zipFileName) {
         File zipFile = null;
         try {
-            zipFile= new File(Environment.getExternalStorageDirectory().getAbsolutePath(),
-                    zipFileName);
+            zipFile = Util.createFile(zipFileName);
             FileOutputStream fos = new FileOutputStream(zipFile);
             ZipOutputStream out = new ZipOutputStream(new BufferedOutputStream(fos));
 
@@ -87,7 +83,7 @@ public class CompressUtil {
             }
             out.close();
             fos.close();
-            LogUtil.Companion.d("success");
+            LogUtil.d("success");
         } catch (Exception e) {
             e.printStackTrace();
         }

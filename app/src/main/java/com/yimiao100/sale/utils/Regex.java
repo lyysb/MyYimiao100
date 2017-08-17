@@ -10,4 +10,5 @@ public interface Regex {
     String email = "[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}";
     String idCard = "^(\\d{14}|\\d{17})(\\d|[xX])$";
     String name = "[\u4e00-\u9fa5\\w]+";
+    String html = "<html.*(?=>)(.|\\n)*?</html>";
 }

@@ -129,4 +129,28 @@
     <string name="dialog_tax_error">
         税率获取失败，请联系客服人员
     </string>
+    <string name="rationale_storage">
+        请开启存储权限
+    </string>
+    <string name="rationale_camera">
+        请开启相机权限
+    </string>
+    <string name="title_settings_dialog">
+        权限要求
+    </string>
+    <string name="rationale_ask_again">
+        如果没有相关权限，这个应用程序的某些功能可能无法正常使用。打开应用程序设置界面修改应用程序权限。
+    </string>
+    <string name="setting">
+        设置
+    </string>
+    <string name="cancel">
+        取消
+    </string>
+    <string name="open_camera">
+        打开相机
+    </string>
+    <string name="open_DCIM">
+        打开相册
+    </string>
 </resources>

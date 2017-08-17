@@ -5,7 +5,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.v7.app.AlertDialog;
 import android.text.Html;
 import android.text.Spanned;
@@ -242,7 +241,7 @@ public class OrderCompletedActivity extends BaseActivity implements TitleView.Ti
         LogUtil.d("已签约协议fileName：" + fileName);
         OkHttpUtils.get().url(orderProtocolUrl)
                 .build().execute(
-                new FileCallBack(Environment.getExternalStorageDirectory().getAbsolutePath(), fileName) {
+                new FileCallBack(Util.getApkPath(), fileName) {
                     @Override
                     public void onBefore(Request request, int id) {
                         super.onBefore(request, id);

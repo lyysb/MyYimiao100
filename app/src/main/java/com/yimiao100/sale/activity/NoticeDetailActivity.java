@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.yimiao100.sale.R;
@@ -25,6 +26,9 @@ import com.yimiao100.sale.view.Html5WebView;
 import com.yimiao100.sale.view.TitleView;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -52,7 +56,8 @@ public class NoticeDetailActivity extends BaseActivity implements TitleView
 
     private final String URL_USER_NOTICE = Constant.BASE_URL + "/api/notice/user_notice";
     private Html5WebView mWebView;
-    private TextView mTextView;
+    private TextView textView;
+    private ScrollView mScrollView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,14 +88,20 @@ public class NoticeDetailActivity extends BaseActivity implements TitleView
         Html5WebView.showLoadingProgress = false;
         mWebView.setLayoutParams(params);
 
+        mScrollView = new ScrollView(this);
+        LinearLayout.LayoutParams svParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams
+                .MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        int _10dp = DensityUtil.dp2px(this, 10);
+        svParams.setMargins(_10dp, _10dp, _10dp, _10dp);
+        mScrollView.setLayoutParams(svParams);
+
         LinearLayout.LayoutParams tvParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams
                 .MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        mTextView = new TextView(this);
-        mTextView.setTextColor(getResources().getColor(R.color.color333));
-        mTextView.setLineSpacing(0, 1.2f);
-        int _10dp = DensityUtil.dp2px(this, 10);
-        tvParams.setMargins(_10dp, _10dp, _10dp, _10dp);
-        mTextView.setLayoutParams(tvParams);
+        textView = new TextView(this);
+        textView.setTextColor(getResources().getColor(R.color.color333));
+        textView.setLineSpacing(0, 1.2f);
+        textView.setLayoutParams(tvParams);
+        mScrollView.addView(textView);
     }
 
 
@@ -168,14 +179,19 @@ public class NoticeDetailActivity extends BaseActivity implements TitleView
                 .getCreatedAt()
                 + "", "yyyy年MM月dd日 HH:mm:ss"));
         if (userNotice.getNoticeContent() != null) {
-            if (userNotice.getNoticeContent().contains("<html>")) {
-                LogUtil.d("加载网页通知");
+            String regex = "<(\\S*?) [^>]*>.*?</\\1>|<.*? />";
+            Pattern pattern = Pattern.compile(regex);
+            Matcher matcher = pattern.matcher(userNotice.getNoticeContent());
+            boolean matches = matcher.find();
+            LogUtil.d("是否是HTML文本 : " + matches);
+            if (matches) {
+                LogUtil.d("加载网页通知\n" + userNotice.getNoticeContent());
                 mNoticeDetailContent.addView(mWebView);
                 mWebView.loadData(userNotice.getNoticeContent(), "text/html; charset=UTF-8", null);
             } else {
                 LogUtil.d("加载文本通知");
-                mNoticeDetailContent.addView(mTextView);
-                mTextView.setText(userNotice.getNoticeContent());
+                mNoticeDetailContent.addView(mScrollView);
+                textView.setText(userNotice.getNoticeContent());
             }
         }
     }

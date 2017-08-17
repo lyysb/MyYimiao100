@@ -165,5 +165,7 @@ public interface Constant {
     String PERSONAL_ID_CARD = "personal_id_card";
     String PERSONAL_PHONE_NUMBER = "personal_phone_number";
     String TAX_RATE = "tax_rate";
-
+    String SHORTCUT = "EH4S";
+    // 更新key
+    String UPDATE_API_KEY = "6160ef2a74b29ad9a9d537866936fd79";
 }

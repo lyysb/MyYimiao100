@@ -11,7 +11,6 @@ import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.squareup.picasso.Picasso;
 import com.yimiao100.sale.R;
 import com.yimiao100.sale.base.BaseActivity;
 import com.yimiao100.sale.bean.Course;
@@ -19,9 +18,7 @@ import com.yimiao100.sale.bean.CourseBean;
 import com.yimiao100.sale.bean.ErrorBean;
 import com.yimiao100.sale.ext.JSON;
 import com.yimiao100.sale.utils.Constant;
-import com.yimiao100.sale.utils.DensityUtil;
 import com.yimiao100.sale.utils.LogUtil;
-import com.yimiao100.sale.utils.ScreenUtil;
 import com.yimiao100.sale.utils.SharePreferenceUtil;
 import com.yimiao100.sale.utils.TimeUtil;
 import com.yimiao100.sale.utils.ToastUtil;
@@ -152,13 +149,10 @@ public class VideoDetailActivity extends BaseActivity implements YMVideoPlayer
         if (course.getVideoUrl() != null) {
             LogUtil.d("视频链接：" + course.getVideoUrl());
         }
-        mVideoDetailPlayer.setUp(course.getVideoUrl() != null ? course.getVideoUrl() : Constant.DEFAULT_VIDEO,
-                JCVideoPlayerStandard.SCREEN_LAYOUT_LIST, course.getCourseName());
+        mVideoDetailPlayer.setURL(course.getVideoUrl(), JCVideoPlayerStandard.SCREEN_LAYOUT_LIST, course.getCourseName());
         //设置封面图
         if (course.getImageUrl() != null && !course.getImageUrl().isEmpty()) {
-            Picasso.with(this).load(course.getImageUrl() + "?imageMogr2/thumbnail/480x240")
-                    .resize(ScreenUtil.getScreenWidth(this), DensityUtil.dp2px(this, 200))
-                    .into(mVideoDetailPlayer.thumbImageView);
+            mVideoDetailPlayer.setScreen(this, course.getImageUrl());
         }
         mVideoDetailPlayer.setOnCompleteListener(this);
         mVideoDetailPlayer.setOnPlayListener(this);
@@ -269,7 +263,7 @@ public class VideoDetailActivity extends BaseActivity implements YMVideoPlayer
         switch (view.getId()) {
             case R.id.video_detail_play_now:
                 //播放视频
-                mVideoDetailPlayer.prepareMediaPlayer();
+                mVideoDetailPlayer.playVideo();
                 onPlay();
                 break;
             case R.id.video_detail_collection:

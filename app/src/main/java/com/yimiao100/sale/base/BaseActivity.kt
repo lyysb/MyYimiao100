@@ -14,6 +14,7 @@ import com.uuch.adlibrary.AdConstant
 import com.uuch.adlibrary.AdManager
 import com.uuch.adlibrary.bean.AdInfo
 import com.uuch.adlibrary.transformer.DepthPageTransformer
+import com.yimiao100.sale.R
 import com.yimiao100.sale.activity.ActivityActivity
 import com.yimiao100.sale.bean.Ad
 import com.yimiao100.sale.bean.AdBean
@@ -32,6 +33,8 @@ import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import org.jetbrains.anko.startActivity
+import pub.devrel.easypermissions.AppSettingsDialog
+import pub.devrel.easypermissions.EasyPermissions
 import java.lang.Exception
 import java.util.*
 
@@ -51,6 +54,10 @@ open class BaseActivity : AppCompatActivity() {
     protected val PAGE_SIZE = "pageSize"
     @JvmField
     protected val pageSize = "10"
+    @JvmField
+    protected val RC_SETTINGS_SCREEN = 125
+    @JvmField
+    protected val RC_CAMERA = 124
 
     @JvmField
     protected var accessToken: String = ""
@@ -78,6 +85,7 @@ open class BaseActivity : AppCompatActivity() {
         val filter = IntentFilter()
         filter.addAction(MQController.ACTION_NEW_MESSAGE_RECEIVED)
         LocalBroadcastManager.getInstance(this).registerReceiver(messageReceiver, filter)
+
     }
 
     override fun onResume() {
@@ -213,5 +221,21 @@ open class BaseActivity : AppCompatActivity() {
         activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         // 向自身维护的Activity栈（数据类型为List）中添加Activity
         ActivityCollector.addActivity(activity)
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this)
+    }
+
+    open fun showSettingDialog() {
+        AppSettingsDialog.Builder(this)
+                .setTitle(getString(R.string.title_settings_dialog))
+                .setRationale(getString(R.string.rationale_ask_again))
+                .setPositiveButton(getString(R.string.setting))
+                .setNegativeButton(getString(R.string.cancel))
+                .setRequestCode(RC_SETTINGS_SCREEN)
+                .build()
+                .show()
     }
 }

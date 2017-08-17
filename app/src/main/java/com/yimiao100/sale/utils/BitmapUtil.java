@@ -6,7 +6,6 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.widget.ImageView;
@@ -36,7 +35,7 @@ public class BitmapUtil {
      */
     public static File setPicToView(Bitmap bitmap, String FileName) {
         FileOutputStream b = null;
-        File file = new File(Environment.getExternalStorageDirectory(), FileName);
+        File file = new File(Util.getApkPath(), FileName);
         try {
             b = new FileOutputStream(file);
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, b);// 把数据写入文件
@@ -78,10 +77,10 @@ public class BitmapUtil {
     private static Uri getFileUri(Uri uri, Context context){
         if (uri.getScheme().equals("file")) {
             String path = uri.getEncodedPath();
-            LogUtil.Companion.d("path1 is " + path);
+            LogUtil.d("path1 is " + path);
             if (path != null) {
                 path = Uri.decode(path);
-                LogUtil.Companion.d("path2 is " + path);
+                LogUtil.d("path2 is " + path);
                 ContentResolver cr = context.getContentResolver();
                 StringBuffer buff = new StringBuffer();
                 buff.append("(")
@@ -104,7 +103,7 @@ public class BitmapUtil {
                     //do nothing
                 } else {
                     Uri uri_temp = Uri.parse("content://media/external/images/media/" + index);
-                    LogUtil.Companion.d("uri_temp is " + uri_temp);
+                    LogUtil.d("uri_temp is " + uri_temp);
                     if (uri_temp != null) {
                         uri = uri_temp;
                     }
@@ -192,7 +191,7 @@ public class BitmapUtil {
             @Override
             public Bitmap transform(Bitmap source) {
                 int targetWidth = imageView.getWidth();
-                LogUtil.Companion.d("source.getHeight()="  + source.getHeight()
+                LogUtil.d("source.getHeight()="  + source.getHeight()
                         + "source.getWidth()=" + source.getWidth()
                         + ",targetWidth=" + targetWidth);
                 if (source.getWidth() == 0) {

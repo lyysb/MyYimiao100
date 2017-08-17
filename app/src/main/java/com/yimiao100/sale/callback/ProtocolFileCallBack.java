@@ -1,7 +1,6 @@
 package com.yimiao100.sale.callback;
 
-import android.os.Environment;
-
+import com.yimiao100.sale.utils.Util;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.Callback;
 
@@ -30,7 +29,7 @@ public abstract class ProtocolFileCallBack extends Callback<File> {
     public File saveFile(Response response,final int id) throws IOException
     {
 
-        String fileDir = Environment.getExternalStorageDirectory().getAbsolutePath();
+        String fileDir = Util.getApkPath();
         String header = response.header("Content-Disposition");
         String fileName = fileHead + header.substring(header.lastIndexOf("=") + 1);
         InputStream is = null;

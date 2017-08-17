@@ -1,13 +1,15 @@
 package com.yimiao100.sale.fragment;
 
+import android.Manifest;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.ConnectivityManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -59,6 +61,8 @@ import java.lang.reflect.Field;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import okhttp3.Call;
+import pub.devrel.easypermissions.AfterPermissionGranted;
+import pub.devrel.easypermissions.EasyPermissions;
 
 
 /**
@@ -73,6 +77,8 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
     private LinearLayout mLl_mine_exit;
 
     private final String URL_LOGOUT = Constant.BASE_URL + "/api/user/logout";
+    private final String UPLOAD_PROFILE_IMAGE = Constant.BASE_URL +
+            "/api/user/upload_profile_image";
     private final String BALANCE_ORDER = "balance_order";                   //对账订单
     private CircleImageView mMinePhoto;
     private String mUserIconUrl;
@@ -88,15 +94,13 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
     private TextView mIntegral;
     private String mAccessToken;
 
-    private File tempFile;
     private AlertDialog mDialog;
-    /* 头像名称 */
-    private static final String PHOTO_FILE_NAME = "temp_photo.jpg";
     private Uri mUri;
     private static final int PHOTO_REQUEST_CAMERA = 1;          // 拍照
     private static final int PHOTO_REQUEST_GALLERY = 2;         // 从相册中选择
     private static final int PHOTO_REQUEST_CUT = 3;             // 结果
     private TwinklingRefreshLayout mRefreshLayout;
+    private File mTempFile;
 
 
     @Nullable
@@ -315,36 +319,58 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
     private void showImageDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
-        CharSequence[] items = {"拍照", "从相册选择"};
+        CharSequence[] items = {getString(R.string.open_camera), getString(R.string.open_DCIM)};
         builder.setItems(items, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 switch (which) {
                     case 0:
                         //打开相机拍照,激活相机
-                        Intent intentCapture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                        tempFile = new File(Environment.getExternalStorageDirectory(),
-                                PHOTO_FILE_NAME);
-                        // 从文件中创建uri
-                        mUri = Uri.fromFile(tempFile);
-                        intentCapture.putExtra(MediaStore.EXTRA_OUTPUT, mUri);
-                        // 开启一个带有返回值的Activity，请求码为PHOTO_REQUEST_CAMERA
-                        startActivityForResult(intentCapture, PHOTO_REQUEST_CAMERA);
-                        mDialog.dismiss();
+                        openCamera();
                         break;
                     case 1:
                         //打开相册,激活系统图库，选择一张图片
-                        Intent intentPick = new Intent(Intent.ACTION_PICK);
-                        intentPick.setType("image/*");
-                        // 开启一个带有返回值的Activity，请求码为PHOTO_REQUEST_GALLERY
-                        startActivityForResult(intentPick, PHOTO_REQUEST_GALLERY);
-                        mDialog.dismiss();
+                        openDCIM();
                         break;
                 }
+                mDialog.dismiss();
             }
         });
         mDialog = builder.create();
         mDialog.show();
+    }
+
+    private void openDCIM() {
+        Intent intentPick = new Intent(Intent.ACTION_PICK);
+        intentPick.setType("image/*");
+        // 开启一个带有返回值的Activity，请求码为PHOTO_REQUEST_GALLERY
+        startActivityForResult(intentPick, PHOTO_REQUEST_GALLERY);
+    }
+
+    @AfterPermissionGranted(RC_CAMERA)
+    private void openCamera() {
+        if (!EasyPermissions.hasPermissions(getContext(), Manifest.permission.CAMERA)) {
+            // 如果没有权限，则申请权限
+            EasyPermissions.requestPermissions(this, getString(R.string.rationale_camera),
+                    RC_CAMERA, Manifest.permission.CAMERA);
+            return;
+        }
+        Intent intentCapture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+//        String tempFileName = "tempFile.jpg";
+        String tempFileName = "tempFile" + System.currentTimeMillis() + ".jpg";
+        mTempFile = Util.createFile(tempFileName);
+        // 从文件中创建uri
+        if (Build.VERSION.SDK_INT >= 24) {
+            ContentValues contentValues = new ContentValues(1);
+            contentValues.put(MediaStore.Images.Media.DATA, mTempFile.getAbsolutePath());
+            mUri = getContext().getContentResolver().insert(MediaStore.Images.Media
+                    .EXTERNAL_CONTENT_URI, contentValues);
+        } else {
+            mUri = Uri.fromFile(mTempFile);
+        }
+        intentCapture.putExtra(MediaStore.EXTRA_OUTPUT, mUri);
+        // 开启一个带有返回值的Activity，请求码为PHOTO_REQUEST_CAMERA
+        startActivityForResult(intentCapture, PHOTO_REQUEST_CAMERA);
     }
 
     /**
@@ -384,7 +410,6 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
             case PHOTO_REQUEST_CAMERA:
                 // 从相机返回的数据
                 if (resultCode == -1) {
-                    //如果是选择图片返回数据，才进行图片剪切
                     crop(mUri);
                 }
                 break;
@@ -396,51 +421,51 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
                     mMinePhoto.setImageBitmap(bitmap);
                     //保存在在SD卡中
                     File file = BitmapUtil.setPicToView(bitmap, "head.jpg");
-                    /**
-                     * 更新头像
-                     */
-                    String UPLOAD_PROFILE_IMAGE = "/api/user/upload_profile_image";
-                    String url = Constant.BASE_URL + UPLOAD_PROFILE_IMAGE;
-                    OkHttpUtils.post().url(url)
-                            .addHeader(ACCESS_TOKEN, accessToken)
-                            .addFile("profileImage", "head.jpg", file)
-                            .build().execute(new StringCallback() {
-                        @Override
-                        public void onError(Call call, Exception e, int id) {
-                            Util.showTimeOutNotice(getActivity());
-                        }
-
-                        @Override
-                        public void onResponse(String response, int id) {
-                            LogUtil.d("更新头像" + response);
-                            ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
-                            switch (errorBean.getStatus()) {
-                                case "success":
-                                    ImageBean imageBean = JSON.parseObject(response,
-                                            ImageBean.class);
-                                    //拿到头像的URL地址，更新本地数据
-                                    String profileImageUrl = imageBean.getProfileImageUrl();
-                                    Picasso.with(getContext()).load(profileImageUrl).placeholder
-                                            (R.mipmap.ico_my_default_avatar).into(mMinePhoto);
-                                    SharePreferenceUtil.put(getActivity(), Constant
-                                            .PROFILEIMAGEURL, profileImageUrl);
-                                    break;
-                                case "failure":
-                                    Util.showError(getActivity(), errorBean.getReason());
-                                    break;
-                            }
-                        }
-                    });
-                    try {
-                        // 将临时文件删除
-                        tempFile.delete();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+                    updateHeadImage(file);
                 }
                 break;
         }
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    /**
+     * 更新头像
+     */
+    private void updateHeadImage(File file) {
+        OkHttpUtils.post().url(UPLOAD_PROFILE_IMAGE)
+                .addHeader(ACCESS_TOKEN, accessToken)
+                .addFile("profileImage", "head.jpg", file)
+                .build().execute(new StringCallback() {
+            @Override
+            public void onError(Call call, Exception e, int id) {
+                Util.showTimeOutNotice(getActivity());
+            }
+
+            @Override
+            public void onResponse(String response, int id) {
+                LogUtil.d("更新头像" + response);
+                ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
+                switch (errorBean.getStatus()) {
+                    case "success":
+                        ImageBean imageBean = JSON.parseObject(response, ImageBean.class);
+                        //拿到头像的URL地址，更新本地数据
+                        String profileImageUrl = imageBean.getProfileImageUrl();
+                        Picasso.with(getContext()).load(profileImageUrl).placeholder
+                                (R.mipmap.ico_my_default_avatar).into(mMinePhoto);
+                        SharePreferenceUtil.put(getActivity(), Constant
+                                .PROFILEIMAGEURL, profileImageUrl);
+                        break;
+                    case "failure":
+                        Util.showError(getActivity(), errorBean.getReason());
+                        break;
+                }
+                try {
+                    mTempFile.delete();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     /**

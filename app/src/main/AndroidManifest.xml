@@ -104,6 +104,18 @@
         <!-- -友盟 -->
         <activity android:name=".base.BaseActivity">
         </activity>
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="com.yimiao100.sale.fileprovider"
+            android:grantUriPermissions="true"
+            android:exported="false" tools:replace="android:authorities">
+            <!--元数据-->
+            <meta-data
+                tools:replace="android:resource"
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+
         <activity
             android:name=".activity.SplashActivity"
             android:theme="@style/FullScreenTheme">
@@ -386,8 +398,11 @@
             android:name=".activity.OrderOnlineNoteActivity"
             android:launchMode="singleTask">
         </activity>
-        <activity android:name=".activity.ActivityActivity"
-                  android:launchMode="singleTop">
+        <activity
+            android:name=".activity.ActivityActivity"
+            android:launchMode="singleTop">
+        </activity>
+        <activity android:name=".activity.Main3Activity">
         </activity>
     </application>
 

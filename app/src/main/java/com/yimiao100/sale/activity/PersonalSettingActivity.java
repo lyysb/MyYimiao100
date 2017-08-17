@@ -1,12 +1,14 @@
 package com.yimiao100.sale.activity;
 
 
+import android.Manifest;
+import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
@@ -44,6 +46,8 @@ import butterknife.OnClick;
 import cn.jeesoft.widget.pickerview.CharacterPickerWindow;
 import de.hdodenhof.circleimageview.CircleImageView;
 import okhttp3.Call;
+import pub.devrel.easypermissions.AfterPermissionGranted;
+import pub.devrel.easypermissions.EasyPermissions;
 
 import static com.yimiao100.sale.ext.JSON.parseObject;
 
@@ -52,7 +56,7 @@ import static com.yimiao100.sale.ext.JSON.parseObject;
  * 个人设置界面
  */
 public class PersonalSettingActivity extends BaseActivity implements TitleView
-        .TitleBarOnClickListener {
+        .TitleBarOnClickListener, EasyPermissions.PermissionCallbacks {
 
     @BindView(R.id.personal_title)
     TitleView mPersonalTitle;
@@ -95,12 +99,10 @@ public class PersonalSettingActivity extends BaseActivity implements TitleView
     private static final int PHOTO_REQUEST_GALLERY = 2;         // 从相册中选择
     private static final int PHOTO_REQUEST_CUT = 3;             // 结果
 
-    /* 头像名称 */
-    private static final String PHOTO_FILE_NAME = "temp_photo.jpg";
-
 
     private final String URL_REGION_LIST = Constant.BASE_URL + "/api/region/all";
     private final String URL_UPDATE_REGION = Constant.BASE_URL + "/api/user/update_region";
+    private final String UPLOAD_PROFILE_IMAGE = Constant.BASE_URL + "/api/user/upload_profile_image";
 
     private File tempFile;
     private AlertDialog mDialog;
@@ -331,42 +333,42 @@ public class PersonalSettingActivity extends BaseActivity implements TitleView
                 mPersonalSetImage.setImageBitmap(bitmap);
                 //保存在在SD卡中
                 File file = BitmapUtil.setPicToView(bitmap, "head.jpg");
-                /**
-                 * 更新头像
-                 */
-                String UPLOAD_PROFILE_IMAGE = "/api/user/upload_profile_image";
-                String url = Constant.BASE_URL + UPLOAD_PROFILE_IMAGE;
-                String accessToken = (String) SharePreferenceUtil.get(this, "accessToken", "");
-                LogUtil.d("头像设置：" + accessToken);
+                updateHeadImage(file);
 
-                OkHttpUtils.post().url(url)
-                        .addHeader(ACCESS_TOKEN, accessToken)
-                        .addFile("profileImage", "head.jpg", file)
-                        .build().execute(new StringCallback() {
-                    @Override
-                    public void onError(Call call, Exception e, int id) {
-                        Util.showTimeOutNotice(currentContext);
-                    }
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+    /**
+     * 更新头像
+     */
+    private void updateHeadImage(File file) {
+        OkHttpUtils.post().url(UPLOAD_PROFILE_IMAGE)
+                .addHeader(ACCESS_TOKEN, accessToken)
+                .addFile("profileImage", "head.jpg", file)
+                .build().execute(new StringCallback() {
+            @Override
+            public void onError(Call call, Exception e, int id) {
+                Util.showTimeOutNotice(currentContext);
+            }
 
-                    @Override
-                    public void onResponse(String response, int id) {
-                        LogUtil.d("更新头像" + response);
-                        ErrorBean errorBean = parseObject(response, ErrorBean.class);
-                        switch (errorBean.getStatus()) {
-                            case "success":
-                                ImageBean imageBean = parseObject(response,
-                                        ImageBean.class);
-                                //拿到头像的URL地址，更新本地数据
-                                String profileImageUrl = imageBean.getProfileImageUrl();
-                                SharePreferenceUtil.put(getApplicationContext(), Constant
-                                        .PROFILEIMAGEURL, profileImageUrl);
-                                break;
-                            case "failure":
-                                Util.showError(currentContext, errorBean.getReason());
-                                break;
-                        }
-                    }
-                });
+            @Override
+            public void onResponse(String response, int id) {
+                LogUtil.d("更新头像" + response);
+                ErrorBean errorBean = parseObject(response, ErrorBean.class);
+                switch (errorBean.getStatus()) {
+                    case "success":
+                        ImageBean imageBean = parseObject(response,
+                                ImageBean.class);
+                        //拿到头像的URL地址，更新本地数据
+                        String profileImageUrl = imageBean.getProfileImageUrl();
+                        SharePreferenceUtil.put(getApplicationContext(), Constant
+                                .PROFILEIMAGEURL, profileImageUrl);
+                        break;
+                    case "failure":
+                        Util.showError(currentContext, errorBean.getReason());
+                        break;
+                }
                 try {
                     // 将临时文件删除
                     tempFile.delete();
@@ -374,8 +376,7 @@ public class PersonalSettingActivity extends BaseActivity implements TitleView
                     e.printStackTrace();
                 }
             }
-        }
-        super.onActivityResult(requestCode, resultCode, data);
+        });
     }
 
 
@@ -386,38 +387,73 @@ public class PersonalSettingActivity extends BaseActivity implements TitleView
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
-        CharSequence[] items = {"拍照", "从相册选择"};
+        CharSequence[] items = {getString(R.string.open_camera), getString(R.string.open_DCIM)};
         builder.setItems(items, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 switch (which) {
                     case 0:
                         //打开相机拍照,激活相机
-                        Intent intentCapture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                        tempFile = new File(Environment.getExternalStorageDirectory(),
-                                PHOTO_FILE_NAME);
-                        // 从文件中创建uri
-                        mUri = Uri.fromFile(tempFile);
-                        intentCapture.putExtra(MediaStore.EXTRA_OUTPUT, mUri);
-                        // 开启一个带有返回值的Activity，请求码为PHOTO_REQUEST_CAMERA
-                        startActivityForResult(intentCapture, PHOTO_REQUEST_CAMERA);
-                        mDialog.dismiss();
+                        openCamera();
                         break;
                     case 1:
                         //打开相册,激活系统图库，选择一张图片
-                        Intent intentPick = new Intent(Intent.ACTION_PICK);
-                        intentPick.setType("image/*");
-                        // 开启一个带有返回值的Activity，请求码为PHOTO_REQUEST_GALLERY
-                        startActivityForResult(intentPick, PHOTO_REQUEST_GALLERY);
-                        mDialog.dismiss();
+                        openDCIM(PHOTO_REQUEST_GALLERY);
                         break;
                 }
+                mDialog.dismiss();
             }
         });
         mDialog = builder.create();
         mDialog.show();
     }
 
+    @AfterPermissionGranted(RC_CAMERA)
+    public void openCamera() {
+        if (!EasyPermissions.hasPermissions(this, Manifest.permission.CAMERA)) {
+            // 如果没有权限则申请权限
+            EasyPermissions.requestPermissions(this, getString(R.string.rationale_camera), RC_CAMERA, Manifest.permission.CAMERA);
+            return;
+        }
+        Intent intentCapture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        String tempFileName = "tempFile" + System.currentTimeMillis() + ".jpg";
+        tempFile = Util.createFile(tempFileName);
+        // 从文件中创建uri
+        if (Build.VERSION.SDK_INT >= 24) {
+            ContentValues contentValues = new ContentValues(1);
+            contentValues.put(MediaStore.Images.Media.DATA, tempFile.getAbsolutePath());
+            mUri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues);
+        } else {
+            mUri = Uri.fromFile(tempFile);
+        }
+        intentCapture.putExtra(MediaStore.EXTRA_OUTPUT, mUri);
+        startActivityForResult(intentCapture, PHOTO_REQUEST_CAMERA);
+    }
+
+    public void openDCIM(int requestCode) {
+        Intent intentPick = new Intent(Intent.ACTION_PICK);
+        intentPick.setType("image/*");
+        startActivityForResult(intentPick, requestCode);
+    }
+
+    @Override
+    public void onPermissionsGranted(int requestCode, List<String> perms) {
+        LogUtil.d("申请成功：" + perms);
+    }
+
+    @Override
+    public void onPermissionsDenied(int requestCode, List<String> perms) {
+        LogUtil.d("申请失败：" + perms);
+        if (EasyPermissions.somePermissionDenied(this, Manifest.permission.CAMERA)) {
+            // 如果用户拒绝了相机权限
+            LogUtil.d("用户拒绝相机权限");
+        }
+        if (EasyPermissions.somePermissionPermanentlyDenied(this, perms)) {
+            // 如果用户选择了不再询问，则要去设置界面打开权限
+            LogUtil.d("用户选择了不再询问");
+            showSettingDialog();
+        }
+    }
 
     /**
      * 剪切图片

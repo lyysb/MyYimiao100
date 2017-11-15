@@ -317,7 +317,9 @@
         </activity>
         <activity android:name=".activity.GuideActivity">
         </activity>
-        <activity android:name=".activity.LiveActivity">
+        <activity android:name=".activity.LiveActivity"
+                  android:hardwareAccelerated="true"
+                  android:configChanges="orientation|screenSize">
         </activity>
         <activity android:name=".activity.ShowWebImageActivity">
         </activity>

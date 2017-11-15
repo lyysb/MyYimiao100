@@ -2,10 +2,13 @@ package com.yimiao100.sale.activity;
 
 import android.os.Bundle;
 import android.view.KeyEvent;
+import android.view.ViewGroup;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import android.widget.LinearLayout;
+import com.just.library.AgentWeb;
 import com.yimiao100.sale.R;
 import com.yimiao100.sale.base.BaseActivity;
 
@@ -13,42 +16,50 @@ import com.yimiao100.sale.base.BaseActivity;
  * 疫苗库
  */
 public class WareHouseActivity extends BaseActivity {
-
-
-    private WebView mWebView;
+    private LinearLayout mLayout;
+    private AgentWeb mAgentWeb;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ware_house);
 
+        mLayout = (LinearLayout) findViewById(R.id.ware_house_layout);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams
+                .MATCH_PARENT);
 
-        mWebView = (WebView) findViewById(R.id.wb1);
-        WebSettings settings = mWebView.getSettings();
-        settings.setJavaScriptEnabled(true);
-
-        //自适应屏幕
-        settings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
-        settings.setUseWideViewPort(true);
-        settings.setLoadWithOverviewMode(true);
-
-        mWebView.loadUrl("http://www.yimiao100.com/wechat/bstong/index.jsp");
-        mWebView.setWebViewClient(new WebViewClient(){
-            @Override
-            public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                //返回值是true的时候控制去WebView打开，为false调用系统浏览器或第三方浏览器
-                view.loadUrl(url);
-                return true;
-            }
-        });
+        mAgentWeb = AgentWeb.with(this)//传入Activity or Fragment
+                .setAgentWebParent(mLayout, params)//传入AgentWeb 的父控件 ，如果父控件为 RelativeLayout ， 那么第二参数需要传入 RelativeLayout.LayoutParams ,第一个参数和第二个参数应该对应。
+                .useDefaultIndicator()// 使用默认进度条
+                .defaultProgressBarColor() // 使用默认进度条颜色
+                .createAgentWeb()//
+                .ready()
+                .go("http://www.yimiao100.com/wechat/bstong/index.jsp");
     }
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if ((keyCode == KeyEvent.KEYCODE_BACK) && mWebView.canGoBack()) {
-            mWebView.goBack();
+        if (mAgentWeb.handleKeyEvent(keyCode, event)) {
             return true;
         }
         return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    protected void onPause() {
+        mAgentWeb.getWebLifeCycle().onPause();
+        super.onPause();
+
+    }
+
+    @Override
+    protected void onResume() {
+        mAgentWeb.getWebLifeCycle().onResume();
+        super.onResume();
+    }
+    @Override
+    public void onDestroy() {
+        mAgentWeb.getWebLifeCycle().onDestroy();
+        super.onDestroy();
     }
 }

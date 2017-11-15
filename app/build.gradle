@@ -19,7 +19,7 @@ ext {
     tkrefreshlayout_version = "1.0.7"
     badgeview_version = "1.1.1"
     eventbus_version = "3.0.0"
-//    agentweb_version = "1.2.5"
+    agentweb_version = "2.0.1"
     easypermissions_version = "0.4.2"
     spinner_version = "1.1.0"
 }
@@ -95,7 +95,7 @@ dependencies {
     // Google官方动态权限申请
     compile "pub.devrel:easypermissions:$easypermissions_version"
     // 高度封装的 Android WebView
-    //    compile "com.just.agentweb:agentweb:$agentweb_version"
+    compile "com.just.agentweb:agentweb:$agentweb_version"
     compile "com.jakewharton:butterknife:$butterknife_version"
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     compile "org.jetbrains.anko:anko-commons:$anko_version"

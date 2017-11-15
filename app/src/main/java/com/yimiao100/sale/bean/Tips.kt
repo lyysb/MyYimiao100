@@ -6,5 +6,5 @@ package com.yimiao100.sale.bean
 data class Tips(
         var order_balance: Int,
         var notice: Int,
-        var details: HashMap<String, ArrayList<String>>
+        var details: TipDetails
 )

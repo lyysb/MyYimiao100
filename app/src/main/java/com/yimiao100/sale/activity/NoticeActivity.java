@@ -56,6 +56,9 @@ public class NoticeActivity extends BaseActivitySingleList {
         updateTips();
     }
 
+    /**
+     * 更新通知圆点
+     */
     private void updateTips() {
         OkHttpUtils.post().url(URL_UPDATE_TIPS).addHeader(ACCESS_TOKEN, accessToken)
                 .addParams(TIP_TYPE, mTipType)

@@ -20,6 +20,7 @@ data class OrderOnline(
         var deliveryUnits: String,
         var protocolFilePath: String,
         var protocolFileUrl: String,
+        var protocolFileCount: String,
         var remark: String,
         var consigneeName: String,
         var consigneePhoneNumber: String,

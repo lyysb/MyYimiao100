@@ -34,6 +34,9 @@ public class BitmapUtil {
      * @return
      */
     public static File setPicToView(Bitmap bitmap, String FileName) {
+        for (int i = 0; i < 10; i++) {
+
+        }
         FileOutputStream b = null;
         File file = new File(Util.getApkPath(), FileName);
         try {
@@ -216,6 +219,33 @@ public class BitmapUtil {
                         return source;
                     }
                 }
+            }
+
+            @Override
+            public String key() {
+                return "transformation" + " desiredWidth";
+            }
+        };
+    }
+
+    /**
+     * TODO 未完成
+     * @param imageView
+     * @return
+     */
+    public static Transformation getTransformationForAd(final ImageView imageView){
+        return new Transformation() {
+            @Override
+            public Bitmap transform(Bitmap source) {
+                int targetWidth = imageView.getWidth();
+                LogUtil.d("source.getHeight()=" + source.getHeight()
+                        + "source.getWidth()=" + source.getWidth()
+                        + ",targetWidth=" + targetWidth);
+                //返回原图
+                if (source.getWidth() == 0) {
+                    return source;
+                }
+                return null;
             }
 
             @Override

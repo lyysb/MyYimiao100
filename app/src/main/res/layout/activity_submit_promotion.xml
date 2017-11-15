@@ -60,6 +60,7 @@
 
             </LinearLayout>
             <TextView
+                android:id="@+id/submit_promotion_detail"
                 android:layout_marginTop="24dp"
                 android:text="详情：疫苗推广竞标保证金"
                 style="@style/style62"/>

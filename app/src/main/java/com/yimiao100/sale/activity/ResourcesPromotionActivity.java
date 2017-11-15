@@ -100,8 +100,8 @@ public class ResourcesPromotionActivity extends BaseActivity implements TitleVie
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
+    protected void onResume() {
+        super.onResume();
         //校验账户信息
         switch (mUserAccountType) {
             case PERSONAL:

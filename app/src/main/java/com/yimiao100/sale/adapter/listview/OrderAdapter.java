@@ -114,6 +114,10 @@ public class OrderAdapter extends BaseAdapter {
                 //第四状态-已签约
                 order_status.setTextColor(mContext.getResources().getColor(R.color.colorMain));
                 break;
+            case "end":
+                // 最终状态-已终止
+                order_status.setTextColor(mContext.getResources().getColor(R.color.colorEnd));
+                break;
             default:
                 //其他界面--审核中|未通过
                 order_status.setTextColor(mContext.getResources().getColor(R.color.color999));

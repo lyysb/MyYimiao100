@@ -196,8 +196,8 @@
                 android:paddingLeft="12dp"
                 android:scaleType="fitStart"
                 android:src="@mipmap/ico_application_authorization_upload"/>
-
             <TextView
+                android:id="@+id/order_online_protocol_count"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@android:color/white"
@@ -337,6 +337,7 @@
                 android:layout_marginTop="20dp"
                 android:background="@drawable/selector_button"
                 android:text="提交"
+                android:gravity="center"
                 android:textColor="@android:color/white"
                 android:textSize="14sp"/>
 

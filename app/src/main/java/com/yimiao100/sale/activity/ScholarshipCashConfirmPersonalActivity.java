@@ -11,14 +11,12 @@ import android.widget.TextView;
 import com.yimiao100.sale.R;
 import com.yimiao100.sale.base.BaseActivity;
 import com.yimiao100.sale.bean.ErrorBean;
+import com.yimiao100.sale.bean.PersonalBean;
+import com.yimiao100.sale.bean.Tax;
+import com.yimiao100.sale.bean.TaxBean;
 import com.yimiao100.sale.ext.JSON;
-import com.yimiao100.sale.utils.Constant;
-import com.yimiao100.sale.utils.DialogUtil;
-import com.yimiao100.sale.utils.FormatUtils;
-import com.yimiao100.sale.utils.LogUtil;
-import com.yimiao100.sale.utils.SharePreferenceUtil;
-import com.yimiao100.sale.utils.ToastUtil;
-import com.yimiao100.sale.utils.Util;
+import com.yimiao100.sale.utils.*;
+import com.yimiao100.sale.vaccine.RichVaccineActivity;
 import com.yimiao100.sale.view.TitleView;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
@@ -34,7 +32,7 @@ import static com.yimiao100.sale.utils.Constant.TAX_RATE;
  * 奖学金提现确认--个人
  */
 public class ScholarshipCashConfirmPersonalActivity extends BaseActivity implements TitleView
-        .TitleBarOnClickListener {
+        .TitleBarOnClickListener, CheckUtil.PersonalPassedListener {
 
     @BindView(R.id.scholarship_cash_title_personal)
     TitleView mScholarshipCashTitle;
@@ -47,6 +45,7 @@ public class ScholarshipCashConfirmPersonalActivity extends BaseActivity impleme
 
     private final String URL_APPLY_CASH = Constant.BASE_URL +
             "/api/fund/exam_reward_cash_withdrawal";
+    private final String URL_TEX = Constant.BASE_URL + "/api/tax/default";
     private final String ORDER_IDS = "courseExamItemIds";
     @BindView(R.id.scholarship_cash_final_personal)
     TextView mScholarshipCashFinalPersonal;
@@ -65,21 +64,17 @@ public class ScholarshipCashConfirmPersonalActivity extends BaseActivity impleme
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-        boolean isExit = (boolean) SharePreferenceUtil.get(this, Constant.PERSONAL_EXIT, false);
-        if (isExit) {
-            //设置尾号
-            String bankNumber = (String) SharePreferenceUtil.get(this, Constant
-                    .PERSONAL_BANK_CARD_NUMBER, "");
-            mScholarshipCashEnd.setText(bankNumber.length() > 4 ? "尾号" + bankNumber.substring
-                    (bankNumber.length() - 4) : bankNumber);
-            //设置联系方式
-            mScholarshipCashPhone.setText("联系方式：" + SharePreferenceUtil.get(this, Constant
-                    .PERSONAL_PHONE_NUMBER, ""));
-        } else {
-            DialogUtil.nonePersonal(this);
-        }
+    protected void onResume() {
+        super.onResume();
+        CheckUtil.checkPersonal(this, this);
+    }
+
+    @Override
+    public void handlePersonal(PersonalBean personal) {
+        String bankCardNumber = personal.getBankCardNumber();
+        mScholarshipCashEnd.setText(bankCardNumber.length() > 4 ? "尾号" + bankCardNumber.substring(bankCardNumber.length() - 4) : bankCardNumber);
+        //设置联系方式
+        mScholarshipCashPhone.setText("联系方式：" + personal.getPersonalPhoneNumber());
     }
 
     private void initView() {
@@ -92,30 +87,55 @@ public class ScholarshipCashConfirmPersonalActivity extends BaseActivity impleme
         mOrderIds = intent.getStringExtra("orderIds");
         LogUtil.d("mOrderIds are :" + mOrderIds);
         //获取提现金额
-        double amount = intent.getDoubleExtra("amount", -1);
-        mScholarshipCashMoney.setText("￥" + FormatUtils.MoneyFormat(amount));
+        final double amount = intent.getDoubleExtra("amount", -1);
+        mScholarshipCashMoney.setText(FormatUtils.RMBFormat(amount));
         //根据说率计算税后金额
-        double taxRate = Double.valueOf((String)SharePreferenceUtil.get(this, TAX_RATE, "-1")) ;
-        if (taxRate != -1) {
-            // 显示计算后金额
-            mScholarshipCashFinalPersonal.setText("￥" + FormatUtils.MoneyFormat(amount * (1 - taxRate)));
-        } else {
-            // 提示错误
-            // 提示错误
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setMessage(getString(R.string.dialog_tax_error));
-            builder.setCancelable(false);
-            builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.dismiss();
-                    finish();
-                }
-            });
-            AlertDialog dialog = builder.create();
-            dialog.show();
-        }
+        OkHttpUtils.post().url(URL_TEX).addHeader(ACCESS_TOKEN, accessToken)
+                .build().execute(new StringCallback() {
+            @Override
+            public void onError(Call call, Exception e, int id) {
+                LogUtil.d("tax error is :");
+                e.printStackTrace();
+            }
 
+            @Override
+            public void onResponse(String response, int id) {
+                LogUtil.d("tax :" + response);
+                ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
+                switch (errorBean.getStatus()) {
+                    case "success":
+                        Tax tax = JSON.parseObject(response, TaxBean.class).getTax();
+                        double taxRate;
+                        if (tax != null) {
+                            taxRate = tax.getTaxRate() / 100;
+                            mScholarshipCashFinalPersonal.setText(FormatUtils.RMBFormat(amount * (1 - taxRate)));
+                        } else {
+                            // 错误税率
+                            errorTax();
+                        }
+                        break;
+                    case "failure":
+                        Util.showError(currentContext, errorBean.getReason());
+                        break;
+                }
+            }
+        });
+
+    }
+
+    private void errorTax() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(ScholarshipCashConfirmPersonalActivity.this);
+        builder.setMessage(getString(R.string.dialog_tax_error));
+        builder.setCancelable(false);
+        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                finish();
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
     @OnClick({R.id.scholarship_cash_apply_service_personal, R.id
@@ -186,7 +206,7 @@ public class ScholarshipCashConfirmPersonalActivity extends BaseActivity impleme
                     case "success":
                         ToastUtil.showShort(currentContext, "申请成功");
                         //申请提现成功，返回财富列表
-                        startActivity(new Intent(getApplicationContext(), RichesActivity.class));
+                        startActivity(new Intent(getApplicationContext(), RichVaccineActivity.class));
                         break;
                     case "failure":
                         Util.showError(currentContext, errorBean.getReason());

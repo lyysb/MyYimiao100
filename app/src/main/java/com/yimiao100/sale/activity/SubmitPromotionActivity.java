@@ -26,6 +26,7 @@ import com.yimiao100.sale.utils.FormatUtils;
 import com.yimiao100.sale.utils.LogUtil;
 import com.yimiao100.sale.utils.ToastUtil;
 import com.yimiao100.sale.utils.Util;
+import com.yimiao100.sale.vaccine.BusinessVaccineActivity;
 import com.yimiao100.sale.view.TitleView;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
@@ -112,7 +113,7 @@ public class SubmitPromotionActivity extends BaseActivity implements TitleView
                 mBidQty = intent.getStringExtra("bidQty");
                 //实付款金额
                 double bidDeposit = resourceInfo.getBidDeposit();
-                mAmount.setText("实付款：￥" + FormatUtils.MoneyFormat(bidDeposit));
+                mAmount.setText("实付款：" + FormatUtils.RMBFormat(bidDeposit));
                 //添加参数
                 mParams.put(RESOURCE_ID, mResourceId);
                 mParams.put(BID_QTY, mBidQty);
@@ -120,7 +121,8 @@ public class SubmitPromotionActivity extends BaseActivity implements TitleView
             case "order":
                 URL_PAY = Constant.BASE_URL + "/api/order/pay_bid_deposit";
                 ResourceListBean order = intent.getParcelableExtra("order");
-                mAmount.setText("实付款：￥" + order.getBidDeposit());
+                double deposit = order.getBidDeposit();
+                mAmount.setText("实付款：" + FormatUtils.RMBFormat(deposit));
                 mOrderId = order.getId() + "";
                 LogUtil.d(mOrderId);
                 //添加参数
@@ -283,11 +285,12 @@ public class SubmitPromotionActivity extends BaseActivity implements TitleView
                             clz = ResourcesActivity.class;
                             break;
                         case "order":
-                            clz = OrderActivity.class;
+                            clz = BusinessVaccineActivity.class;
                             break;
                     }
-                    Intent intent1 = new Intent(SubmitPromotionActivity.this, clz);
-                    startActivity(intent1);
+                    Intent intent = new Intent(SubmitPromotionActivity.this, clz);
+                    intent.putExtra("userAccountType", mUserAccountType);
+                    startActivity(intent);
                 }
                 //支付出现问题（取消，失败），不需要做任何操作。停留在支付页面
                 dialog.dismiss();

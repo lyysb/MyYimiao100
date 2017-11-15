@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -11,14 +12,12 @@ import android.widget.TextView;
 import com.yimiao100.sale.R;
 import com.yimiao100.sale.base.BaseActivity;
 import com.yimiao100.sale.bean.ErrorBean;
+import com.yimiao100.sale.bean.PersonalBean;
+import com.yimiao100.sale.bean.Tax;
+import com.yimiao100.sale.bean.TaxBean;
 import com.yimiao100.sale.ext.JSON;
-import com.yimiao100.sale.utils.Constant;
-import com.yimiao100.sale.utils.DialogUtil;
-import com.yimiao100.sale.utils.FormatUtils;
-import com.yimiao100.sale.utils.LogUtil;
-import com.yimiao100.sale.utils.SharePreferenceUtil;
-import com.yimiao100.sale.utils.ToastUtil;
-import com.yimiao100.sale.utils.Util;
+import com.yimiao100.sale.utils.*;
+import com.yimiao100.sale.vaccine.RichVaccineActivity;
 import com.yimiao100.sale.view.TitleView;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
@@ -34,7 +33,7 @@ import static com.yimiao100.sale.utils.Constant.TAX_RATE;
  * 推广费提现确认界面-个人
  */
 public class PromotionCashConfirmPersonalActivity extends BaseActivity implements TitleView
-        .TitleBarOnClickListener {
+        .TitleBarOnClickListener, CheckUtil.PersonalPassedListener {
 
     @BindView(R.id.promotion_cash_title_personal)
     TitleView mPromotionCashTitle;
@@ -47,7 +46,10 @@ public class PromotionCashConfirmPersonalActivity extends BaseActivity implement
 
 
     private final String URL_APPLY_CASH = Constant.BASE_URL + "/api/fund/sale_cash_withdrawal";
+    private final String URL_TEX = Constant.BASE_URL + "/api/tax/default";
     private final String ORDER_IDS = "orderIds";
+    private final String RECONCILIATION = "reconciliation";                 // 从对账过来的
+    private String mFrom;
     @BindView(R.id.promotion_cash_final_personal)
     TextView mPromotionCashFinalPersonal;
 
@@ -59,27 +61,25 @@ public class PromotionCashConfirmPersonalActivity extends BaseActivity implement
         setContentView(R.layout.activity_promotion_case_confirm_personal);
         ButterKnife.bind(this);
 
+        mFrom = getIntent().getStringExtra("from");
+
         initView();
 
         initData();
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-        boolean isExit = (boolean) SharePreferenceUtil.get(this, Constant.PERSONAL_EXIT, false);
-        if (isExit) {
-            //设置尾号
-            String bankNumber = (String) SharePreferenceUtil.get(this, Constant
-                    .PERSONAL_BANK_CARD_NUMBER, "");
-            mPromotionCashEnd.setText(bankNumber.length() > 4 ? "尾号" + bankNumber.substring
-                    (bankNumber.length() - 4) : bankNumber);
-            //设置联系方式
-            mPromotionCashPhone.setText("联系方式：" + SharePreferenceUtil.get(this, Constant
-                    .PERSONAL_PHONE_NUMBER, ""));
-        } else {
-            DialogUtil.nonePersonal(this);
-        }
+    protected void onResume() {
+        super.onResume();
+        CheckUtil.checkPersonal(this, this);
+    }
+
+    @Override
+    public void handlePersonal(PersonalBean personal) {
+        String bankCardNumber = personal.getBankCardNumber();
+        mPromotionCashEnd.setText(bankCardNumber.length() > 4 ? "尾号" + bankCardNumber.substring(bankCardNumber.length() - 4) : bankCardNumber);
+        //设置联系方式
+        mPromotionCashPhone.setText("联系方式：" + personal.getPersonalPhoneNumber());
     }
 
     private void initView() {
@@ -92,29 +92,59 @@ public class PromotionCashConfirmPersonalActivity extends BaseActivity implement
         mOrderIds = intent.getStringExtra("orderIds");
         //获取提现金额
         double amount = intent.getDoubleExtra("amount", -1);
-        mPromotionCashMoney.setText("￥" + FormatUtils.MoneyFormat(amount));
-        //根据说率计算税后金额
-        // ps 鬼知道为啥我存进去的double 取出来就是string
-        double taxRate = Double.valueOf((String) SharePreferenceUtil.get(this, TAX_RATE, "-1"));
-        if (taxRate != -1) {
-            // 显示计算后金额
-            mPromotionCashFinalPersonal.setText("￥" + FormatUtils.MoneyFormat(amount * (1 - taxRate)));
-        } else {
-            // 提示错误
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setMessage(getString(R.string.dialog_tax_error));
-            builder.setCancelable(false);
-            builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.dismiss();
-                    finish();
-                }
-            });
-            AlertDialog dialog = builder.create();
-            dialog.show();
-        }
+        mPromotionCashMoney.setText(FormatUtils.RMBFormat(amount));
+        // 获取实际金额
+        double actualAmount = intent.getDoubleExtra("actual", 0.0);
+        mPromotionCashFinalPersonal.setText(FormatUtils.RMBFormat(actualAmount));
+
+//        //根据说率计算税后金额
+//        OkHttpUtils.post().url(URL_TEX).addHeader(ACCESS_TOKEN, accessToken)
+//                .build().execute(new StringCallback() {
+//            @Override
+//            public void onError(Call call, Exception e, int id) {
+//                LogUtil.d("tax error is :");
+//                e.printStackTrace();
+//            }
+//
+//            @Override
+//            public void onResponse(String response, int id) {
+//                LogUtil.d("tax :" + response);
+//                ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
+//                switch (errorBean.getStatus()) {
+//                    case "success":
+//                        Tax tax = JSON.parseObject(response, TaxBean.class).getTax();
+//                        double taxRate;
+//                        if (tax != null) {
+//                            taxRate = tax.getTaxRate() / 100;
+//                            mPromotionCashFinalPersonal.setText(FormatUtils.RMBFormat(amount * (1 - taxRate)));
+//                        } else {
+//                            // 错误税率
+//                            errorTax();
+//                        }
+//                        break;
+//                    case "failure":
+//                        Util.showError(currentContext, errorBean.getReason());
+//                        break;
+//                }
+//            }
+//        });
     }
+
+    private void errorTax() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(PromotionCashConfirmPersonalActivity.this);
+        builder.setMessage(getString(R.string.dialog_tax_error));
+        builder.setCancelable(false);
+        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                finish();
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
 
     @OnClick({R.id.promotion_cash_apply_service_personal, R.id.promotion_cash_apply_cash_personal})
     public void onClick(View view) {
@@ -129,7 +159,6 @@ public class PromotionCashConfirmPersonalActivity extends BaseActivity implement
                 break;
         }
     }
-
 
     /**
      * 申请提现确定弹窗
@@ -183,8 +212,12 @@ public class PromotionCashConfirmPersonalActivity extends BaseActivity implement
                 switch (errorBean.getStatus()) {
                     case "success":
                         ToastUtil.showShort(currentContext, "申请成功");
-                        //申请提现成功，返回财富列表
-                        startActivity(new Intent(getApplicationContext(), RichesActivity.class));
+                        if (TextUtils.equals(mFrom, RECONCILIATION)) {
+                            startActivity(new Intent(currentContext, ReconciliationDetailActivity.class));
+                        } else {
+                            //申请提现成功，返回财富列表
+                            startActivity(new Intent(currentContext, RichVaccineActivity.class));
+                        }
                         break;
                     case "failure":
                         Util.showError(currentContext, errorBean.getReason());

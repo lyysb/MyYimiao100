@@ -68,7 +68,7 @@ public class CommodityDetailActivity extends BaseActivity implements TitleView.T
         mCommodityDetailIntegralValue.setText(mGoods.getIntegralValue() + "");
         mCommodityDetailIntegralValue2.setText(mGoods.getIntegralValue() + "");
         //市场参考价格
-        mCommodityDetailUnitPrice.setText("市场参考价格：￥" + FormatUtils.MoneyFormat(mGoods.getUnitPrice()));
+        mCommodityDetailUnitPrice.setText("市场参考价格：" + FormatUtils.RMBFormat(mGoods.getUnitPrice()));
 
 
         initWeb();

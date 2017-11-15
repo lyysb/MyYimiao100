@@ -112,8 +112,7 @@ public class CommodityConfirmActivity extends BaseActivity implements TitleView
         mCommodityConfirmIntegral.setText("积分：" + mGoods.getIntegralValue());
         mCommodityConfirmIntegral2.setText(mGoods.getIntegralValue() + "");
         //市场参考价
-        mCommodityConfirmUnitPrice.setText("市场参考价格：￥" + FormatUtils.MoneyFormat(mGoods
-                .getUnitPrice()));
+        mCommodityConfirmUnitPrice.setText("市场参考价格：" + FormatUtils.RMBFormat(mGoods.getUnitPrice()));
         //商品ID
         mGoodsId = mGoods.getId() + "";
     }

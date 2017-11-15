@@ -22,6 +22,22 @@ public class FormatUtils {
     }
 
     /**
+     * RMB格式化
+     * @param money
+     * @return
+     */
+    public static String RMBFormat(double money) {
+        if (money < 0) {
+            return "error";
+        }else if (money == 0) {
+            return "¥0.00";
+        }else{
+            DecimalFormat format = new DecimalFormat("###,##0.00");
+            return "¥" + format.format(money);
+        }
+    }
+
+    /**
      * 数字格式化
      * @param number
      * @return

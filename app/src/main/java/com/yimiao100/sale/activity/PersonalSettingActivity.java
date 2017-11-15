@@ -1,16 +1,9 @@
 package com.yimiao100.sale.activity;
 
 
-import android.Manifest;
-import android.content.ContentValues;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.provider.MediaStore;
-import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -27,11 +20,7 @@ import com.yimiao100.sale.bean.ErrorBean;
 import com.yimiao100.sale.bean.ImageBean;
 import com.yimiao100.sale.bean.Province;
 import com.yimiao100.sale.bean.RegionListBean;
-import com.yimiao100.sale.utils.BitmapUtil;
-import com.yimiao100.sale.utils.Constant;
-import com.yimiao100.sale.utils.LogUtil;
-import com.yimiao100.sale.utils.SharePreferenceUtil;
-import com.yimiao100.sale.utils.Util;
+import com.yimiao100.sale.utils.*;
 import com.yimiao100.sale.view.TitleView;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
@@ -46,8 +35,7 @@ import butterknife.OnClick;
 import cn.jeesoft.widget.pickerview.CharacterPickerWindow;
 import de.hdodenhof.circleimageview.CircleImageView;
 import okhttp3.Call;
-import pub.devrel.easypermissions.AfterPermissionGranted;
-import pub.devrel.easypermissions.EasyPermissions;
+import org.jetbrains.annotations.NotNull;
 
 import static com.yimiao100.sale.ext.JSON.parseObject;
 
@@ -56,7 +44,7 @@ import static com.yimiao100.sale.ext.JSON.parseObject;
  * 个人设置界面
  */
 public class PersonalSettingActivity extends BaseActivity implements TitleView
-        .TitleBarOnClickListener, EasyPermissions.PermissionCallbacks {
+        .TitleBarOnClickListener, DialogManager.onPicCropListener {
 
     @BindView(R.id.personal_title)
     TitleView mPersonalTitle;
@@ -95,28 +83,17 @@ public class PersonalSettingActivity extends BaseActivity implements TitleView
     private List<List<String>> mOptions2Items;
     private List<List<List<String>>> mOptions3Items;
 
-    private static final int PHOTO_REQUEST_CAMERA = 1;          // 拍照
-    private static final int PHOTO_REQUEST_GALLERY = 2;         // 从相册中选择
-    private static final int PHOTO_REQUEST_CUT = 3;             // 结果
-
-
     private final String URL_REGION_LIST = Constant.BASE_URL + "/api/region/all";
     private final String URL_UPDATE_REGION = Constant.BASE_URL + "/api/user/update_region";
     private final String UPLOAD_PROFILE_IMAGE = Constant.BASE_URL + "/api/user/upload_profile_image";
 
-    private File tempFile;
-    private AlertDialog mDialog;
-
     private List<Province> mProvinceList;
-    private Uri mUri;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_personal_setting);
         ButterKnife.bind(this);
-
 
         initData();
 
@@ -263,7 +240,8 @@ public class PersonalSettingActivity extends BaseActivity implements TitleView
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.personal_setImage:        //点击换头像
-                showImageDialog();
+//                showImageDialog();
+                DialogManager.getInstance().showPicDialog(view).setOnPicCropListener(this);
                 break;
             case R.id.ll_personal_setName:      //设置姓名
                 startActivityForResult(new Intent(this, PersonalNameActivity.class),
@@ -295,6 +273,7 @@ public class PersonalSettingActivity extends BaseActivity implements TitleView
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        DialogManager.getInstance().onPicActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_SETTING) {
             switch (resultCode) {
                 case 1:
@@ -314,31 +293,16 @@ public class PersonalSettingActivity extends BaseActivity implements TitleView
                     mPersonalIdCard.setText(idCard);
                     break;
             }
-        } else if (requestCode == PHOTO_REQUEST_GALLERY) {
-            // 从相册返回的数据
-            if (data != null) {
-                Uri uri = data.getData();
-                crop(uri);
-            }
-        } else if (requestCode == PHOTO_REQUEST_CAMERA) {
-            // 从相机返回的数据
-            if (resultCode == RESULT_OK) {
-                crop(mUri);
-            }
-        } else if (requestCode == PHOTO_REQUEST_CUT) {
-            // 从剪切图片返回的数据
-            if (data != null && resultCode == RESULT_OK) {
-                Bitmap bitmap = data.getParcelableExtra("data");
-                //显示在本地
-                mPersonalSetImage.setImageBitmap(bitmap);
-                //保存在在SD卡中
-                File file = BitmapUtil.setPicToView(bitmap, "head.jpg");
-                updateHeadImage(file);
-
-            }
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NotNull String[] permissions, @NotNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        DialogManager.getInstance().onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
     /**
      * 更新头像
      */
@@ -369,115 +333,8 @@ public class PersonalSettingActivity extends BaseActivity implements TitleView
                         Util.showError(currentContext, errorBean.getReason());
                         break;
                 }
-                try {
-                    // 将临时文件删除
-                    tempFile.delete();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
             }
         });
-    }
-
-
-    /**
-     * 点击换头像
-     */
-    private void showImageDialog() {
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-
-        CharSequence[] items = {getString(R.string.open_camera), getString(R.string.open_DCIM)};
-        builder.setItems(items, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                switch (which) {
-                    case 0:
-                        //打开相机拍照,激活相机
-                        openCamera();
-                        break;
-                    case 1:
-                        //打开相册,激活系统图库，选择一张图片
-                        openDCIM(PHOTO_REQUEST_GALLERY);
-                        break;
-                }
-                mDialog.dismiss();
-            }
-        });
-        mDialog = builder.create();
-        mDialog.show();
-    }
-
-    @AfterPermissionGranted(RC_CAMERA)
-    public void openCamera() {
-        if (!EasyPermissions.hasPermissions(this, Manifest.permission.CAMERA)) {
-            // 如果没有权限则申请权限
-            EasyPermissions.requestPermissions(this, getString(R.string.rationale_camera), RC_CAMERA, Manifest.permission.CAMERA);
-            return;
-        }
-        Intent intentCapture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        String tempFileName = "tempFile" + System.currentTimeMillis() + ".jpg";
-        tempFile = Util.createFile(tempFileName);
-        // 从文件中创建uri
-        if (Build.VERSION.SDK_INT >= 24) {
-            ContentValues contentValues = new ContentValues(1);
-            contentValues.put(MediaStore.Images.Media.DATA, tempFile.getAbsolutePath());
-            mUri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues);
-        } else {
-            mUri = Uri.fromFile(tempFile);
-        }
-        intentCapture.putExtra(MediaStore.EXTRA_OUTPUT, mUri);
-        startActivityForResult(intentCapture, PHOTO_REQUEST_CAMERA);
-    }
-
-    public void openDCIM(int requestCode) {
-        Intent intentPick = new Intent(Intent.ACTION_PICK);
-        intentPick.setType("image/*");
-        startActivityForResult(intentPick, requestCode);
-    }
-
-    @Override
-    public void onPermissionsGranted(int requestCode, List<String> perms) {
-        LogUtil.d("申请成功：" + perms);
-    }
-
-    @Override
-    public void onPermissionsDenied(int requestCode, List<String> perms) {
-        LogUtil.d("申请失败：" + perms);
-        if (EasyPermissions.somePermissionDenied(this, Manifest.permission.CAMERA)) {
-            // 如果用户拒绝了相机权限
-            LogUtil.d("用户拒绝相机权限");
-        }
-        if (EasyPermissions.somePermissionPermanentlyDenied(this, perms)) {
-            // 如果用户选择了不再询问，则要去设置界面打开权限
-            LogUtil.d("用户选择了不再询问");
-            showSettingDialog();
-        }
-    }
-
-    /**
-     * 剪切图片
-     *
-     * @param uri
-     */
-    private void crop(Uri uri) {
-        // 裁剪图片意图
-        Intent intent = new Intent("com.android.camera.action.CROP");
-        intent.setDataAndType(uri, "image/*");
-        intent.putExtra("crop", "true");
-        // 裁剪框的比例，1：1
-        intent.putExtra("aspectX", 1);
-        intent.putExtra("aspectY", 1);
-        // 裁剪后输出图片的尺寸大小
-        intent.putExtra("outputX", 250);
-        intent.putExtra("outputY", 250);
-
-        intent.putExtra("outputFormat", "JPEG");// 图片格式
-        intent.putExtra("noFaceDetection", true);// 取消人脸识别
-        intent.putExtra("return-data", true);
-
-        // 开启一个带有返回值的Activity，请求码为PHOTO_REQUEST_CUT
-        startActivityForResult(intent, PHOTO_REQUEST_CUT);
     }
 
     /**
@@ -565,12 +422,20 @@ public class PersonalSettingActivity extends BaseActivity implements TitleView
 
     @Override
     public void leftOnClick() {
-        LogUtil.d("leftOnClick???" + mOptions.isShowing());
         finish();
     }
 
     @Override
     public void rightOnClick() {
 
+    }
+
+    @Override
+    public void handleBitmap(View view, Bitmap bitmap) {
+        //显示在本地
+        mPersonalSetImage.setImageBitmap(bitmap);
+        //保存在在SD卡中
+        File file = BitmapUtil.setPicToView(bitmap, "head.jpg");
+        updateHeadImage(file);
     }
 }

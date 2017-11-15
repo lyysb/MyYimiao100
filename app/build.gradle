@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 /*解决butterknife点击事件无效问题*/
 apply plugin: 'com.neenbedankt.android-apt'
-ext{
+ext {
     anko_version = "0.10.1"
     pickerview_version = "3.2.5"
     butterknife_version = "8.2.1"
@@ -21,6 +21,7 @@ ext{
     eventbus_version = "3.0.0"
 //    agentweb_version = "1.2.5"
     easypermissions_version = "0.4.2"
+    spinner_version = "1.1.0"
 }
 
 android {
@@ -36,7 +37,7 @@ android {
         }
     }
 
-    lintOptions{
+    lintOptions {
         // 禁止多语言
         disable 'MissingTranslation'
     }
@@ -46,8 +47,8 @@ android {
         applicationId "com.yimiao100.sale"
         minSdkVersion 16
         targetSdkVersion 25
-        versionCode 36
-        versionName "1.7.3"
+        versionCode 41
+        versionName "2.0"
         multiDexEnabled true
 
         ndk {
@@ -56,9 +57,9 @@ android {
             abiFilters 'x86', 'x86_64v7a', 'mips', 'mips64'
         }
         manifestPlaceholders = [
-                JPUSH_PKGNAME : applicationId,
+                JPUSH_PKGNAME: applicationId,
                 JPUSH_APPKEY : "d84ead9f76b88e939a6dbb52", //JPush上注册的包名对应的appkey.
-                JPUSH_CHANNEL : "developer-default", //暂时填写默认值即可.
+                JPUSH_CHANNEL: "developer-default", //暂时填写默认值即可.
         ]
     }
     buildTypes {
@@ -74,7 +75,7 @@ android {
         }
     }
 
-    dexOptions{
+    dexOptions {
         javaMaxHeapSize "4g"
     }
     sourceSets {
@@ -83,19 +84,14 @@ android {
 
 }
 repositories {
-    flatDir{
+    flatDir {
         dirs 'libs' //就是你放aar的目录地址
     }
     mavenCentral()
 }
 dependencies {
-    compile 'com.android.support:appcompat-v7:25.3.1'
-    compile 'com.android.support:design:25.3.1'
-    compile 'com.android.support:support-v4:25.3.1'
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    testCompile 'junit:junit:4.12'
     // multidex不存在问题
-    compile 'com.android.support:multidex:1.0.1'
     // Google官方动态权限申请
     compile "pub.devrel:easypermissions:$easypermissions_version"
     // 高度封装的 Android WebView
@@ -124,23 +120,30 @@ dependencies {
     compile "com.lcodecorex:tkrefreshlayout:$tkrefreshlayout_version"
     compile "q.rorbin:badgeview:$badgeview_version"
     compile "org.greenrobot:eventbus:$eventbus_version"
-    compile 'me.itangqi.waveloadingview:library:0.3.5'
+    compile "com.jaredrummler:material-spinner:$spinner_version"
     compile project(':CharacterPickerViewLibrary')
     compile name: 'SMSSDK-2.1.1', ext: 'aar'
-    compile 'com.linsea:universalvideoview:1.1.0@aar'
     compile files('libs/BaiduLBS_Android.jar')
     compile files('libs/httpmime-4.1.2.jar')
-    compile 'com.baoyz.swipemenulistview:library:1.3.0'
     compile project(':MPChartLib')
     compile files('libs/umeng_social_sdk.jar')
     compile files('libs/SocialSDK_Sina.jar')
     compile project(':AndroidTagGrouplibrary')
-    compile 'com.tencent.bugly:crashreport:latest.release'
     //其中latest.release指代最新版本号，也可以指定明确的版本号，例如2.1.5
-    compile 'com.github.chrisbanes.photoview:library:1.2.4'
     compile files('libs/SocialSDK_WeiXin_1.jar')
+    compile 'com.android.support:appcompat-v7:25.3.1'
+    compile 'com.android.support:design:25.3.1'
+    compile 'com.android.support:support-v4:25.3.1'
+    compile 'com.android.support:multidex:1.0.1'
+    compile 'me.itangqi.waveloadingview:library:0.3.5'
+    compile 'com.linsea:universalvideoview:1.1.0@aar'
+    compile 'com.baoyz.swipemenulistview:library:1.3.0'
+    compile 'com.tencent.bugly:crashreport:latest.release'
+    compile 'com.github.chrisbanes.photoview:library:1.2.4'
     compile 'me.iwf.photopicker:PhotoPicker:0.9.0@aar'
     compile 'com.nineoldandroids:library:2.4.0'
     compile 'com.github.bumptech.glide:glide:3.7.0'
     compile 'cn.yipianfengye.android:ad-library:1.0'
+    compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha9'
+    testCompile 'junit:junit:4.12'
 }

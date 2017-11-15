@@ -5,6 +5,7 @@ import android.app.ProgressDialog
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.support.annotation.UiThread
 import android.support.v7.app.AlertDialog
 import android.view.View
 import android.widget.Button
@@ -28,10 +29,7 @@ import me.iwf.photopicker.PhotoPicker
 import me.iwf.photopicker.PhotoPreview
 import okhttp3.Call
 import okhttp3.Request
-import org.jetbrains.anko.find
-import org.jetbrains.anko.imageResource
-import org.jetbrains.anko.startActivity
-import org.jetbrains.anko.toast
+import org.jetbrains.anko.*
 import java.io.File
 import java.lang.Exception
 import java.util.*
@@ -56,6 +54,7 @@ class OrderOnlineActivity : BaseActivity(), TitleView.TitleBarOnClickListener, V
     lateinit var evDeliveryQty: EditText
     lateinit var tvUnits: TextView
     lateinit var ivProtocol: ImageView
+    lateinit var tvProtocolCount: TextView
     lateinit var evRemark: EditText
     lateinit var evConsigneeName: EditText
     lateinit var evConsigneePhone: EditText
@@ -65,6 +64,7 @@ class OrderOnlineActivity : BaseActivity(), TitleView.TitleBarOnClickListener, V
     lateinit var btnSubmit: Button
     lateinit var optionsPicker: OptionsPickerView<Any>
     lateinit var timePicker: TimePickerView
+    lateinit var consigneeList: ArrayList<ConsigneeList>
     lateinit var bizSelect: List<CategoryList>
     lateinit var productList: List<ProductList>
     lateinit var provinceList: List<Province>
@@ -175,6 +175,7 @@ class OrderOnlineActivity : BaseActivity(), TitleView.TitleBarOnClickListener, V
         tvUnits.setOnClickListener(this)
         ivProtocol = find(R.id.order_online_protocol)
         ivProtocol.setOnClickListener(this)
+        tvProtocolCount = find(R.id.order_online_protocol_count)
         evRemark = find(R.id.order_online_remark)
         evConsigneeName = find(R.id.order_online_consignee_name)
         evConsigneePhone = find(R.id.order_online_consignee_phone)
@@ -219,32 +220,37 @@ class OrderOnlineActivity : BaseActivity(), TitleView.TitleBarOnClickListener, V
                 .build().execute(object : StringCallback() {
             override fun onResponse(response: String, id: Int) {
                 hideLoadingProgress()
-                LogUtil.d("init data success is $response")
-                val orderOnlineBean = JSON.parseObject(response, OrderOnlineBean::class.java)
-                when (orderOnlineBean?.status) {
-                    "success" -> {
-                        // 初始化数据源
-                        bizSelect = orderOnlineBean.bizSelect
-                        if (bizSelect.isEmpty()) {
-                            val temp = CategoryList(0, "", null, 0, 0, 0)
-                            (bizSelect as ArrayList<CategoryList>).add(temp)
-                        }
-                        // 如果不为空，回显数据，并且禁止点击
-                        orderOnlineBean.orderOnline?.let {
-                            forbidButton()
-                            echoOrderData(it)
-                        }
+                LogUtil.d("init data success is \n$response")
+                JSON.parseObject(response, OrderOnlineBean::class.java)?.let {
+                    when (it.status) {
+                        "success" -> {
+                            // 初始化数据源
+                            bizSelect = it.bizSelect
+                            if (bizSelect.isEmpty()) {
+                                val temp = CategoryList(0, "", null, 0, 0, 0)
+                                (bizSelect as ArrayList<CategoryList>).add(temp)
+                            }
+                            consigneeList = it.consigneeList
+                            // 如果不为空，回显数据，并且禁止点击
+                            it.orderOnline?.let {
+                                // 禁止按钮
+                                forbidButton()
+                                // 回显数据
+                                echoOrderData(it)
+                            }
 
-                    }
-                    "failure" -> {
-                        bizSelect = ArrayList<CategoryList>()
-                        if (bizSelect.isEmpty()) {
-                            val temp = CategoryList(0, "", null, 0, 0, 0)
-                            (bizSelect as ArrayList<CategoryList>).add(temp)
                         }
-                        Util.showError(currentContext, orderOnlineBean.reason)
+                        else -> {
+                            bizSelect = ArrayList<CategoryList>()
+                            if (bizSelect.isEmpty()) {
+                                val temp = CategoryList(0, "", null, 0, 0, 0)
+                                (bizSelect as ArrayList<CategoryList>).add(temp)
+                            }
+                            Util.showError(currentContext, it.reason)
+                        }
                     }
                 }
+
             }
 
             override fun onError(call: Call?, e: Exception?, id: Int) {
@@ -276,9 +282,9 @@ class OrderOnlineActivity : BaseActivity(), TitleView.TitleBarOnClickListener, V
         tvUnits.isEnabled = false
         ivProtocol.isEnabled = false
         evRemark.isEnabled = false
-        evConsigneeName.isEnabled = false
-        evConsigneePhone.isEnabled = false
-        evConsigneeAddress.isEnabled = false
+//        evConsigneeName.isEnabled = false
+//        evConsigneePhone.isEnabled = false
+//        evConsigneeAddress.isEnabled = false
         evBizName.isEnabled = false
         evBizPhone.isEnabled = false
         btnSubmit.isEnabled = false
@@ -304,6 +310,8 @@ class OrderOnlineActivity : BaseActivity(), TitleView.TitleBarOnClickListener, V
         } else {
             ivProtocol.imageResource = R.mipmap.ico_application_authorization_success
         }
+        tvProtocolCount.visibility = View.VISIBLE
+        tvProtocolCount.text = "您已上传产品采购协议扫描件${orderOnline.protocolFileCount}张。"
         evRemark.setText(orderOnline.remark)
         evConsigneeName.setText(orderOnline.consigneeName)
         evConsigneePhone.setText(orderOnline.consigneePhoneNumber)
@@ -470,6 +478,21 @@ class OrderOnlineActivity : BaseActivity(), TitleView.TitleBarOnClickListener, V
                     customerList = it.customerList
                     tvArea.text = it.areaName
                     tvCustomer.text = ""
+                    // 根据省市县id匹配收货人信息
+                    consigneeList.filter {
+                        it.provinceId == provinceId &&
+                        it.cityId == cityId &&
+                        it.areaId == areaId
+                    }.let {
+                        if (it.isNotEmpty()) {
+                            LogUtil.d("consigneeList is\n$it")
+                            evConsigneeName.setText(it[0].consigneeName)
+                            evConsigneePhone.setText(it[0].consigneePhoneNumber)
+                            evConsigneeAddress.setText(
+                                    "${tvProvince.text}${tvCity.text}${tvArea.text}${it[0].consigneeAddress}"
+                            )
+                        }
+                    }
                 }
             }
             R.id.order_online_customer -> {
@@ -516,14 +539,14 @@ class OrderOnlineActivity : BaseActivity(), TitleView.TitleBarOnClickListener, V
         when (requestCode) {
             PhotoPicker.REQUEST_CODE, PhotoPreview.REQUEST_CODE ->{
                 if (resultCode == Activity.RESULT_OK) {
-                    val photos: java.util.ArrayList<String>
+                    val photos: ArrayList<String>
                     if (data != null) {
                         photos = data.getStringArrayListExtra(PhotoPicker.KEY_SELECTED_PHOTOS)
                         for (photo in photos) {
                             LogUtil.d("photo is " + photo)
                         }
-                        val mark = timeStamp2Date(System.currentTimeMillis().toString() + "",
-                                "yyyyMMdd_HH_mm_ss")
+                        LogUtil.d("photos size is ${photos.size}")
+                        val mark = timeStamp2Date(System.currentTimeMillis().toString(), "yyyyMMdd_HH_mm_ss")
                         protocolFileName = "protocol$mark.zip"
                         // 将文件压缩到本地
                         protocolFile = CompressUtil.zipANDSave(photos, protocolFileName)
@@ -531,6 +554,7 @@ class OrderOnlineActivity : BaseActivity(), TitleView.TitleBarOnClickListener, V
                             ToastUtil.showShort(currentContext, "文件操作失败，请换部手机")
                             return
                         }
+                        tvProtocolCount.text = "您已选择产品采购协议扫描件${photos.size}张。"
                         ivProtocol.imageResource = R.mipmap.ico_application_authorization_success
                     }
                 }
@@ -592,6 +616,7 @@ class OrderOnlineActivity : BaseActivity(), TitleView.TitleBarOnClickListener, V
         }
         if (protocolFile == null) {
             toast("请上传产品采购协议")
+            return
         }
         remark = evRemark.text.toString()
         if (evRemark.text.toString().trim().isEmpty()) {

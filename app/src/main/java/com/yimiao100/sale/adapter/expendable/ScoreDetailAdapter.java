@@ -91,7 +91,7 @@ public class ScoreDetailAdapter extends BaseExpandableListAdapter {
         shipProgress.setProgress(examInfo.getTotalQty());
         shipProgress.setText(examInfo.getTotalQty() + "");
 
-        bounds.setText("奖学金：￥" + FormatUtils.MoneyFormat(examInfo.getTotalAmount()) + "元");
+        bounds.setText("奖学金：" + FormatUtils.RMBFormat(examInfo.getTotalAmount()) + "元");
 
 
         if (isExpanded) {

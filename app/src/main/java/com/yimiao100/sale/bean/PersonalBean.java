@@ -21,6 +21,26 @@ public class PersonalBean {
     private String advantage;
     private String accountStatus;
 
+    @Override
+    public String toString() {
+        return "PersonalBean{" +
+                "cnName='" + cnName + '\'' +
+                ", idNumber='" + idNumber + '\'' +
+                ", personalPhoneNumber='" + personalPhoneNumber + '\'' +
+                ", qq='" + qq + '\'' +
+                ", email='" + email + '\'' +
+                ", personalPhotoUrl='" + personalPhotoUrl + '\'' +
+                ", idPhotoUrl='" + idPhotoUrl + '\'' +
+                ", bankName='" + bankName + '\'' +
+                ", openingBank='" + openingBank + '\'' +
+                ", bankCardNumber='" + bankCardNumber + '\'' +
+                ", experienceList=" + experienceList +
+                ", experience='" + experience + '\'' +
+                ", advantage='" + advantage + '\'' +
+                ", accountStatus='" + accountStatus + '\'' +
+                '}';
+    }
+
     public String getAccountStatus() {
         return accountStatus;
     }

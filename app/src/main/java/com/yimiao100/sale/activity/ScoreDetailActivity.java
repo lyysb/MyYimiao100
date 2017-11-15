@@ -1,6 +1,8 @@
 package com.yimiao100.sale.activity;
 
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
@@ -62,6 +64,15 @@ public class ScoreDetailActivity extends BaseActivity implements SwipeRefreshLay
     private ScoreDetailAdapter mScoreDetailAdapter;
     private ArrayList<ExamInfo> mStatList;
 
+    public static void start(Context context, int vendorId, String userAccountType, String logoImageUrl, String vendorName) {
+        Intent intent = new Intent(context, ScoreDetailActivity.class);
+        intent.putExtra("vendorId", vendorId);
+        intent.putExtra("userAccountType", userAccountType);
+        intent.putExtra("logoImageUrl", logoImageUrl);
+        intent.putExtra("vendorName", vendorName);
+        context.startActivity(intent);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,14 +81,18 @@ public class ScoreDetailActivity extends BaseActivity implements SwipeRefreshLay
 
         showLoadingProgress();
 
-        mVendorId = getIntent().getIntExtra("vendorId", -1);
-        mLogUrl = getIntent().getStringExtra("logoImageUrl");
-        mVendorName = getIntent().getStringExtra("vendorName");
-        mUserAccountType = getIntent().getStringExtra("userAccountType");
+        initVariate();
 
         initView();
 
         initData();
+    }
+
+    private void initVariate() {
+        mVendorId = getIntent().getIntExtra("vendorId", -1);
+        mLogUrl = getIntent().getStringExtra("logoImageUrl");
+        mVendorName = getIntent().getStringExtra("vendorName");
+        mUserAccountType = getIntent().getStringExtra("userAccountType");
     }
 
     private void initView() {

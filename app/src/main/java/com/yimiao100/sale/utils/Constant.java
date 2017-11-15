@@ -9,8 +9,11 @@ import java.util.HashMap;
 public interface Constant {
     boolean isTest = false;     // 是否在测试环境下
 
+    boolean isInsurance = true;   // 是否开启保险业务模块
+
     // BaseURL
-    String BASE_URL_TEST = "http://ymt.s1.natapp.cc/ymt";
+    String BASE_URL_TEST = "http://47.95.156.8/ymt/";
+//    String BASE_URL_TEST = "http://ymt.s1.natapp.cc/ymt";
 //    String BASE_URL_TEST = "http://161p3p2316.iask.in/ymt";
 //    String BASE_URL_TEST = "http://192.168.199.206:8080/ymt";
     String BASE_URL_OFFICAL = "http://123.56.203.55/ymt";
@@ -116,6 +119,9 @@ public interface Constant {
             put(157, "不良反应申报无效");
             put(158, "授权委托书申报无效");
             put(159, "在线下单无效");
+            put(160, "竞标结束");
+            put(161, "垫款操作无效");
+            put(162, "垫款余额不足");
         }
     };
     String DEFAULT_VIDEO = "http://oduhua0b1.bkt.clouddn.com/default_video.mp4";

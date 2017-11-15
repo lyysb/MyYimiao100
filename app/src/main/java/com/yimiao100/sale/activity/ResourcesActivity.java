@@ -112,7 +112,7 @@ public class ResourcesActivity extends BaseActivitySingleList implements Carouse
         mResources_view_pager = (ViewPager) view.findViewById(R.id.resources_view_pager);
         regionSearchView.setOnSearchClickListener(this);
         //获取轮播图数据
-        CarouselUtil.getCarouselList(this, "resource", this);
+        CarouselUtil.getCarouselList(this, "vaccine", this);
     }
 
     @Override

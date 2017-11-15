@@ -58,4 +58,9 @@ open class BaseFragment: Fragment(){
                 .build()
                 .show()
     }
+
+    override fun onResume() {
+        super.onResume()
+        FragmentCollector.setTopFragment(this)
+    }
 }

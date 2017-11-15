@@ -73,6 +73,7 @@ public class DataVersionService extends Service {
 
             @Override
             public void onResponse(String response, int id) {
+                LogUtil.d("DataVersionService is\n" + response);
                 DataVersionBean dataVersionBean = JSON.parseObject(response, DataVersionBean.class);
                 switch (dataVersionBean.getStatus()) {
                     case "success":
@@ -100,7 +101,7 @@ public class DataVersionService extends Service {
                 getApplicationContext(), Constant.DATA_VERSION_ + mVersionKey, -1);
         int versionCode = dataVersionBean.getVersion().getVersionCode();
         //比较版本号
-        if (versionCodeNow < versionCode) {
+        if (versionCodeNow != versionCode) {
             LogUtil.d("本地版本为" + versionCodeNow + "，将进行更新数据");
             //联网更新数据
             updateRegionData(versionCode);
@@ -125,18 +126,6 @@ public class DataVersionService extends Service {
 
             @Override
             public void onResponse(String response, int id) {
-//                if (response.length() > 4000) {
-//                    for (int i = 0; i < response.length(); i += 4000) {
-//                        if (i + 4000 < response.length()) {
-//                            LogUtil.d(i + "updateRegionData：" + response.substring(i, i + 4000));
-//                        } else {
-//                            LogUtil.d(i + "updateRegionData：" + response.substring(i, response
-//                                    .length()));
-//                        }
-//                    }
-//                } else {
-//                    LogUtil.d("updateRegionData：" + response);
-//                }
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":

@@ -30,13 +30,13 @@ class OrderNoteAdapter(var list: ArrayList<OrderNote>?): BaseAdapter() {
         } else {
             v = convertView
         }
-        ViewHolderUtil.get<TextView>(v, R.id.order_item_category_name).text = "产品名称：\t\t\t\t${orderNote.categoryName}"
-        ViewHolderUtil.get<TextView>(v, R.id.order_item_consignee_name).text = "联系人姓名：\t\t${orderNote.consigneeName}"
-        ViewHolderUtil.get<TextView>(v, R.id.order_item_delivery_at).text = "申请发货日期：\t${TimeUtil.timeStamp2Date(orderNote.applyDeliveryAt.toString(), "yyyy年MM月dd日")}"
+        ViewHolderUtil.get<TextView>(v, R.id.order_item_category_name).text = "产品名称：        ${orderNote.categoryName}"
+        ViewHolderUtil.get<TextView>(v, R.id.order_item_consignee_name).text = "联系人姓名：    ${orderNote.consigneeName}"
+        ViewHolderUtil.get<TextView>(v, R.id.order_item_delivery_at).text = "申请发货日期：${TimeUtil.timeStamp2Date(orderNote.applyDeliveryAt.toString(), "yyyy年MM月dd日")}"
         ViewHolderUtil.get<TextView>(v, R.id.order_item_customer).text = "客\t\t\t户：${orderNote.customerName}"
         ViewHolderUtil.get<TextView>(v, R.id.order_item_consignee_phone).text = "联系电话：${orderNote.consigneePhoneNumber}"
         ViewHolderUtil.get<TextView>(v, R.id.order_item_delivery_qty).text = "发货数量：${orderNote.deliveryQty}\t${orderNote.deliveryUnits}"
-        ViewHolderUtil.get<TextView>(v, R.id.order_item_address).text = "详细地址：\t\t\t\t${orderNote.consigneeAddress}"
+        ViewHolderUtil.get<TextView>(v, R.id.order_item_address).text = "详细地址：        ${orderNote.consigneeAddress}"
         return v
     }
 }

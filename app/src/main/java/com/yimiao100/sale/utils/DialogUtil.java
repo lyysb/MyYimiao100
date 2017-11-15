@@ -30,12 +30,14 @@ public class DialogUtil {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 activity.startActivity(new Intent(activity, BindCompanyActivity.class));
+                dialogInterface.dismiss();
             }
         });
         builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 activity.finish();
+                dialogInterface.dismiss();
             }
         });
         builder.setCancelable(false);

@@ -211,25 +211,10 @@ public class OrderCompletedActivity extends BaseActivity implements TitleView.Ti
     }
 
     private void enterReconciliationDetail() {
-        Intent intent = new Intent(this, ReconciliationDetailActivity.class);
-        Bundle bundle = new Bundle();
-        intent.putExtra("orderId", mOrderId);
-        //产品名-分类名
-        bundle.putString("categoryName", mCategoryName);
-        //商品名
-        bundle.putString("productName", mProductName);
-        //厂家名称
-        bundle.putString("vendorName", mVendorName);
-        //客户名称
-        bundle.putString("customerName", mCustomerName);
-        //剂型
-        bundle.putString("dosageForm", mDosageForm);
-        //规格
-        bundle.putString("spec", mSpec);
-        //协议单号
-        bundle.putString("serialNo", mSerialNo);
-        intent.putExtras(bundle);
-        startActivity(intent);
+        ReconciliationDetailActivity.start(this, mOrderId, mCategoryName, mProductName, mVendorName,
+                mCustomerName, mDosageForm, mSpec, mSerialNo,
+                mOrder.getUserAccountType(), mOrder.getVendorId(),
+                mOrder.getVendorLogoImageUrl());
     }
 
     private void downloadAlreadyAgreement(String orderProtocolUrl) {

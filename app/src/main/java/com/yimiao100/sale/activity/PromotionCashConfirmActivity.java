@@ -3,21 +3,18 @@ package com.yimiao100.sale.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
 import com.yimiao100.sale.R;
 import com.yimiao100.sale.base.BaseActivity;
+import com.yimiao100.sale.bean.CorporateBean;
 import com.yimiao100.sale.bean.ErrorBean;
 import com.yimiao100.sale.ext.JSON;
-import com.yimiao100.sale.utils.Constant;
-import com.yimiao100.sale.utils.DialogUtil;
-import com.yimiao100.sale.utils.FormatUtils;
-import com.yimiao100.sale.utils.LogUtil;
-import com.yimiao100.sale.utils.SharePreferenceUtil;
-import com.yimiao100.sale.utils.ToastUtil;
-import com.yimiao100.sale.utils.Util;
+import com.yimiao100.sale.utils.*;
+import com.yimiao100.sale.vaccine.RichVaccineActivity;
 import com.yimiao100.sale.view.TitleView;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
@@ -31,7 +28,7 @@ import okhttp3.Call;
  * 推广费提现确认界面
  */
 public class PromotionCashConfirmActivity extends BaseActivity implements TitleView
-        .TitleBarOnClickListener {
+        .TitleBarOnClickListener, CheckUtil.CorporatePassedListener {
 
     @BindView(R.id.promotion_cash_title)
     TitleView mPromotionCashTitle;
@@ -45,6 +42,8 @@ public class PromotionCashConfirmActivity extends BaseActivity implements TitleV
 
     private final String URL_APPLY_CASH = Constant.BASE_URL + "/api/fund/sale_cash_withdrawal";
     private final String ORDER_IDS = "orderIds";
+    private final String RECONCILIATION = "reconciliation";                 // 从对账过来的
+    private String mFrom;
 
     private String mOrderIds;
 
@@ -54,26 +53,25 @@ public class PromotionCashConfirmActivity extends BaseActivity implements TitleV
         setContentView(R.layout.activity_promotion_case_confirm);
         ButterKnife.bind(this);
 
+        mFrom = getIntent().getStringExtra("from");
+
         initView();
 
         initData();
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-        boolean isExit = (boolean) SharePreferenceUtil.get(this, Constant.CORPORATE_EXIT, false);
-        if (isExit) {
-            //设置尾号
-            String bank_number = (String) SharePreferenceUtil.get(this, Constant
-                    .CORPORATE_ACCOUNT_NUMBER, "");
-            mPromotionCashEnd.setText(bank_number.length() > 4 ? "尾号" + bank_number.substring(bank_number.length() - 4) : bank_number);
-            //设置联系方式
-            mPromotionCashPhone.setText("联系方式：" + SharePreferenceUtil.get(this, Constant
-                    .CORPORATION_PERSONAL_PHONE_NUMBER, ""));
-        } else {
-            DialogUtil.noneCorporate(this);
-        }
+    protected void onResume() {
+        super.onResume();
+        CheckUtil.checkCorporate(this,this);
+    }
+
+    @Override
+    public void handleCorporate(CorporateBean corporate) {
+        String corporateAccount = corporate.getCorporateAccount();
+        mPromotionCashEnd.setText(corporateAccount.length() > 4 ? "尾号" + corporateAccount.substring(corporateAccount.length() - 4) : corporateAccount);
+        //设置联系方式
+        mPromotionCashPhone.setText("联系方式：" + corporate.getPersonalPhoneNumber());
     }
 
     private void initView() {
@@ -86,8 +84,9 @@ public class PromotionCashConfirmActivity extends BaseActivity implements TitleV
         mOrderIds = intent.getStringExtra("orderIds");
         //获取提现金额
         double amount = intent.getDoubleExtra("amount", -1);
-        mPromotionCashMoney.setText("￥" + FormatUtils.MoneyFormat(amount));
+        mPromotionCashMoney.setText(FormatUtils.RMBFormat(amount));
     }
+
 
     @OnClick({R.id.promotion_cash_apply_service, R.id.promotion_cash_apply_cash})
     public void onClick(View view) {
@@ -102,7 +101,6 @@ public class PromotionCashConfirmActivity extends BaseActivity implements TitleV
                 break;
         }
     }
-
 
     /**
      * 申请提现确定
@@ -155,11 +153,15 @@ public class PromotionCashConfirmActivity extends BaseActivity implements TitleV
                 switch (errorBean.getStatus()) {
                     case "success":
                         ToastUtil.showShort(currentContext, "申请成功");
-                        //申请提现成功，返回财富列表
-                        startActivity(new Intent(getApplicationContext(), RichesActivity.class));
+                        if (TextUtils.equals(mFrom, RECONCILIATION)) {
+                            startActivity(new Intent(currentContext, ReconciliationDetailActivity.class));
+                        } else {
+                            //申请提现成功，返回财富列表
+                            startActivity(new Intent(currentContext, RichVaccineActivity.class));
+                        }
                         break;
                     case "failure":
-                        Util.showError(PromotionCashConfirmActivity.this, errorBean.getReason());
+                        Util.showError(currentContext, errorBean.getReason());
                         break;
                 }
             }

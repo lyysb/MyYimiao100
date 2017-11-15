@@ -14,9 +14,13 @@
         app:title_text="推广奖励提现"/>
 
     <RelativeLayout
-        android:background="@android:color/white"
+        android:background="@color/colorEee"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
+        <include
+            android:id="@+id/promotion_empty_view"
+            layout="@layout/empty_view"/>
         <LinearLayout
             android:id="@+id/ll_promotion_rich_confirm"
             android:layout_width="match_parent"
@@ -24,6 +28,7 @@
             android:layout_alignParentBottom="true"
             android:orientation="horizontal">
             <LinearLayout
+                android:background="@android:color/white"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -52,25 +57,22 @@
                 android:layout_height="match_parent"
                 android:background="@drawable/selector_assurance_confirm"/>
         </LinearLayout>
+
         <android.support.v4.widget.SwipeRefreshLayout
             android:id="@+id/promotion_rich_refresh"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_above="@id/ll_promotion_rich_confirm"
-            android:background="@color/colorEee">
+            >
             <com.yimiao100.sale.view.PullToRefreshListView
                 android:id="@+id/promotion_rich_company_list_view"
                 style="@style/style23"
                 android:dividerHeight="5dp"
                 android:layout_above="@id/ll_promotion_rich_confirm"
-                android:background="@color/colorEee"
                 android:listSelector="?android:attr/selectableItemBackground"
             />
 
         </android.support.v4.widget.SwipeRefreshLayout>
-        <include
-            android:id="@+id/promotion_empty_view"
-            layout="@layout/empty_view"/>
     </RelativeLayout>
 
 </LinearLayout>

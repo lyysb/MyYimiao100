@@ -6,6 +6,7 @@ package com.yimiao100.sale.bean
 data class OrderOnlineBean(
         var status: String,
         var reason: Int,
+        var consigneeList: ArrayList<ConsigneeList>,
         var bizSelect: ArrayList<CategoryList>,
         var orderOnline: OrderOnline?
 )

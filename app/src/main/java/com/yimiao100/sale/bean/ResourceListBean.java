@@ -8,35 +8,32 @@ import android.os.Parcelable;
  */
 public class ResourceListBean implements Parcelable {
 
-    private int resourceId;             //业务列表中资源id
-    private int userId;                 //用户id
-    private String orderNo;             //订单号
-    private int bidQty;                 //竞标数量
-    private String userAccountType;     //用户账户类型
-    private String orderStatus;         //订单状态
-    private String orderStatusName;     //订单状态名称
-    private String invalidReason;       //无效原因
-    private int deliveryTotalQty;       //发货总数量
-    private double deliveryTotalAmount; //发货总金额
-    private int paymentTotalQty;        //回款总数量
-    private double paymentTotalAmount;  //回款总金额
-    private double orderBidDeposit;     //订单竞标保证金
-    private double orderRemainingDeposit;   //订单保证金余额
-    private long bidExpiredAt;              //竞标有效时间
-    private long defaultExpiredAt;          //违约有效时间
+    private int resourceId;
+    private int userId;
+    private String orderNo;
+    private int bidQty;
+    private String userAccountType;
+    private String orderStatus;
+    private String orderStatusName;
+    private String invalidReason;
+    private int deliveryTotalQty;
+    private double deliveryTotalAmount;
+    private int paymentTotalQty;
+    private double paymentTotalAmount;
+    private double orderBidDeposit;
+    private double orderRemainingDeposit;
+    private long bidExpiredAt;
+    private long defaultExpiredAt;
     private String resourceProtocolUrl;
     private String orderProtocolUrl;
-    private String serialNo;                //流水号
-    private boolean read;        //已读
+    private String serialNo;
+    private boolean read;
     private long bidExpiredTipAt;
     private String units;
 
     private String totalQty;
 
-    private int id;         //资源列表中为资源id。业务列表中为业务id
-    /**
-     * 以下为资源列表和业务列表公用部分
-     */
+    private int id;
     private int vendorId;
     private int productId;
     private int provinceId;
@@ -47,7 +44,7 @@ public class ResourceListBean implements Parcelable {
     private double bidDeposit;
     private double saleDeposit;
     private int quota;
-    private int unitPrice;
+    private double unitPrice;
     private double deliveryPrice;
     private double paymentPrice;
     private int incompletePercent;
@@ -72,7 +69,7 @@ public class ResourceListBean implements Parcelable {
     private String categoryName;
     private String productName;
 
-    private int increment;  //竞标增量
+    private int increment;
 
     private String productImageUrl;
     private String productVideoUrl;
@@ -349,11 +346,11 @@ public class ResourceListBean implements Parcelable {
         this.quota = quota;
     }
 
-    public int getUnitPrice() {
+    public double getUnitPrice() {
         return unitPrice;
     }
 
-    public void setUnitPrice(int unitPrice) {
+    public void setUnitPrice(double unitPrice) {
         this.unitPrice = unitPrice;
     }
 
@@ -598,7 +595,7 @@ public class ResourceListBean implements Parcelable {
         dest.writeDouble(this.bidDeposit);
         dest.writeDouble(this.saleDeposit);
         dest.writeInt(this.quota);
-        dest.writeInt(this.unitPrice);
+        dest.writeDouble(this.unitPrice);
         dest.writeDouble(this.deliveryPrice);
         dest.writeDouble(this.paymentPrice);
         dest.writeInt(this.incompletePercent);
@@ -664,7 +661,7 @@ public class ResourceListBean implements Parcelable {
         this.bidDeposit = in.readDouble();
         this.saleDeposit = in.readDouble();
         this.quota = in.readInt();
-        this.unitPrice = in.readInt();
+        this.unitPrice = in.readDouble();
         this.deliveryPrice = in.readDouble();
         this.paymentPrice = in.readDouble();
         this.incompletePercent = in.readInt();

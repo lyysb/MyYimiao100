@@ -19,19 +19,19 @@
 
             <TextView
                 android:id="@+id/order_item_category_name"
-                android:text="产品名称：\t\t\t\t{productName}"
+                android:text="产品名称：        {productName}"
                 style="@style/style83"/>
 
             <TextView
                 android:id="@+id/order_item_consignee_name"
                 android:layout_marginTop="11dp"
-                android:text="联系人姓名：\t\t{name}"
+                android:text="联系人姓名：    {name}"
                 style="@style/style83"/>
 
             <TextView
                 android:id="@+id/order_item_delivery_at"
                 android:layout_marginTop="11dp"
-                android:text="申请发货日期：\t{date}"
+                android:text="申请发货日期：{date}"
                 style="@style/style83"/>
         </LinearLayout>
         <LinearLayout

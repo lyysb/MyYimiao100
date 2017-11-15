@@ -52,6 +52,16 @@ public class RichItemDetailActivity extends BaseActivity implements TitleView
     TextView mRichItemSerialNo;
     @BindView(R.id.rich_item_ll)
     LinearLayout mRichItemLl;
+    @BindView(R.id.rich_item_2)
+    LinearLayout mRichItemL2;
+    @BindView(R.id.rich_item_customer)
+    LinearLayout customerView;
+
+    @BindView(R.id.rich_item_1)
+    TextView mRichItem1;
+    @BindView(R.id.rich_item_3)
+    TextView mRichItem3;
+
     @BindView(R.id.rich_item_vendor)
     TextView mRichItemVendor;
 
@@ -115,17 +125,40 @@ public class RichItemDetailActivity extends BaseActivity implements TitleView
      * @param accountDetail
      */
     private void initDetailData(AccountDetail accountDetail) {
-        mRichItemAmount.setText(FormatUtils.MoneyFormat(accountDetail.getAmount()));
+        mRichItemAmount.setText(FormatUtils.MoneyFormat(accountDetail.getAmount()) + "元");
         mRichItemTime.setText(TimeUtil.timeStamp2Date(accountDetail.getCreatedAt() + "",
                 "yyyy年MM月dd日 HH：mm"));
 
         mRichItemLl.setVisibility(accountDetail.getSerialNo() == null ? View.GONE : View.VISIBLE);
+        switch (accountDetail.getBizType()) {
+            case "insurance":
+                mRichItem1.setText("保险公司：");
+                mRichItemL2.setVisibility(View.GONE);
+                mRichItem3.setText("保险名称：");
+                mRichItemProductName.setText(accountDetail.getProductName());
+                mRichItemVendor.setText(accountDetail.getCompanyName());
+                break;
+            case "vaccine":
+                mRichItem1.setText("厂家：");
+                mRichItemL2.setVisibility(View.VISIBLE);
+                mRichItem3.setText("产品");
+                mRichItemProductName.setText(accountDetail.getCategoryName());
+                mRichItemVendor.setText(accountDetail.getVendorName());
+                break;
+            default:
+                LogUtil.d("unknownType");
+                mRichItemLl.setVisibility(View.GONE);
+                break;
+        }
         mRichItemType.setText(accountDetail.getTransactionTypeName());
-        mRichItemCustomerName.setText(accountDetail.getCustomerName());
-        mRichItemProductName.setText(accountDetail.getCategoryName());
+        if (accountDetail.getCustomerName() == null) {
+            customerView.setVisibility(View.GONE);
+        } else {
+            customerView.setVisibility(View.VISIBLE);
+            mRichItemCustomerName.setText(accountDetail.getCustomerName());
+        }
         mRichItemDosageName.setText(accountDetail.getDosageForm());
         mRichItemSpec.setText(accountDetail.getSpec());
-        mRichItemVendor.setText(accountDetail.getVendorName());
         mRichItemSerialNo.setText(accountDetail.getSerialNo());
     }
 

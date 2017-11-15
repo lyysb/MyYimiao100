@@ -1,5 +1,6 @@
 package com.yimiao100.sale.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -89,6 +90,15 @@ public class AssuranceActivity extends BaseActivity implements TitleView.TitleBa
     private TextView mTotalAmount;
     private View mEmptyView;
 
+    public static void start(Context context, int vendorId, String userAccountType, String logoImageUrl, String vendorName) {
+        Intent intent = new Intent(context, AssuranceActivity.class);
+        intent.putExtra("vendorId", vendorId);
+        intent.putExtra("userAccountType", userAccountType);
+        intent.putExtra("logoImageUrl", logoImageUrl);
+        intent.putExtra("vendorName", vendorName);
+        context.startActivity(intent);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         mVendorId = getIntent().getIntExtra("vendorId", -1);
@@ -122,11 +132,11 @@ public class AssuranceActivity extends BaseActivity implements TitleView.TitleBa
         emptyText.setText(getString(R.string.empty_view_assurance));
         emptyText.setCompoundDrawablesWithIntrinsicBounds(null, getResources().getDrawable(R.mipmap.ico_bond_factory_list_detailed), null, null);
 
-        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(ViewGroup
-                .LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        //HeaderView的高度
-        layoutParams.setMargins(0, DensityUtil.dp2px(this, 85), 0, 0);
-        mEmptyView.setLayoutParams(layoutParams);
+//        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(ViewGroup
+//                .LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+//        //HeaderView的高度
+//        layoutParams.setMargins(0, DensityUtil.dp2px(this, 85), 0, 0);
+//        mEmptyView.setLayoutParams(layoutParams);
     }
 
     private void initRefreshView() {
@@ -257,7 +267,7 @@ public class AssuranceActivity extends BaseActivity implements TitleView.TitleBa
         getBuild(1).execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.Companion.d("保证金提现账户E：" + e.getMessage());
+                LogUtil.d("保证金提现账户E：" + e.getMessage());
                 Util.showTimeOutNotice(currentContext);
             }
 
@@ -270,7 +280,7 @@ public class AssuranceActivity extends BaseActivity implements TitleView.TitleBa
                         mAssuranceRefresh.setRefreshing(false);
                     }
                 }, 2000);
-                LogUtil.Companion.d("保证金提现账户：" + response);
+                LogUtil.d("保证金提现账户：" + response);
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":
@@ -313,13 +323,13 @@ public class AssuranceActivity extends BaseActivity implements TitleView.TitleBa
             getBuild(page).execute(new StringCallback() {
                 @Override
                 public void onError(Call call, Exception e, int id) {
-                    LogUtil.Companion.d("保证金可提现-对公账户E：" + e.getMessage());
+                    LogUtil.d("保证金可提现-对公账户E：" + e.getMessage());
                     Util.showTimeOutNotice(currentContext);
                 }
 
                 @Override
                 public void onResponse(String response, int id) {
-                    LogUtil.Companion.d("保证金可提现-对公账户：" + response);
+                    LogUtil.d("保证金可提现-对公账户：" + response);
                     ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                     mAssuranceCompanyListView.onLoadMoreComplete();
                     switch (errorBean.getStatus()) {

@@ -64,6 +64,7 @@
                         />
 
                         <TextView
+                            android:text="¥0.00"
                             android:id="@+id/mine_money"
                             style="@style/MineText1"
                         />
@@ -90,6 +91,7 @@
                         />
 
                         <TextView
+                            android:text="0"
                             android:id="@+id/mine_bank_card"
                             style="@style/MineText1"
                         />
@@ -116,6 +118,7 @@
                         />
 
                         <TextView
+                            android:text="0"
                             android:id="@+id/mine_integral"
                             style="@style/MineText1"
                         />

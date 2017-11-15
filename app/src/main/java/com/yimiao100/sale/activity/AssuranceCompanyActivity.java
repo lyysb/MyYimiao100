@@ -9,14 +9,12 @@ import android.widget.TextView;
 
 import com.yimiao100.sale.R;
 import com.yimiao100.sale.base.BaseActivity;
+import com.yimiao100.sale.bean.CorporateBean;
 import com.yimiao100.sale.bean.ErrorBean;
+import com.yimiao100.sale.bean.PersonalBean;
 import com.yimiao100.sale.ext.JSON;
-import com.yimiao100.sale.utils.Constant;
-import com.yimiao100.sale.utils.FormatUtils;
-import com.yimiao100.sale.utils.LogUtil;
-import com.yimiao100.sale.utils.SharePreferenceUtil;
-import com.yimiao100.sale.utils.ToastUtil;
-import com.yimiao100.sale.utils.Util;
+import com.yimiao100.sale.utils.*;
+import com.yimiao100.sale.vaccine.RichVaccineActivity;
 import com.yimiao100.sale.view.TitleView;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
@@ -30,7 +28,7 @@ import okhttp3.Call;
  * 保证金提现完成界面
  */
 public class AssuranceCompanyActivity extends BaseActivity implements TitleView
-        .TitleBarOnClickListener {
+        .TitleBarOnClickListener, CheckUtil.PersonalPassedListener, CheckUtil.CorporatePassedListener {
 
     @BindView(R.id.assurance_apply_title)
     TitleView mAssuranceApplyTitle;
@@ -60,6 +58,19 @@ public class AssuranceCompanyActivity extends BaseActivity implements TitleView
         initData();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        switch (mUserAccountType) {
+            case "personal":
+                CheckUtil.checkPersonal(this, this);
+                break;
+            case "corporate":
+                CheckUtil.checkCorporate(this, this);
+                break;
+        }
+    }
+
     private void initView() {
         mAssuranceApplyTitle.setOnTitleBarClick(this);
     }
@@ -69,20 +80,19 @@ public class AssuranceCompanyActivity extends BaseActivity implements TitleView
         double applyNum = intent.getDoubleExtra("applyNum", -1);
         mAssuranceCompanyAccount.setText("申请推广保证金提现：" + FormatUtils.MoneyFormat(applyNum) + "元");
         mUserAccountType = intent.getStringExtra("userAccountType");
-        String phone = null;
-        switch (mUserAccountType) {
-            case "personal":
-                phone = (String) SharePreferenceUtil.get(this, Constant.PERSONAL_PHONE_NUMBER, "");
-                break;
-            case "corporate":
-                phone = (String) SharePreferenceUtil.get(this, Constant.CORPORATION_PERSONAL_PHONE_NUMBER, "");
-                break;
-        }
-        LogUtil.d(phone);
-        mAssuranceCompanyPhone.setText("联系方式：" + phone);
-
         mOrderIds = intent.getStringExtra("orderIds");
         LogUtil.d("mOrderIds:" + mOrderIds);
+    }
+
+    @Override
+    public void handlePersonal(PersonalBean personal) {
+        mAssuranceCompanyPhone.setText("联系方式：" + personal.getPersonalPhoneNumber());
+    }
+
+
+    @Override
+    public void handleCorporate(CorporateBean corporate) {
+        mAssuranceCompanyPhone.setText("联系方式：" + corporate.getPersonalPhoneNumber());
     }
 
     @OnClick({R.id.assurance_apply_cash, R.id.assurance_apply_service})
@@ -98,7 +108,6 @@ public class AssuranceCompanyActivity extends BaseActivity implements TitleView
                 break;
         }
     }
-
 
     /**
      * 提示确认提现
@@ -150,7 +159,7 @@ public class AssuranceCompanyActivity extends BaseActivity implements TitleView
             public void onError(Call call, Exception e, int id) {
                 //再次设置按钮可以点击
                 mAssuranceApplyCash.setEnabled(true);
-                LogUtil.Companion.d("保证金提现E：" + e.getMessage() + e.getLocalizedMessage());
+                LogUtil.d("保证金提现E：" + e.getMessage() + e.getLocalizedMessage());
                 Util.showTimeOutNotice(currentContext);
             }
 
@@ -158,13 +167,13 @@ public class AssuranceCompanyActivity extends BaseActivity implements TitleView
             public void onResponse(String response, int id) {
                 //再次设置按钮可以点击
                 mAssuranceApplyCash.setEnabled(true);
-                LogUtil.Companion.d("保证金提现：" + response);
+                LogUtil.d("保证金提现：" + response);
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":
                         ToastUtil.showShort(currentContext, "申请成功");
                         //申请提现成功，返回财富列表
-                        startActivity(new Intent(getApplicationContext(), RichesActivity.class));
+                        startActivity(new Intent(getApplicationContext(), RichVaccineActivity.class));
                         break;
                     case "failure":
                         Util.showError(currentContext, errorBean.getReason());

@@ -2,63 +2,92 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:background="@android:color/white"
-    android:gravity="center_vertical"
-    android:orientation="horizontal">
+    android:orientation="vertical">
 
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/head_vendor_logo"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_marginLeft="20dp"
-        android:src="@mipmap/ico_my_grades_logo"/>
     <LinearLayout
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:orientation="vertical">
-        <TextView
-            android:id="@+id/head_vendor_title"
+        android:layout_height="wrap_content">
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/head_vendor_logo"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginLeft="20dp"
+            android:src="@mipmap/ico_my_grades_logo"/>
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:textColor="@color/color333"
-            android:textSize="14sp"
-            android:textStyle="bold"
-        />
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="15dp"
-            android:layout_marginTop="10dp">
+            android:layout_marginLeft="20dp"
+            android:orientation="vertical">
             <TextView
-                android:id="@+id/head_vendor_product"
-                style="@style/style42"
-                android:drawableLeft="@mipmap/ico_my_grades_product"
-                android:text=" \n产品"/>
-            <RelativeLayout
-                android:layout_width="wrap_content"
+                android:id="@+id/head_vendor_title"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_marginRight="30dp">
+                android:layout_marginTop="8dp"
+                android:textColor="@color/color333"
+                android:textSize="14sp"
+                android:textStyle="bold"
+            />
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="15dp"
+                android:layout_marginTop="10dp">
                 <TextView
-                    android:id="@+id/head_vendor_money"
+                    android:id="@+id/head_vendor_product"
+                    android:textSize="12sp"
                     style="@style/style42"
-                    android:drawableLeft="@mipmap/ico_my_grades_bonus"
-                    android:text=" \n总奖励"/>
-                <ImageView
-                    android:id="@+id/head_vendor_notice"
+                    android:drawableLeft="@mipmap/ico_my_grades_product"
+                    android:text=" \n产品"/>
+                <RelativeLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="14dp"
-                    android:layout_marginTop="2dp"
-                    android:src="@mipmap/ico_my_grades_prompt"
-                    android:visibility="gone"/>
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="30dp">
+                    <TextView
+                        android:id="@+id/head_vendor_money"
+                        android:textSize="12sp"
+                        style="@style/style42"
+                        android:drawableLeft="@mipmap/ico_my_grades_bonus"
+                        android:text=" \n总奖励"/>
+                    <ImageView
+                        android:id="@+id/head_vendor_notice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="14dp"
+                        android:layout_marginTop="2dp"
+                        android:src="@mipmap/ico_my_grades_prompt"
+                        android:visibility="gone"/>
+                </RelativeLayout>
+
+
             </RelativeLayout>
-
-
-        </RelativeLayout>
+        </LinearLayout>
     </LinearLayout>
+    <LinearLayout
+        android:id="@+id/head_overdue_recon"
+        android:visibility="gone"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <View
+            style="@style/view_horizontal"/>
+        <TextView
+            android:id="@+id/head_overdue_recon_note"
+            android:text="@string/overdue_none"
+            android:textSize="12sp"
+            android:textColor="@color/colorMain"
+            android:padding="8dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <View
+            style="@style/view_horizontal"/>
+    </LinearLayout>
+
+
 
 </LinearLayout>

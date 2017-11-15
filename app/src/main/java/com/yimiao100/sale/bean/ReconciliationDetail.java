@@ -38,6 +38,33 @@ public class ReconciliationDetail {
     private double deliveryTotalAmount;
     private double paymentTotalAmount;
     private String units;
+    private boolean advanceFlag;
+    private String advanceAt;
+    private int diffDays;
+
+    public boolean isAdvanceFlag() {
+        return advanceFlag;
+    }
+
+    public void setAdvanceFlag(boolean advanceFlag) {
+        this.advanceFlag = advanceFlag;
+    }
+
+    public String getAdvanceAt() {
+        return advanceAt;
+    }
+
+    public void setAdvanceAt(String advanceAt) {
+        this.advanceAt = advanceAt;
+    }
+
+    public int getDiffDays() {
+        return diffDays;
+    }
+
+    public void setDiffDays(int diffDays) {
+        this.diffDays = diffDays;
+    }
 
     public String getExtraRewardRemark() {
         return extraRewardRemark;

@@ -1,5 +1,6 @@
 package com.yimiao100.sale.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -48,6 +49,13 @@ public class ReconciliationActivity extends BaseActivitySingleList implements Re
     private ArrayList<ReconciliationList> mReconciliationList;
     private ReconciliationAdapter mReconciliationAdapter;
     private HashMap<String, String> regionParams = new HashMap<>();
+
+    public static void start(Context context, int vendorId, String userAccountType) {
+        Intent intent = new Intent(context, ReconciliationActivity.class);
+        intent.putExtra("vendorId", vendorId);
+        intent.putExtra("userAccountType", userAccountType);
+        context.startActivity(intent);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -126,29 +134,24 @@ public class ReconciliationActivity extends BaseActivitySingleList implements Re
     @Override
     protected void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         //携带数据，打开对账详情列表
-        ReconciliationList reconciliation = mReconciliationList.get(position - 1);
-        Intent intent = new Intent(this, ReconciliationDetailActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putString("orderId", reconciliation.getId() + "");
-        //产品名-分类名
-        bundle.putString("categoryName", reconciliation.getCategoryName());
-        //商品名
-        bundle.putString("productName", reconciliation.getProductName());
-        //厂家名称
-        bundle.putString("vendorName", reconciliation.getVendorName());
-        //客户名称
-        bundle.putString("customerName", reconciliation.getCustomerName());
-        //剂型
-        bundle.putString("dosageForm", reconciliation.getDosageForm());
-        //规格
-        bundle.putString("spec", reconciliation.getSpec());
-        //协议单号
-        bundle.putString("serialNo", reconciliation.getSerialNo());
+        ReconciliationList item = mReconciliationList.get(position - 1);
         // 修改为已阅读状态
-        reconciliation.setTipStatus(0);
+        item.setTipStatus(0);
         mReconciliationAdapter.notifyDataSetChanged();
-        intent.putExtras(bundle);
-        startActivity(intent);
+        String orderId = item.getId() + "";
+        String categoryName = item.getCategoryName();
+        String productName = item.getProductName();
+        String vendorName = item.getVendorName();
+        String customerName = item.getCustomerName();
+        String dosageForm = item.getDosageForm();
+        String spec = item.getSpec();
+        String serialNo = item.getSerialNo();
+        String userAccountType = item.getUserAccountType();
+        int vendorId = item.getVendorId();
+        String vendorLogoImageUrl = item.getVendorLogoImageUrl();
+        // 进入对账详情
+        ReconciliationDetailActivity.start(this, orderId, categoryName, productName, vendorName,
+                customerName, dosageForm, spec, serialNo, userAccountType, vendorId, vendorLogoImageUrl);
     }
 
     @Override

@@ -16,7 +16,11 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@android:color/white">
+        android:background="@color/colorEee">
+
+        <include
+            android:id="@+id/assurance_empty"
+            layout="@layout/empty_view"/>
         <LinearLayout
             android:id="@+id/ll_assurance_confirm"
             android:layout_width="match_parent"
@@ -24,6 +28,7 @@
             android:layout_alignParentBottom="true"
             android:orientation="horizontal">
             <LinearLayout
+                android:background="@android:color/white"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -62,11 +67,8 @@
                 style="@style/style23"
                 android:dividerHeight="5dp"
                 android:layout_above="@id/ll_assurance_confirm"
-                android:background="@color/colorEee"/>
+                />
         </android.support.v4.widget.SwipeRefreshLayout>
-        <include
-            android:id="@+id/assurance_empty"
-            layout="@layout/empty_view"/>
 
     </RelativeLayout>
 </LinearLayout>

@@ -197,7 +197,7 @@ public class OrderAlreadyActivity extends BaseActivity implements TitleView
         //获取是否已经阅读过免责信息
         boolean isRead = (boolean) SharePreferenceUtil.get(currentContext, mOrder.getVendorName()
                 + mOrderId, false);
-        LogUtil.Companion.d("isRead?" + isRead);
+        LogUtil.d("isRead?" + isRead);
         if (!isRead) {
             //没有阅读过，弹窗显示
             //弹窗

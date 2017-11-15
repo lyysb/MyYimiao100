@@ -1,13 +1,17 @@
 package com.yimiao100.sale.fragment;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import com.yimiao100.sale.R;
 import com.yimiao100.sale.activity.AssuranceActivity;
 import com.yimiao100.sale.activity.PromotionActivity;
@@ -22,9 +26,7 @@ import com.yimiao100.sale.bean.EventType;
 import com.yimiao100.sale.bean.Vendor;
 import com.yimiao100.sale.bean.VendorListBean;
 import com.yimiao100.sale.ext.JSON;
-import com.yimiao100.sale.utils.Constant;
-import com.yimiao100.sale.utils.LogUtil;
-import com.yimiao100.sale.utils.Util;
+import com.yimiao100.sale.utils.*;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
@@ -48,12 +50,16 @@ public class VendorCorporateFragment extends BaseFragmentSingleList{
     private final String SALE_WITHDRAWAL = "sale_withdrawal";               //销售资金可提现
     private final String DEPOSIT_WITHDRAWAL = "deposit_withdrawal";         //保证金可提现
     private final String EXAM_REWARD_WITHDRAWAL = "exam_reward_withdrawal"; //课程考试奖励可提现
+    private final String RECONCILIATION = "reconciliation";                 // 从对账过来的
     private final String USER_ACCOUNT_TYPE = "userAccountType";
 
     private String mModuleType;
+    private String mFrom;
     private String mUserAccountType = "corporate";
 
     private ArrayList<Vendor> mList;
+    private TextView mHeaderView;
+
     @Override
     protected String initPageTitle() {
         return "公司推广";
@@ -63,6 +69,7 @@ public class VendorCorporateFragment extends BaseFragmentSingleList{
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mModuleType = getActivity().getIntent().getStringExtra("moduleType");
+        mFrom = getActivity().getIntent().getStringExtra("from");
         return super.onCreateView(inflater, container, savedInstanceState);
     }
 
@@ -81,6 +88,9 @@ public class VendorCorporateFragment extends BaseFragmentSingleList{
                 setEmptyView(getString(R.string.empty_view_vendor_study_exam), R.mipmap.ico_study_extension);
                 break;
             case SALE_WITHDRAWAL:
+                if (TextUtils.equals(mFrom, RECONCILIATION)) {
+                    initOverdue();
+                }
                 //来自推广费
                 setEmptyView(getString(R.string.empty_view_vendor_sale), R.mipmap.ico_extension_reward);
                 break;
@@ -94,6 +104,26 @@ public class VendorCorporateFragment extends BaseFragmentSingleList{
                 break;
         }
         mListView.cancleLoadMore();
+    }
+
+    private void initOverdue() {
+        // step1:  listView 添加头视图
+        mHeaderView = new TextView(getContext());
+        mHeaderView.setTextColor(getResources().getColor(R.color.colorMain));
+        mHeaderView.setTextSize(12f);
+        mHeaderView.setPadding(
+                DensityUtil.dp2px(getContext(), 12),
+                DensityUtil.dp2px(getContext(), 12),
+                DensityUtil.dp2px(getContext(), 12),
+                DensityUtil.dp2px(getContext(), 12)
+        );
+        mHeaderView.setBackgroundColor(Color.parseColor("#ffffffff"));
+        mListView.addHeaderView(mHeaderView, null, false);
+        // step2:  emptyView 设置margin
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        params.setMargins(0, DensityUtil.dp2px(getContext(), 40f), 0, 0);
+        mEmptyView.setLayoutParams(params);
+        // step3:  获取数据后，根据厂家数量设置头视图内容
     }
 
     @Override
@@ -127,6 +157,15 @@ public class VendorCorporateFragment extends BaseFragmentSingleList{
                     case "success":
                         mList = JSON.parseObject(response, VendorListBean
                                 .class).getVendorList();
+
+                        if (TextUtils.equals(mFrom, RECONCILIATION)) {
+                            // 如果从对账来的，则控制显示headerView的显示内容
+                            if (mList == null || mList.size() == 0) {
+                                mHeaderView.setText("您目前无可提现的推广费可以充值逾期垫款");
+                            } else {
+                                mHeaderView.setText("请选择充值逾期垫款的可提现推广费");
+                            }
+                        }
                         handleEmptyData(mList);
                         mListView.setAdapter(new VendorListAdapter(mList));
                         break;
@@ -140,47 +179,46 @@ public class VendorCorporateFragment extends BaseFragmentSingleList{
 
     @Override
     protected void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        if (TextUtils.equals(mFrom, RECONCILIATION)) {
+            position = position - 1;
+        }
         Vendor vendor = mList.get(position);
-        Intent intent = new Intent();
-        Class clz = null;
+        int vendorId = vendor.getId();
+        String logoImageUrl = vendor.getLogoImageUrl();
+        String vendorName = vendor.getVendorName();
         switch (mModuleType) {
             case EXAM_REWARD_WITHDRAWAL:
                 //进入对应的奖学金提现界面
-                clz = ScholarshipActivity.class;
-                intent.putExtra("vendorId", vendor.getId());
-                intent.putExtra("logoImageUrl", vendor.getLogoImageUrl());
-                intent.putExtra("vendorName", vendor.getVendorName());
+                ScholarshipActivity.start(
+                        getContext(), vendorId, mUserAccountType, logoImageUrl, vendorName
+                );
                 break;
             case EXAM_REWARD:
                 // 进入对应的学习成绩详情界面
-                clz = ScoreDetailActivity.class;
-                intent.putExtra("vendorId", vendor.getId());
-                intent.putExtra("logoImageUrl", vendor.getLogoImageUrl());
-                intent.putExtra("vendorName", vendor.getVendorName());
+                ScoreDetailActivity.start(
+                        getContext(), vendorId, mUserAccountType, logoImageUrl, vendorName
+                );
                 break;
             case SALE_WITHDRAWAL:
+//                if (TextUtils.equals(mFrom, RECONCILIATION)) {
+//                    intent.putExtra("from", mFrom);
+//                }
                 //进入对应的推广费界面
-                clz = PromotionActivity.class;
-                intent.putExtra("vendorId", vendor.getId());
-                intent.putExtra("logoImageUrl", vendor.getLogoImageUrl());
-                intent.putExtra("vendorName", vendor.getVendorName());
+                PromotionActivity.start(
+                        getContext(), "", vendorId, mUserAccountType, logoImageUrl, vendorName
+                );
                 break;
             case DEPOSIT_WITHDRAWAL:
                 //进入对应的保证金界面
-                clz = AssuranceActivity.class;
-                intent.putExtra("vendorId", vendor.getId());
-                intent.putExtra("logoImageUrl", vendor.getLogoImageUrl());
-                intent.putExtra("vendorName", vendor.getVendorName());
+                AssuranceActivity.start(
+                        getContext(), vendorId, mUserAccountType, logoImageUrl, vendorName
+                );
                 break;
             case BALANCE_ORDER:
                 //进入对应的对账
-                clz = ReconciliationActivity.class;
-                intent.putExtra("vendorId", vendor.getId());
+                ReconciliationActivity.start(getContext(), vendorId, mUserAccountType);
                 break;
         }
-        intent.setClass(getContext(), clz);
-        intent.putExtra(USER_ACCOUNT_TYPE, mUserAccountType);
-        startActivity(intent);
     }
 
     @Override

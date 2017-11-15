@@ -278,8 +278,8 @@ public class CRMShipAdapter extends BaseExpandableListAdapter{
         Calendar calendar = Calendar.getInstance();
         int year = calendar.get(Calendar.YEAR);
         int month = calendar.get(Calendar.MONTH);
-        LogUtil.Companion.d("当前年份：" + year);
-        LogUtil.Companion.d("当前月份：" + month);
+        LogUtil.d("当前年份：" + year);
+        LogUtil.d("当前月份：" + month);
         int xValue = (year - deliveryStatList.get(0).getStatYear()) * 12 + (month - deliveryStatList.get(0).getStatMonth()) + 1;
         chart.moveViewToX(xValue);
 
@@ -387,8 +387,8 @@ public class CRMShipAdapter extends BaseExpandableListAdapter{
         Calendar calendar = Calendar.getInstance();
         int year = calendar.get(Calendar.YEAR);
         int month = calendar.get(Calendar.MONTH);
-        LogUtil.Companion.d("当前年份：" + year);
-        LogUtil.Companion.d("当前月份：" + month);
+        LogUtil.d("当前年份：" + year);
+        LogUtil.d("当前月份：" + month);
         int xValue = (year - deliveryTotalStatList.get(0).getStatYear()) * 12 + (month - deliveryTotalStatList.get(0).getStatMonth()) + 1;
         chart.moveViewToX(xValue);
 

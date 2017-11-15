@@ -56,9 +56,15 @@ public abstract class BaseFragmentSingleList extends BaseFragment {
 
         mAccessToken = (String) SharePreferenceUtil.get(getContext(), Constant.ACCESSTOKEN, "");
 
+        initVariate();
+
         initView();
 
         return mView;
+    }
+
+    protected void initVariate() {
+
     }
 
     @Override

@@ -8,7 +8,7 @@ import com.yimiao100.sale.fragment.OrderPersonalFragment;
 import java.util.ArrayList;
 
 /**
- * 我的业务-业务列表
+ * 我的业务-业务列表--已弃用
  */
 public class OrderActivity extends BaseActivityWithTab {
 

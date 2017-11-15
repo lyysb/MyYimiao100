@@ -14,6 +14,7 @@
     <string name="order_already_notice">提交的申请推广已经通过审核，\n您提交的竞标保证金已经查收。</string>
     <string name="order_already_view_account">查看转账汇款账户</string>
     <string name="order_complete_notice">提交的申请推广已经正式签约，\n请按照推广协议尽快完成推广任务。</string>
+    <string name="order_end_notice">提交的申请推广已终止，\n感谢您的参与。</string>
     <string name="order_complete_enter_reconciliation">此业务暂无发货信息</string>
     <string name="order_submit_notice">您提交的申请推广,已经收到\n提交的竞标保证金,目前正在审核中,请耐心等待。</string>
     <string name="order_unpaid_notice">您已成功提交推广申请，为了保证\n您有效竞标，请您尽快提交竞标保证金。</string>
@@ -77,6 +78,18 @@
     </string>
     <string name="exam_withdrawal_corporate">
         您申请的提现金额，将在工作人员收到对应\n金额发票后5个工作日内，支付到您绑定\n推广主体对公账户里，请注意查收。
+    </string>
+    <string name="overdue_withdrawal_per">
+        您申请的提现金额，将在工作人员审核通过\n后24小时内，支付到您绑定推广主体个人\n账户里，请注意查收。
+    </string>
+    <string name="overdue_withdrawal_cor">
+        您申请的提现金额，将在工作人员审核通过\n后24小时内，支付到您绑定推广主体对公\n账户里，请注意查收。
+    </string>
+    <string name="overdue_per_confirm">
+        您申请的推广奖励充值逾期垫款，预计2个\n小时内转入您个人逾期垫款账户里。
+    </string>
+    <string name="overdue_cor_confirm">
+        您申请的推广奖励充值逾期垫款，将在工作\n人员收到对应金额发票后1个工作日内转\n入您对公逾期垫款账户里。
     </string>
     <string name="news_submit_error">提交成功，谢谢反馈</string>
     <string name="exam_to_last">当前已经是第一道题</string>
@@ -144,6 +157,9 @@
     <string name="setting">
         设置
     </string>
+    <string name="positive">
+        确定
+    </string>
     <string name="cancel">
         取消
     </string>
@@ -153,4 +169,39 @@
     <string name="open_DCIM">
         打开相册
     </string>
+
+    <string name="invoice_info">
+        北京亿苗通生物科技有限公司
+    </string>
+    <string name="invoice_tn">
+        91110102327129973Q
+    </string>
+    <string name="invoice_address">
+        北京市西城区西直门外大街18号楼13层1单元1610 010-68107932
+    </string>
+    <string name="invoice_account">
+        中国银行股份有限公司北京西直门外支行 329863413119
+    </string>
+    <string name="invoice_type">
+        增值税专用发票
+    </string>
+    <string name="invoice_project">
+        推广服务费
+    </string>
+    <string name="vaccine_promotion_way">
+        选择可提现推广费充值逾期垫款，可直接回到财富首页查看逾期垫款金额。用户可以在对账模块自助选择要垫款的发货订单。
+    </string>
+    <string name="overdue_description_corporate">
+        <font color="#d24141">充值说明</font>：充值逾期垫款需先提供对应金额发票，解冻推广奖励后方可垫款。
+    </string>
+    <string name="overdue_description_personal">
+        <font color="#d24141">充值说明</font>：充值逾期垫款之后，充值金额自动进入逾期垫款账户，用户即可操作垫款。
+    </string>
+    <string name="overdue_none">
+        您目前无可提现的推广费可以充值逾期垫款
+    </string>
+    <string name="overdue_pay">
+        请选择充值逾期垫款的可提现推广费
+    </string>
+
 </resources>

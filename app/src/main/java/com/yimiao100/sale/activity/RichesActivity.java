@@ -3,21 +3,20 @@ package com.yimiao100.sale.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.yimiao100.sale.R;
 import com.yimiao100.sale.base.BaseActivity;
-import com.yimiao100.sale.bean.ErrorBean;
-import com.yimiao100.sale.bean.Tax;
-import com.yimiao100.sale.bean.TaxBean;
-import com.yimiao100.sale.bean.UserFundBean;
-import com.yimiao100.sale.bean.UserFundNew;
+import com.yimiao100.sale.bean.*;
 import com.yimiao100.sale.ext.JSON;
+import com.yimiao100.sale.insurance.RichInsActivity;
 import com.yimiao100.sale.utils.Constant;
 import com.yimiao100.sale.utils.FormatUtils;
 import com.yimiao100.sale.utils.LogUtil;
 import com.yimiao100.sale.utils.SharePreferenceUtil;
 import com.yimiao100.sale.utils.Util;
+import com.yimiao100.sale.vaccine.RichVaccineActivity;
 import com.yimiao100.sale.view.TitleView;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
@@ -39,15 +38,16 @@ public class RichesActivity extends BaseActivity implements TitleView.TitleBarOn
     TextView mRichesTotalAmount;
     @BindView(R.id.riches_integral_count)
     TextView mRichesIntegralCount;
-    @BindView(R.id.riches_scholarship_count)
-    TextView mRichesScholarshipCount;
-    @BindView(R.id.riches_promotion_count)
-    TextView mRichesPromotionCount;
-    @BindView(R.id.riches_assurance_count)
-    TextView mRichesAssuranceCount;
+    @BindView(R.id.riches_vaccine_count)
+    TextView mRichesVaccineCount;
+    @BindView(R.id.riches_insurance_count)
+    TextView mRichesInsuranceCount;
+    @BindView(R.id.riches_model_ins)
+    RelativeLayout mRichesModelIns;
 
 
     private final String URL_USER_FUND = Constant.BASE_URL + "/api/fund/user_fund";
+    private final String URL_USER_FUND_ALL = Constant.BASE_URL + "/api/fund/user_fund_all";
     private final String URL_TEX = Constant.BASE_URL + "/api/tax/default";
     private final String MODULE_TYPE = "moduleType";
     private final String EXAM_REWARD_WITHDRAWAL = "exam_reward_withdrawal"; //课程考试奖励可提现
@@ -63,7 +63,7 @@ public class RichesActivity extends BaseActivity implements TitleView.TitleBarOn
 
         initView();
 
-        initTax();
+//        initTax();
     }
 
     private void initTax() {
@@ -81,7 +81,7 @@ public class RichesActivity extends BaseActivity implements TitleView.TitleBarOn
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":
-                        Tax tax =JSON.parseObject(response, TaxBean.class).getTax();
+                        Tax tax = JSON.parseObject(response, TaxBean.class).getTax();
                         double taxRate;
                         if (tax != null) {
                             taxRate = tax.getTaxRate() / 100;
@@ -109,10 +109,17 @@ public class RichesActivity extends BaseActivity implements TitleView.TitleBarOn
 
     private void initView() {
         mRichesTitle.setOnTitleBarClick(this);
+        if (Constant.isInsurance) {
+            // 开启保险
+            mRichesModelIns.setVisibility(View.VISIBLE);
+        } else {
+            // 关闭保险
+            mRichesModelIns.setVisibility(View.GONE);
+        }
     }
 
     private void initData() {
-        OkHttpUtils.post().url(URL_USER_FUND).addHeader(ACCESS_TOKEN, accessToken)
+        OkHttpUtils.post().url(URL_USER_FUND_ALL).addHeader(ACCESS_TOKEN, accessToken)
                 .build().execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
@@ -123,44 +130,16 @@ public class RichesActivity extends BaseActivity implements TitleView.TitleBarOn
 
             @Override
             public void onResponse(String response, int id) {
-                LogUtil.d("财富：" + response);
+                LogUtil.d("财富：\n" + response);
                 hideLoadingProgress();
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":
-                        UserFundNew userFund = JSON.parseObject(response, UserFundBean.class)
-                                .getUserFund();
-                        //用户账户总金额-double
-                        SharePreferenceUtil.put(getApplicationContext(), Constant.TOTAL_AMOUNT,
-                                userFund.getTotalAmount());
-                        //用户积分-int
-                        SharePreferenceUtil.put(getApplicationContext(), Constant.INTEGRAL,
-                                userFund.getIntegral());
-                        //用户奖学金-double
-                        SharePreferenceUtil.put(getApplicationContext(), Constant.TOTAL_EXAM_REWARD,
-                                userFund.getTotalExamReward());
-                        //用户推广费-double
-                        SharePreferenceUtil.put(getApplicationContext(), Constant.TOTAL_SALE,
-                                userFund.getTotalSale());
-                        //用户保证金-double
-                        SharePreferenceUtil.put(getApplicationContext(), Constant.DEPOSIT,
-                                userFund.getDeposit());
-                        //账户总金额
-                        mRichesTotalAmount.setText("￥" + FormatUtils.MoneyFormat(userFund ==
-                                null ? 0.0 : userFund.getTotalAmount()));
-
-                        //设置我的积分
-                        mRichesIntegralCount.setText(FormatUtils.NumberFormat(userFund == null ?
-                                0 : userFund.getIntegral()) + "积分");
-                        //设置奖学金
-                        mRichesScholarshipCount.setText("￥" + FormatUtils.MoneyFormat(userFund ==
-                                null ? 0.0 : userFund.getTotalExamReward()));
-                        //设置推广费
-                        mRichesPromotionCount.setText("￥" + FormatUtils.MoneyFormat(userFund ==
-                                null ? 0.0 : userFund.getTotalSale()));
-                        //设置保证金
-                        mRichesAssuranceCount.setText("￥" + FormatUtils.MoneyFormat(userFund ==
-                                null ? 0.0 : userFund.getDeposit()));
+                        UserFundAll userFundAll = JSON.parseObject(response, UserFundBean.class).getUserFundAll();
+                        if (userFundAll != null) {
+                            saveToLocal(userFundAll);
+                        }
+                        showDataAtView(userFundAll);
                         break;
                     case "failure":
                         Util.showError(RichesActivity.this, errorBean.getReason());
@@ -170,17 +149,48 @@ public class RichesActivity extends BaseActivity implements TitleView.TitleBarOn
         });
     }
 
+    private void saveToLocal(UserFundAll userFundAll) {
+        // 账户总额度
+        SharePreferenceUtil.put(currentContext, Constant.TOTAL_AMOUNT, userFundAll.getTotalAmount());
+        // 我的积分
+        SharePreferenceUtil.put(currentContext, Constant.INTEGRAL, userFundAll.getIntegral());
+    }
 
-    @OnClick({R.id.riches_integral, R.id.riches_scholarship, R.id.riches_promotion, R.id
-            .riches_assurance})
+    private void showDataAtView(UserFundAll userFundAll) {
+        // 显示账户总金额
+        mRichesTotalAmount.setText(FormatUtils.RMBFormat(userFundAll == null ? 0.0 : userFundAll.getTotalAmount()));
+        // 显示我的积分
+        mRichesIntegralCount.setText(FormatUtils.NumberFormat(userFundAll == null ? 0 : userFundAll.getIntegral()) + "积分");
+        // 显示疫苗可提现
+        mRichesVaccineCount.setText(FormatUtils.RMBFormat(userFundAll == null ? 0.0 : userFundAll.getVaccineTotalWithdraw()));
+        // 显示保险可提现
+        mRichesInsuranceCount.setText(FormatUtils.RMBFormat(userFundAll == null ? 0.0 : userFundAll.getInsuranceTotalWithdraw()));
+    }
+
+
+    @OnClick({R.id.riches_integral, R.id.riches_vaccine, R.id.riches_insurance
+            /*,R.id.riches_scholarship, R.id.riches_promotion, R.id
+            .riches_assurance*/})
     public void onClick(View view) {
         Intent vendorIntent = new Intent(this, VendorListActivity.class);
+        Intent intent = new Intent();
         switch (view.getId()) {
             case R.id.riches_integral:
                 //进入我的积分
-                startActivity(new Intent(this, IntegralActivity.class));
+                intent.setClass(this, IntegralActivity.class);
+                startActivity(intent);
                 break;
-            case R.id.riches_scholarship:
+            case R.id.riches_vaccine:
+                // 进入疫苗财富页面
+                intent.setClass(this, RichVaccineActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.riches_insurance:
+                // 进入保险财富页面
+                intent.setClass(this, RichInsActivity.class);
+                startActivity(intent);
+                break;
+            /*case R.id.riches_scholarship:
                 //进入奖学金厂家列表
                 vendorIntent.putExtra(MODULE_TYPE, EXAM_REWARD_WITHDRAWAL);
                 startActivity(vendorIntent);
@@ -194,14 +204,14 @@ public class RichesActivity extends BaseActivity implements TitleView.TitleBarOn
                 //进入保证金厂家列表
                 vendorIntent.putExtra(MODULE_TYPE, DEPOSIT_WITHDRAWAL);
                 startActivity(vendorIntent);
-                break;
+                break;*/
         }
     }
 
     @Override
     public void rightOnClick() {
         //查看明细
-        startActivity(new Intent(this, RichesDetailActivity.class));
+        startActivity(new Intent(this, RichDetailActivity.class));
     }
 
     @Override

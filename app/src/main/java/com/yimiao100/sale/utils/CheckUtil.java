@@ -44,7 +44,7 @@ public class CheckUtil {
 
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.Companion.d("检查个人账户状态E：" + e.toString());
+                LogUtil.d("检查个人账户状态E：" + e.toString());
                 e.printStackTrace();
                 if (loadingProgress.isShowing()) {
                     loadingProgress.dismiss();
@@ -53,7 +53,7 @@ public class CheckUtil {
 
             @Override
             public void onResponse(String response, int id) {
-                LogUtil.Companion.d("检查个人账户状态：" + response);
+                LogUtil.d("检查个人账户状态：" + response);
                 if (loadingProgress.isShowing()) {
                     loadingProgress.dismiss();
                 }
@@ -101,7 +101,7 @@ public class CheckUtil {
 
             @Override
             public void onError(Call call, Exception e, int id) {
-                LogUtil.Companion.d("检查对公账户状态E：" + e.toString());
+                LogUtil.d("检查对公账户状态E：" + e.toString());
                 e.printStackTrace();
                 if (loadingProgress.isShowing()) {
                     loadingProgress.dismiss();
@@ -110,7 +110,7 @@ public class CheckUtil {
 
             @Override
             public void onResponse(String response, int id) {
-                LogUtil.Companion.d("检查对公账户状态：" + response);
+                LogUtil.d("检查对公账户状态：" + response);
                 if (loadingProgress.isShowing()) {
                     loadingProgress.dismiss();
                 }

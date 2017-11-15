@@ -61,6 +61,15 @@ public class PromotionList {
     private String cityName;
     private String areaName;
     private String customerName;
+    private String companyName;
+
+    public String getCompanyName() {
+        return companyName;
+    }
+
+    public void setCompanyName(String companyName) {
+        this.companyName = companyName;
+    }
 
     public String getCategoryName() {
         return categoryName;

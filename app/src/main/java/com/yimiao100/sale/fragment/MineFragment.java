@@ -26,22 +26,10 @@ import com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout;
 import com.lcodecore.tkrefreshlayout.header.progresslayout.ProgressLayout;
 import com.squareup.picasso.Picasso;
 import com.yimiao100.sale.R;
-import com.yimiao100.sale.activity.BindPromotionActivity;
-import com.yimiao100.sale.activity.CollectionActivity;
-import com.yimiao100.sale.activity.IntegralActivity;
-import com.yimiao100.sale.activity.IntegralShopActivity;
-import com.yimiao100.sale.activity.LoginActivity;
-import com.yimiao100.sale.activity.NoticeActivity;
-import com.yimiao100.sale.activity.OrderActivity;
-import com.yimiao100.sale.activity.PersonalSettingActivity;
-import com.yimiao100.sale.activity.RichesActivity;
-import com.yimiao100.sale.activity.StudyTaskActivity;
-import com.yimiao100.sale.activity.VendorListActivity;
+import com.yimiao100.sale.activity.*;
 import com.yimiao100.sale.base.ActivityCollector;
 import com.yimiao100.sale.base.BaseFragment;
-import com.yimiao100.sale.bean.ErrorBean;
-import com.yimiao100.sale.bean.ImageBean;
-import com.yimiao100.sale.bean.UserAccountBean;
+import com.yimiao100.sale.bean.*;
 import com.yimiao100.sale.ext.JSON;
 import com.yimiao100.sale.service.AliasService;
 import com.yimiao100.sale.utils.AppUtil;
@@ -76,6 +64,7 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
     private LinearLayout mLl_mine_notice;
     private LinearLayout mLl_mine_exit;
 
+    private final String URL_USER_FUND_ALL = Constant.BASE_URL + "/api/fund/user_fund_all";
     private final String URL_LOGOUT = Constant.BASE_URL + "/api/user/logout";
     private final String UPLOAD_PROFILE_IMAGE = Constant.BASE_URL +
             "/api/user/upload_profile_image";
@@ -117,9 +106,8 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-        LogUtil.d("MineFragment:onStart");
+    public void onResume() {
+        super.onResume();
         //获取用户头像URL
         mUserIconUrl = (String) SharePreferenceUtil.get(getContext(), Constant.PROFILEIMAGEURL, "");
         //设置个人头像
@@ -211,14 +199,39 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
 
     private void initData() {
         initAccountData();
-        //显示账户总额
-        double total_amount = Double.valueOf((String) SharePreferenceUtil.get(getContext(), Constant
-                .TOTAL_AMOUNT, "0"));
-        mMineAmount.setText("￥" + FormatUtils.MoneyFormat(total_amount));
 
-        //显示积分
-        int integral = (int) SharePreferenceUtil.get(getContext(), Constant.INTEGRAL, 0);
-        mIntegral.setText(FormatUtils.NumberFormat(integral));
+        initFundData();
+    }
+
+    private void initFundData() {
+        OkHttpUtils.post().url(URL_USER_FUND_ALL).addHeader(ACCESS_TOKEN, accessToken)
+                .build().execute(new StringCallback() {
+            @Override
+            public void onError(Call call, Exception e, int id) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(String response, int id) {
+                LogUtil.d("获取用户账户信息：\n" + response);
+                UserFundBean userFundBean = JSON.parseObject(response, UserFundBean.class);
+                switch (userFundBean.getStatus()) {
+                    case "success":
+                        if (userFundBean.getUserFundAll() != null) {
+                            showToView(userFundBean.getUserFundAll());
+                        }
+                        break;
+                    case "failure":
+                        Util.showError(getActivity(), userFundBean.getReason());
+                        break;
+                }
+            }
+        });
+    }
+
+    private void showToView(UserFundAll userFundAll) {
+        mMineAmount.setText(FormatUtils.RMBFormat(userFundAll.getTotalAmount()));
+        mIntegral.setText(FormatUtils.NumberFormat(userFundAll.getIntegral()));
     }
 
     private void initAccountData() {//本地显示推广主体
@@ -281,8 +294,11 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
                 break;
             case R.id.mine_reconciliation:
                 //业务对账
-                Intent reconciliationIntent = new Intent(getContext(), VendorListActivity.class);
-                reconciliationIntent.putExtra("moduleType", BALANCE_ORDER);
+//                Intent reconciliationIntent = new Intent(getContext(), VendorListActivity.class);
+//                reconciliationIntent.putExtra("moduleType", BALANCE_ORDER);
+//                startActivity(reconciliationIntent);
+                Intent reconciliationIntent = new Intent(getContext(), VendorArrayActivity.class);
+                reconciliationIntent.putExtra("type", "reconciliation");
                 startActivity(reconciliationIntent);
                 break;
             case R.id.ll_mine_notice:
@@ -295,7 +311,10 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
                 break;
             case R.id.ll_mine_order:
                 //我的业务
-                startActivity(new Intent(getContext(), OrderActivity.class));
+//                startActivity(new Intent(getContext(), OrderActivity.class));
+                Intent intent = new Intent(getContext(), VendorArrayActivity.class);
+                intent.putExtra("type", "order");
+                startActivity(intent);
                 break;
             case R.id.ll_mine_collection:
                 //我的收藏

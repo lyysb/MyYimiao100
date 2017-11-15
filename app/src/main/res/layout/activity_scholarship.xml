@@ -13,9 +13,13 @@
         app:left_isShow="true"
         app:title_text="奖学金提现"/>
     <RelativeLayout
-        android:background="@android:color/white"
+        android:background="@color/colorEee"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
+        <include
+            android:id="@+id/scholarship_empty"
+            layout="@layout/empty_view"/>
         <LinearLayout
             android:id="@+id/ll_scholarship_list_confirm"
             android:layout_width="match_parent"
@@ -23,6 +27,7 @@
             android:layout_alignParentBottom="true"
             android:orientation="horizontal">
             <LinearLayout
+                android:background="@android:color/white"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -62,12 +67,8 @@
                 style="@style/style23"
                 android:dividerHeight="5dp"
                 android:layout_above="@id/ll_scholarship_list_confirm"
-                android:background="@color/colorEee"
                 android:listSelector="?android:attr/selectableItemBackground"
             />
         </android.support.v4.widget.SwipeRefreshLayout>
-        <include
-            android:id="@+id/scholarship_empty"
-            layout="@layout/empty_view"/>
     </RelativeLayout>
 </LinearLayout>

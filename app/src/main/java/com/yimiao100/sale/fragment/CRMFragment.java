@@ -1,6 +1,5 @@
 package com.yimiao100.sale.fragment;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -20,31 +19,19 @@ import android.widget.TextView;
 import com.lcodecore.tkrefreshlayout.RefreshListenerAdapter;
 import com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout;
 import com.lcodecore.tkrefreshlayout.header.progresslayout.ProgressLayout;
-import com.meiqia.core.MQManager;
-import com.meiqia.core.bean.MQMessage;
-import com.meiqia.core.callback.OnGetMessageListCallback;
 import com.yimiao100.sale.R;
-import com.yimiao100.sale.activity.CustomerActivity;
-import com.yimiao100.sale.activity.NoticeActivity;
-import com.yimiao100.sale.activity.PaymentActivity;
-import com.yimiao100.sale.activity.ResourcesActivity;
-import com.yimiao100.sale.activity.RichesActivity;
-import com.yimiao100.sale.activity.ShipActivity;
-import com.yimiao100.sale.activity.UploadActivity;
-import com.yimiao100.sale.activity.VaccineQueryActivity;
-import com.yimiao100.sale.activity.VendorListActivity;
-import com.yimiao100.sale.activity.VendorOrderOnlineActivity;
+import com.yimiao100.sale.activity.*;
 import com.yimiao100.sale.adapter.peger.CRMAdAdapter;
 import com.yimiao100.sale.base.BaseFragment;
 import com.yimiao100.sale.bean.Carousel;
 import com.yimiao100.sale.bean.ErrorBean;
 import com.yimiao100.sale.bean.Event;
-import com.yimiao100.sale.bean.EventType;
 import com.yimiao100.sale.bean.Tips;
 import com.yimiao100.sale.bean.TipsBean;
 import com.yimiao100.sale.bean.WaveBean;
 import com.yimiao100.sale.bean.WaveStat;
 import com.yimiao100.sale.ext.JSON;
+import com.yimiao100.sale.insurance.InsuranceActivity;
 import com.yimiao100.sale.utils.CarouselUtil;
 import com.yimiao100.sale.utils.Constant;
 import com.yimiao100.sale.utils.DensityUtil;
@@ -52,7 +39,6 @@ import com.yimiao100.sale.utils.FormatUtils;
 import com.yimiao100.sale.utils.LogUtil;
 import com.yimiao100.sale.utils.SharePreferenceUtil;
 import com.yimiao100.sale.utils.Util;
-import com.yimiao100.sale.view.DynamicWave;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
@@ -84,7 +70,7 @@ public class CRMFragment extends BaseFragment implements View.OnClickListener, C
     private final String BALANCE_ORDER = "balance_order";                   //对账订单
     private final String ORDER_ONLINE = "order_online";                     // 在线下单
     private final String ACCESS_TOKEN = "X-Authorization-Token";
-    private final String USER_TIPS = Constant.BASE_URL + "/api/tip/user_tips";
+    private final String USER_TIPS_ALL = Constant.BASE_URL + "/api/tip/user_tips_all";
 
     private String mAccessToken;
     /**
@@ -109,7 +95,6 @@ public class CRMFragment extends BaseFragment implements View.OnClickListener, C
     private TwinklingRefreshLayout mRefreshLayout;
     private ImageButton mNotice;
     private ImageButton mReconciliation;
-    private HashMap<String, ArrayList<String>> mDetails;
     private ImageView mCustomer;
     private Badge mBadge;
     private WaveLoadingView mWaveShip;
@@ -194,8 +179,21 @@ public class CRMFragment extends BaseFragment implements View.OnClickListener, C
         mNotice.setOnClickListener(this);
         //资源
         mView.findViewById(R.id.crm_resources).setOnClickListener(this);
-        //客户
-        mView.findViewById(R.id.crm_customer).setOnClickListener(this);
+        //保险
+        View insuranceView = mView.findViewById(R.id.crm_insurance);
+        insuranceView.setOnClickListener(this);
+        //客户--废弃
+        View customerView = mView.findViewById(R.id.crm_customer);
+        customerView.setOnClickListener(this);
+        if (Constant.isInsurance) {
+            // 开启保险模块
+            insuranceView.setVisibility(View.VISIBLE);
+            customerView.setVisibility(View.GONE);
+        } else {
+            // 关闭保险模块
+            insuranceView.setVisibility(View.GONE);
+            customerView.setVisibility(View.VISIBLE);
+        }
         //申报
         mView.findViewById(R.id.crm_upload).setOnClickListener(this);
         //对账
@@ -219,7 +217,7 @@ public class CRMFragment extends BaseFragment implements View.OnClickListener, C
     }
 
     private void initUserTips() {
-        OkHttpUtils.post().url(USER_TIPS).addHeader(ACCESS_TOKEN, mAccessToken)
+        OkHttpUtils.post().url(USER_TIPS_ALL).addHeader(ACCESS_TOKEN, mAccessToken)
                 .build().execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
@@ -245,8 +243,6 @@ public class CRMFragment extends BaseFragment implements View.OnClickListener, C
                         } else {
                             mReconciliation.setImageResource(R.drawable.selector_crm_reconciliation);
                         }
-                        mDetails = tips.getDetails();
-                        LogUtil.d(mDetails.entrySet().toString());
                         break;
                     case "failure":
                         Util.showError(getActivity(), errorBean.getReason());
@@ -374,6 +370,10 @@ public class CRMFragment extends BaseFragment implements View.OnClickListener, C
                 //跳转到资源列表
                 startActivity(new Intent(getContext(), ResourcesActivity.class));
                 break;
+            case R.id.crm_insurance:
+                // 跳转到保险列表
+                startActivity(new Intent(getContext(), InsuranceActivity.class));
+                break;
             case R.id.crm_customer:
                 //跳转到客户列表
                 startActivity(new Intent(getContext(), CustomerActivity.class));
@@ -384,9 +384,12 @@ public class CRMFragment extends BaseFragment implements View.OnClickListener, C
                 break;
             case R.id.crm_reconciliation:
                 //跳转到对账列表
-                Intent reconciliationIntent = new Intent(getContext(), VendorListActivity.class);
-                reconciliationIntent.putExtra("moduleType", BALANCE_ORDER);
-                startActivity(reconciliationIntent);
+//                Intent reconciliationIntent = new Intent(getContext(), VendorListActivity.class);
+//                reconciliationIntent.putExtra("moduleType", BALANCE_ORDER);
+//                startActivity(reconciliationIntent);
+                Intent intent = new Intent(getContext(), VendorArrayActivity.class);
+                intent.putExtra("type", "reconciliation");
+                startActivity(intent);
                 break;
             case R.id.crm_riches:
                 //跳转到财富列表

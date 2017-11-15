@@ -104,16 +104,19 @@
         <!-- -友盟 -->
         <activity android:name=".base.BaseActivity">
         </activity>
+
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="com.yimiao100.sale.fileprovider"
+            android:exported="false"
             android:grantUriPermissions="true"
-            android:exported="false" tools:replace="android:authorities">
-            <!--元数据-->
+            tools:replace="android:authorities">
+
+            <!-- 元数据 -->
             <meta-data
-                tools:replace="android:resource"
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths" />
+                android:resource="@xml/file_paths"
+                tools:replace="android:resource"/>
         </provider>
 
         <activity
@@ -211,7 +214,9 @@
         </activity>
         <activity android:name=".activity.ReconciliationActivity">
         </activity>
-        <activity android:name=".activity.ReconciliationDetailActivity">
+        <activity
+            android:name=".activity.ReconciliationDetailActivity"
+            android:launchMode="singleTask">
         </activity>
         <activity android:name=".activity.CustomerActivity">
         </activity>
@@ -334,16 +339,13 @@
 
         <receiver android:name=".receiver.JPushReceiver">
             <intent-filter>
-                <action
-                    android:name="cn.jpush.android.intent.REGISTRATION"/> <!-- Required  用户注册SDK的intent -->
-                <action
-                    android:name="cn.jpush.android.intent.MESSAGE_RECEIVED"/> <!-- Required  用户接收SDK消息的intent -->
+                <action android:name="cn.jpush.android.intent.REGISTRATION"/> <!-- Required  用户注册SDK的intent -->
+                <action android:name="cn.jpush.android.intent.MESSAGE_RECEIVED"/> <!-- Required  用户接收SDK消息的intent -->
                 <action
                     android:name="cn.jpush.android.intent.NOTIFICATION_RECEIVED"/> <!-- Required  用户接收SDK通知栏信息的intent -->
                 <action
                     android:name="cn.jpush.android.intent.NOTIFICATION_OPENED"/> <!-- Required  用户打开自定义通知栏的intent -->
-                <action
-                    android:name="cn.jpush.android.intent.CONNECTION"/> <!-- 接收网络变化 连接/断开 since 1.6.3 -->
+                <action android:name="cn.jpush.android.intent.CONNECTION"/> <!-- 接收网络变化 连接/断开 since 1.6.3 -->
                 <category android:name="com.yimiao100.sale"/>
             </intent-filter>
         </receiver>
@@ -402,7 +404,83 @@
             android:name=".activity.ActivityActivity"
             android:launchMode="singleTop">
         </activity>
-        <activity android:name=".activity.Main3Activity">
+        <activity
+            android:name=".insurance.InsuranceActivity"
+            android:launchMode="singleTask">
+        </activity>
+        <activity android:name=".insurance.InsuranceDetailActivity">
+        </activity>
+        <activity android:name=".insurance.InsurancePromotionActivity">
+        </activity>
+        <activity
+            android:name=".vaccine.RichVaccineActivity"
+            android:launchMode="singleTask">
+        </activity>
+        <activity android:name=".activity.VendorArrayActivity">
+        </activity>
+        <activity android:name=".base.BaseActivityWithSpinner">
+        </activity>
+        <activity android:name=".insurance.SubmitInsuranceActivity">
+        </activity>
+        <activity
+            android:name=".insurance.BusinessInsuranceActivity"
+            android:launchMode="singleTask">
+        </activity>
+        <activity
+            android:name=".vaccine.BusinessVaccineActivity"
+            android:launchMode="singleTask">
+        </activity>
+        <activity android:name=".insurance.BusinessUnpaidActivity">
+        </activity>
+        <activity android:name=".insurance.BusinessSubmitActivity">
+        </activity>
+        <activity android:name=".insurance.BusinessAlreadyActivity">
+        </activity>
+        <activity android:name=".insurance.BusinessCompletedActivity">
+        </activity>
+        <activity android:name=".insurance.BusinessErrorActivity">
+        </activity>
+        <activity android:name=".insurance.ReconciliationInsuranceActivity">
+        </activity>
+        <activity android:name=".insurance.ReconInsDetailActivity">
+        </activity>
+        <activity android:name=".insurance.VenInsActivity">
+        </activity>
+        <activity android:name=".insurance.AssInsActivity">
+        </activity>
+        <activity android:name=".insurance.AssInsCorActivity">
+        </activity>
+        <activity android:name=".insurance.PromoInsActivity">
+        </activity>
+        <activity android:name=".insurance.PromoInsDetailActivity">
+        </activity>
+        <activity android:name=".insurance.PromoInsPerConfirmActivity">
+        </activity>
+        <activity android:name=".insurance.PromoInsCorConfirmActivity">
+        </activity>
+        <activity android:name=".insurance.ReconCusActivity">
+        </activity>
+        <activity android:name=".activity.RichDetailActivity">
+        </activity>
+        <activity android:name=".insurance.BusinessEndActivity">
+        </activity>
+        <activity android:name=".activity.OrderEndActivity">
+        </activity>
+        <activity
+            android:name=".insurance.RichInsActivity"
+            android:launchMode="singleTask">
+        </activity>
+        <activity android:name=".vaccine.OverdueActivity">
+        </activity>
+        <activity android:name=".vaccine.OverdueCorporateActivity">
+        </activity>
+        <activity android:name=".base.BaseActivitySingleList2">
+        </activity>
+        <activity android:name=".vaccine.OverduePersonalActivity">
+        </activity>
+        <activity android:name=".vaccine.OverdueCorConfirmActivity">
+        </activity>
+        <activity android:name=".vaccine.OverduePerConfirmActivity">
         </activity>
     </application>
 

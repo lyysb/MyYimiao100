@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import com.squareup.picasso.Picasso;
 import com.yimiao100.sale.R;
 import com.yimiao100.sale.bean.Carousel;
+import com.yimiao100.sale.utils.BitmapUtil;
 import com.yimiao100.sale.utils.DensityUtil;
 import com.yimiao100.sale.utils.ScreenUtil;
 
@@ -41,13 +42,14 @@ public class CRMAdAdapter extends PagerAdapter {
         position = position % mList.size();
         ImageView imageView = new ImageView(container.getContext());
         String imageUrl = mList.get(position).getMediaUrl();
+        imageView.setScaleType(ImageView.ScaleType.FIT_XY);
         if (!imageUrl.isEmpty()) {
             Picasso.with(container.getContext())
 //                    .load(imageUrl + "?imageMogr2/thumbnail/960x480/")
                     .load(imageUrl)
-                    //.transform(BitmapUtil.getTransformation(imageView))
+                    .transform(BitmapUtil.getTransformation(imageView))
                     .placeholder(R.mipmap.ico_default_bannner)
-                    .resize(ScreenUtil.getScreenWidth(container.getContext()), DensityUtil.dp2px(container.getContext(), 160))
+//                    .resize(ScreenUtil.getScreenWidth(container.getContext()), DensityUtil.dp2px(container.getContext(), 160))
                     .into(imageView);
         }
         container.addView(imageView);

@@ -8,11 +8,14 @@ import android.os.Bundle;
 import com.yimiao100.sale.activity.InformationDetailActivity;
 import com.yimiao100.sale.activity.MainActivity;
 import com.yimiao100.sale.activity.NoticeDetailActivity;
+import com.yimiao100.sale.bean.Event;
+import com.yimiao100.sale.bean.EventType;
 import com.yimiao100.sale.bean.JPushBean;
 import com.yimiao100.sale.ext.JSON;
 import com.yimiao100.sale.utils.LogUtil;
 
 import cn.jpush.android.api.JPushInterface;
+import org.greenrobot.eventbus.EventBus;
 
 /**
  * 自定义极光推送广播接收处理
@@ -30,6 +33,10 @@ public class JPushReceiver extends BroadcastReceiver {
             String content = bundle.getString(JPushInterface.EXTRA_ALERT);
             String type = bundle.getString(JPushInterface.EXTRA_EXTRA);
             LogUtil.d("通知title:" + title + "content:" + content + "type:" + type);
+            // 发布事件
+            Event event = new Event();
+            Event.eventType = EventType.NOTICE;
+            EventBus.getDefault().post(event);
         } else if (JPushInterface.ACTION_NOTIFICATION_OPENED.equals(intent.getAction())) {
             //用户打开通知
             LogUtil.d("打开通知");

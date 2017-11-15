@@ -48,50 +48,50 @@ public class AssuranceAdapter extends BaseAdapter {
 
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
-        AssuranceList assuranceList = getItem(position);
+        final AssuranceList item = getItem(position);
         if (convertView == null) {
             convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_assurance, null);
         }
         //客户名称
-        String customerName = assuranceList.getCustomerName();
+        String customerName = item.getCustomerName();
         TextView assurance_customer_name = ViewHolderUtil.get(convertView, R.id.assurance_customer_name);
         assurance_customer_name.setText(customerName);
         //产品名
-        String productName = assuranceList.getProductName();
+        String productName = item.getProductName();
         TextView assurance_product_formal_name = ViewHolderUtil.get(convertView, R.id.assurance_product_formal_name);
         assurance_product_formal_name.setText(productName);
         //分类名
-        String categoryName = assuranceList.getCategoryName();
+        String categoryName = item.getCategoryName();
         TextView assurance_product_common_name = ViewHolderUtil.get(convertView, R.id.assurance_product_common_name);
         assurance_product_common_name.setText(categoryName);
         //剂型
-        String dosageForm = assuranceList.getDosageForm();
+        String dosageForm = item.getDosageForm();
         TextView assurance_dosage_form = ViewHolderUtil.get(convertView, R.id.assurance_dosage_form);
         assurance_dosage_form.setText("剂型：" + dosageForm);
         //规格
-        String spec = assuranceList.getSpec();
+        String spec = item.getSpec();
         TextView assurance_spec = ViewHolderUtil.get(convertView, R.id.assurance_spec);
         assurance_spec.setText("规格：" + spec);
         //协议单号
-        String serialNo = assuranceList.getSerialNo();
+        String serialNo = item.getSerialNo();
         TextView assurance_serial_no = ViewHolderUtil.get(convertView, R.id.assurance_serial_no);
         assurance_serial_no.setText("协议单号：" + serialNo);
         //保证金
-        double totalDepositWithdraw = assuranceList.getTotalDepositWithdraw();
+        double totalDepositWithdraw = item.getTotalDepositWithdraw();
         TextView assurance_total_amount = ViewHolderUtil.get(convertView, R.id.assurance_total_amount);
-        Spanned amount = Html.fromHtml("推广保证金：￥<font color=\"#d24141\">" + FormatUtils.MoneyFormat
-                (totalDepositWithdraw) + "</font>元");
+        Spanned amount = Html.fromHtml("推广保证金：<font color=\"#d24141\">" + FormatUtils.RMBFormat(totalDepositWithdraw) + "</font>元");
         assurance_total_amount.setText(amount);
 
 
         //记录点击状态，方便清空点击状态
-        CheckBox assurance_check = ViewHolderUtil.get(convertView, R.id.assurance_check);
-        assurance_check.setChecked(assuranceList.isChecked());
-        assurance_check.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        final CheckBox checkBox = ViewHolderUtil.get(convertView, R.id.assurance_check);
+        checkBox.setChecked(item.isChecked());
+        checkBox.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            public void onClick(View v) {
+                item.setChecked(checkBox.isChecked());
                 if (mListener != null) {
-                    mListener.onCheckedChanged(position, isChecked);
+                    mListener.onCheckedChanged(position, checkBox.isChecked());
                 }
             }
         });

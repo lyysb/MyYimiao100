@@ -6,6 +6,16 @@ package com.yimiao100.sale.bean;
  */
 public class ResourceBean {
 
+    public int getReason() {
+        return reason;
+    }
+
+    public void setReason(int reason) {
+        this.reason = reason;
+    }
+
+    private int reason;
+
     private ResourceResultBean pagedResult;
 
     private String status;

@@ -1,6 +1,7 @@
 package com.yimiao100.sale.base;
 
 import android.app.Activity;
+import com.yimiao100.sale.bean.AppCompatActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +12,7 @@ import java.util.List;
  */
 public class ActivityCollector {
     private static List<Activity> activities = new ArrayList<Activity>();
-    private static Activity topActivity;
+    private static BaseActivity topActivity;
 
     private ActivityCollector() {
          /* cannot be instantiated */
@@ -35,11 +36,11 @@ public class ActivityCollector {
         }
     }
 
-    public static void setTopActivity(Activity activity) {
+    public static void setTopActivity(BaseActivity activity) {
         topActivity = activity;
     }
 
-    public static Activity getTopActivity() {
+    public static BaseActivity getTopActivity() {
         if (topActivity != null) {
             return topActivity;
         }

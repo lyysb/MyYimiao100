@@ -48,50 +48,50 @@ public class PromotionAdapter extends BaseAdapter {
 
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
-        PromotionList promotionList = getItem(position);
+        final PromotionList item = getItem(position);
         if (convertView == null) {
             convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_promotion, null);
         }
         //客户名称
-        String customerName = promotionList.getCustomerName();
+        String customerName = item.getCustomerName();
         TextView promotion_item_customer_name = ViewHolderUtil.get(convertView, R.id.promotion_item_customer_name);
         promotion_item_customer_name.setText(customerName);
         //产品名
-        String productName = promotionList.getProductName();
+        String productName = item.getProductName();
         TextView promotion_item_product_formal_name = ViewHolderUtil.get(convertView, R.id.promotion_item_product_formal_name);
         promotion_item_product_formal_name.setText(productName);
         //分类名
-        String categoryName = promotionList.getCategoryName();
+        String categoryName = item.getCategoryName();
         TextView promotion_item_product_common_name = ViewHolderUtil.get(convertView, R.id.promotion_item_product_common_name);
         promotion_item_product_common_name.setText(categoryName);
         //剂型
-        String dosageForm = promotionList.getDosageForm();
+        String dosageForm = item.getDosageForm();
         TextView promotion_item_dosage_form = ViewHolderUtil.get(convertView, R.id.promotion_item_dosage_form);
         promotion_item_dosage_form.setText("剂型：" + dosageForm);
         //规格
-        String spec = promotionList.getSpec();
+        String spec = item.getSpec();
         TextView promotion_item_spec = ViewHolderUtil.get(convertView, R.id.promotion_item_spec);
         promotion_item_spec.setText("规格：" + spec);
         //协议单号
-        String serialNo = promotionList.getSerialNo();
+        String serialNo = item.getSerialNo();
         TextView promotion_item_serial_no = ViewHolderUtil.get(convertView, R.id.promotion_item_serial_no);
         promotion_item_serial_no.setText("协议单号：" + serialNo);
         //推广费
-        double totalAmount = promotionList.getTotalAmount();
+        double totalAmount = item.getTotalAmount();
         TextView promotion_item_total_amount = ViewHolderUtil.get(convertView, R.id.promotion_item_total_amount);
-        Spanned amount = Html.fromHtml("总奖励：￥<font color=\"#d24141\">" + FormatUtils.MoneyFormat
-                (totalAmount) + "</font>元");
+        Spanned amount = Html.fromHtml("总奖励：<font color=\"#d24141\">" + FormatUtils.RMBFormat(totalAmount) + "</font>元");
         promotion_item_total_amount.setText(amount);
 
 
         //记录点击状态，方便清空点击状态
-        CheckBox promotion_item_check = ViewHolderUtil.get(convertView, R.id.promotion_item_check);
-        promotion_item_check.setChecked(promotionList.isChecked());
-        promotion_item_check.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        final CheckBox checkBox = ViewHolderUtil.get(convertView, R.id.promotion_item_check);
+        checkBox.setChecked(item.isChecked());
+        checkBox.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            public void onClick(View v) {
+                item.setChecked(checkBox.isChecked());
                 if (mListener != null) {
-                    mListener.onCheckedChanged(position, isChecked);
+                    mListener.onCheckedChanged(position, checkBox.isChecked());
                 }
             }
         });

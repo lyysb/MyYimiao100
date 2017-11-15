@@ -1,5 +1,6 @@
 package com.yimiao100.sale.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -86,6 +87,15 @@ public class ScholarshipActivity extends BaseActivity implements SwipeRefreshLay
     private View mEmptyView;
     private View mHeadView;
 
+    public static void start(Context context, int vendorId, String userAccountType, String logoImageUrl, String vendorName) {
+        Intent intent = new Intent(context, ScholarshipActivity.class);
+        intent.putExtra("vendorId", vendorId);
+        intent.putExtra("userAccountType", userAccountType);
+        intent.putExtra("logoImageUrl", logoImageUrl);
+        intent.putExtra("vendorName", vendorName);
+        context.startActivity(intent);
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,6 +103,16 @@ public class ScholarshipActivity extends BaseActivity implements SwipeRefreshLay
         setContentView(R.layout.activity_scholarship);
         ButterKnife.bind(this);
 
+        initVariate();
+
+        showLoadingProgress();
+
+        initView();
+
+        onRefresh();
+    }
+
+    private void initVariate() {
         mVendorId = getIntent().getIntExtra("vendorId", -1);
         mUserAccountType = getIntent().getStringExtra(USER_ACCOUNT_TYPE);
         mLogUrl = getIntent().getStringExtra("logoImageUrl");
@@ -100,12 +120,6 @@ public class ScholarshipActivity extends BaseActivity implements SwipeRefreshLay
 
         LogUtil.d("vendorId is " + mVendorId);
         LogUtil.d("userAccountType is " + mUserAccountType);
-
-        showLoadingProgress();
-
-        initView();
-
-        onRefresh();
     }
 
     private void initView() {
@@ -116,6 +130,7 @@ public class ScholarshipActivity extends BaseActivity implements SwipeRefreshLay
 
         initEmptyView();
     }
+
     private void initRefreshLayout() {
         //设置刷新
         mScholarshipListRefresh.setOnRefreshListener(this);
@@ -160,17 +175,18 @@ public class ScholarshipActivity extends BaseActivity implements SwipeRefreshLay
         emptyText.setText("活到老、学到老，快去学习页面完成考试任务吧。");
         emptyText.setCompoundDrawablesWithIntrinsicBounds(null, getResources().getDrawable(R.mipmap.ico_scholarship_detailed), null, null);
 
-        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(ViewGroup
-                .LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        //HeaderView的高度
-        layoutParams.setMargins(0, DensityUtil.dp2px(this, 85), 0, 0);
-        mEmptyView.setLayoutParams(layoutParams);
+//        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(ViewGroup
+//                .LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+//        //HeaderView的高度
+//        layoutParams.setMargins(0, DensityUtil.dp2px(this, 85), 0, 0);
+//        mEmptyView.setLayoutParams(layoutParams);
     }
 
     @OnClick(R.id.scholarship_list_confirm)
     public void onClick() {
         enterPromotionCashConfirm();
     }
+
     /**
      * 进入奖学金提现确认界面
      */
@@ -212,8 +228,13 @@ public class ScholarshipActivity extends BaseActivity implements SwipeRefreshLay
             ToastUtil.showShort(getApplicationContext(), "请选择订单");
         }
     }
+
     @Override
     public void onRefresh() {
+        mCheckedCount = 0;
+        mApplyNum = 0;
+        mScholarshipListCheckCount.setText("已选择：" + mCheckedCount);
+        mScholarshipListAccount.setText("您目前申请提现的金额是：" + mApplyNum + "元");
         getBuild().execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {

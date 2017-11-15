@@ -11,6 +11,8 @@ data class AccountDetail(
     var accountDetailType: String,
     var accountType: String,
     var accountTypeName: String,
+    var bizType: String,
+    var bizTypeName: String,
     var transactionType: String,
     var transactionTypeName: String,
     var remark: String,
@@ -25,6 +27,7 @@ data class AccountDetail(
     var provinceName: String,
     var cityName: String,
     var areaName: String,
-    var customerName: String,
+    var customerName: String?,
+    var companyName: String,
     var vendorName: String
 )

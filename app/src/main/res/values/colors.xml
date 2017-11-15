@@ -9,6 +9,7 @@
     <color name="colorBrown">#59493f</color>
 
     <color name="colorPress">#356FAB</color>
+    <color name="colorEnd">#9f9f9f</color>
 
     <!--登录界面APP-疫苗圈名字颜色-->
     <color name="appName">#54a4d3</color>
@@ -28,6 +29,7 @@
 
     <color name="black_overlay">#66000000</color>
     <color name="view">#66000000</color>
+    <color name="colorIns">#cadcf1</color>
     <color name="color333">#333333</color>
     <color name="colorRed">#d24141</color>
     <color name="colorB2">#b2b2b2</color>

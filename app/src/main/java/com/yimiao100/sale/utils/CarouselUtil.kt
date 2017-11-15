@@ -45,7 +45,7 @@ class CarouselUtil private constructor() {
                 }
 
                 override fun onResponse(response: String, id: Int) {
-                    LogUtil.d("获取轮播图：" + response)
+                    LogUtil.d("获取轮播图：$carouselType\n$response")
                     val errorBean = JSON.parseObject(response, ErrorBean::class.java)
                     when (errorBean?.status) {
                         "success" -> {

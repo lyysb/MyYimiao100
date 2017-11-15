@@ -35,9 +35,15 @@ public abstract class BaseActivitySingleList extends BaseActivity implements Tit
         setContentView(R.layout.activity_base_single_list);
         ButterKnife.bind(this);
 
+        initVariate();
+
         initView();
 
         initData();
+
+    }
+
+    protected void initVariate() {
 
     }
 

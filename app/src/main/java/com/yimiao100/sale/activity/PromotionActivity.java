@@ -1,36 +1,35 @@
 package com.yimiao100.sale.activity;
 
+import android.app.Activity;
+import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AlertDialog;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ImageButton;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
+import android.widget.*;
 
 import com.squareup.picasso.Picasso;
 import com.yimiao100.sale.R;
 import com.yimiao100.sale.adapter.listview.PromotionAdapter;
 import com.yimiao100.sale.base.BaseActivity;
-import com.yimiao100.sale.bean.ErrorBean;
-import com.yimiao100.sale.bean.PromotionBean;
-import com.yimiao100.sale.bean.PromotionList;
+import com.yimiao100.sale.bean.*;
 import com.yimiao100.sale.ext.JSON;
-import com.yimiao100.sale.utils.Constant;
-import com.yimiao100.sale.utils.DensityUtil;
-import com.yimiao100.sale.utils.FormatUtils;
-import com.yimiao100.sale.utils.LogUtil;
-import com.yimiao100.sale.utils.ToastUtil;
-import com.yimiao100.sale.utils.Util;
+import com.yimiao100.sale.utils.*;
+import com.yimiao100.sale.vaccine.OverdueCorConfirmActivity;
+import com.yimiao100.sale.vaccine.OverduePerConfirmActivity;
+import com.yimiao100.sale.vaccine.RichVaccineActivity;
 import com.yimiao100.sale.view.PullToRefreshListView;
 import com.yimiao100.sale.view.TitleView;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 import com.zhy.http.okhttp.request.RequestCall;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -67,10 +66,15 @@ public class PromotionActivity extends BaseActivity implements TitleView.TitleBa
     TextView mPromotionAccount;
 
     private final String URL_SALE = Constant.BASE_URL + "/api/fund/sale_order_list";
+    private final String URL_TEX = Constant.BASE_URL + "/api/tax/default";
+    private final String URL_RECHARGE = Constant.BASE_URL + "/api/advance/recharge";
+    private final String ORDER_IDS = "orderIds";
     private final String VENDOR_ID = "vendorId";
     private final String USER_ACCOUNT_TYPE = "userAccountType";
+    private final String RECONCILIATION = "reconciliation";                 // 从对账过来的
 
     private int mVendorId;
+    private String mFrom;
     private String mUserAccountType;
 
     private ArrayList<PromotionList> mPromotionLists;
@@ -91,6 +95,18 @@ public class PromotionActivity extends BaseActivity implements TitleView.TitleBa
     private TextView mTotalAmount;
     private View mEmptyView;
     private View mHeadView;
+    private double mTaxRate;
+    private TextView mOverdueNote;
+
+    public static void start(Context context, String from, int vendorId, String userAccountType, String logoImageUrl, String vendorName) {
+        Intent intent = new Intent(context, PromotionActivity.class);
+        intent.putExtra("from", from);
+        intent.putExtra("vendorId", vendorId);
+        intent.putExtra("userAccountType", userAccountType);
+        intent.putExtra("logoImageUrl", logoImageUrl);
+        intent.putExtra("vendorName", vendorName);
+        context.startActivity(intent);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,17 +114,70 @@ public class PromotionActivity extends BaseActivity implements TitleView.TitleBa
         setContentView(R.layout.activity_promotion);
         ButterKnife.bind(this);
 
-        mVendorId = getIntent().getIntExtra("vendorId", -1);
-        mUserAccountType = getIntent().getStringExtra(USER_ACCOUNT_TYPE);
-        mLogUrl = getIntent().getStringExtra("logoImageUrl");
-        mVendorName = getIntent().getStringExtra("vendorName");
-        LogUtil.d("userAccountType is " + mUserAccountType);
+        initVariate();
 
         initView();
 
         showLoadingProgress();
 
         onRefresh();
+
+        initTax();
+    }
+
+    private void initVariate() {
+        mFrom = getIntent().getStringExtra("from");
+        mVendorId = getIntent().getIntExtra("vendorId", -1);
+        mUserAccountType = getIntent().getStringExtra(USER_ACCOUNT_TYPE);
+        mLogUrl = getIntent().getStringExtra("logoImageUrl");
+        mVendorName = getIntent().getStringExtra("vendorName");
+        LogUtil.d("userAccountType is " + mUserAccountType);
+    }
+
+    private void initTax() {
+        OkHttpUtils.post().url(URL_TEX).addHeader(ACCESS_TOKEN, accessToken)
+                .build().execute(new StringCallback() {
+            @Override
+            public void onError(Call call, Exception e, int id) {
+                LogUtil.d("tax error is :");
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(String response, int id) {
+                LogUtil.d("tax :" + response);
+                ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
+                switch (errorBean.getStatus()) {
+                    case "success":
+                        Tax tax = JSON.parseObject(response, TaxBean.class).getTax();
+                        if (tax != null) {
+                            mTaxRate = tax.getTaxRate() / 100;
+                        } else {
+                            // 错误税率
+                            errorTax();
+                        }
+                        break;
+                    case "failure":
+                        Util.showError(currentContext, errorBean.getReason());
+                        break;
+                }
+            }
+        });
+    }
+
+    private void errorTax() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(PromotionActivity.this);
+        builder.setMessage(getString(R.string.dialog_tax_error));
+        builder.setCancelable(false);
+        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                finish();
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
     private void initView() {
@@ -153,6 +222,11 @@ public class PromotionActivity extends BaseActivity implements TitleView.TitleBa
                 mPromotionRichRefresh.setEnabled(enable);
             }
         });
+        // 控制条目显示隐藏
+        boolean equals = TextUtils.equals(mFrom, RECONCILIATION);
+        mHeadView.findViewById(R.id.head_overdue_recon).setVisibility(equals ? View.VISIBLE : View.GONE);
+        // 垫款注释
+        mOverdueNote = (TextView) mHeadView.findViewById(R.id.head_overdue_recon_note);
         //条目跳转
         mPromotionRichCompanyListView.setOnItemClickListener(this);
         //上拉加载监听
@@ -166,22 +240,11 @@ public class PromotionActivity extends BaseActivity implements TitleView.TitleBa
         emptyText.setText(getString(R.string.empty_view_promotion));
         emptyText.setCompoundDrawablesWithIntrinsicBounds(null, getResources().getDrawable(R.mipmap.ico_promotion_award_detailed), null, null);
 
-        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(ViewGroup
-                .LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        //HeaderView的高度
-        layoutParams.setMargins(0, DensityUtil.dp2px(this, 85), 0, 0);
-        mEmptyView.setLayoutParams(layoutParams);
-    }
-
-
-    @OnClick({R.id.promotion_rich_confirm})
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.promotion_rich_confirm:
-                //进入提现确认界面
-                enterPromotionCashConfirm();
-                break;
-        }
+//        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(ViewGroup
+//                .LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+//        //HeaderView的高度
+//        layoutParams.setMargins(0, DensityUtil.dp2px(this, 100), 0, 0);
+//        mEmptyView.setLayoutParams(layoutParams);
     }
 
 
@@ -219,8 +282,10 @@ public class PromotionActivity extends BaseActivity implements TitleView.TitleBa
                         mPromotionLists = promotionBean.getPagedResult().getPagedList();
 
                         if (mPromotionLists.size() == 0) {
+                            mOverdueNote.setText(getResources().getString(R.string.overdue_none));
                             mEmptyView.setVisibility(View.VISIBLE);
                         } else {
+                            mOverdueNote.setText(getResources().getString(R.string.overdue_pay));
                             mEmptyView.setVisibility(View.GONE);
                         }
 
@@ -236,42 +301,158 @@ public class PromotionActivity extends BaseActivity implements TitleView.TitleBa
         });
     }
 
+    @OnClick({R.id.promotion_rich_confirm})
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.promotion_rich_confirm:
+                //遍历Map，拼接订单id
+                if (checkedIDs.size() == 0) {
+                    ToastUtil.showShort(currentContext, "请选择订单");
+                } else {
+                    //显示钱款去向选择弹窗
+                    selectPurpose();
+                }
+                break;
+        }
+    }
+
     /**
-     * 进入推广费提现确认界面
+     * 选择钱款去向
      */
-    private void enterPromotionCashConfirm() {
-        //遍历Map，拼接订单id
-        if (checkedIDs.size() != 0) {
-            StringBuffer orderIds = new StringBuffer("");
-            Set<Map.Entry<Integer, Integer>> entrySet = checkedIDs.entrySet();
-            for (Map.Entry<Integer, Integer> entry : entrySet) {
-                Integer orderId = entry.getValue();
-                orderIds.append("," + orderId);
-            }
-            //删除第一个逗号
-            orderIds.delete(0, 1);
-            Intent intent = new Intent();
-            Class clz = null;
-            switch (mUserAccountType) {
-                case "personal":
-                    clz = PromotionCashConfirmPersonalActivity.class;
-                    break;
-                case "corporate":
-                    clz = PromotionCashConfirmActivity.class;
-                    break;
-            }
-            intent.setClass(this, clz);
-            intent.putExtra("orderIds", orderIds.toString());
-            intent.putExtra("amount", mApplyNum);
-            if (clz != null) {
-                startActivity(intent);
-            }
+    private void selectPurpose() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.dialog);
+        View v = View.inflate(this, R.layout.dialog_pro_way, null);
+        TextView tvDialogAmount = (TextView) v.findViewById(R.id.pro_apply_amount);
+        TextView tvRemark = (TextView) v.findViewById(R.id.pro_remark);
+        if (mUserAccountType.equals("personal")) {
+            // 如果是个人账户，则进行税率计算再做显示
+            tvDialogAmount.setText(FormatUtils.RMBFormat(mApplyNum * (1 - mTaxRate)));
+            // 备注显示税率
+            tvRemark.setText(getString(R.string.vaccine_promotion_way) + "\n税率：" + mTaxRate);
         } else {
-            ToastUtil.showShort(currentContext, "请选择订单");
+            tvDialogAmount.setText(FormatUtils.RMBFormat(mApplyNum));
+        }
+        final RadioButton rbCash = (RadioButton) v.findViewById(R.id.pro_cash);
+        final RadioButton rbOverdue = (RadioButton) v.findViewById(R.id.pro_overdue);
+        if (TextUtils.equals(mFrom, RECONCILIATION)) {
+            // 充值进入，默认选中充值
+            rbCash.setChecked(false);
+            rbOverdue.setChecked(true);
+        } else {
+            // 财富进入，默认选中提现
+            rbCash.setChecked(true);
+            rbOverdue.setChecked(false);
+        }
+        builder.setView(v);
+        final AlertDialog dialog = builder.create();
+        v.findViewById(R.id.pro_confirm).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // 拼接订单
+                StringBuffer orderIds = new StringBuffer("");
+                Set<Map.Entry<Integer, Integer>> entrySet = checkedIDs.entrySet();
+                for (Map.Entry<Integer, Integer> entry : entrySet) {
+                    Integer orderId = entry.getValue();
+                    orderIds.append(",").append(orderId);
+                }
+                //删除第一个逗号
+                orderIds.delete(0, 1);
+
+                if (rbCash.isChecked()) {
+                    // 如果选中的提现，则进入提现确认界面
+                    toPromotionCashConfirm(orderIds);
+                } else if (rbOverdue.isChecked()) {
+                    // 如果选择逾期垫款，则进入垫款充值确认界面
+                    toPayOverdue(orderIds);
+                }
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
+    }
+
+    /**
+     * 进行推广奖励提现
+     * @param orderIds
+     */
+    private void toPromotionCashConfirm(StringBuffer orderIds) {
+        Intent intent = new Intent();
+        Class clz = null;
+        switch (mUserAccountType) {
+            case "personal":
+                clz = PromotionCashConfirmPersonalActivity.class;
+                intent.putExtra("actual", mApplyNum * (1 - mTaxRate));
+                break;
+            case "corporate":
+                clz = PromotionCashConfirmActivity.class;
+                break;
+        }
+        intent.setClass(this, clz);
+        intent.putExtra("orderIds", orderIds.toString());
+        intent.putExtra("amount", mApplyNum);
+        intent.putExtra("from", mFrom);
+        if (clz != null) {
+            startActivity(intent);
         }
     }
 
 
+    /**
+     * 充值逾期垫款
+     * @param orderIds
+     */
+    private void toPayOverdue(StringBuffer orderIds) {
+        Intent intent = new Intent();
+        Class clz = null;
+        switch (mUserAccountType) {
+            case "personal":
+                clz = OverduePerConfirmActivity.class;
+                intent.putExtra("actual", mApplyNum * (1 - mTaxRate));
+                break;
+            case "corporate":
+                clz = OverdueCorConfirmActivity.class;
+                break;
+        }
+        intent.setClass(this, clz);
+        intent.putExtra("orderIds", orderIds.toString());
+        intent.putExtra("amount", mApplyNum);
+        intent.putExtra("from", mFrom);
+        if (clz != null) {
+            startActivity(intent);
+        }
+
+//        final ProgressDialog loadingProgress = ProgressDialogUtil.getLoadingProgress(this, "提交中");
+//        loadingProgress.show();
+//        OkHttpUtils.post().url(URL_RECHARGE).addHeader(ACCESS_TOKEN, accessToken)
+//                .addParams(ORDER_IDS, orderIds.toString())
+//                .build().execute(new StringCallback() {
+//            @Override
+//            public void onError(Call call, Exception e, int id) {
+//                loadingProgress.dismiss();
+//                e.printStackTrace();
+//                Util.showTimeOutNotice(currentContext);
+//            }
+//
+//            @Override
+//            public void onResponse(String response, int id) {
+//                loadingProgress.dismiss();
+//                ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
+//                switch (errorBean.getStatus()) {
+//                    case "success":
+//                        ToastUtil.showShort(currentContext, "充值成功");
+//                        if (TextUtils.equals(mFrom, RECONCILIATION)) {
+//                            startActivity(new Intent(currentContext, ReconciliationDetailActivity.class));
+//                        } else {
+//                            startActivity(new Intent(currentContext, RichVaccineActivity.class));
+//                        }
+//                        break;
+//                    case "failure":
+//                        Util.showError(currentContext, errorBean.getReason());
+//                        break;
+//                }
+//            }
+//        });
+    }
 
 
     /**
@@ -351,11 +532,13 @@ public class PromotionActivity extends BaseActivity implements TitleView.TitleBa
         int id = temp.getId();
         if (isChecked) {
             mCheckedCount++;
-            mApplyNum += totalAmount;
+            mApplyNum = new BigDecimal(mApplyNum + "").add(new BigDecimal(totalAmount + "")).doubleValue();
+//            mApplyNum += totalAmount;
             checkedIDs.put(position, id);
         } else {
             mCheckedCount--;
-            mApplyNum -= totalAmount;
+            mApplyNum = new BigDecimal(mApplyNum + "").subtract(new BigDecimal(totalAmount + "")).doubleValue();
+//          mApplyNum -= totalAmount;
             checkedIDs.remove(position);
         }
         mPromotionCheckCount.setText("已选择：" + mCheckedCount);

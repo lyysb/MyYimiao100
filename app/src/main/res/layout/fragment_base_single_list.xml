@@ -1,23 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@color/colorEee"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
+    <include
+        android:id="@+id/fragment_list_empty_view"
+        layout="@layout/empty_view"/>
     <android.support.v4.widget.SwipeRefreshLayout
-        android:background="@color/colorEee"
-        android:paddingTop="5dp"
+        android:paddingTop="1dp"
         android:id="@+id/base_single_swipe"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <com.yimiao100.sale.view.PullToRefreshListView
             android:id="@+id/base_single_list_view"
             style="@style/list_view"
-            android:background="@color/colorEee"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
     </android.support.v4.widget.SwipeRefreshLayout>
-    <include
-        android:id="@+id/fragment_list_empty_view"
-        layout="@layout/empty_view"/>
 </RelativeLayout>

@@ -37,9 +37,11 @@
             android:layout_weight="1"
             android:text="再考虑一下"
             android:textSize="12sp"
+            android:padding="10dp"
             android:textColor="@color/color999"
             android:background="@drawable/shape_dialog_promotion1"
-            android:layout_width="wrap_content"
+            android:gravity="center"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"/>
         <View
             style="@style/view_vertical"/>
@@ -48,9 +50,11 @@
             android:text="确定"
             android:layout_weight="1"
             android:textSize="12sp"
+            android:padding="10dp"
             android:textColor="@color/colorMain"
+            android:gravity="center"
             android:background="@drawable/shape_dialog_promotion2"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"/>
     </LinearLayout>
 

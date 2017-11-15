@@ -21,6 +21,8 @@ import com.zhy.http.okhttp.callback.StringCallback;
 import com.zhy.http.okhttp.request.RequestCall;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import okhttp3.Call;
 
@@ -38,6 +40,7 @@ public class RichesDetailPersonalFragment extends BaseFragmentSingleList {
 
     private ArrayList<RichesDetailList> mLists;
     private RichesDetailAdapter mAdapter;
+    private Map<String, String> mParams = new HashMap<>();
     @Override
     protected String initPageTitle() {
         return "个人推广";
@@ -45,6 +48,10 @@ public class RichesDetailPersonalFragment extends BaseFragmentSingleList {
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        String richType = getActivity().getIntent().getStringExtra("richType");
+        if (richType != null) {
+            mParams.put("bizType", richType);
+        }
         super.onViewCreated(view, savedInstanceState);
         setEmptyView(getString(R.string.empty_view_riches_detail), R.mipmap.ico_wealth_detailed);
     }
@@ -116,6 +123,7 @@ public class RichesDetailPersonalFragment extends BaseFragmentSingleList {
 
     private RequestCall getBuild(int page) {
         return OkHttpUtils.post().url(URL_ACCOUNT_DETAIL_LIST).addHeader(ACCESS_TOKEN, mAccessToken)
+                .params(mParams)
                 .addParams(PAGE, page + "").addParams(PAGE_SIZE, mPageSize)
                 .addParams(ACCOUNT_TYPE, mAccountType).build();
     }

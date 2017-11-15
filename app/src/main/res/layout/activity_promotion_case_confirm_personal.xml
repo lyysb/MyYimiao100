@@ -6,6 +6,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
+
+    <com.yimiao100.sale.view.TitleView
+        android:id="@+id/promotion_cash_title_personal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:left_isShow="true"
+        app:title_text="推广奖励提现"/>
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -51,7 +58,7 @@
                     android:id="@+id/promotion_cash_money_personal"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="￥"
+                    android:text="¥0.00"
                     android:textColor="@color/color666"
                     android:textStyle="bold"
                     android:textSize="19sp"/>
@@ -79,7 +86,7 @@
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
                     android:gravity="right"
-                    android:text="￥"
+                    android:text="¥0.00"
                     android:textStyle="bold"
                     android:textColor="@color/color333"
                     android:textSize="22sp"/>
@@ -124,10 +131,4 @@
 
         </LinearLayout>
     </ScrollView>
-    <com.yimiao100.sale.view.TitleView
-        android:id="@+id/promotion_cash_title_personal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:left_isShow="true"
-        app:title_text="推广奖励提现"/>
 </LinearLayout>

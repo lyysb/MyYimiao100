@@ -7,11 +7,7 @@ import android.view.View;
 import android.widget.AdapterView;
 
 import com.yimiao100.sale.R;
-import com.yimiao100.sale.activity.OrderAlreadyActivity;
-import com.yimiao100.sale.activity.OrderCompletedActivity;
-import com.yimiao100.sale.activity.OrderErrorActivity;
-import com.yimiao100.sale.activity.OrderSubmitActivity;
-import com.yimiao100.sale.activity.OrderUnpaidActivity;
+import com.yimiao100.sale.activity.*;
 import com.yimiao100.sale.adapter.listview.OrderAdapter;
 import com.yimiao100.sale.base.BaseFragmentSingleList;
 import com.yimiao100.sale.bean.ErrorBean;
@@ -31,7 +27,7 @@ import java.util.ArrayList;
 import okhttp3.Call;
 
 /**
- * 公司推广
+ * 公司推广--已弃用
  * Created by Michel on 2017/3/1.
  */
 
@@ -128,6 +124,10 @@ public class OrderCorporateFragment extends BaseFragmentSingleList {
             case "already_signed":
                 //第四状态-已签约
                 clz = OrderCompletedActivity.class;
+                break;
+            case "end":
+                // 最终状态-已终止
+                clz = OrderEndActivity.class;
                 break;
             case "not_passed":
             case "defaulted":

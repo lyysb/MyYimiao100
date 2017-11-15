@@ -8,6 +8,15 @@ public class UserFundBean {
     private String status;
     private int reason;
     private UserFundNew userFund;
+    private UserFundAll userFundAll;
+
+    public UserFundAll getUserFundAll() {
+        return userFundAll;
+    }
+
+    public void setUserFundAll(UserFundAll userFundAll) {
+        this.userFundAll = userFundAll;
+    }
 
     public String getStatus() {
         return status;

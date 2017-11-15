@@ -81,6 +81,7 @@
             android:button="@null"
             android:gravity="center"
             android:padding="6dp"
+            android:focusable="false"
             android:text="选择"
             android:textColor="@color/color_assurance"
             android:textSize="12sp"/>

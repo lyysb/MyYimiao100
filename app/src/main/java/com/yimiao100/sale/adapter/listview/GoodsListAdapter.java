@@ -56,7 +56,7 @@ public class GoodsListAdapter extends BaseAdapter {
         Picasso.with(parent.getContext()).load(goods.getImageUrl()).into(goodsImage);
         goodsName.setText(goods.getGoodsName());
         goodsIntegral.setText(goods.getIntegralValue() + "");
-        goodsPrice.setText("市场参考价格：￥" + FormatUtils.MoneyFormat(goods.getUnitPrice()));
+        goodsPrice.setText("市场参考价格：" + FormatUtils.RMBFormat(goods.getUnitPrice()));
         return convertView;
     }
 }

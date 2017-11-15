@@ -9,15 +9,11 @@ import android.widget.TextView;
 
 import com.yimiao100.sale.activity.RichesActivity;
 import com.yimiao100.sale.base.BaseActivity;
+import com.yimiao100.sale.bean.CorporateBean;
 import com.yimiao100.sale.bean.ErrorBean;
 import com.yimiao100.sale.ext.JSON;
-import com.yimiao100.sale.utils.Constant;
-import com.yimiao100.sale.utils.DialogUtil;
-import com.yimiao100.sale.utils.FormatUtils;
-import com.yimiao100.sale.utils.LogUtil;
-import com.yimiao100.sale.utils.SharePreferenceUtil;
-import com.yimiao100.sale.utils.ToastUtil;
-import com.yimiao100.sale.utils.Util;
+import com.yimiao100.sale.utils.*;
+import com.yimiao100.sale.vaccine.RichVaccineActivity;
 import com.yimiao100.sale.view.TitleView;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
@@ -32,7 +28,7 @@ import okhttp3.Call;
  * 奖学金提现确认
  */
 public class ScholarshipCashConfirmActivity extends BaseActivity implements TitleView
-        .TitleBarOnClickListener{
+        .TitleBarOnClickListener, CheckUtil.CorporatePassedListener {
 
     @BindView(R.id.scholarship_cash_title)
     TitleView mScholarshipCashTitle;
@@ -58,22 +54,18 @@ public class ScholarshipCashConfirmActivity extends BaseActivity implements Titl
         initData();
     }
     @Override
-    protected void onStart() {
-        super.onStart();
-        boolean isExit = (boolean) SharePreferenceUtil.get(this, Constant.CORPORATE_EXIT, false);
-        if (isExit) {
-            //设置尾号
-            String bank_number = (String) SharePreferenceUtil.get(this, Constant
-                    .CORPORATE_ACCOUNT_NUMBER, "");
-            mScholarshipCashEnd.setText(bank_number.length() > 4 ? "尾号" + bank_number.substring(bank_number.length() - 4) : bank_number);
-            //设置联系方式
-            mScholarshipCashPhone.setText("联系方式：" + SharePreferenceUtil.get(this, Constant
-                    .CORPORATION_PERSONAL_PHONE_NUMBER, ""));
-        } else {
-            DialogUtil.noneCorporate(this);
-        }
+    protected void onResume() {
+        super.onResume();
+        CheckUtil.checkCorporate(this,this);
     }
 
+    @Override
+    public void handleCorporate(CorporateBean corporate) {
+        String corporateAccount = corporate.getCorporateAccount();
+        mScholarshipCashEnd.setText(corporateAccount.length() > 4 ? "尾号" + corporateAccount.substring(corporateAccount.length() - 4) : corporateAccount);
+        //设置联系方式
+        mScholarshipCashPhone.setText("联系方式：" + corporate.getPersonalPhoneNumber());
+    }
     private void initView() {
         mScholarshipCashTitle.setOnTitleBarClick(this);
     }
@@ -84,7 +76,7 @@ public class ScholarshipCashConfirmActivity extends BaseActivity implements Titl
         LogUtil.d("mOrderIds:" + mOrderIds);
         //获取提现金额
         double amount = intent.getDoubleExtra("amount", -1);
-        mScholarshipCashMoney.setText("￥" + FormatUtils.MoneyFormat(amount));
+        mScholarshipCashMoney.setText(FormatUtils.RMBFormat(amount));
     }
     @OnClick({R.id.scholarship_cash_apply_service, R.id.scholarship_cash_apply_cash})
     public void onClick(View view) {
@@ -151,8 +143,8 @@ public class ScholarshipCashConfirmActivity extends BaseActivity implements Titl
                 switch (errorBean.getStatus()) {
                     case "success":
                         ToastUtil.showShort(currentContext, "申请成功");
-                        //申请提现成功，返回财富列表
-                        startActivity(new Intent(getApplicationContext(), RichesActivity.class));
+                        //申请提现成功，返回疫苗财富列表
+                        startActivity(new Intent(getApplicationContext(), RichVaccineActivity.class));
                         break;
                     case "failure":
                         Util.showError(currentContext, errorBean.getReason());
@@ -161,6 +153,7 @@ public class ScholarshipCashConfirmActivity extends BaseActivity implements Titl
             }
         });
     }
+
     @Override
     public void leftOnClick() {
         finish();

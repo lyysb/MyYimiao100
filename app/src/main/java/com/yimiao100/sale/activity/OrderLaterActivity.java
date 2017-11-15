@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.yimiao100.sale.R;
 import com.yimiao100.sale.base.BaseActivity;
 import com.yimiao100.sale.bean.ResourceListBean;
+import com.yimiao100.sale.utils.FormatUtils;
 import com.yimiao100.sale.utils.TimeUtil;
 import com.yimiao100.sale.view.TitleView;
 
@@ -87,15 +88,15 @@ public class OrderLaterActivity extends BaseActivity implements TitleView.TitleB
         String time = TimeUtil.timeStamp2Date(order.getCreatedAt() + "", "yyyy.MM.dd");
         mOrderLaterTime.setText("时间：" + time);
         //保证金
-        String totalDeposit = order.getSaleDeposit() + "";
-        Spanned totalMoney = Html.fromHtml("推广保证金：" + "<font color=\"#4188d2\">" + totalDeposit + "</font>" + " (人民币)");
+        String totalDeposit = FormatUtils.MoneyFormat(order.getSaleDeposit());
+        Spanned totalMoney = Html.fromHtml("推广保证金：<font color=\"#4188d2\">" + totalDeposit + "</font>" + " (人民币)");
         mOrderLaterMoney.setText(totalMoney);
         //协议单号
         String serialNo = order.getSerialNo();
         mOrderLaterNo.setText("协议单号：" + serialNo);
         //竞标保证金提示
-        String bidDeposit = order.getBidDeposit() + "";
-        mOrderLaterHint.setText("本次推广资源的竞标保证金为￥" + bidDeposit + "元，请于竞标截止日前转到如下账户。\n汇款转账时,必须在备注处填写协议单号。");
+        String bidDeposit = FormatUtils.MoneyFormat(order.getBidDeposit());
+        mOrderLaterHint.setText("本次推广资源的竞标保证金为" + bidDeposit + "元，请于竞标截止日前转到如下账户。\n汇款转账时,必须在备注处填写协议单号。");
     }
 
     @OnClick(R.id.order_later_confirm)

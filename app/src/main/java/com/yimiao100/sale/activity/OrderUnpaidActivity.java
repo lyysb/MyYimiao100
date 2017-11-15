@@ -133,7 +133,7 @@ public class OrderUnpaidActivity extends BaseActivity implements TitleView.Title
         mOrderTime.setText("时间：" + time);
         //保证金
         String totalDeposit = FormatUtils.MoneyFormat(mOrder.getSaleDeposit());
-        Spanned totalMoney = Html.fromHtml("推广保证金：" + "<font color=\"#4188d2\">" + totalDeposit +
+        Spanned totalMoney = Html.fromHtml("推广保证金：<font color=\"#4188d2\">" + totalDeposit +
                 "</font>" + " (人民币)");
         mMoney.setText(totalMoney);
         //协议单号
@@ -141,7 +141,7 @@ public class OrderUnpaidActivity extends BaseActivity implements TitleView.Title
         mNo.setText("协议单号：" + serialNo);
         //竞标保证金提示
         String bidDeposit = FormatUtils.MoneyFormat(mOrder.getBidDeposit());
-        mHint.setText("本次推广资源的竞标保证金为￥" + bidDeposit + "元，请于竞标截止日前尽快提交。");
+        mHint.setText("本次推广资源的竞标保证金为" + bidDeposit + "元，请于竞标截止日前尽快提交。");
         //竞标有效提示日期
         long bidExpiredTipAt = mOrder.getBidExpiredTipAt();
         String expire = TimeUtil.timeStamp2Date(bidExpiredTipAt + "", "yyyy年MM月dd日");

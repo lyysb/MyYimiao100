@@ -11,6 +11,7 @@ import com.yimiao100.sale.adapter.peger.MainPagerAdapter
 import com.yimiao100.sale.base.BaseActivity
 import com.yimiao100.sale.base.BaseFragment
 import com.yimiao100.sale.bean.ErrorBean
+import com.yimiao100.sale.bean.UserFundAll
 import com.yimiao100.sale.bean.UserFundBean
 import com.yimiao100.sale.ext.JSON
 import com.yimiao100.sale.fragment.*
@@ -23,6 +24,7 @@ import org.jetbrains.anko.find
 
 /**
  * 主界面
+ * update: 2017年9月4日15:12:23 修改用户资金数据接口
  */
 class MainActivity : BaseActivity(), ViewPager.OnPageChangeListener {
 
@@ -34,6 +36,8 @@ class MainActivity : BaseActivity(), ViewPager.OnPageChangeListener {
 
     //用户资金URL
     private val URL_USER_FUND = Constant.BASE_URL + "/api/fund/user_fund"
+
+    private val URL_USER_FUND_ALL = Constant.BASE_URL + "/api/fund/user_fund_all"
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -131,41 +135,36 @@ class MainActivity : BaseActivity(), ViewPager.OnPageChangeListener {
      * 获取用户资金信息
      */
     private fun initFundInformation() {
-        OkHttpUtils.post().url(URL_USER_FUND).addHeader(ACCESS_TOKEN, accessToken)
+        OkHttpUtils.post().url(URL_USER_FUND_ALL).addHeader(ACCESS_TOKEN, accessToken)
                 .build().execute(object : StringCallback() {
             override fun onError(call: Call, e: Exception, id: Int) {
                 LogUtil.d("获取用户资金信息E：" + e.localizedMessage)
             }
 
             override fun onResponse(response: String, id: Int) {
-                LogUtil.d("获取用户资金信息：" + response)
-                val errorBean = JSON.parseObject(response, ErrorBean::class.java)
-                when (errorBean!!.status) {
-                    "success" -> {
-                        val userFundBean = JSON.parseObject(response, UserFundBean::class.java)
-                        if (userFundBean!!.userFund != null) {
-                            val userFund = userFundBean.userFund
-                            //用户账户总金额-double
-                            SharePreferenceUtil.put(applicationContext, Constant.TOTAL_AMOUNT,
-                                    userFund.totalAmount)
-                            //用户积分-int
-                            SharePreferenceUtil.put(applicationContext, Constant.INTEGRAL,
-                                    userFund.integral)
-                            //用户奖学金-double
-                            SharePreferenceUtil.put(applicationContext, Constant.TOTAL_EXAM_REWARD,
-                                    userFund.totalExamReward)
-                            //用户推广费-double
-                            SharePreferenceUtil.put(applicationContext, Constant.TOTAL_SALE,
-                                    userFund.totalSale)
-                            //用户保证金-double
-                            SharePreferenceUtil.put(applicationContext, Constant.DEPOSIT,
-                                    userFund.deposit)
+                LogUtil.d("获取用户资金信息：\n" + response)
+                JSON.parseObject(response, UserFundBean::class.java)?.let {
+                    when (it.status) {
+                        "success" -> {
+                            it.userFundAll?.let {
+                                saveToLocal(it)
+                            }
+                        }
+                        "failure" -> Util.showError(this@MainActivity, it.reason)
+                        else ->{
+                            Util.showError(this@MainActivity, it.reason)
                         }
                     }
-                    "failure" -> Util.showError(this@MainActivity, errorBean.reason)
                 }
             }
         })
+    }
+
+    fun saveToLocal(userFundAll: UserFundAll) {
+        //用户账户总金额-double
+        SharePreferenceUtil.put(currentContext, Constant.TOTAL_AMOUNT, userFundAll.totalAmount)
+        //用户积分-int
+        SharePreferenceUtil.put(currentContext, Constant.INTEGRAL, userFundAll.integral)
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {

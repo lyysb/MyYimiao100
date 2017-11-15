@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    style="@style/TitleStyle"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <com.yimiao100.sale.view.TitleView
+        android:id="@+id/insurance_detail_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:left_isShow="true"
+        app:title_text="保险详情"/>
+
+    <ScrollView
+
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@color/colorLoginInput">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/white"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="12dp">
+
+                    <TextView
+                        android:text="CompanyName"
+                        android:textStyle="bold"
+                        android:id="@+id/insurance_detail_company_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/color333"
+                        android:textSize="14sp"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:padding="10dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="保险名称：    "
+                        android:textColor="@color/color333"
+                        android:textSize="12sp"/>
+
+                    <TextView
+                        android:id="@+id/insurance_detail_product_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/color666"
+                        android:textSize="12sp"/>
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/white"
+                    android:orientation="horizontal"
+                    android:padding="10dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="推广区域：    "
+                        android:textColor="@color/color333"
+                        android:textSize="12sp"/>
+
+                    <TextView
+                        android:id="@+id/insurance_detail_region"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/color666"
+                        android:textSize="12sp"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_marginTop="7dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/white"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:drawableLeft="@mipmap/ico_insurance_info"
+                    android:drawablePadding="8dp"
+                    android:text="推广信息"
+                    android:textColor="@color/colorMain"
+                    android:textSize="14sp"
+                />
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/colorLoginInput"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="10dp">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="推广周期：            "
+                        android:textColor="@color/color333"
+                        android:textSize="12sp"/>
+
+                    <TextView
+                        android:id="@+id/insurance_detail_time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/color666"
+                        android:textSize="12sp"/>
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="10dp">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="基础金额：            "
+                        android:textColor="@color/color333"
+                        android:textSize="12sp"/>
+
+                    <TextView
+                        android:id="@+id/insurance_detail_quota"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/color666"
+                        android:textSize="12sp"/>
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="10dp">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="推广保证金比例："
+                        android:textColor="@color/color333"
+                        android:textSize="12sp"/>
+
+                    <TextView
+                        android:id="@+id/insurance_detail_scale"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/color666"
+                        android:textSize="12sp"/>
+                </LinearLayout>
+
+
+
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="7dp"
+                android:layout_marginTop="7dp"
+                android:background="@android:color/white"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:drawableLeft="@mipmap/ico_company_promotion_promotion_policy"
+                    android:drawablePadding="8dp"
+                    android:text="推广政策"
+                    android:textColor="@color/colorMain"
+                    android:textSize="14sp"
+                />
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/colorLoginInput"/>
+
+                <com.yimiao100.sale.view.TextViewExpandableAnimation
+                    android:id="@+id/insurance_detail_policy_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:lineSpacingMultiplier="1.2"
+                    app:tvea_expandBitmap="@mipmap/ico_study_drop_down"
+                    app:tvea_expandLines="3"
+                    app:tvea_shrinkBitmap="@mipmap/ico_study_drop_up"
+                    app:tvea_textContentColor="@color/color999"
+                    app:tvea_textContentSize="12sp"
+                    app:tvea_textExpand="@string/expand"
+                    app:tvea_textShrink="@string/shrink"
+                    app:tvea_textStateColor="@color/color999"
+                />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="7dp"
+                android:background="@android:color/white"
+                android:orientation="vertical"
+                android:padding="10dp">
+
+                <TextView
+                    android:id="@+id/insurance_detail_expired_at"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/color333"
+                    android:textSize="12sp"/>
+
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/white"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="产品介绍"
+                    android:layout_margin="10dp"
+                    android:textColor="@color/colorMain"
+                    android:textSize="14sp"
+                />
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/colorLoginInput"/>
+                <ImageView
+                    android:id="@+id/insurance_detail_image"
+                    android:src="@mipmap/ico_test"
+                    android:layout_margin="10dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"/>
+                <fm.jiecao.jcvideoplayer_lib.JCVideoPlayerStandard
+                    android:visibility="gone"
+                    android:id="@+id/insurance_detail_video"
+                    android:layout_margin="10dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"/>
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+    <ImageButton
+        android:id="@+id/insurance_promotion"
+        style="?android:attr/borderlessButtonStyle"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:src="@drawable/selector_promotion"/>
+</LinearLayout>

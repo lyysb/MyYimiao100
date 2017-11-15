@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    style="@style/TitleStyle"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <com.yimiao100.sale.view.TitleView
+        android:id="@+id/ass_ins_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:left_isShow="true"
+        app:title_text="推广保证金提现"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/white">
+        <include
+            android:id="@+id/ass_ins_empty"
+            layout="@layout/empty_view"/>
+        <LinearLayout
+            android:id="@+id/ll_assurance_confirm"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:orientation="horizontal">
+
+            <CheckBox
+                android:id="@+id/ass_ins_select_all"
+                android:checked="false"
+                android:button="@drawable/selector_pay_way"
+                android:text="全选"
+                android:textSize="12sp"
+                android:textColor="@color/color666"
+                android:gravity="center_vertical"
+                android:layout_gravity="center_vertical"
+                android:paddingLeft="7dp"
+                android:layout_marginLeft="7dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:padding="12dp">
+                <TextView
+                    android:id="@+id/ass_ins_account"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="end"
+                    android:text="金额：0.00元"
+                    android:textColor="@color/color666"
+                    android:textSize="14sp"/>
+                <TextView
+                    android:id="@+id/ass_ins_check_count"
+                    android:layout_marginTop="6dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="end"
+                    android:text="已选择：0"
+                    android:textColor="@color/color666"
+                    android:textSize="12sp"/>
+
+            </LinearLayout>
+            <Button
+                android:id="@+id/ass_ins_confirm"
+                style="?android:attr/borderlessButtonStyle"
+                android:text="提现"
+                android:textSize="14sp"
+                android:textColor="@android:color/white"
+                android:gravity="center_vertical"
+                android:paddingLeft="40dp"
+                android:paddingRight="40dp"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:background="@drawable/selector_button2"/>
+        </LinearLayout>
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/ass_ins_refresh"
+            android:layout_width="match_parent"
+            android:layout_above="@id/ll_assurance_confirm"
+            android:layout_height="match_parent">
+            <com.yimiao100.sale.view.PullToRefreshListView
+                android:id="@+id/ass_ins_company_list_view"
+                style="@style/style23"
+                android:dividerHeight="5dp"
+                android:layout_above="@id/ll_assurance_confirm"
+                android:background="@color/colorEee"/>
+        </android.support.v4.widget.SwipeRefreshLayout>
+
+    </RelativeLayout>
+</LinearLayout>

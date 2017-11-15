@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    style="@style/TitleStyle"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <com.yimiao100.sale.view.TitleView
+        android:id="@+id/submit_insurance_title"
+        app:title_text="提交竞标保证金"
+        app:left_isShow="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+    <ScrollView
+        android:background="@color/colorEee"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:layout_marginTop="9dp"
+                android:text="确认转入账户"
+                style="@style/style62"/>
+            <LinearLayout
+                style="@style/style63">
+                <TextView
+                    android:text="账号：        "
+                    style="@style/style64"/>
+
+                <TextView
+                    android:text="3298 6341 3119"
+                    style="@style/style65"/>
+
+            </LinearLayout>
+            <LinearLayout
+                style="@style/style63">
+                <TextView
+                    android:text="账户名称："
+                    style="@style/style64"/>
+
+                <TextView
+                    android:text="北京亿苗通生物科技有限公司"
+                    style="@style/style65"/>
+
+            </LinearLayout>
+            <LinearLayout
+                style="@style/style63">
+                <TextView
+                    android:text="开户名称："
+                    style="@style/style64"/>
+
+                <TextView
+                    android:text="中国银行北京西直门外支行"
+                    style="@style/style65"/>
+
+            </LinearLayout>
+            <TextView
+                android:layout_marginTop="24dp"
+                android:text="详情：保险推广竞标保证金"
+                style="@style/style62"/>
+            <LinearLayout
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:background="@android:color/white"
+                android:padding="12dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:text="支付说明："
+                    android:textColor="@color/colorRed"
+                    android:lineSpacingMultiplier="1.2"
+                    android:background="@android:color/white"
+                    style="@style/style66"/>
+                <TextView
+                    android:text="提交竞标保证金单个银行账户单日支付限额3000元，如达到支付上限请更改银行卡或择日支付。"
+                    android:lineSpacingMultiplier="1.2"
+                    android:background="@android:color/white"
+                    style="@style/style66"/>
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/submit_insurance_amount"
+                android:text="实付款："
+                android:textSize="14sp"
+                android:textColor="@color/colorRed"
+                android:layout_marginTop="24dp"
+                android:padding="12dp"
+                android:drawableRight="@mipmap/ico_submit_bid_bond_down"
+                android:background="@android:color/white"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+            <LinearLayout
+                android:padding="12dp"
+                android:gravity="center_vertical"
+                android:background="@android:color/white"
+                android:layout_marginTop="0.5dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:src="@mipmap/ico_submit_bid_bond_pay"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_weight="1"
+                    android:layout_marginLeft="25dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:text="微信支付"
+                        android:textSize="14sp"
+                        android:textColor="@color/color333"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+                    <TextView
+                        android:text="微信安全支付"
+                        android:textSize="10sp"
+                        android:layout_marginTop="8dp"
+                        android:textColor="@color/color666"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+                </LinearLayout>
+                <RadioButton
+                    android:id="@+id/submit_insurance_wx"
+                    android:background="@drawable/selector_pay_way"
+                    android:checked="true"
+                    android:button="@null"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/submit_insurance_pay"
+                android:text="确认支付"
+                android:gravity="center_horizontal"
+                style="?android:attr/borderlessButtonStyle"
+                android:textColor="@android:color/white"
+                android:background="@drawable/selector_button"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="50dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginBottom="35dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

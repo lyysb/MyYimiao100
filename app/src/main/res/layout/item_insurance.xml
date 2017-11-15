@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@android:color/white"
+    android:orientation="horizontal"
+    android:padding="10dp">
+
+    <ImageView
+        android:id="@+id/insurance_company_logo"
+        android:layout_gravity="center_vertical"
+        android:layout_width="88dp"
+        android:layout_height="88dp"
+        android:scaleType="fitCenter"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="10dp"
+        android:orientation="vertical">
+
+        <TextView
+
+            android:text="{companyName}"
+            android:id="@+id/insurance_company_name"
+            android:gravity="center_vertical"
+            android:layout_weight="1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:ellipsize="end"
+            android:lines="1"
+            android:textColor="@color/color333"
+            android:textSize="14sp"/>
+
+        <TextView
+            android:id="@+id/insurance_product_name"
+            android:gravity="center_vertical"
+            android:layout_weight="1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="保险名称："
+            android:layout_marginBottom="5dp"
+            android:textColor="@color/color666"
+            android:textSize="12sp"/>
+        <LinearLayout
+            android:visibility="gone"
+            android:layout_weight="1"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/insurance_dosage_form"
+                android:gravity="center_vertical"
+                android:layout_weight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="剂型："
+                android:textColor="@color/color666"
+                android:textSize="12sp"/>
+            <TextView
+                android:id="@+id/insurance_spec"
+                android:gravity="center_vertical"
+                android:layout_weight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="规格："
+                android:textColor="@color/color666"
+                android:textSize="12sp"/>
+        </LinearLayout>
+        <TextView
+            android:id="@+id/insurance_region"
+            android:gravity="center_vertical"
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="区域："
+            android:layout_marginBottom="5dp"
+            android:textColor="@color/color666"
+            android:textSize="12sp"/>
+
+        <TextView
+            android:id="@+id/insurance_customer"
+            android:gravity="center_vertical"
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="客户："
+            android:layout_marginBottom="5dp"
+            android:textColor="@color/colorMain"
+            android:textSize="12sp"/>
+
+        <LinearLayout
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/ico_resources_time"/>
+            <TextView
+                android:id="@+id/insurance_updated_at"
+                android:layout_marginLeft="8dp"
+                android:textSize="9sp"
+                android:textColor="@color/color999"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"/>
+            <ImageView
+                android:id="@+id/insurance_iv"
+                android:src="@mipmap/ico_notice_triangle_activation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

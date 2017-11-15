@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:background="@android:color/white"
+        android:paddingLeft="12dp"
+        android:paddingRight="12dp"
+        android:paddingTop="7dp"
+        android:paddingBottom="7dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:id="@+id/head_recon_cus_input"
+            android:hint="请输入要查找的客户名称"
+            android:textColor="@color/color333"
+            android:textSize="12sp"
+            android:background="@drawable/shape_input_customer"
+            android:lines="1"
+            android:padding="6dp"
+            android:drawableLeft="@mipmap/ico_cus_search"
+            android:drawablePadding="6dp"
+            android:singleLine="true"
+            android:textColorHint="@color/color999"
+            android:maxLines="1"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"/>
+        <ImageView
+            android:id="@+id/head_recon_cus_search"
+            android:layout_marginLeft="10dp"
+            android:src="@mipmap/ico_resources_search"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/head_recon_cus_tv"
+        android:text="当前显示0条客户信息"
+        android:paddingLeft="12dp"
+        android:paddingRight="12dp"
+        android:paddingTop="6dp"
+        android:paddingBottom="6dp"
+        android:background="#f4f4f4"
+        android:textSize="10sp"
+        android:textColor="@color/color999"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+</LinearLayout>

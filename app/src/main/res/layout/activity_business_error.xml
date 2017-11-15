@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    style="@style/TitleStyle"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <com.yimiao100.sale.view.TitleView
+        android:id="@+id/business_error_title"
+        app:title_text="我的订单"
+        app:left_isShow="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:id="@+id/business_error_service"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_alignParentRight="true"
+            android:scaleType="center"
+            android:src="@mipmap/ico_service"/>
+    </com.yimiao100.sale.view.TitleView>
+    <FrameLayout
+        android:padding="12dp"
+        android:background="@android:color/white"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:orientation="vertical"
+            android:padding="10dp"
+            android:background="@drawable/shape_dialog2"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:background="@android:color/white"
+                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:orientation="vertical"
+                android:layout_height="0dp">
+                <TextView
+                    android:id="@+id/business_status_name"
+                    android:text="{status}"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:layout_margin="30dp"
+                    android:gravity="center_horizontal"
+                    android:textColor="@color/color666"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+                <View
+                    style="@style/view_horizontal"/>
+                <TextView
+                    android:id="@+id/business_error_reason"
+                    android:text="\t\t{reason}"
+                    android:textSize="14sp"
+                    android:textColor="@color/color666"
+                    android:lineSpacingMultiplier="1.2"
+                    android:padding="5dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+                <ImageView
+                    android:id="@+id/business_error_read"
+                    android:src="@drawable/selector_order_already"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_weight="1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"/>
+                <TextView
+                    android:text="如有任何问题，可以与我们联系，我们将尽快为你解答"
+                    android:textSize="12sp"
+                    android:textColor="@color/color999"
+                    android:lineSpacingMultiplier="1.2"
+                    android:padding="5dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+    </FrameLayout>
+</LinearLayout>

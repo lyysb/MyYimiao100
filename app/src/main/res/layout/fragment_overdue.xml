@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:background="@color/colorEee"
+        android:layout_width="match_parent"
+        android:layout_weight="1"
+        android:layout_height="0dp">
+        <include
+            android:id="@+id/overdue_empty_view"
+            layout="@layout/empty_view"/>
+        <com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout
+            android:id="@+id/overdue_refresh_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <ListView
+                android:id="@+id/overdue_list_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+        </com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout>
+
+    </RelativeLayout>
+
+    <include
+        android:id="@+id/overdue_submit"
+        layout="@layout/cash_submit"/>
+</LinearLayout>

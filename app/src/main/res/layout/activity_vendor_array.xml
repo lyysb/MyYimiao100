@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    style="@style/TitleStyle"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.yimiao100.sale.view.TitleView
+        app:left_isShow="true"
+        app:title_text="厂家列表"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+    <LinearLayout
+        android:background="@color/colorEee"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.jaredrummler.materialspinner.MaterialSpinner
+            android:id="@+id/vendor_spinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+        <com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout
+            android:id="@+id/vendor_refresh_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <ListView
+                android:id="@+id/vendor_list_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+        </com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout>
+    </LinearLayout>
+
+</LinearLayout>

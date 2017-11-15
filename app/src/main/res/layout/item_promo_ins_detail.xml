@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_marginLeft="12dp"
+        android:layout_marginRight="12dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="2dp"
+        android:padding="14dp"
+        android:background="@mipmap/ico_reconciliation_fillet_click"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/promo_customer_name"
+                android:text="服务中心"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:textColor="@color/color666"
+                android:layout_marginBottom="12dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+            <TextView
+                android:id="@+id/promo_package_name"
+                android:text="套餐名称："
+                android:layout_marginBottom="9dp"
+                style="@style/style84"
+                android:textStyle="bold"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+            <TextView
+                android:id="@+id/promo_policy_no"
+                android:text="流水单号："
+                style="@style/style84"
+                android:textStyle="bold"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <View
+                android:layout_marginTop="9dp"
+                style="@style/view_horizontal"/>
+
+            <LinearLayout
+                android:layout_marginTop="12dp"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/promo_amount"
+                    android:text="保费单价(元/年)：0元"
+                    style="@style/style84"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"/>
+
+
+                <TextView
+                    android:id="@+id/promo_period"
+                    android:text="保险期限："
+                    style="@style/style84"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"/>
+
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_marginTop="12dp"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/promo_total_amount"
+                    android:text="保费合计："
+                    style="@style/style84"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"/>
+
+                <TextView
+                    android:id="@+id/promo_create_at"
+                    android:text="保单生成日期："
+                    style="@style/style84"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"/>
+
+            </LinearLayout>
+            <TextView
+                android:id="@+id/promo_effective"
+                android:text="保单生效日期："
+                style="@style/style84"
+                android:layout_marginTop="12dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+
+            <View
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="12dp"
+                style="@style/view_horizontal"/>
+            <TextView
+                android:id="@+id/promo_reward"
+                android:text="奖励金额：0元"
+                android:drawableLeft="@mipmap/ico_reward"
+                android:drawablePadding="8dp"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:textColor="@color/color666"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+
+
+
+</LinearLayout>

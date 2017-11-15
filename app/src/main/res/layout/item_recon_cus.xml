@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/item_recon_cus_name"
+        android:textSize="14sp"
+        android:textColor="@color/color333"
+        android:paddingLeft="12dp"
+        android:paddingRight="12dp"
+        android:paddingTop="20dp"
+        android:paddingBottom="20dp"
+        android:drawableRight="@mipmap/ico_achievement_next"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+</LinearLayout>

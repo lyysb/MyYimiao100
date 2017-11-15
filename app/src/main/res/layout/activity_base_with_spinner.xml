@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    style="@style/TitleStyle"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.yimiao100.sale.view.TitleView
+        android:id="@+id/spinner_title"
+        app:left_isShow="true"
+        app:title_text="{title}"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+    <LinearLayout
+        android:background="@color/colorEee"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.jaredrummler.materialspinner.MaterialSpinner
+            android:id="@+id/spinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <include
+                android:id="@+id/spinner_empty_view"
+                layout="@layout/empty_view"/>
+
+            <com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout
+                android:id="@+id/spinner_refresh_layout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <ListView
+                    android:id="@+id/spinner_list_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"/>
+            </com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout>
+        </RelativeLayout>
+    </LinearLayout>
+
+</LinearLayout>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:gravity="center_vertical"
+    android:background="@android:color/white"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:paddingLeft="15dp"
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/check_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="已选择：0"
+            android:textColor="@color/color666"
+            android:textSize="14sp"/>
+        <TextView
+            android:id="@+id/check_amount"
+            android:layout_marginTop="2dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="您目前申请提现的金额是：0.00元"
+            android:textColor="@color/color666"
+            android:textSize="9sp"/>
+
+    </LinearLayout>
+    <ImageButton
+        android:id="@+id/check_submit"
+        style="?android:attr/borderlessButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/selector_assurance_confirm"/>
+</LinearLayout>

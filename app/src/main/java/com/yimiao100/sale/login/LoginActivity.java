@@ -91,7 +91,7 @@ public class LoginActivity extends MVPBaseActivity<LoginPresenter> implements Lo
     @Override
     public void showPwd(boolean isShow) {
         if (isShow) {
-            //如果选中，显示密码--
+            //如果选中，显示密码
             mEtPwd.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
             //设置光标移动到最后
             mEtPwd.setSelection(mEtPwd.getText().length());

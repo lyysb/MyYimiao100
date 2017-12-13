@@ -7,7 +7,7 @@ package com.yimiao100.sale.bean;
 public class DataVersion {
     private int id;
     private String versionKey;
-    private int versionCode;
+    private String versionCode;
 
     public int getId() {
         return id;
@@ -25,11 +25,11 @@ public class DataVersion {
         this.versionKey = versionKey;
     }
 
-    public int getVersionCode() {
+    public String getVersionCode() {
         return versionCode;
     }
 
-    public void setVersionCode(int versionCode) {
+    public void setVersionCode(String versionCode) {
         this.versionCode = versionCode;
     }
 }

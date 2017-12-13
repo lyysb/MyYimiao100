@@ -115,14 +115,14 @@ class ReconInsDetailActivity : BaseActivitySingleList(), ReconInsDetailAdapter.o
         builder.setView(dialogView)
         val dialog = builder.create()
         //有异议
-        val disagree = dialogView.findViewById(R.id.dialog_disagree) as TextView
+        val disagree = dialogView.find<TextView>(R.id.dialog_disagree) 
         disagree.setOnClickListener {
             //进入客服
             Util.enterCustomerService(applicationContext)
             dialog.dismiss()
         }
         //同意
-        val agree = dialogView.findViewById(R.id.dialog_agree) as TextView
+        val agree = dialogView.find<TextView>(R.id.dialog_agree)
         agree.setOnClickListener {
             confirmInsurance(position)
             dialog.dismiss()

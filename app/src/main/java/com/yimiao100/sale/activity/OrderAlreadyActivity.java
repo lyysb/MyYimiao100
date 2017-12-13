@@ -4,7 +4,9 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
 import android.text.Html;
 import android.text.Spanned;
@@ -57,6 +59,7 @@ import q.rorbin.badgeview.QBadgeView;
 
 /**
  * 我的业务-第三状态-待签约
+ * update on 2017-12-11 修复uri 24适配
  */
 public class OrderAlreadyActivity extends BaseActivity implements TitleView
         .TitleBarOnClickListener {
@@ -402,8 +405,14 @@ public class OrderAlreadyActivity extends BaseActivity implements TitleView
             public void onClick(DialogInterface dialog, int which) {
                 Intent intent = new Intent("android.intent.action.VIEW");
                 intent.addCategory("android.intent.category.DEFAULT");
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                Uri uri = Uri.fromFile(response);
+                Uri uri;
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                    uri = FileProvider.getUriForFile(currentContext, "com.yimiao100.sale.fileprovider", response);
+                } else {
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    uri = Uri.fromFile(response);
+                }
                 intent.setDataAndType(uri, "application/msword");
                 startActivity(intent);
                 dialog.dismiss();

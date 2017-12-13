@@ -10,10 +10,7 @@ import com.yimiao100.sale.base.ActivityCollector;
 import com.yimiao100.sale.bean.DataVersionBean;
 import com.yimiao100.sale.bean.ErrorBean;
 import com.yimiao100.sale.ext.JSON;
-import com.yimiao100.sale.utils.Constant;
-import com.yimiao100.sale.utils.LogUtil;
-import com.yimiao100.sale.utils.SharePreferenceUtil;
-import com.yimiao100.sale.utils.Util;
+import com.yimiao100.sale.utils.*;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
@@ -99,7 +96,7 @@ public class DataVersionService extends Service {
     private void onSuccess(DataVersionBean dataVersionBean) {
         int versionCodeNow = (int) SharePreferenceUtil.get(
                 getApplicationContext(), Constant.DATA_VERSION_ + mVersionKey, -1);
-        int versionCode = dataVersionBean.getVersion().getVersionCode();
+        int versionCode = ConvertUtils.toInt(dataVersionBean.getVersion().getVersionCode(), versionCodeNow);
         //比较版本号
         if (versionCodeNow != versionCode) {
             LogUtil.d("本地版本为" + versionCodeNow + "，将进行更新数据");

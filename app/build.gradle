@@ -1,5 +1,8 @@
 apply plugin: 'com.android.application'
+
 apply plugin: 'kotlin-android'
+
+apply plugin: 'kotlin-android-extensions'
 /*解决butterknife点击事件无效问题*/
 apply plugin: 'com.neenbedankt.android-apt'
 ext {
@@ -22,6 +25,12 @@ ext {
     agentweb_version = "2.0.1"
     easypermissions_version = "0.4.2"
     spinner_version = "1.1.0"
+    util_code_version = "1.9.10"
+    rxbinding_version = "2.0.0"
+    rxjava_version = "2.1.7"
+    rxandroid_version = "2.0.1"
+    okhttp_interceptor_version = "3.9.1"
+    retrofit_version = "2.3.0"
 }
 
 android {
@@ -47,8 +56,8 @@ android {
         applicationId "com.yimiao100.sale"
         minSdkVersion 16
         targetSdkVersion 25
-        versionCode 41
-        versionName "2.0"
+        versionCode 42
+        versionName "2.0.1"
         multiDexEnabled true
 
         ndk {
@@ -82,6 +91,10 @@ android {
         main.java.srcDirs += 'src/main/kotlin'
     }
 
+    compileOptions {
+        targetCompatibility JavaVersion.VERSION_1_7
+        sourceCompatibility JavaVersion.VERSION_1_7
+    }
 }
 repositories {
     flatDir {
@@ -91,22 +104,61 @@ repositories {
 }
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
+
+    // RxBinding
+    compile "com.jakewharton.rxbinding2:rxbinding:$rxbinding_version"
+    compile "com.jakewharton.rxbinding2:rxbinding-support-v4:$rxbinding_version"
+    compile "com.jakewharton.rxbinding2:rxbinding-appcompat-v7:$rxbinding_version"
+    compile "com.jakewharton.rxbinding2:rxbinding-design:$rxbinding_version"
+    compile "com.jakewharton.rxbinding2:rxbinding-kotlin:$rxbinding_version"
+    compile "com.jakewharton.rxbinding2:rxbinding-support-v4-kotlin:$rxbinding_version"
+    compile "com.jakewharton.rxbinding2:rxbinding-appcompat-v7-kotlin:$rxbinding_version"
+    compile "com.jakewharton.rxbinding2:rxbinding-design-kotlin:$rxbinding_version"
+
+    // RxJava2
+    compile "io.reactivex.rxjava2:rxjava:$rxjava_version"
+
+    // RxAndroid
+    compile "io.reactivex.rxjava2:rxandroid:$rxandroid_version"
+
+    // retrofit
+    compile "com.squareup.okhttp3:logging-interceptor:$okhttp_interceptor_version"
+    compile "com.squareup.retrofit2:retrofit:$retrofit_version"
+    compile "com.squareup.retrofit2:converter-gson:$retrofit_version"
+    compile "com.squareup.retrofit2:adapter-rxjava:$retrofit_version"
+
+    // Android工具集合
+    compile "com.blankj:utilcode:$util_code_version"
+
     // multidex不存在问题
+
     // Google官方动态权限申请
     compile "pub.devrel:easypermissions:$easypermissions_version"
+
     // 高度封装的 Android WebView
     compile "com.just.agentweb:agentweb:$agentweb_version"
+
+    // butterKnife
     compile "com.jakewharton:butterknife:$butterknife_version"
+    compile "de.hdodenhof:circleimageview:$circleimageview_version"
+
+    // 解决butterKnife点击事件无效问题
+    apt "com.jakewharton:butterknife-compiler:$butterknife_version"
+
+    //    annotationProcessor "com.jakewharton:butterknife-compiler:$butterknife_version"
+
+    // kotlin
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+
+    // anko
     compile "org.jetbrains.anko:anko-commons:$anko_version"
     compile "org.jetbrains.anko:anko-sdk15:$anko_version"
-    // sdk15, sdk19, sdk21, sdk23 are also available
+
+    // anko-sdk15, sdk19, sdk21, sdk23 are also available
     compile "org.jetbrains.anko:anko-appcompat-v7:$anko_version"
     compile "org.jetbrains.anko:anko-support-v4:$anko_version"
-    /*解决butterKnife点击事件无效问题*/
-    apt "com.jakewharton:butterknife-compiler:$butterknife_version"
-    compile "de.hdodenhof:circleimageview:$circleimageview_version"
     compile "com.contrarywind:Android-PickerView:$pickerview_version"
+
     //之前是5.2.1，5.3报错
     compile "fm.jiecao:jiecaovideoplayer:$jiecaovideoplayer_version"
     compile "com.google.code.gson:gson:$gson_version"
@@ -121,14 +173,23 @@ dependencies {
     compile "q.rorbin:badgeview:$badgeview_version"
     compile "org.greenrobot:eventbus:$eventbus_version"
     compile "com.jaredrummler:material-spinner:$spinner_version"
-    compile project(':CharacterPickerViewLibrary')
     compile name: 'SMSSDK-2.1.1', ext: 'aar'
     compile files('libs/BaiduLBS_Android.jar')
     compile files('libs/httpmime-4.1.2.jar')
-    compile project(':MPChartLib')
     compile files('libs/umeng_social_sdk.jar')
     compile files('libs/SocialSDK_Sina.jar')
+    compile project(':CharacterPickerViewLibrary')
+    compile project(':MPChartLib')
     compile project(':AndroidTagGrouplibrary')
+
+    //    implementation  project(path: ':CharacterPickerViewLibrary', configuration: 'default')
+
+    //    implementation  project(path: ':MPChartLib', configuration: 'default')
+
+    ////    implementation 'com.github.PhilJay:MPAndroidChart:v3.0.3'
+
+    //    implementation  project(path: ':AndroidTagGrouplibrary', configuration: 'default')
+
     //其中latest.release指代最新版本号，也可以指定明确的版本号，例如2.1.5
     compile files('libs/SocialSDK_WeiXin_1.jar')
     compile 'com.android.support:appcompat-v7:25.3.1'

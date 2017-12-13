@@ -21,6 +21,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.blankj.utilcode.util.SPUtils;
 import com.lcodecore.tkrefreshlayout.RefreshListenerAdapter;
 import com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout;
 import com.lcodecore.tkrefreshlayout.header.progresslayout.ProgressLayout;
@@ -31,16 +32,9 @@ import com.yimiao100.sale.base.ActivityCollector;
 import com.yimiao100.sale.base.BaseFragment;
 import com.yimiao100.sale.bean.*;
 import com.yimiao100.sale.ext.JSON;
+import com.yimiao100.sale.login.*;
 import com.yimiao100.sale.service.AliasService;
-import com.yimiao100.sale.utils.AppUtil;
-import com.yimiao100.sale.utils.BitmapUtil;
-import com.yimiao100.sale.utils.Constant;
-import com.yimiao100.sale.utils.DataUtil;
-import com.yimiao100.sale.utils.FormatUtils;
-import com.yimiao100.sale.utils.LogUtil;
-import com.yimiao100.sale.utils.SharePreferenceUtil;
-import com.yimiao100.sale.utils.ToastUtil;
-import com.yimiao100.sale.utils.Util;
+import com.yimiao100.sale.utils.*;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
@@ -109,7 +103,7 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
     public void onResume() {
         super.onResume();
         //获取用户头像URL
-        mUserIconUrl = (String) SharePreferenceUtil.get(getContext(), Constant.PROFILEIMAGEURL, "");
+        mUserIconUrl = SPUtils.getInstance().getString(Constant.PROFILEIMAGEURL);
         //设置个人头像
         if (mUserIconUrl != null && !mUserIconUrl.isEmpty()) {
             Picasso.with(getContext()).load(mUserIconUrl).placeholder(R.mipmap
@@ -471,8 +465,7 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
                         String profileImageUrl = imageBean.getProfileImageUrl();
                         Picasso.with(getContext()).load(profileImageUrl).placeholder
                                 (R.mipmap.ico_my_default_avatar).into(mMinePhoto);
-                        SharePreferenceUtil.put(getActivity(), Constant
-                                .PROFILEIMAGEURL, profileImageUrl);
+                        SPUtils.getInstance().put(Constant.PROFILEIMAGEURL, profileImageUrl);
                         break;
                     case "failure":
                         Util.showError(getActivity(), errorBean.getReason());
@@ -536,27 +529,13 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
         SharePreferenceUtil.clear(getContext());
         // step2:启动服务，设置别名
         getActivity().startService(new Intent(getActivity(), AliasService.class));
+        // step3:跳回到登录界面
+//        startActivity(new Intent(getActivity(), LoginActivity.class));
+        com.yimiao100.sale.login.LoginActivity.start(getContext());
+        // step4: 清空Bugly数据
+        BuglyUtils.removeUserData(getContext());
         getActivity().finish();
         ActivityCollector.finishAll();
-        // step3:跳回到登录界面
-        startActivity(new Intent(getActivity(), LoginActivity.class));
     }
 
-    /**
-     * 解决如下问题
-     * java.lang.IllegalStateException: No host
-     */
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        try {
-            Field childFragmentManager = Fragment.class.getDeclaredField("mChildFragmentManager");
-            childFragmentManager.setAccessible(true);
-            childFragmentManager.set(this, null);
-        } catch (NoSuchFieldException e) {
-            throw new RuntimeException(e);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
-    }
 }

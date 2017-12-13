@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.blankj.utilcode.util.SPUtils;
 import com.squareup.picasso.Picasso;
 import com.yimiao100.sale.R;
 import com.yimiao100.sale.base.BaseActivity;
@@ -109,21 +110,19 @@ public class PersonalSettingActivity extends BaseActivity implements TitleView
     private void initData() {
         //从本地获取数据
         //获取用户姓名
-        String user_name = (String) SharePreferenceUtil.get(this, Constant.CNNAME, "");
+        String user_name = SPUtils.getInstance().getString(Constant.CNNAME);
         //获取用户注册账号
-        String accountNumber = (String) SharePreferenceUtil.get(this, Constant.ACCOUNT_NUMBER,
-                "未知");
+        String accountNumber = SPUtils.getInstance().getString(Constant.ACCOUNT_NUMBER, getString(R.string.unknown));
         //获取用户电话
-        String user_phone_number = (String) SharePreferenceUtil.get(this, Constant.PHONENUMBER,
-                accountNumber);
+        String user_phone_number = SPUtils.getInstance().getString(Constant.PHONENUMBER, accountNumber);
         //获取用户邮箱
-        String user_email = (String) SharePreferenceUtil.get(this, Constant.EMAIL, "");
+        String user_email = SPUtils.getInstance().getString(Constant.EMAIL);
         //获取用户推广地域并设置
-        String region = (String) SharePreferenceUtil.get(this, Constant.REGION, "");
+        String region = SPUtils.getInstance().getString(Constant.REGION);
         //获取用户身份证号
-        String user_id_number = (String) SharePreferenceUtil.get(this, Constant.IDNUMBER, "");
+        String user_id_number = SPUtils.getInstance().getString(Constant.IDNUMBER);
         //获取用户头像URL
-        String user_icon_url = (String) SharePreferenceUtil.get(this, Constant.PROFILEIMAGEURL, "");
+        String user_icon_url = SPUtils.getInstance().getString(Constant.PROFILEIMAGEURL);
 
         //本地显示数据
         mPersonalName.setText(user_name);
@@ -326,8 +325,7 @@ public class PersonalSettingActivity extends BaseActivity implements TitleView
                                 ImageBean.class);
                         //拿到头像的URL地址，更新本地数据
                         String profileImageUrl = imageBean.getProfileImageUrl();
-                        SharePreferenceUtil.put(getApplicationContext(), Constant
-                                .PROFILEIMAGEURL, profileImageUrl);
+                        SPUtils.getInstance().put(Constant.PROFILEIMAGEURL, profileImageUrl);
                         break;
                     case "failure":
                         Util.showError(currentContext, errorBean.getReason());
@@ -389,8 +387,7 @@ public class PersonalSettingActivity extends BaseActivity implements TitleView
                                         //提交成功，将新数据显示在用户界面
                                         mPersonalRegion.setText(region);
                                         //将新数据保存在本地
-                                        SharePreferenceUtil.put(getApplicationContext(), Constant
-                                                .REGION, region);
+                                        SPUtils.getInstance().put(Constant.REGION, region);
                                         break;
                                     case "failure":
                                         Util.showError(currentContext, errorBean.getReason());

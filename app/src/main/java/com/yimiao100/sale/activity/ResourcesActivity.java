@@ -107,7 +107,7 @@ public class ResourcesActivity extends BaseActivitySingleList implements Carouse
      */
     private void initHeadView() {
         View view = View.inflate(this, R.layout.head_resources, null);
-        mListView.addHeaderView(view);
+        mListView.addHeaderView(view, null, false);
         RegionSearchView regionSearchView = (RegionSearchView) view.findViewById(R.id.resource_search);
         mResources_view_pager = (ViewPager) view.findViewById(R.id.resources_view_pager);
         regionSearchView.setOnSearchClickListener(this);

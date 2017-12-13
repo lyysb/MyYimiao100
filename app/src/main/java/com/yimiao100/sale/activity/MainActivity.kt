@@ -1,5 +1,6 @@
 package com.yimiao100.sale.activity
 
+import android.content.Context
 import android.os.Bundle
 import android.support.v4.view.ViewPager
 import android.view.Gravity
@@ -20,6 +21,7 @@ import com.zhy.http.okhttp.OkHttpUtils
 import com.zhy.http.okhttp.callback.StringCallback
 import okhttp3.Call
 import org.jetbrains.anko.find
+import org.jetbrains.anko.startActivity
 
 
 /**
@@ -38,6 +40,13 @@ class MainActivity : BaseActivity(), ViewPager.OnPageChangeListener {
     private val URL_USER_FUND = Constant.BASE_URL + "/api/fund/user_fund"
 
     private val URL_USER_FUND_ALL = Constant.BASE_URL + "/api/fund/user_fund_all"
+
+    companion object{
+        @JvmStatic
+        fun start(context: Context) {
+            context.startActivity<MainActivity>()
+        }
+    }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -1,6 +1,7 @@
 package com.yimiao100.sale.activity;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -18,16 +19,13 @@ import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.blankj.utilcode.util.SPUtils;
 import com.yimiao100.sale.R;
 import com.yimiao100.sale.base.BaseActivity;
 import com.yimiao100.sale.bean.SignUpBean;
 import com.yimiao100.sale.ext.JSON;
 import com.yimiao100.sale.service.AliasService;
-import com.yimiao100.sale.utils.Constant;
-import com.yimiao100.sale.utils.LogUtil;
-import com.yimiao100.sale.utils.SharePreferenceUtil;
-import com.yimiao100.sale.utils.ToastUtil;
-import com.yimiao100.sale.utils.Util;
+import com.yimiao100.sale.utils.*;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
@@ -89,6 +87,10 @@ public class RegisterActivity extends BaseActivity implements CompoundButton
         }
     };
     private ProgressDialog mProgressDialog;
+
+    public static void start(Context context) {
+        context.startActivity(new Intent(context, RegisterActivity.class));
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -190,10 +192,12 @@ public class RegisterActivity extends BaseActivity implements CompoundButton
                         SharePreferenceUtil.clear(currentContext);
                         //保存Token
                         SharePreferenceUtil.put(currentContext, Constant.ACCESSTOKEN, signUpBean.getTokenInfo().getAccessToken());
+                        // 保存Bugly用户信息
+                        BuglyUtils.putUserData(currentContext, signUpBean.getUserInfo());
                         // 设置别名需要用户id
-                        SharePreferenceUtil.put(currentContext, Constant.USERID, signUpBean.getUserInfo().getId());
+                        SPUtils.getInstance().put(Constant.USER_ID, signUpBean.getUserInfo().getId());
                         // 保存登录状态
-                        SharePreferenceUtil.put(currentContext, Constant.LOGIN_STATUS, true);
+                        SPUtils.getInstance().put(Constant.LOGIN_STATUS, true);
                         //启动服务，设置别名
                         startService(new Intent(currentContext, AliasService.class));
                         //注册成功，进入主界面

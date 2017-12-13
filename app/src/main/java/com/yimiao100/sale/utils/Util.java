@@ -9,9 +9,11 @@ import android.os.Environment;
 import android.support.v7.app.AlertDialog;
 import android.widget.Toast;
 
+import com.blankj.utilcode.util.SPUtils;
 import com.meiqia.core.callback.OnInitCallback;
 import com.meiqia.meiqiasdk.util.MQConfig;
 import com.meiqia.meiqiasdk.util.MQIntentBuilder;
+import com.yimiao100.sale.R;
 import com.yimiao100.sale.activity.BindPersonalActivity;
 import com.yimiao100.sale.activity.PersonalAddressAddActivity;
 import com.yimiao100.sale.bean.Event;
@@ -104,6 +106,8 @@ public class Util {
             SharePreferenceUtil.clear(activity);
             // step3：启动别名服务
             activity.startService(new Intent(activity, AliasService.class));
+            // step4: 清空Bugly数据
+            BuglyUtils.removeUserData(activity);
         } else {
             ToastUtil.showShort(activity, Constant.ERROR_INFORMATION.get(reason));
         }
@@ -186,12 +190,10 @@ public class Util {
      * 进入客服界面
      */
     public static void enterCustomerService(final Context context) {
-        int customerId = (int) SharePreferenceUtil.get(context, Constant.USERID, 0);
-        String userName = (String) SharePreferenceUtil.get(context, Constant.CNNAME, "未知");
-        String userIcon = (String) SharePreferenceUtil.get(context, Constant.PROFILEIMAGEURL,
-                "http://oduhua0b1.bkt.clouddn.com/default_avatar.png");
-        String accountNumber = (String) SharePreferenceUtil.get(context, Constant.ACCOUNT_NUMBER,
-                "未知");
+        int customerId = SPUtils.getInstance().getInt(Constant.USER_ID);
+        String userName = SPUtils.getInstance().getString(Constant.CNNAME, context.getString(R.string.unknown));
+        String userIcon = SPUtils.getInstance().getString(Constant.PROFILEIMAGEURL, "http://oduhua0b1.bkt.clouddn.com/default_avatar.png");
+        String accountNumber = SPUtils.getInstance().getString(Constant.ACCOUNT_NUMBER, context.getString(R.string.unknown));
         HashMap<String, String> info = new HashMap<>();
         info.put("name", userName);
         info.put("avatar", userIcon);

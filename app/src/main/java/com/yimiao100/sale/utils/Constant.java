@@ -7,13 +7,13 @@ import java.util.HashMap;
  * Created by Michel on 2016/8/9.
  */
 public interface Constant {
-    boolean isTest = false;     // 是否在测试环境下
+    boolean isTest = true;     // 是否在测试环境下
 
     boolean isInsurance = true;   // 是否开启保险业务模块
 
     // BaseURL
-    String BASE_URL_TEST = "http://47.95.156.8/ymt/";
-//    String BASE_URL_TEST = "http://ymt.s1.natapp.cc/ymt";
+//    String BASE_URL_TEST = "http://47.95.156.8/ymt/";
+    String BASE_URL_TEST = "http://ymt.s1.natapp.cc/ymt";
 //    String BASE_URL_TEST = "http://161p3p2316.iask.in/ymt";
 //    String BASE_URL_TEST = "http://192.168.199.206:8080/ymt";
     String BASE_URL_OFFICAL = "http://123.56.203.55/ymt";
@@ -23,6 +23,11 @@ public interface Constant {
     String SHARE_URL_TEST = "http://161p3p2316.iask.in/ymt";
     String SHARE_URL_OFFICAL = "http://www.yimiaoquan100.com/ymt";
     String SHARE_URL = isTest ? SHARE_URL_TEST : SHARE_URL_OFFICAL;
+
+    /**
+     * Bugly-App-ID
+     */
+    String BUGLY_APP_ID = "900059080";
 
 
     /**
@@ -38,15 +43,7 @@ public interface Constant {
      */
     String MEI_QIA_APP_KEY = "73b657bcb9829a51600a8f04e3f3609f";
 
-    /**
-     *
-     */
-    String ACCESSTOKEN = "accessToken";
 
-    /**
-     * 用户id
-     */
-    String USERID = "userId";
     String WX_APP_ID = "wx6e6d290399bd8ec8";
 
     String WX_APP_SECRET = "29f35a49ce9ec5f8c5df0a0a61d1b383";
@@ -125,6 +122,13 @@ public interface Constant {
         }
     };
     String DEFAULT_VIDEO = "http://oduhua0b1.bkt.clouddn.com/default_video.mp4";
+
+
+    String ACCESSTOKEN = "accessToken";
+    String USER_ID = "userId";
+    String USER_NAME = "userName";          // Bugly专用
+    String USER_PHONE = "userPhone";        // Bugly专用
+    String USER_ACCOUNT = "userAccount";    // Bugly专用
     String CNNAME = "cnName";
     String PHONENUMBER = "phoneNumber";
     String EMAIL = "email";

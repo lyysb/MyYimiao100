@@ -7,6 +7,7 @@ import android.support.v4.view.ViewPager;
 import com.yimiao100.sale.R;
 import com.yimiao100.sale.adapter.peger.GuideAdapter;
 import com.yimiao100.sale.base.BaseActivity;
+import com.yimiao100.sale.login.*;
 import com.yimiao100.sale.utils.Constant;
 import com.yimiao100.sale.utils.SharePreferenceUtil;
 
@@ -38,7 +39,8 @@ public class GuideActivity extends BaseActivity {
             public void onClick() {
                 if (mGuideViewPager.getCurrentItem() == 2) {
                     //进入登录界面
-                    startActivity(new Intent(currentContext, LoginActivity.class));
+//                    startActivity(new Intent(currentContext, LoginActivity.class));
+                    com.yimiao100.sale.login.LoginActivity.start(currentContext);
                     //记录不是第一次登录
                     SharePreferenceUtil.put(currentContext, Constant.IS_FIRST, false);
                     finish();

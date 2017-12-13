@@ -1,20 +1,17 @@
 package com.yimiao100.sale.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.EditText;
 import android.widget.ImageView;
 
+import com.blankj.utilcode.util.SPUtils;
 import com.yimiao100.sale.R;
 import com.yimiao100.sale.base.BaseActivity;
 import com.yimiao100.sale.bean.ErrorBean;
 import com.yimiao100.sale.ext.JSON;
-import com.yimiao100.sale.utils.Constant;
-import com.yimiao100.sale.utils.LogUtil;
-import com.yimiao100.sale.utils.Regex;
-import com.yimiao100.sale.utils.SharePreferenceUtil;
-import com.yimiao100.sale.utils.ToastUtil;
-import com.yimiao100.sale.utils.Util;
+import com.yimiao100.sale.utils.*;
 import com.yimiao100.sale.view.TitleView;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
@@ -46,7 +43,7 @@ public class PersonalNameActivity extends BaseActivity implements TitleView
 
 
         //获取用户姓名
-        String user_name = (String) SharePreferenceUtil.get(this, Constant.CNNAME, "请输入用户姓名");
+        String user_name = SPUtils.getInstance().getString(Constant.CNNAME, "请输入用户姓名");
         mPersonalName.setHint(user_name);
     }
 
@@ -87,9 +84,10 @@ public class PersonalNameActivity extends BaseActivity implements TitleView
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":
+                        // 添加Bugly数据
+                        BuglyUtils.putUserName(currentContext, mPersonalName.getText().toString().trim());
                         //更新本地数据
-                        SharePreferenceUtil.put(getApplicationContext(), Constant.CNNAME,
-                                mPersonalName.getText().toString().trim());
+                        SPUtils.getInstance().put(Constant.CNNAME, mPersonalName.getText().toString().trim());
                         //返回到上一层
                         Intent intent = new Intent();
                         intent.putExtra("name", mPersonalName.getText().toString().trim());

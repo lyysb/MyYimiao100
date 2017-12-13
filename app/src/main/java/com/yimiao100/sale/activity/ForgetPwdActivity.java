@@ -1,5 +1,6 @@
 package com.yimiao100.sale.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -69,6 +70,10 @@ public class ForgetPwdActivity extends BaseActivity {
         }
     };
 
+
+    public static void start(Context context) {
+        context.startActivity(new Intent(context, ForgetPwdActivity.class));
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

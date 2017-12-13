@@ -22,12 +22,7 @@ import com.yimiao100.sale.bean.TokenInfoBean;
 import com.yimiao100.sale.bean.UserInfoBean;
 import com.yimiao100.sale.ext.JSON;
 import com.yimiao100.sale.service.AliasService;
-import com.yimiao100.sale.utils.Constant;
-import com.yimiao100.sale.utils.LogUtil;
-import com.yimiao100.sale.utils.ProgressDialogUtil;
-import com.yimiao100.sale.utils.SharePreferenceUtil;
-import com.yimiao100.sale.utils.ToastUtil;
-import com.yimiao100.sale.utils.Util;
+import com.yimiao100.sale.utils.*;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
@@ -178,8 +173,10 @@ public class LoginActivity extends BaseActivity implements CompoundButton.OnChec
         SharePreferenceUtil.put(currentContext, Constant.ACCESSTOKEN, tokenInfo.getAccessToken());
         // 保存用户信息
         UserInfoBean userInfo = user.getUserInfo();
+        // 保存Bugly账户信息
+        BuglyUtils.putUserData(this, userInfo);
         //用户id
-        SharePreferenceUtil.put(currentContext, Constant.USERID, userInfo.getId());
+        SharePreferenceUtil.put(currentContext, Constant.USER_ID, userInfo.getId());
         //用户账号
         SharePreferenceUtil.put(currentContext, Constant.ACCOUNT_NUMBER, mAccountNumber);
         //用户姓名

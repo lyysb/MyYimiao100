@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.widget.EditText;
 import android.widget.ImageView;
 
+import com.blankj.utilcode.util.SPUtils;
 import com.yimiao100.sale.R;
 import com.yimiao100.sale.base.BaseActivity;
 import com.yimiao100.sale.bean.ErrorBean;
@@ -46,7 +47,7 @@ public class PersonalEmailActivity extends BaseActivity implements TitleView
         mEmailTitle.setOnTitleBarClick(this);
 
         //获取用户邮箱
-        String user_email = (String) SharePreferenceUtil.get(this, Constant.EMAIL, "请输入用户邮箱地址");
+        String user_email = SPUtils.getInstance().getString(Constant.EMAIL, "请输入用户邮箱地址");
         mPersonalEmail.setHint(user_email);
     }
 
@@ -87,8 +88,7 @@ public class PersonalEmailActivity extends BaseActivity implements TitleView
                 switch (errorBean.getStatus()) {
                     case "success":
                         //更新本地数据
-                        SharePreferenceUtil.put(getApplicationContext(), Constant.EMAIL,
-                                mPersonalEmail.getText().toString().trim());
+                        SPUtils.getInstance().put(Constant.EMAIL, mPersonalEmail.getText().toString().trim());
                         //返回到上一层
                         Intent intent = new Intent();
                         intent.putExtra("email", mPersonalEmail.getText().toString().trim());

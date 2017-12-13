@@ -215,7 +215,7 @@ class InsurancePromotionActivity : BaseActivity(), CheckUtil.PersonalPassedListe
         val view = View.inflate(this, R.layout.dialog_submit_promotion, null)
         builder.setView(view)
         val dialog = builder.create()
-        view.findViewById(R.id.dialog_submit).setOnClickListener {
+        view.find<View>(R.id.dialog_submit).setOnClickListener {
             dialog.dismiss()
             startActivity<SubmitInsuranceActivity>(
                     "userAccountType" to userAccountType ,

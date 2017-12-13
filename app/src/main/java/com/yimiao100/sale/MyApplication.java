@@ -2,14 +2,15 @@ package com.yimiao100.sale;
 
 import android.util.DisplayMetrics;
 
+import com.blankj.utilcode.util.Utils;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.meiqia.meiqiasdk.util.MQConfig;
-import com.tencent.bugly.crashreport.CrashReport;
 import com.umeng.socialize.Config;
 import com.umeng.socialize.PlatformConfig;
 import com.umeng.socialize.UMShareAPI;
 import com.uuch.adlibrary.utils.DisplayUtil;
 import com.yimiao100.sale.bean.Application;
+import com.yimiao100.sale.utils.BuglyUtils;
 import com.yimiao100.sale.utils.Constant;
 import com.zhy.http.okhttp.OkHttpUtils;
 
@@ -24,6 +25,7 @@ import okhttp3.OkHttpClient;
 public class MyApplication extends Application {
 
     {
+        // 友盟初始化
         //微信 appId appSecret
         PlatformConfig.setWeixin(Constant.WX_APP_ID, Constant.WX_APP_SECRET);
         //新浪微博 appKey appSecret
@@ -42,6 +44,11 @@ public class MyApplication extends Application {
 //        Picasso.with(this).setIndicatorsEnabled(true);
         Fresco.initialize(this);
         initDisplayOpinion();
+        initUtilCode();
+    }
+
+    private void initUtilCode() {
+        Utils.init(this);
     }
 
     private void initDisplayOpinion() {
@@ -91,7 +98,7 @@ public class MyApplication extends Application {
      */
     private void initBugly() {
         //腾讯bugly设置
-        CrashReport.initCrashReport(getApplicationContext(), "900059080", true);
+        BuglyUtils.initBugly(getApplicationContext());
     }
 
 

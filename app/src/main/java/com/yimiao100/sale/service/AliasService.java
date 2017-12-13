@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 
+import com.blankj.utilcode.util.SPUtils;
 import com.yimiao100.sale.utils.Constant;
 import com.yimiao100.sale.utils.LogUtil;
 import com.yimiao100.sale.utils.SharePreferenceUtil;
@@ -50,12 +51,12 @@ public class AliasService extends Service {
         //别名默认为空
         String alias = "";
         // 根据登录状态判断设置别名/别名置空
-        boolean loginStatus = (boolean) SharePreferenceUtil.get(this, Constant.LOGIN_STATUS, false);
+        boolean loginStatus = SPUtils.getInstance().getBoolean(Constant.LOGIN_STATUS);
         LogUtil.d("登录状态：" + loginStatus);
         if (loginStatus) {
             LogUtil.d("设置别名");
             // 别名= “jpush_user_alias_加上用户id”
-            int userId = (int) SharePreferenceUtil.get(this, Constant.USERID, -1);
+            int userId = SPUtils.getInstance().getInt(Constant.USER_ID);
             if (userId == -1) {
                 //别名有问题
                 LogUtil.d("user id error -1");

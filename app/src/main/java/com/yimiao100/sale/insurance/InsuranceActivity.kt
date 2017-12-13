@@ -21,6 +21,7 @@ import com.zhy.http.okhttp.OkHttpUtils
 import com.zhy.http.okhttp.callback.StringCallback
 import com.zhy.http.okhttp.request.RequestCall
 import okhttp3.Call
+import org.jetbrains.anko.find
 import org.jetbrains.anko.startActivity
 import java.lang.Exception
 import java.util.*
@@ -75,8 +76,8 @@ class InsuranceActivity : BaseActivitySingleList(), RegionSearchView.onSearchCli
     private fun initHeadView() {
         val view = View.inflate(this, R.layout.head_resources, null)
         mListView.addHeaderView(view)
-        val regionSearchView = view.findViewById(R.id.resource_search) as RegionSearchView
-        mViewPager = view.findViewById(R.id.resources_view_pager) as ViewPager
+        val regionSearchView = view.find<RegionSearchView>(R.id.resource_search)
+        mViewPager = view.find(R.id.resources_view_pager)
         regionSearchView.setOnSearchClickListener(this)
         //获取轮播图数据
         CarouselUtil.getCarouselList(this, "insurance", this)

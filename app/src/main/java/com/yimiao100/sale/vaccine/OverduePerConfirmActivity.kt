@@ -75,11 +75,11 @@ class OverduePerConfirmActivity : BaseActivity(), TitleView.TitleBarOnClickListe
         val v = View.inflate(this, R.layout.dialog_confirm_promotion, null)
         builder.setView(v)
         builder.setCancelable(false)
-        val msg = v.findViewById(R.id.dialog_msg) as TextView
+        val msg = v.find<TextView>(R.id.dialog_msg)
 
         msg.text = getString(R.string.overdue_per_confirm)
-        val btn1 = v.findViewById(R.id.dialog_promotion_bt1) as Button
-        val btn2 = v.findViewById(R.id.dialog_promotion_bt2) as Button
+        val btn1 = v.find<Button>(R.id.dialog_promotion_bt1)
+        val btn2 = v.find<Button>(R.id.dialog_promotion_bt2)
         val dialog = builder.create()
         btn1.setOnClickListener { dialog.dismiss() }
         btn2.setOnClickListener {

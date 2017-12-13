@@ -83,7 +83,8 @@ public class ActivityAlertDialogManager {
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
                 ActivityCollector.finishAll();
-                activity.startActivity(new Intent(activity, LoginActivity.class));
+//                activity.startActivity(new Intent(activity, LoginActivity.class));
+                com.yimiao100.sale.login.LoginActivity.start(activity);
             }
         });
     }

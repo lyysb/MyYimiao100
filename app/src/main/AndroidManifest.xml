@@ -317,9 +317,10 @@
         </activity>
         <activity android:name=".activity.GuideActivity">
         </activity>
-        <activity android:name=".activity.LiveActivity"
-                  android:hardwareAccelerated="true"
-                  android:configChanges="orientation|screenSize">
+        <activity
+            android:name=".activity.LiveActivity"
+            android:configChanges="orientation|screenSize"
+            android:hardwareAccelerated="true">
         </activity>
         <activity android:name=".activity.ShowWebImageActivity">
         </activity>
@@ -483,6 +484,13 @@
         <activity android:name=".vaccine.OverdueCorConfirmActivity">
         </activity>
         <activity android:name=".vaccine.OverduePerConfirmActivity">
+        </activity>
+        <activity
+            android:name=".login.LoginActivity"
+            android:launchMode="singleInstance"
+            android:theme="@style/TranslucentNavigation">
+        </activity>
+        <activity android:name=".base.MVPBaseActivity">
         </activity>
     </application>
 

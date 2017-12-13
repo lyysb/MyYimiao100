@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.widget.EditText;
 import android.widget.ImageView;
 
+import com.blankj.utilcode.util.SPUtils;
 import com.yimiao100.sale.R;
 import com.yimiao100.sale.base.BaseActivity;
 import com.yimiao100.sale.bean.ErrorBean;
@@ -47,8 +48,7 @@ public class PersonalIDCardActivity extends BaseActivity implements TitleView
         mIDCardTitle.setOnTitleBarClick(this);
 
         //获取用户身份证号
-        String user_id_number = (String) SharePreferenceUtil.get(this, Constant.IDNUMBER,
-                "请输入用户身份证号码");
+        String user_id_number = SPUtils.getInstance().getString(Constant.IDNUMBER, "请输入用户身份证号码");
         mIDCardIdCard.setHint(user_id_number);
     }
 
@@ -89,8 +89,7 @@ public class PersonalIDCardActivity extends BaseActivity implements TitleView
                 switch (errorBean.getStatus()) {
                     case "success":
                         //更新本地数据
-                        SharePreferenceUtil.put(getApplicationContext(), Constant.IDNUMBER,
-                                mIDCardIdCard.getText().toString().trim());
+                        SPUtils.getInstance().put(Constant.IDNUMBER, mIDCardIdCard.getText().toString().trim());
                         //返回到上一层
                         Intent intent = new Intent();
                         intent.putExtra("idCard", mIDCardIdCard.getText().toString().trim());

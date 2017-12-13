@@ -14,6 +14,7 @@ import com.yimiao100.sale.bean.Province
 import com.yimiao100.sale.utils.LogUtil
 import com.yimiao100.sale.utils.RegionUtil
 import com.yimiao100.sale.utils.ToastUtil
+import org.jetbrains.anko.find
 import java.util.*
 import kotlin.collections.HashMap
 
@@ -48,13 +49,15 @@ class RegionSearchView @JvmOverloads  constructor(
     private fun initView(context: Context) {
         View.inflate(context, R.layout.region_search, this)
 
-        tvProvince = findViewById(R.id.region_province) as TextView
+        tvProvince = find<TextView>(R.id.region_province)
         tvProvince.setOnClickListener {
-            regionPicker.setPicker(provincePicker as List<Any>?)
-            regionPicker.show(it)
+            if (provincePicker != null) {
+                regionPicker.setPicker(provincePicker as List<Any>?)
+                regionPicker.show(it)
+            }
         }
 
-        tvCity = findViewById(R.id.region_city) as TextView
+        tvCity = find<TextView>(R.id.region_city)
         tvCity.setOnClickListener {
             if (tvProvince.text.isEmpty()) {
                 ToastUtil.showShort(context, "请先选择省")
@@ -64,7 +67,7 @@ class RegionSearchView @JvmOverloads  constructor(
             regionPicker.show(it)
         }
 
-        tvArea = findViewById(R.id.region_county) as TextView
+        tvArea = find<TextView>(R.id.region_county)
         tvArea.setOnClickListener {
             if (tvCity.text.isEmpty()) {
                 ToastUtil.showShort(context, "请先选择市")
@@ -74,7 +77,7 @@ class RegionSearchView @JvmOverloads  constructor(
             regionPicker.show(it)
         }
 
-        findViewById(R.id.region_search).setOnClickListener {
+        find<View>(R.id.region_search).setOnClickListener {
             searchClickListener?.let {
                 LogUtil.d("search region is ${regionIds.entries}")
                 it.regionSearch(regionIds)

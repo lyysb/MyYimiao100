@@ -45,6 +45,8 @@
 
                 <EditText
                     android:id="@+id/login_phone"
+                    android:textSize="12sp"
+                    android:gravity="center_vertical"
                     style="@style/Input.Login"
                     android:hint="请输入您的手机号"
                     android:inputType="phone"
@@ -69,6 +71,8 @@
                     android:id="@+id/login_password"
                     style="@style/Input.Login"
                     android:hint="请输入您的密码"
+                    android:textSize="12sp"
+                    android:gravity="center_vertical"
                     android:inputType="textPassword"
                 />
                 <RelativeLayout

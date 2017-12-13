@@ -8,6 +8,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
+import com.blankj.utilcode.util.SPUtils;
 import com.squareup.picasso.Picasso;
 import com.yimiao100.sale.R;
 import com.yimiao100.sale.base.BaseActivity;
@@ -73,14 +74,14 @@ public class MineAchievementActivity extends BaseActivity implements TitleView
     }
 
     private void initData() {
-        mImageUrl = (String) SharePreferenceUtil.get(this, Constant.PROFILEIMAGEURL, "");
+        mImageUrl = SPUtils.getInstance().getString(Constant.PROFILEIMAGEURL);
         //设置个人头像
         if (!mImageUrl.isEmpty()) {
             Picasso.with(this).load(mImageUrl).placeholder(R.mipmap
                     .ico_my_default_avatar).into(mMineAchievementPhoto);
         }
         //设置用户姓名
-        mUserName = (String) SharePreferenceUtil.get(this, Constant.CNNAME, "");
+        mUserName = SPUtils.getInstance().getString(Constant.CNNAME);
         if (!TextUtils.equals(mUserName, "")) {
             mMineAchievementName.setText(mUserName);
         } else {

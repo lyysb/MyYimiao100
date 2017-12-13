@@ -16,6 +16,7 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
+import com.blankj.utilcode.util.SPUtils;
 import com.umeng.socialize.ShareAction;
 import com.umeng.socialize.UMShareAPI;
 import com.umeng.socialize.UMShareListener;
@@ -140,7 +141,7 @@ public class InformationDetailActivity extends BaseActivity implements View.OnCl
         mNewsId = intent.getIntExtra("newsId", -1);
         LogUtil.d("newsId：" + mNewsId);
         //获取用户id
-        mUserId = (int) SharePreferenceUtil.get(this, Constant.USERID, -1);
+        mUserId = SPUtils.getInstance().getInt(Constant.USER_ID);
         //获取用户当前积分
         mIntegral = (int) SharePreferenceUtil.get(this, Constant.INTEGRAL, -1);
 

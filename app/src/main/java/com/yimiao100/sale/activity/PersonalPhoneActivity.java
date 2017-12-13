@@ -5,15 +5,12 @@ import android.os.Bundle;
 import android.widget.EditText;
 import android.widget.ImageView;
 
+import com.blankj.utilcode.util.SPUtils;
 import com.yimiao100.sale.R;
 import com.yimiao100.sale.base.BaseActivity;
 import com.yimiao100.sale.bean.ErrorBean;
 import com.yimiao100.sale.ext.JSON;
-import com.yimiao100.sale.utils.Constant;
-import com.yimiao100.sale.utils.LogUtil;
-import com.yimiao100.sale.utils.SharePreferenceUtil;
-import com.yimiao100.sale.utils.ToastUtil;
-import com.yimiao100.sale.utils.Util;
+import com.yimiao100.sale.utils.*;
 import com.yimiao100.sale.view.TitleView;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
@@ -48,9 +45,9 @@ public class PersonalPhoneActivity extends BaseActivity implements TitleView
 
 
         //获取用户账号
-        String accountNumber = (String) SharePreferenceUtil.get(this, Constant.ACCOUNT_NUMBER, "未知");
+        String accountNumber = SPUtils.getInstance().getString(Constant.ACCOUNT_NUMBER, getString(R.string.unknown));
         //获取用户电话
-        String user_phone_number = (String) SharePreferenceUtil.get(this, Constant.PHONENUMBER, accountNumber);
+        String user_phone_number = SPUtils.getInstance().getString(Constant.PHONENUMBER, accountNumber);
         mPersonalPhone.setHint(user_phone_number);
     }
 
@@ -91,9 +88,10 @@ public class PersonalPhoneActivity extends BaseActivity implements TitleView
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":
+                        // 添加Bugly数据
+                        BuglyUtils.putUserPhone(currentContext, mPersonalPhone.getText().toString().trim());
                         //更新本地数据
-                        SharePreferenceUtil.put(getApplicationContext(), Constant.PHONENUMBER,
-                                mPersonalPhone.getText().toString().trim());
+                        SPUtils.getInstance().put(Constant.PHONENUMBER, mPersonalPhone.getText().toString().trim());
                         //返回到上一层
                         Intent intent = new Intent();
                         intent.putExtra("phone", mPersonalPhone.getText().toString().trim());

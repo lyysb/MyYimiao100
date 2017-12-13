@@ -13,6 +13,7 @@ import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
 import android.widget.ImageView;
 
+import com.blankj.utilcode.util.SPUtils;
 import com.yimiao100.sale.R;
 import com.yimiao100.sale.base.ActivityCollector;
 import com.yimiao100.sale.base.BaseActivity;
@@ -181,8 +182,7 @@ public class SplashActivity extends BaseActivity implements EasyPermissions.Perm
             enterGuide();
         } else {
             //获取是否已经登录
-            boolean loginStatus = (boolean) SharePreferenceUtil.get(currentContext, Constant
-                    .LOGIN_STATUS, false);
+            boolean loginStatus = SPUtils.getInstance().getBoolean(Constant.LOGIN_STATUS);
             if (loginStatus) {
                 //已登录，进入主界面
                 enterHome();
@@ -389,7 +389,8 @@ public class SplashActivity extends BaseActivity implements EasyPermissions.Perm
      * 进入登录注册界面
      */
     private void enterLogin() {
-        startActivity(new Intent(this, LoginActivity.class));
+//        startActivity(new Intent(this, LoginActivity.class));
+        com.yimiao100.sale.login.LoginActivity.start(this);
         finish();
     }
 

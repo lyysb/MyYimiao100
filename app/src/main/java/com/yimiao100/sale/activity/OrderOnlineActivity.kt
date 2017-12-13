@@ -665,12 +665,12 @@ class OrderOnlineActivity : BaseActivity(), TitleView.TitleBarOnClickListener, V
     private fun confirmSubmit() {
         val builder = AlertDialog.Builder(this, R.style.dialog)
         val view = View.inflate(this, R.layout.dialog_confirm_submit, null)
-        val content = view.findViewById(R.id.dialog_fillet) as TextView
+        val content = view.find<TextView>(R.id.dialog_fillet)
         content.text = getString(R.string.dialog_confirm_submit_report)
         builder.setView(view)
         val dialog = builder.create()
-        view.findViewById(R.id.dialog_check).setOnClickListener { dialog.dismiss() }
-        view.findViewById(R.id.dialog_confirm).setOnClickListener {
+        view.find<View>(R.id.dialog_check).setOnClickListener { dialog.dismiss() }
+        view.find<View>(R.id.dialog_confirm).setOnClickListener {
             dialog.dismiss()
             // 提交数据
             submitData()

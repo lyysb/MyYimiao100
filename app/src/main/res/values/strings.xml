@@ -9,6 +9,9 @@
     <string name="tips">This is a custom TextView that can be expanded with a smooth transition
         animation,you can set the number of lines to expand,change its icon or text and so on\n
     </string>
+    <string name="unknown">
+        unknown
+    </string>
     <string name="order_celebrate">恭喜您!</string>
     <string name="order_notice">请您再次核对您要推广的资源信息</string>
     <string name="order_already_notice">提交的申请推广已经通过审核，\n您提交的竞标保证金已经查收。</string>

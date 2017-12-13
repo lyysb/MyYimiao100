@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.AxisBase;
+import com.github.mikephil.charting.components.Description;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
@@ -164,7 +165,7 @@ public class CRMPaymentAdapter extends BaseExpandableListAdapter{
 
     private void setBarChart(BarChart chart, PaymentList paymentList) {
         // 数据描述
-//        chart.setDescription("");
+        chart.getDescription().setEnabled(false);
         // 设置是否可以触摸
         chart.setTouchEnabled(true);
         // 是否可以拖拽
@@ -296,7 +297,7 @@ public class CRMPaymentAdapter extends BaseExpandableListAdapter{
     private void setLineChart(LineChart chart, PaymentList paymentList) {
         //设置折线图细节
         //-设置描述
-//        chart.setDescription("");
+        chart.getDescription().setEnabled(false);
         //-设置没有数据时的内容
         chart.setNoDataText("没有数据");
         //-设置触摸

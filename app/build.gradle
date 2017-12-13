@@ -31,6 +31,9 @@ ext {
     rxandroid_version = "2.0.1"
     okhttp_interceptor_version = "3.9.1"
     retrofit_version = "2.3.0"
+    MPAndroidChart_version = "v3.0.3"
+    AndroidTag_version = "1.4"
+    PhotoView_version = "1.2.4"
 }
 
 android {
@@ -140,6 +143,8 @@ dependencies {
 
     // butterKnife
     compile "com.jakewharton:butterknife:$butterknife_version"
+
+    // 圆形ImageView
     compile "de.hdodenhof:circleimageview:$circleimageview_version"
 
     // 解决butterKnife点击事件无效问题
@@ -157,53 +162,82 @@ dependencies {
     // anko-sdk15, sdk19, sdk21, sdk23 are also available
     compile "org.jetbrains.anko:anko-appcompat-v7:$anko_version"
     compile "org.jetbrains.anko:anko-support-v4:$anko_version"
+
+    // 选择器
     compile "com.contrarywind:Android-PickerView:$pickerview_version"
 
-    //之前是5.2.1，5.3报错
+    // 视频播放框架
     compile "fm.jiecao:jiecaovideoplayer:$jiecaovideoplayer_version"
+
+    // JSON解析框架
     compile "com.google.code.gson:gson:$gson_version"
+
+    // 图片加载框架
     compile "com.squareup.picasso:picasso:$picasso_version"
+
+    // 网络请求框架
     compile "com.zhy:okhttputils:$okhttputils_version"
     compile "com.squareup.okio:okio:$okio_version"
-    compile "com.meiqia:meiqiasdk:$meiqiasdk_version@aar"
     compile "com.squareup.okhttp3:okhttp:$okhttp_version"
+
+    // 客服即时通讯SDK
+    compile "com.meiqia:meiqiasdk:$meiqiasdk_version@aar"
+
+    // 极光推送
     compile "cn.jiguang.sdk:jpush:$jpush_version"
     compile "cn.jiguang.sdk:jcore:$jcore_version"
+
+    // 下拉刷新和上拉加载
     compile "com.lcodecorex:tkrefreshlayout:$tkrefreshlayout_version"
+
+    // 小圆点
     compile "q.rorbin:badgeview:$badgeview_version"
+
+    // EventBus
     compile "org.greenrobot:eventbus:$eventbus_version"
+
+    // Spinner
     compile "com.jaredrummler:material-spinner:$spinner_version"
+
+    // Others
     compile name: 'SMSSDK-2.1.1', ext: 'aar'
     compile files('libs/BaiduLBS_Android.jar')
     compile files('libs/httpmime-4.1.2.jar')
     compile files('libs/umeng_social_sdk.jar')
     compile files('libs/SocialSDK_Sina.jar')
-    compile project(':CharacterPickerViewLibrary')
-//    compile project(':MPChartLib')
-    // MPAndroidChart
-    compile 'com.github.PhilJay:MPAndroidChart:v3.0.3'
-    // AndroidTag
-    compile 'me.gujun.android.taggroup:library:1.4@aar'
-    //    implementation  project(path: ':CharacterPickerViewLibrary', configuration: 'default')
-
-    //    implementation  project(path: ':MPChartLib', configuration: 'default')
-
-
-    //其中latest.release指代最新版本号，也可以指定明确的版本号，例如2.1.5
     compile files('libs/SocialSDK_WeiXin_1.jar')
+
+    // MPAndroidChart
+    compile "com.github.PhilJay:MPAndroidChart:$MPAndroidChart_version"
+    // AndroidTag
+    compile "me.gujun.android.taggroup:library:$AndroidTag_version@aar"
+
+    // WaveView
+    compile 'me.itangqi.waveloadingview:library:0.3.5'
+
+    // SwipeMenu
+    compile 'com.baoyz.swipemenulistview:library:1.3.0'
+
+    // Bugly
+    compile 'com.tencent.bugly:crashreport:latest.release'
+
+    // PhotoView
+    compile "com.github.chrisbanes.photoview:library:$PhotoView_version"
+
+    // PhotoPicker
+    compile 'me.iwf.photopicker:PhotoPicker:0.9.0@aar'
+
+    compile 'com.nineoldandroids:library:2.4.0'
+//    compile 'com.github.bumptech.glide:glide:3.7.0'
+
+    // AD-Dialog
+    compile 'cn.yipianfengye.android:ad-library:1.0'
+
+    // Android
     compile 'com.android.support:appcompat-v7:25.3.1'
     compile 'com.android.support:design:25.3.1'
     compile 'com.android.support:support-v4:25.3.1'
     compile 'com.android.support:multidex:1.0.1'
-    compile 'me.itangqi.waveloadingview:library:0.3.5'
-    compile 'com.linsea:universalvideoview:1.1.0@aar'
-    compile 'com.baoyz.swipemenulistview:library:1.3.0'
-    compile 'com.tencent.bugly:crashreport:latest.release'
-    compile 'com.github.chrisbanes.photoview:library:1.2.4'
-    compile 'me.iwf.photopicker:PhotoPicker:0.9.0@aar'
-    compile 'com.nineoldandroids:library:2.4.0'
-    compile 'com.github.bumptech.glide:glide:3.7.0'
-    compile 'cn.yipianfengye.android:ad-library:1.0'
     compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha9'
     testCompile 'junit:junit:4.12'
 }

@@ -1,1 +1,1 @@
-include ':app', ':CharacterPickerViewLibrary', ':MPChartLib'
+include ':app'

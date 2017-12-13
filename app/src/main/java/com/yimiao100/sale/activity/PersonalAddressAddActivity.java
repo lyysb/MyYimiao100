@@ -10,6 +10,8 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.bigkoo.pickerview.OptionsPickerView;
+import com.blankj.utilcode.util.KeyboardUtils;
 import com.yimiao100.sale.R;
 import com.yimiao100.sale.base.BaseActivity;
 import com.yimiao100.sale.bean.Address;
@@ -34,13 +36,12 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import cn.jeesoft.widget.pickerview.CharacterPickerWindow;
 import okhttp3.Call;
 
 /**
  * 添加地址
  */
-public class PersonalAddressAddActivity extends BaseActivity implements TitleView.TitleBarOnClickListener, RegionUtil.HandleRegionListListener {
+public class PersonalAddressAddActivity extends BaseActivity implements TitleView.TitleBarOnClickListener, RegionUtil.HandleRegionListListener, OptionsPickerView.OnOptionsSelectListener {
 
     @BindView(R.id.address_name)
     EditText mAddressName;
@@ -57,7 +58,6 @@ public class PersonalAddressAddActivity extends BaseActivity implements TitleVie
 
 
     private ArrayList<Province> mProvinceList;
-    private CharacterPickerWindow mOptions;
     private List<String> mOptions1Items;
     private List<List<String>> mOptions2Items;
     private List<List<List<String>>> mOptions3Items;
@@ -82,6 +82,7 @@ public class PersonalAddressAddActivity extends BaseActivity implements TitleVie
     private final int FROM_NEW_CANCEL = 101;
     private Address mAddress;
     private ProgressDialog mProgressDialog;
+    private OptionsPickerView regionPicker;
 
 
     @Override
@@ -96,30 +97,18 @@ public class PersonalAddressAddActivity extends BaseActivity implements TitleVie
     }
 
     private void initView() {
-        mOptions = new CharacterPickerWindow(this);
+        regionPicker = new OptionsPickerView.Builder(this, this)
+                .setContentTextSize(16)
+                .setSubCalSize(14)
+                .setSubmitColor(getResources().getColor(R.color.colorMain))
+                .setCancelColor(getResources().getColor(R.color.colorMain))
+                .setOutSideCancelable(false)
+                .build();
         mAddressAddTitle.setOnTitleBarClick(this);
     }
 
     private void initData() {
         Intent intent = getIntent();
-//        if (intent.getExtras() != null) {
-//            mBundle = intent.getExtras();
-//            String name = mBundle.getString("name");
-//            String phone = mBundle.getString("phone");
-//            String region = mBundle.getString("region");
-//            String code = mBundle.getString("code");
-//            String full = mBundle.getString("full");
-//            mAddressName.setText(name);
-//            mAddressPhone.setText(phone);
-//            mAddressAddress.setText(region);
-//            mAddressCode.setText(code);
-//            mAddressDetail.setText(full);
-//
-//            mProvinceId = mBundle.getInt("provinceId");
-//            mCityId = mBundle.getInt("cityId");
-//            mCountyId = mBundle.getInt("areaId");
-//            mAddressId = mBundle.getString("addressId");
-//        }
         mAddress = intent.getParcelableExtra("address");
         if (mAddress != null) {
             mAddressName.setText(mAddress.getCnName());
@@ -159,20 +148,12 @@ public class PersonalAddressAddActivity extends BaseActivity implements TitleVie
         for (Province province : mProvinceList) {
             String ProvinceName = province.getName();
             List<City> cityList = province.getCityList();
-            if (cityList.size() == 0) {
-                City city_temp = new City();
-                city_temp.setAreaList(new ArrayList<Area>());
-                cityList.add(city_temp);
-            }
             List<String> mOptions2Items_temp = new ArrayList<>();
             List<List<String>> mOptions3Items_temp = new ArrayList<>();
             for (City city : cityList) {
                 String CityName = city.getName();
                 mOptions2Items_temp.add(CityName == null ? "" : CityName);
                 List<Area> areaList = city.getAreaList();
-                if (areaList.size() == 0) {
-                    areaList.add(new Area());
-                }
                 List<String> mOptions3Items_temp_temp = new ArrayList<>();
                 for (Area area : areaList) {
                     String AreaName = area.getName();
@@ -184,7 +165,11 @@ public class PersonalAddressAddActivity extends BaseActivity implements TitleVie
             mOptions2Items.add(mOptions2Items_temp);
             mOptions3Items.add(mOptions3Items_temp);
         }
+
+        regionPicker.setPicker(mOptions1Items, mOptions2Items, mOptions3Items);
     }
+
+
 
     @OnClick({R.id.address_name_clear, R.id.address_phone_clear, R.id.address_address, R.id
             .address_code_clear})
@@ -197,7 +182,10 @@ public class PersonalAddressAddActivity extends BaseActivity implements TitleVie
                 mAddressPhone.setText("");
                 break;
             case R.id.address_address:
-                showRegion(view);
+                // 也许有软键盘，先收起软键盘
+                KeyboardUtils.hideSoftInput(this);
+                // 显示地址选择器
+                regionPicker.show(view);
                 break;
             case R.id.address_code_clear:
                 mAddressCode.setText("");
@@ -205,41 +193,23 @@ public class PersonalAddressAddActivity extends BaseActivity implements TitleVie
         }
     }
 
-    /**
-     * 显示地址选择器
-     * @param view
-     */
-    private void showRegion(View view) {
-        //设置三级联动
-        mOptions.setPicker(mOptions1Items, mOptions2Items, mOptions3Items);
-        //设置可以获取焦点
-        mOptions.setFocusable(true);
-        //设置不循环
-        mOptions.setCyclic(false);
-        //设置默认选中的三级项目
-        mOptions.setSelectOptions(0, 1, 1);
-        //监听确定选择按钮
-        mOptions.setOnoptionsSelectListener(new CharacterPickerWindow.OnOptionsSelectListener() {
-            @Override
-            public void onOptionsSelect(int options1, int option2, int options3) {
-                final String region = mOptions1Items.get(options1)
-                        + "\t" + mOptions2Items.get(options1).get(option2)
-                        + "\t" + mOptions3Items.get(options1).get(option2).get(options3);
-                mAddressAddress.setText(region);
-                //省份id
-                mProvinceId = mProvinceList.get(options1).getId();
-                //市id
-                mCityId = mProvinceList.get(options1).getCityList().get(option2).getId();
-                //区/县id
-                mCountyId = mProvinceList.get(options1).getCityList().get(option2).getAreaList()
-                        .get(options3).getId();
-            }
-        });
-        //点击弹出选项选择器
-        mOptions.showAtLocation(view, Gravity.BOTTOM, 0, 0);
-        mOptions.setFocusable(false);
-    }
 
+
+
+
+    @Override
+    public void onOptionsSelect(int options1, int options2, int options3, View v) {
+        final String region = mOptions1Items.get(options1)
+                + "\t" + mOptions2Items.get(options1).get(options2)
+                + "\t" + mOptions3Items.get(options1).get(options2).get(options3);
+        mAddressAddress.setText(region);
+        //省份id
+        mProvinceId = mProvinceList.get(options1).getId();
+        //市id
+        mCityId = mProvinceList.get(options1).getCityList().get(options2).getId();
+        //区/县id
+        mCountyId = mProvinceList.get(options1).getCityList().get(options2).getAreaList().get(options3).getId();
+    }
 
 
     @Override
@@ -261,7 +231,6 @@ public class PersonalAddressAddActivity extends BaseActivity implements TitleVie
             addAddress();
         }
     }
-
 
     /**
      * 编辑收货地址
@@ -304,7 +273,6 @@ public class PersonalAddressAddActivity extends BaseActivity implements TitleVie
             }
         });
     }
-
     /**
      * 增加收货地址
      */
@@ -346,24 +314,20 @@ public class PersonalAddressAddActivity extends BaseActivity implements TitleVie
             }
         });
     }
+
     @Override
     public void leftOnClick() {
         setResult(FROM_NEW_CANCEL);
         finish();
     }
 
+
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         //当三级联动对话框正在显示的时候，按下返回键，其实是让对话框消失
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            if (mOptions.isShowing()) {
-                mOptions.dismiss();
-                return true;
-            }
             setResult(FROM_NEW_CANCEL);
         }
         return super.onKeyDown(keyCode, event);
     }
-
-
 }

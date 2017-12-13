@@ -169,7 +169,7 @@ public class CRMShipAdapter extends BaseExpandableListAdapter{
      */
     private void setBarChart(BarChart chart, ShipList ship) {
         // 数据描述
-//        chart.setDescription("");
+        chart.getDescription().setEnabled(false);
         // 设置是否可以触摸
         chart.setTouchEnabled(true);
         // 是否可以拖拽
@@ -306,7 +306,7 @@ public class CRMShipAdapter extends BaseExpandableListAdapter{
     private void setLineChart(LineChart chart, ShipList shipList) {
         //设置折线图细节
         //-设置描述
-//        chart.setDescription("");
+        chart.getDescription().setEnabled(false);
         //-设置没有数据时的内容
         chart.setNoDataText("没有数据");
         //-设置触摸

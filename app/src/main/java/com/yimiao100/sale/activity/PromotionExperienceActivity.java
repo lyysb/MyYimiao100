@@ -3,13 +3,13 @@ package com.yimiao100.sale.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.view.Gravity;
-import android.view.KeyEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.bigkoo.pickerview.OptionsPickerView;
 import com.bigkoo.pickerview.TimePickerView;
+import com.blankj.utilcode.util.KeyboardUtils;
 import com.yimiao100.sale.R;
 import com.yimiao100.sale.base.BaseActivity;
 import com.yimiao100.sale.bean.Area;
@@ -29,14 +29,13 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import cn.jeesoft.widget.pickerview.CharacterPickerWindow;
 
 import static com.yimiao100.sale.utils.TimeUtil.getTime;
 
 /**
  * 绑定对公主体-添加推广经历
  */
-public class PromotionExperienceActivity extends BaseActivity implements TitleView.TitleBarOnClickListener, RegionUtil.HandleRegionListListener, TimePickerView.OnTimeSelectListener {
+public class PromotionExperienceActivity extends BaseActivity implements TitleView.TitleBarOnClickListener, RegionUtil.HandleRegionListListener, TimePickerView.OnTimeSelectListener, OptionsPickerView.OnOptionsSelectListener {
 
     @BindView(R.id.promotion_experience_title)
     TitleView mPromotionExperienceTitle;
@@ -56,12 +55,12 @@ public class PromotionExperienceActivity extends BaseActivity implements TitleVi
     private static final int EDIT_EXPERIENCE = 102;
 
     private TimePickerView mTimePicker;
-    private CharacterPickerWindow mCharacterPickerView;
     private ArrayList<String> mOptions1Items;
     private List<List<String>> mOptions2Items;
     private ArrayList<Province> mProvinceList;
     private Experience mExperience;
     private int mPosition;
+    private OptionsPickerView regionPicker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,7 +96,13 @@ public class PromotionExperienceActivity extends BaseActivity implements TitleVi
     }
 
     private void initRegionView() {
-        mCharacterPickerView = new CharacterPickerWindow(this);
+        regionPicker = new OptionsPickerView.Builder(this, this)
+                .setContentTextSize(16)
+                .setSubCalSize(14)
+                .setSubmitColor(getResources().getColor(R.color.colorMain))
+                .setCancelColor(getResources().getColor(R.color.colorMain))
+                .setOutSideCancelable(false)
+                .build();
     }
 
     private void initData() {
@@ -132,6 +137,8 @@ public class PromotionExperienceActivity extends BaseActivity implements TitleVi
     @OnClick({R.id.promotion_experience_begin, R.id.promotion_experience_end, R.id
             .promotion_experience_provence, R.id.promotion_experience_city})
     public void onClick(View view) {
+        // 如果有键盘显示，则先收起键盘
+        KeyboardUtils.hideSoftInput(this);
         switch (view.getId()) {
             case R.id.promotion_experience_begin:
                 mTimePicker.show(view);
@@ -141,13 +148,26 @@ public class PromotionExperienceActivity extends BaseActivity implements TitleVi
                 break;
             case R.id.promotion_experience_provence:
             case R.id.promotion_experience_city:
-                showRegion(view);
+                regionPicker.show(view);
                 break;
         }
     }
 
 
 
+    @Override
+    public void onOptionsSelect(int options1, int options2, int options3, View v) {
+        String provenceName = mOptions1Items.get(options1);
+        String cityName = mOptions2Items.get(options1).get(options2);
+        int provinceId = mProvinceList.get(options1).getId();
+        int cityId = mProvinceList.get(options1).getCityList().get(options2).getId();
+        mPromotionExperienceProvence.setText(provenceName);
+        mPromotionExperienceCity.setText(cityName);
+        mExperience.setProvinceId(provinceId);
+        mExperience.setProvinceName(provenceName);
+        mExperience.setCityName(cityName);
+        mExperience.setCityId(cityId);
+    }
     @Override
     public void onTimeSelect(Date date, View v) {
         switch (v.getId()) {
@@ -160,39 +180,6 @@ public class PromotionExperienceActivity extends BaseActivity implements TitleVi
                 mExperience.setEndAtFormat(getTime(date, "yyyy-MM"));
                 break;
         }
-    }
-    private void showRegion(View view) {
-        //设置三级联动
-        mCharacterPickerView.setPicker(mOptions1Items, mOptions2Items);
-        //开始时获取焦点
-        mCharacterPickerView.setFocusable(true);
-        //设置不循环
-        mCharacterPickerView.setCyclic(false);
-        //设置默认选中的三级项目
-        mCharacterPickerView.setSelectOptions(0, 1);
-        //监听确定选择按钮
-        mCharacterPickerView.setOnoptionsSelectListener(new CharacterPickerWindow.OnOptionsSelectListener() {
-
-
-            @Override
-            public void onOptionsSelect(int options1, int option2, int options3) {
-                String provenceName = mOptions1Items.get(options1);
-                String cityName = mOptions2Items.get(options1).get(option2);
-                int provinceId = mProvinceList.get(options1).getId();
-                int cityId = mProvinceList.get(options1).getCityList().get(option2).getId();
-                mPromotionExperienceProvence.setText(provenceName);
-                mPromotionExperienceCity.setText(cityName);
-                mExperience.setProvinceId(provinceId);
-                mExperience.setProvinceName(provenceName);
-                mExperience.setCityName(cityName);
-                mExperience.setCityId(cityId);
-
-            }
-        });
-        //点击弹出选项选择器
-        mCharacterPickerView.showAtLocation(view, Gravity.BOTTOM, 0, 0);
-        //弹出后失去焦点
-        mCharacterPickerView.setFocusable(false);
     }
 
     /**
@@ -207,20 +194,12 @@ public class PromotionExperienceActivity extends BaseActivity implements TitleVi
         for (Province province : mProvinceList) {
             String ProvinceName = province.getName();
             List<City> cityList = province.getCityList();
-            if (cityList.size() == 0) {
-                City city_temp = new City();
-                city_temp.setAreaList(new ArrayList<Area>());
-                cityList.add(city_temp);
-            }
             List<String> mOptions2Items_temp = new ArrayList<>();
             List<List<String>> mOptions3Items_temp = new ArrayList<>();
             for (City city : cityList) {
                 String CityName = city.getName();
                 mOptions2Items_temp.add(CityName == null ? "" : CityName);
                 List<Area> areaList = city.getAreaList();
-                if (areaList.size() == 0) {
-                    areaList.add(new Area());
-                }
                 List<String> mOptions3Items_temp_temp = new ArrayList<>();
                 for (Area area : areaList) {
                     String AreaName = area.getName();
@@ -231,7 +210,9 @@ public class PromotionExperienceActivity extends BaseActivity implements TitleVi
             mOptions1Items.add(ProvinceName);
             mOptions2Items.add(mOptions2Items_temp);
         }
+        regionPicker.setPicker(mOptions1Items, mOptions2Items);
     }
+
 
     @Override
     public void rightOnClick() {
@@ -255,21 +236,6 @@ public class PromotionExperienceActivity extends BaseActivity implements TitleVi
             }
             finish();
         }
-    }
-
-
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        //当三级联动对话框正在显示的时候，按下返回键，其实是让对话框消失
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            if (mTimePicker.isShowing()
-                    || mCharacterPickerView.isShowing()) {
-                mTimePicker.dismiss();
-                mCharacterPickerView.dismiss();
-                return true;
-            }
-        }
-        return super.onKeyDown(keyCode, event);
     }
 
     @Override

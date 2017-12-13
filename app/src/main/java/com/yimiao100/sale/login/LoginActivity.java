@@ -44,42 +44,26 @@ public class LoginActivity extends MVPBaseActivity<LoginPresenter> implements Lo
         mEtPwd = (EditText) findViewById(R.id.login_password);
         mCbShowPwd = (CheckBox) findViewById(R.id.show_password);
         // 显示密码
-        mCbShowPwd.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                LogUtils.d("mCbShowPwd.isChecked()?" + mCbShowPwd.isChecked());
-                showPwd(mCbShowPwd.isChecked());
-            }
+        mCbShowPwd.setOnClickListener(v -> {
+            LogUtils.d("mCbShowPwd.isChecked()?" + mCbShowPwd.isChecked());
+            showPwd(mCbShowPwd.isChecked());
         });
         // 忘记密码
-        findViewById(R.id.login_forget_password).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                navigateToForgetter();
-            }
-        });
+        findViewById(R.id.login_forget_password).setOnClickListener(v -> navigateToForgetter());
         // 注册
-        findViewById(R.id.login_register).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                navigateToRegister();
-            }
-        });
+        findViewById(R.id.login_register).setOnClickListener(v -> navigateToRegister());
 
         // 登录
         RxView.clicks(findViewById(R.id.login_login))
                 .throttleFirst(1, TimeUnit.SECONDS)
-                .subscribe(new Consumer<Object>() {
-                    @Override
-                    public void accept(Object o) throws Exception {
-                        String account = mEtAccount.getText().toString().trim();
-                        String pwd = mEtPwd.getText().toString().trim();
-                        if (TextUtils.isEmpty(account) || TextUtils.isEmpty(pwd)) {
-                            ToastUtil.showShort(LoginActivity.this, "账号密码不能为空");
-                            return;
-                        }
-                        mPresenter.login(account, pwd);
+                .subscribe(o -> {
+                    String account = mEtAccount.getText().toString().trim();
+                    String pwd = mEtPwd.getText().toString().trim();
+                    if (TextUtils.isEmpty(account) || TextUtils.isEmpty(pwd)) {
+                        ToastUtil.showShort(LoginActivity.this, "账号密码不能为空");
+                        return;
                     }
+                    mPresenter.login(account, pwd);
                 });
 
     }

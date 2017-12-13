@@ -4,7 +4,7 @@ apply plugin: 'kotlin-android'
 
 apply plugin: 'kotlin-android-extensions'
 /*解决butterknife点击事件无效问题*/
-apply plugin: 'com.neenbedankt.android-apt'
+//apply plugin: 'com.neenbedankt.android-apt'
 ext {
     anko_version = "0.10.1"
     pickerview_version = "3.2.5"
@@ -38,7 +38,7 @@ ext {
 
 android {
     compileSdkVersion 25
-    buildToolsVersion '25.0.2'
+    buildToolsVersion '26.0.2'
     signingConfigs {
         release {
             keyAlias 'yimiao'
@@ -87,16 +87,19 @@ android {
         }
     }
 
+    // 打包时的相关配置。当项目中依赖的第三方库越来越多时，有可能会出现两个依赖库中存在同一个（名称）文件。
+    // 如果这样，Gradle在打包时就会提示错误（警告）。那么就可以根据提示，然后使用以下方法将重复的文件剔除。
+    packagingOptions {
+        exclude 'META-INF/app_debug.kotlin_module'
+    }
+
     dexOptions {
         javaMaxHeapSize "4g"
     }
-    sourceSets {
-        main.java.srcDirs += 'src/main/kotlin'
-    }
 
     compileOptions {
-        targetCompatibility JavaVersion.VERSION_1_7
-        sourceCompatibility JavaVersion.VERSION_1_7
+        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_1_8
     }
 }
 repositories {
@@ -148,9 +151,8 @@ dependencies {
     compile "de.hdodenhof:circleimageview:$circleimageview_version"
 
     // 解决butterKnife点击事件无效问题
-    apt "com.jakewharton:butterknife-compiler:$butterknife_version"
-
-    //    annotationProcessor "com.jakewharton:butterknife-compiler:$butterknife_version"
+//    apt "com.jakewharton:butterknife-compiler:$butterknife_version"
+    annotationProcessor "com.jakewharton:butterknife-compiler:$butterknife_version"
 
     // kotlin
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
@@ -209,6 +211,7 @@ dependencies {
 
     // MPAndroidChart
     compile "com.github.PhilJay:MPAndroidChart:$MPAndroidChart_version"
+
     // AndroidTag
     compile "me.gujun.android.taggroup:library:$AndroidTag_version@aar"
 
@@ -226,9 +229,9 @@ dependencies {
 
     // PhotoPicker
     compile 'me.iwf.photopicker:PhotoPicker:0.9.0@aar'
-
     compile 'com.nineoldandroids:library:2.4.0'
-//    compile 'com.github.bumptech.glide:glide:3.7.0'
+
+    //    compile 'com.github.bumptech.glide:glide:3.7.0'
 
     // AD-Dialog
     compile 'cn.yipianfengye.android:ad-library:1.0'

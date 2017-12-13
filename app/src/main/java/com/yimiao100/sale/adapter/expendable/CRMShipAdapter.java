@@ -20,7 +20,7 @@ import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
-import com.github.mikephil.charting.formatter.AxisValueFormatter;
+import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.formatter.LargeValueFormatter;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
@@ -169,7 +169,7 @@ public class CRMShipAdapter extends BaseExpandableListAdapter{
      */
     private void setBarChart(BarChart chart, ShipList ship) {
         // 数据描述
-        chart.setDescription("");
+//        chart.setDescription("");
         // 设置是否可以触摸
         chart.setTouchEnabled(true);
         // 是否可以拖拽
@@ -198,7 +198,7 @@ public class CRMShipAdapter extends BaseExpandableListAdapter{
         xAxis.setDrawLabels(true);
         //设置X轴单位格式
         final ArrayList<Delivery> deliveryStatList = ship.getDeliveryStatList();//发货统计列表
-        xAxis.setValueFormatter(new AxisValueFormatter() {
+        xAxis.setValueFormatter(new IAxisValueFormatter() {
             @Override
             public String getFormattedValue(float value, AxisBase axis) {
                 if (value >= 0 && value < deliveryStatList.size()) {
@@ -207,12 +207,22 @@ public class CRMShipAdapter extends BaseExpandableListAdapter{
                     return value + "";
                 }
             }
-
-            @Override
-            public int getDecimalDigits() {
-                return 0;
-            }
         });
+//        xAxis.setValueFormatter(new AxisValueFormatter() {
+//            @Override
+//            public String getFormattedValue(float value, AxisBase axis) {
+//                if (value >= 0 && value < deliveryStatList.size()) {
+//                    return deliveryStatList.get((int) value).getStatYear() + "/" + deliveryStatList.get((int) value).getStatMonth();
+//                } else {
+//                    return value + "";
+//                }
+//            }
+//
+//            @Override
+//            public int getDecimalDigits() {
+//                return 0;
+//            }
+//        });
 
         //左侧Y轴属性
         YAxis leftAxis = chart.getAxisLeft();
@@ -296,9 +306,9 @@ public class CRMShipAdapter extends BaseExpandableListAdapter{
     private void setLineChart(LineChart chart, ShipList shipList) {
         //设置折线图细节
         //-设置描述
-        chart.setDescription("");
+//        chart.setDescription("");
         //-设置没有数据时的内容
-        chart.setNoDataTextDescription("没有数据");
+        chart.setNoDataText("没有数据");
         //-设置触摸
         chart.setTouchEnabled(true);
         //-设置拖拽
@@ -318,7 +328,7 @@ public class CRMShipAdapter extends BaseExpandableListAdapter{
         //设置粒度为1
         xAxis.setGranularity(1f);
         final ArrayList<Delivery> deliveryTotalStatList = shipList.getDeliveryTotalStatList();//发货统计列表
-        xAxis.setValueFormatter(new AxisValueFormatter() {
+        xAxis.setValueFormatter(new IAxisValueFormatter() {
             @Override
             public String getFormattedValue(float value, AxisBase axis) {
                 if (value >= 0 && value < deliveryTotalStatList.size()) {
@@ -327,12 +337,22 @@ public class CRMShipAdapter extends BaseExpandableListAdapter{
                     return value + "";
                 }
             }
-
-            @Override
-            public int getDecimalDigits() {
-                return 0;
-            }
         });
+//        xAxis.setValueFormatter(new AxisValueFormatter() {
+//            @Override
+//            public String getFormattedValue(float value, AxisBase axis) {
+//                if (value >= 0 && value < deliveryTotalStatList.size()) {
+//                    return deliveryTotalStatList.get((int) value).getStatYear() + "/" + deliveryTotalStatList.get((int) value).getStatMonth();
+//                } else {
+//                    return value + "";
+//                }
+//            }
+//
+//            @Override
+//            public int getDecimalDigits() {
+//                return 0;
+//            }
+//        });
 
         //设置左侧Y轴
         YAxis axisLeft = chart.getAxisLeft();

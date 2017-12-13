@@ -387,7 +387,15 @@ public class OrderAlreadyActivity extends BaseActivity implements TitleView
                 Intent intent = new Intent(Intent.ACTION_SEND);
                 intent.putExtra("subject", response.getName()); //
                 intent.putExtra("body", "Email from CodePad"); //正文
-                intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(response));
+                Uri uri;
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                    uri = FileProvider.getUriForFile(currentContext, "com.yimiao100.sale.fileprovider", response);
+                } else {
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    uri = Uri.fromFile(response);
+                }
+                intent.putExtra(Intent.EXTRA_STREAM, uri);
                 //添加附件，附件为file对象
                 if (response.getName().endsWith(".gz")) {
                     intent.setType("application/x-gzip"); //如果是gz使用gzip的mime

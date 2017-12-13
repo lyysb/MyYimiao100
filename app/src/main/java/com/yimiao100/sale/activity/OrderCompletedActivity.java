@@ -260,7 +260,15 @@ public class OrderCompletedActivity extends BaseActivity implements TitleView.Ti
                         if (response != null && response.isFile() == true) {
                             Intent intent = new Intent();
                             intent.setAction(android.content.Intent.ACTION_VIEW);
-                            intent.setDataAndType(Uri.fromFile(response), "image/*");
+                            Uri uri;
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                                intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                                uri = FileProvider.getUriForFile(currentContext, "com.yimiao100.sale.fileprovider", response);
+                            } else {
+                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                uri = Uri.fromFile(response);
+                            }
+                            intent.setDataAndType(uri, "image/*");
                             startActivity(intent);
                         }
                     }
@@ -345,7 +353,15 @@ public class OrderCompletedActivity extends BaseActivity implements TitleView.Ti
                 Intent intent = new Intent(Intent.ACTION_SEND);
                 intent.putExtra("subject", response.getName()); //
                 intent.putExtra("body", "Email from CodePad"); //正文
-                intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(response));
+                Uri uri;
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                    uri = FileProvider.getUriForFile(currentContext, "com.yimiao100.sale.fileprovider", response);
+                } else {
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    uri = Uri.fromFile(response);
+                }
+                intent.putExtra(Intent.EXTRA_STREAM, uri);
                 //添加附件，附件为file对象
                 if (response.getName().endsWith(".gz")) {
                     intent.setType("application/x-gzip"); //如果是gz使用gzip的mime

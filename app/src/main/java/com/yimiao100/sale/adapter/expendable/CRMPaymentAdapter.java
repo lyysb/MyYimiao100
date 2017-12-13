@@ -20,7 +20,7 @@ import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
-import com.github.mikephil.charting.formatter.AxisValueFormatter;
+import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.formatter.LargeValueFormatter;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
@@ -164,7 +164,7 @@ public class CRMPaymentAdapter extends BaseExpandableListAdapter{
 
     private void setBarChart(BarChart chart, PaymentList paymentList) {
         // 数据描述
-        chart.setDescription("");
+//        chart.setDescription("");
         // 设置是否可以触摸
         chart.setTouchEnabled(true);
         // 是否可以拖拽
@@ -193,7 +193,7 @@ public class CRMPaymentAdapter extends BaseExpandableListAdapter{
         xAxis.setDrawLabels(true);
         //设置X轴单位格式
         final ArrayList<Payment> paymentStatList = paymentList.getPaymentStatList();//回款统计列表
-        xAxis.setValueFormatter(new AxisValueFormatter() {
+        xAxis.setValueFormatter(new IAxisValueFormatter() {
             @Override
             public String getFormattedValue(float value, AxisBase axis) {
                 if (value >= 0 && value < paymentStatList.size()) {
@@ -202,12 +202,22 @@ public class CRMPaymentAdapter extends BaseExpandableListAdapter{
                     return value + "";
                 }
             }
-
-            @Override
-            public int getDecimalDigits() {
-                return 0;
-            }
         });
+//        xAxis.setValueFormatter(new AxisValueFormatter() {
+//            @Override
+//            public String getFormattedValue(float value, AxisBase axis) {
+//                if (value >= 0 && value < paymentStatList.size()) {
+//                    return paymentStatList.get((int) value).getStatYear() + "/" + paymentStatList.get((int) value).getStatMonth();
+//                } else {
+//                    return value + "";
+//                }
+//            }
+//
+//            @Override
+//            public int getDecimalDigits() {
+//                return 0;
+//            }
+//        });
 
         //左侧Y轴属性
         YAxis leftAxis = chart.getAxisLeft();
@@ -286,9 +296,9 @@ public class CRMPaymentAdapter extends BaseExpandableListAdapter{
     private void setLineChart(LineChart chart, PaymentList paymentList) {
         //设置折线图细节
         //-设置描述
-        chart.setDescription("");
+//        chart.setDescription("");
         //-设置没有数据时的内容
-        chart.setNoDataTextDescription("没有数据");
+        chart.setNoDataText("没有数据");
         //-设置触摸
         chart.setTouchEnabled(true);
         //-设置拖拽
@@ -308,7 +318,7 @@ public class CRMPaymentAdapter extends BaseExpandableListAdapter{
         //设置粒度为1
         xAxis.setGranularity(1f);
         final ArrayList<Payment> paymentTotalStatList = paymentList.getPaymentTotalStatList();//回款统计列表
-        xAxis.setValueFormatter(new AxisValueFormatter() {
+        xAxis.setValueFormatter(new IAxisValueFormatter() {
             @Override
             public String getFormattedValue(float value, AxisBase axis) {
                 if (value >= 0 && value < paymentTotalStatList.size()) {
@@ -317,12 +327,18 @@ public class CRMPaymentAdapter extends BaseExpandableListAdapter{
                     return value + "";
                 }
             }
-
-            @Override
-            public int getDecimalDigits() {
-                return 0;
-            }
         });
+//        xAxis.setValueFormatter(new AxisValueFormatter() {
+//            @Override
+//            public String getFormattedValue(float value, AxisBase axis) {
+//
+//            }
+//
+//            @Override
+//            public int getDecimalDigits() {
+//                return 0;
+//            }
+//        });
 
         //设置左侧Y轴
         YAxis axisLeft = chart.getAxisLeft();

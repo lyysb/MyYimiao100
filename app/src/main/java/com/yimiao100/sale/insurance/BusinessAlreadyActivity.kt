@@ -271,7 +271,15 @@ class BusinessAlreadyActivity : BaseActivity(), TitleView.TitleBarOnClickListene
             val intent = Intent(Intent.ACTION_SEND)
             intent.putExtra("subject", response.name) //
             intent.putExtra("body", "Email from CodePad") //正文
-            intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(response))
+            val uri: Uri
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                intent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+                uri = FileProvider.getUriForFile(currentContext, "com.yimiao100.sale.fileprovider", response)
+            } else {
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                uri = Uri.fromFile(response)
+            }
+            intent.putExtra(Intent.EXTRA_STREAM, uri)
             //添加附件，附件为file对象
             if (response.name.endsWith(".gz")) {
                 intent.type = "application/x-gzip" //如果是gz使用gzip的mime

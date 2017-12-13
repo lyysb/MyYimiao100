@@ -2,12 +2,11 @@ package com.yimiao100.sale.utils;
 
 import android.app.Activity;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 
-import com.yimiao100.sale.activity.LoginActivity;
 import com.yimiao100.sale.base.ActivityCollector;
+import com.yimiao100.sale.login.LoginActivity;
 
 /**
  * Activity单一AlertDialog管理工具类---专用于重新登录
@@ -83,8 +82,7 @@ public class ActivityAlertDialogManager {
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
                 ActivityCollector.finishAll();
-//                activity.startActivity(new Intent(activity, LoginActivity.class));
-                com.yimiao100.sale.login.LoginActivity.start(activity);
+                LoginActivity.start(activity);
             }
         });
     }

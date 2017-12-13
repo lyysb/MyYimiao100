@@ -137,11 +137,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activity.LoginActivity"
-            android:launchMode="singleInstance"
-            android:theme="@style/TranslucentNavigation">
-        </activity>
-        <activity
             android:name=".activity.RegisterActivity"
             android:theme="@style/TranslucentNavigation">
         </activity>

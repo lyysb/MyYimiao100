@@ -389,7 +389,6 @@ public class SplashActivity extends BaseActivity implements EasyPermissions.Perm
      * 进入登录注册界面
      */
     private void enterLogin() {
-//        startActivity(new Intent(this, LoginActivity.class));
         com.yimiao100.sale.login.LoginActivity.start(this);
         finish();
     }

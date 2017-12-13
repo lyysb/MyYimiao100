@@ -1,10 +1,7 @@
 package com.yimiao100.sale.login;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.text.TextUtils;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
@@ -19,9 +16,7 @@ import com.yimiao100.sale.activity.MainActivity;
 import com.yimiao100.sale.activity.RegisterActivity;
 import com.yimiao100.sale.base.MVPBaseActivity;
 import com.yimiao100.sale.service.AliasService;
-import com.yimiao100.sale.utils.ProgressDialogUtil;
 import com.yimiao100.sale.utils.ToastUtil;
-import com.yimiao100.sale.utils.Util;
 import io.reactivex.functions.Consumer;
 
 import java.util.concurrent.TimeUnit;

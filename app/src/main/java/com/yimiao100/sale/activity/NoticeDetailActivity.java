@@ -135,7 +135,6 @@ public class NoticeDetailActivity extends BaseActivity implements TitleView
                             ToastUtil.showShort(currentContext, "账号异常，请重新登录");
                             ActivityCollector.finishAll();
                             SharePreferenceUtil.clear(currentContext);
-//                            startActivity(new Intent(currentContext, LoginActivity.class));
                             com.yimiao100.sale.login.LoginActivity.start(currentContext);
                         }
                         break;

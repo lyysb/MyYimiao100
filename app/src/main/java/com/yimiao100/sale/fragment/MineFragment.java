@@ -530,7 +530,6 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
         // step2:启动服务，设置别名
         getActivity().startService(new Intent(getActivity(), AliasService.class));
         // step3:跳回到登录界面
-//        startActivity(new Intent(getActivity(), LoginActivity.class));
         com.yimiao100.sale.login.LoginActivity.start(getContext());
         // step4: 清空Bugly数据
         BuglyUtils.removeUserData(getContext());

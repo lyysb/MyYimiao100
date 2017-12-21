@@ -37,7 +37,7 @@ public class GuideActivity extends BaseActivity {
             public void onClick() {
                 if (mGuideViewPager.getCurrentItem() == 2) {
                     //进入登录界面
-                    com.yimiao100.sale.login.LoginActivity.start(currentContext);
+                    com.yimiao100.sale.ui.login.LoginActivity.start(currentContext);
                     //记录不是第一次登录
                     SharePreferenceUtil.put(currentContext, Constant.IS_FIRST, false);
                     finish();

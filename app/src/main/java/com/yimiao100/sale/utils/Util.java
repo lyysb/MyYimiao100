@@ -103,6 +103,7 @@ public class Util {
             // step1：弹窗显示退出/重新登录
             showDialog(activity, dialog);
             // step2：清空本地所有数据
+            SPUtils.getInstance().clear();
             SharePreferenceUtil.clear(activity);
             // step3：启动别名服务
             activity.startService(new Intent(activity, AliasService.class));

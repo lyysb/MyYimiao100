@@ -16,9 +16,12 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.blankj.utilcode.util.LogUtils;
+import com.blankj.utilcode.util.SPUtils;
 import com.lcodecore.tkrefreshlayout.RefreshListenerAdapter;
 import com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout;
 import com.lcodecore.tkrefreshlayout.header.progresslayout.ProgressLayout;
+import com.squareup.picasso.Picasso;
 import com.yimiao100.sale.R;
 import com.yimiao100.sale.activity.*;
 import com.yimiao100.sale.adapter.peger.CRMAdAdapter;
@@ -37,6 +40,7 @@ import com.yimiao100.sale.utils.Constant;
 import com.yimiao100.sale.utils.DensityUtil;
 import com.yimiao100.sale.utils.FormatUtils;
 import com.yimiao100.sale.utils.LogUtil;
+import com.yimiao100.sale.utils.ScreenUtil;
 import com.yimiao100.sale.utils.SharePreferenceUtil;
 import com.yimiao100.sale.utils.Util;
 import com.zhy.http.okhttp.OkHttpUtils;
@@ -47,7 +51,9 @@ import org.jetbrains.annotations.NotNull;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
+import cn.bingoogolapple.bgabanner.BGABanner;
 import me.itangqi.waveloadingview.WaveLoadingView;
 import okhttp3.Call;
 import q.rorbin.badgeview.Badge;
@@ -60,11 +66,10 @@ import q.rorbin.badgeview.QBadgeView;
  * Created by 亿苗通 on 2016/8/1.
  */
 public class CRMFragment extends BaseFragment implements View.OnClickListener, CarouselUtil
-        .HandleCarouselListener, ViewPager.OnPageChangeListener {
+        .HandleCarouselListener {
 
 
     private View mView;
-    private ViewPager mCrm_ad;
 
     private final String URL_SALE_STAT = Constant.BASE_URL + "/api/stat/sale_stat";
     private final String BALANCE_ORDER = "balance_order";                   //对账订单
@@ -72,26 +77,6 @@ public class CRMFragment extends BaseFragment implements View.OnClickListener, C
     private final String ACCESS_TOKEN = "X-Authorization-Token";
     private final String USER_TIPS_ALL = Constant.BASE_URL + "/api/tip/user_tips_all";
 
-    private String mAccessToken;
-    /**
-     * 显示下一页
-     */
-    public static final int SHOW_NEXT_PAGE = 0;
-
-    private Handler mHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            switch (msg.what) {
-                case SHOW_NEXT_PAGE:
-                    showNextPage();
-                    break;
-            }
-        }
-    };
-    private TextView mCrmDesc;
-    private LinearLayout mCrmDots;
-    private ArrayList<Carousel> mCarouselList;
     private TwinklingRefreshLayout mRefreshLayout;
     private ImageButton mNotice;
     private ImageButton mReconciliation;
@@ -99,6 +84,7 @@ public class CRMFragment extends BaseFragment implements View.OnClickListener, C
     private Badge mBadge;
     private WaveLoadingView mWaveShip;
     private WaveLoadingView mWavePayment;
+    private BGABanner banner;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle
@@ -115,26 +101,21 @@ public class CRMFragment extends BaseFragment implements View.OnClickListener, C
     }
 
     @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-        if (isVisibleToUser) {
-            // 如果可见，滑动切换
-            mHandler.sendEmptyMessageDelayed(SHOW_NEXT_PAGE, 3000);
-        } else {
-            mHandler.removeMessages(SHOW_NEXT_PAGE);
-        }
-        LogUtil.d("setUserVisibleHint isVisibleToUser is " + isVisibleToUser);
-        LogUtil.d("setUserVisibleHint handler has msg is " + mHandler.hasMessages(SHOW_NEXT_PAGE));
+    public void onResume() {
+        super.onResume();
+        LogUtils.d("onResume");
+        banner.startAutoPlay();
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
-        mHandler.removeMessages(SHOW_NEXT_PAGE);
+    public void onPause() {
+        super.onPause();
+        LogUtils.d("onPause");
+        banner.stopAutoPlay();
     }
 
+
     private void initView() {
-        mAccessToken = (String) SharePreferenceUtil.get(getContext(), Constant.ACCESSTOKEN, "");
         // 客服
         mCustomer = (ImageView) mView.findViewById(R.id.crm_service);
         mBadge = new QBadgeView(getContext()).bindTarget(mCustomer)
@@ -162,12 +143,7 @@ public class CRMFragment extends BaseFragment implements View.OnClickListener, C
             }
         });
         //广告
-        mCrm_ad = (ViewPager) mView.findViewById(R.id.crm_ad);
-        mCrm_ad.addOnPageChangeListener(this);
-        //广告标题
-        mCrmDesc = (TextView) mView.findViewById(R.id.crm_tv_desc);
-        //广告小圆点
-        mCrmDots = (LinearLayout) mView.findViewById(R.id.crm_ll_dots);
+        banner = (BGABanner) mView.findViewById(R.id.crm_banner);
         //水波纹统计
         mWaveShip = (WaveLoadingView) mView.findViewById(R.id.wave_ship);
         mWaveShip.setOnClickListener(this);
@@ -217,7 +193,7 @@ public class CRMFragment extends BaseFragment implements View.OnClickListener, C
     }
 
     private void initUserTips() {
-        OkHttpUtils.post().url(USER_TIPS_ALL).addHeader(ACCESS_TOKEN, mAccessToken)
+        OkHttpUtils.post().url(USER_TIPS_ALL).addHeader(ACCESS_TOKEN, accessToken)
                 .build().execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
@@ -281,7 +257,7 @@ public class CRMFragment extends BaseFragment implements View.OnClickListener, C
      *
      */
     private void initWave() {
-        OkHttpUtils.post().url(URL_SALE_STAT).addHeader(ACCESS_TOKEN, mAccessToken)
+        OkHttpUtils.post().url(URL_SALE_STAT).addHeader(ACCESS_TOKEN, accessToken)
                 .build().execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
@@ -339,13 +315,6 @@ public class CRMFragment extends BaseFragment implements View.OnClickListener, C
         });
     }
 
-    /**
-     * 显示下一页
-     */
-    public void showNextPage() {
-        mCrm_ad.setCurrentItem(mCrm_ad.getCurrentItem() + 1);
-        mHandler.sendEmptyMessageDelayed(SHOW_NEXT_PAGE, 3000);
-    }
 
     @Override
     public void onClick(View v) {
@@ -418,49 +387,19 @@ public class CRMFragment extends BaseFragment implements View.OnClickListener, C
     @Override
     public void handleCarouselList(ArrayList<Carousel> carouselList) {
         LogUtil.d("list size is " + carouselList.size());
-        //填充数据
-        mCarouselList = carouselList;
-        CRMAdAdapter crmAdAdapter = new CRMAdAdapter(mCarouselList);
-        mCrm_ad.setAdapter(crmAdAdapter);
-        mCrm_ad.setCurrentItem(mCrm_ad.getAdapter().getCount() / 2);
-        //初始化小圆点
-        initDots(carouselList);
-        //选中小圆点并且设置文字描述
-        changeDescAndDot(0);
+        banner.setAdapter((banner, itemView, model, position) ->
+                Picasso.with(getContext())
+                        .load(((Carousel) model).getMediaUrl())
+                        .placeholder(R.mipmap.ico_default_bannner)
+                        .resize(ScreenUtil.getScreenWidth(getContext()), DensityUtil.dp2px(getContext(), 190))
+                        .into((ImageView) itemView));
+        List<String> desc = new ArrayList<>();
+        for (Carousel carousel : carouselList) {
+            desc.add(carousel.getObjectTitle());
+        }
+        banner.setData(carouselList, desc);
     }
 
-    /**
-     * 初始化小圆点
-     *
-     * @param carouselList
-     */
-    private void initDots(ArrayList<Carousel> carouselList) {
-        mCrmDots.removeAllViews();
-        for (int i = 0; i < carouselList.size(); i++) {
-            View dot = new View(getContext());
-            dot.setBackgroundResource(R.drawable.selector_dot);
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(DensityUtil.dp2px
-                    (getContext(), 5), DensityUtil.dp2px(getContext(), 5));
-            params.leftMargin = i == 0 ? 0 : DensityUtil.dp2px(getContext(), 5);  //
-            // 如果是第0个点，不需要设置leftMargin
-            dot.setLayoutParams(params);        // 设置dot的layout参数
-            mCrmDots.addView(dot);       // 把dot添加到线性布局中
-        }
-    }
-
-    /**
-     * 选中小圆点并且设置文字描述
-     *
-     * @param position
-     */
-    private void changeDescAndDot(int position) {
-        // 显示position位置的文字描述
-        mCrmDesc.setText(mCarouselList.get(position).getObjectTitle());
-        // 把position位置的点设置为selected状态
-        for (int i = 0; i < mCrmDots.getChildCount(); i++) {
-            mCrmDots.getChildAt(i).setSelected(i == position);
-        }
-    }
 
     /**
      * 解决如下问题
@@ -478,21 +417,5 @@ public class CRMFragment extends BaseFragment implements View.OnClickListener, C
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    @Override
-    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-    }
-
-    @Override
-    public void onPageSelected(int position) {
-        LogUtil.d("CRM-position---" + position);
-        changeDescAndDot(position % mCarouselList.size());
-    }
-
-    @Override
-    public void onPageScrollStateChanged(int state) {
-
     }
 }

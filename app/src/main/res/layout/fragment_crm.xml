@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:title="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
     <com.yimiao100.sale.view.TitleView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        title:title_background="@color/colorMain"
-        title:title_text="疫苗圈"
+        app:title_background="@color/colorMain"
+        app:title_text="疫苗圈"
     >
         <ImageView
             android:id="@+id/crm_service"
@@ -22,7 +22,7 @@
 
     <com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout
         android:id="@+id/crm_refresh_layout"
-        title:tr_enable_loadmore="false"
+        app:tr_enable_loadmore="false"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -34,42 +34,16 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical">
-                <RelativeLayout
+                <cn.bingoogolapple.bgabanner.BGABanner
+                    android:id="@+id/crm_banner"
+                    app:banner_pointContainerBackground="@color/trans_black"
+                    app:banner_indicatorGravity="right"
+                    app:banner_pointAutoPlayAble="true"
+                    app:banner_tipTextColor="@android:color/white"
+                    app:banner_tipTextSize="14sp"
+                    android:layout_marginBottom="7dp"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-                    <android.support.v4.view.ViewPager
-                        android:id="@+id/crm_ad"
-                        android:layout_width="match_parent"
-                        android:layout_height="160dp"
-                        android:layout_marginBottom="7dp"/>
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_alignBottom="@id/crm_ad"
-                        android:background="@color/trans_black"
-                        android:gravity="center"
-                        android:padding="6dp">
-                        <TextView
-                            android:id="@+id/crm_tv_desc"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentLeft="true"
-                            android:layout_marginLeft="10dp"
-                            android:layout_weight="1"
-                            android:ellipsize="end"
-                            android:lines="1"
-                            android:textColor="@android:color/white"
-                            android:textSize="16sp"/>
-                        <LinearLayout
-                            android:id="@+id/crm_ll_dots"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentRight="true"
-                            android:layout_centerVertical="true"
-                            android:orientation="horizontal"/>
-                    </LinearLayout>
-                </RelativeLayout>
-
+                    android:layout_height="160dp"/>
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -81,32 +55,32 @@
 
                     <me.itangqi.waveloadingview.WaveLoadingView
                         android:id="@+id/wave_ship"
-                        title:wlv_titleTop="发货"
-                        title:wlv_titleTopSize="12sp"
-                        title:wlv_titleCenterSize="18sp"
-                        title:wlv_shapeType="rectangle"
-                        title:wlv_borderWidth="2dp"
+                        app:wlv_titleTop="发货"
+                        app:wlv_titleTopSize="12sp"
+                        app:wlv_titleCenterSize="18sp"
+                        app:wlv_shapeType="rectangle"
+                        app:wlv_borderWidth="2dp"
                         android:background="@drawable/shape_wave"
-                        title:wlv_waveColor="#504188d2"
-                        title:wlv_waveAmplitude="50"
-                        title:wlv_round_rectangle_x_and_y="20"
-                        title:wlv_round_rectangle="true"
+                        app:wlv_waveColor="#504188d2"
+                        app:wlv_waveAmplitude="50"
+                        app:wlv_round_rectangle_x_and_y="20"
+                        app:wlv_round_rectangle="true"
                         android:layout_width="0dp"
                         android:layout_weight="1"
                         android:layout_marginRight="2dp"
                         android:layout_height="110dp"/>
                     <me.itangqi.waveloadingview.WaveLoadingView
                         android:id="@+id/wave_payment"
-                        title:wlv_titleTop="回款"
-                        title:wlv_titleTopSize="12sp"
-                        title:wlv_titleCenterSize="18sp"
-                        title:wlv_shapeType="rectangle"
-                        title:wlv_borderWidth="2dp"
+                        app:wlv_titleTop="回款"
+                        app:wlv_titleTopSize="12sp"
+                        app:wlv_titleCenterSize="18sp"
+                        app:wlv_shapeType="rectangle"
+                        app:wlv_borderWidth="2dp"
                         android:background="@drawable/shape_wave"
-                        title:wlv_waveColor="#504188d2"
-                        title:wlv_waveAmplitude="50"
-                        title:wlv_round_rectangle_x_and_y="20"
-                        title:wlv_round_rectangle="true"
+                        app:wlv_waveColor="#504188d2"
+                        app:wlv_waveAmplitude="50"
+                        app:wlv_round_rectangle_x_and_y="20"
+                        app:wlv_round_rectangle="true"
                         android:layout_width="0dp"
                         android:layout_weight="1"
                         android:layout_height="110dp"/>

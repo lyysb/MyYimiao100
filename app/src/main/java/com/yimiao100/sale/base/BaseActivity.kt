@@ -9,6 +9,7 @@ import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.support.v4.content.LocalBroadcastManager
 import cn.jpush.android.api.JPushInterface
+import com.blankj.utilcode.util.SPUtils
 import com.meiqia.meiqiasdk.controller.MQController
 import com.uuch.adlibrary.AdConstant
 import com.uuch.adlibrary.AdManager
@@ -77,7 +78,7 @@ open class BaseActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         baseActivity = this
         this.setActivityState(this)
-        accessToken = SharePreferenceUtil.get(this, Constant.ACCESSTOKEN, "") as String
+        accessToken = SPUtils.getInstance().getString(Constant.ACCESSTOKEN)
         // 注册EventBus
         EventBus.getDefault().register(this)
         // 注册美洽即时消息接收广播

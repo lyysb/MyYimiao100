@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.TextView;
 
+import com.blankj.utilcode.util.SPUtils;
 import com.yimiao100.sale.R;
 import com.yimiao100.sale.utils.Constant;
 import com.yimiao100.sale.utils.LogUtil;
@@ -54,7 +55,7 @@ public abstract class BaseFragmentSingleList extends BaseFragment {
 
         ButterKnife.bind(this, mView);
 
-        mAccessToken = (String) SharePreferenceUtil.get(getContext(), Constant.ACCESSTOKEN, "");
+        mAccessToken = SPUtils.getInstance().getString(Constant.ACCESSTOKEN);
 
         initVariate();
 

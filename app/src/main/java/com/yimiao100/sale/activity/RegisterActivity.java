@@ -174,7 +174,7 @@ public class RegisterActivity extends BaseActivity implements CompoundButton
 
             @Override
             public void onError(Call call, Exception e, int id) {
-                e.printStackTrace();
+                e.printStackTrace() ;
                 Util.showTimeOutNotice(currentContext);
                 LogUtil.d("网络请求失败");
                 mRegisterRegister.setEnabled(true);

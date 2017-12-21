@@ -2,6 +2,7 @@ package com.yimiao100.sale.base
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import com.blankj.utilcode.util.SPUtils
 import com.yimiao100.sale.R
 import com.yimiao100.sale.bean.Event
 import com.yimiao100.sale.utils.Constant
@@ -29,7 +30,7 @@ open class BaseFragment: Fragment(){
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        accessToken = SharePreferenceUtil.get(context, Constant.ACCESSTOKEN, "") as String
+        accessToken = SPUtils.getInstance().getString(Constant.ACCESSTOKEN)
         EventBus.getDefault().register(this)
     }
 

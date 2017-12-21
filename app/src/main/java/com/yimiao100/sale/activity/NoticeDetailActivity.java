@@ -15,7 +15,6 @@ import com.yimiao100.sale.bean.ErrorBean;
 import com.yimiao100.sale.bean.NoticeDetailBean;
 import com.yimiao100.sale.bean.NoticedListBean;
 import com.yimiao100.sale.ext.JSON;
-import com.yimiao100.sale.login.*;
 import com.yimiao100.sale.utils.Constant;
 import com.yimiao100.sale.utils.DensityUtil;
 import com.yimiao100.sale.utils.LogUtil;
@@ -135,7 +134,7 @@ public class NoticeDetailActivity extends BaseActivity implements TitleView
                             ToastUtil.showShort(currentContext, "账号异常，请重新登录");
                             ActivityCollector.finishAll();
                             SharePreferenceUtil.clear(currentContext);
-                            com.yimiao100.sale.login.LoginActivity.start(currentContext);
+                            com.yimiao100.sale.ui.login.LoginActivity.start(currentContext);
                         }
                         break;
                     case "failure":

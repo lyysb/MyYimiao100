@@ -10,6 +10,7 @@ import com.umeng.socialize.PlatformConfig;
 import com.umeng.socialize.UMShareAPI;
 import com.uuch.adlibrary.utils.DisplayUtil;
 import com.yimiao100.sale.bean.Application;
+import com.yimiao100.sale.other.HttpLoggingInterceptor;
 import com.yimiao100.sale.utils.BuglyUtils;
 import com.yimiao100.sale.utils.Constant;
 import com.zhy.http.okhttp.OkHttpUtils;
@@ -84,8 +85,11 @@ public class MyApplication extends Application {
      */
     private void initOkHttpUtils() {
         //初始化OKHttp
+        HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
+
+        loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
         OkHttpClient okHttpClient = new OkHttpClient.Builder()
-//                .addInterceptor(new LoggerInterceptor("TAG"))
+                .addInterceptor(loggingInterceptor)
                 .connectTimeout(10000L, TimeUnit.MILLISECONDS)
                 .readTimeout(10000L, TimeUnit.MILLISECONDS)
                 //其他配置

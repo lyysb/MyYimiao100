@@ -34,6 +34,7 @@ ext {
     MPAndroidChart_version = "v3.0.3"
     AndroidTag_version = "1.4"
     PhotoView_version = "1.2.4"
+    BGABanner_version = "2.1.9"
 }
 
 android {
@@ -111,6 +112,9 @@ repositories {
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
 
+    // BGABanner-广告轮播
+    implementation "cn.bingoogolapple:bga-banner:$BGABanner_version@aar"
+
     // RxBinding
     compile "com.jakewharton.rxbinding2:rxbinding:$rxbinding_version"
     compile "com.jakewharton.rxbinding2:rxbinding-support-v4:$rxbinding_version"
@@ -131,7 +135,7 @@ dependencies {
     compile "com.squareup.okhttp3:logging-interceptor:$okhttp_interceptor_version"
     compile "com.squareup.retrofit2:retrofit:$retrofit_version"
     compile "com.squareup.retrofit2:converter-gson:$retrofit_version"
-    compile "com.squareup.retrofit2:adapter-rxjava:$retrofit_version"
+    compile "com.squareup.retrofit2:adapter-rxjava2:$retrofit_version"
 
     // Android工具集合
     compile "com.blankj:utilcode:$util_code_version"

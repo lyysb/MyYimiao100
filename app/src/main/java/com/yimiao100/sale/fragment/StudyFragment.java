@@ -14,6 +14,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.blankj.utilcode.util.SPUtils;
 import com.lcodecore.tkrefreshlayout.RefreshListenerAdapter;
 import com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout;
 import com.lcodecore.tkrefreshlayout.footer.LoadingView;
@@ -89,7 +90,6 @@ public class StudyFragment extends BaseFragment implements View.OnClickListener,
     private final String PAGE_SIZE = "pageSize";
 
 
-    private String mAccessToken;
     private int mPage;
     private int mTotalPage;
 
@@ -104,7 +104,6 @@ public class StudyFragment extends BaseFragment implements View.OnClickListener,
         View view = inflater.inflate(R.layout.fragment_study, null);
         ButterKnife.bind(this, view);
 
-        mAccessToken = (String) SharePreferenceUtil.get(getContext(), Constant.ACCESSTOKEN, "");
 
         initView();
 
@@ -248,7 +247,7 @@ public class StudyFragment extends BaseFragment implements View.OnClickListener,
      * @return
      */
     private RequestCall getBuild(int page) {
-        return OkHttpUtils.post().url(URL_OPEN_CLASS_LIST).addHeader(ACCESS_TOKEN, mAccessToken)
+        return OkHttpUtils.post().url(URL_OPEN_CLASS_LIST).addHeader(ACCESS_TOKEN, accessToken)
                 .addParams(PAGE, page + "").addParams(PAGE_SIZE, "10").build();
     }
 

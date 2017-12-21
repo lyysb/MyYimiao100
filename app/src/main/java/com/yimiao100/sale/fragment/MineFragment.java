@@ -12,7 +12,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,14 +31,12 @@ import com.yimiao100.sale.base.ActivityCollector;
 import com.yimiao100.sale.base.BaseFragment;
 import com.yimiao100.sale.bean.*;
 import com.yimiao100.sale.ext.JSON;
-import com.yimiao100.sale.login.*;
 import com.yimiao100.sale.service.AliasService;
 import com.yimiao100.sale.utils.*;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
 import java.io.File;
-import java.lang.reflect.Field;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import okhttp3.Call;
@@ -75,7 +72,6 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
     private LinearLayout mLlStudy;
     private LinearLayout mLlMore;
     private TextView mIntegral;
-    private String mAccessToken;
 
     private AlertDialog mDialog;
     private Uri mUri;
@@ -91,7 +87,6 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle
             savedInstanceState) {
         mView = View.inflate(getContext(), R.layout.fragment_mine, null);
-        mAccessToken = (String) SharePreferenceUtil.get(getContext(), Constant.ACCESSTOKEN, "");
 
         initView();
 
@@ -242,7 +237,7 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
         }
         mBankCount.setText(promotionCount + "");
         // 联网刷新数据
-        DataUtil.updateUserAccount(mAccessToken, mRefreshLayout, new DataUtil.onSuccessListener() {
+        DataUtil.updateUserAccount(accessToken, mRefreshLayout, new DataUtil.onSuccessListener() {
             @Override
             public void echoData(UserAccountBean userAccount) {
                 int promotionCount = 0;
@@ -526,11 +521,12 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
     private void signOut() {
         mLl_mine_exit.setEnabled(true);
         // step1:清空本地数据
+        SPUtils.getInstance().clear();
         SharePreferenceUtil.clear(getContext());
         // step2:启动服务，设置别名
         getActivity().startService(new Intent(getActivity(), AliasService.class));
         // step3:跳回到登录界面
-        com.yimiao100.sale.login.LoginActivity.start(getContext());
+        com.yimiao100.sale.ui.login.LoginActivity.start(getContext());
         // step4: 清空Bugly数据
         BuglyUtils.removeUserData(getContext());
         getActivity().finish();

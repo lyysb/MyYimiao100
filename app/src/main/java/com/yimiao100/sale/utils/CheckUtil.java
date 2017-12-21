@@ -3,6 +3,7 @@ package com.yimiao100.sale.utils;
 import android.app.Activity;
 import android.app.ProgressDialog;
 
+import com.blankj.utilcode.util.SPUtils;
 import com.yimiao100.sale.bean.CorporateBean;
 import com.yimiao100.sale.bean.ErrorBean;
 import com.yimiao100.sale.bean.PersonalBean;
@@ -37,7 +38,7 @@ public class CheckUtil {
      * 检查个人账户状态
      */
     public static void checkPersonal(final Activity activity, final PersonalPassedListener personalPassedListener) {
-        String mAccessToken = (String) SharePreferenceUtil.get(activity, Constant.ACCESSTOKEN, "");
+        String mAccessToken = SPUtils.getInstance().getString(Constant.ACCESSTOKEN);
         final ProgressDialog loadingProgress = ProgressDialogUtil.getLoadingProgress(activity);
         loadingProgress.show();
         OkHttpUtils.post().url(CHECK_USER_ACCOUNT).addHeader(ACCESS_TOKEN, mAccessToken).build().execute(new StringCallback() {
@@ -94,7 +95,7 @@ public class CheckUtil {
      * 检查对公账户状态
      */
     public static void checkCorporate(final Activity activity, final CorporatePassedListener corporatePassedListener) {
-        String mAccessToken = (String) SharePreferenceUtil.get(activity, Constant.ACCESSTOKEN, "");
+        String mAccessToken = SPUtils.getInstance().getString(Constant.ACCESSTOKEN);
         final ProgressDialog loadingProgress = ProgressDialogUtil.getLoadingProgress(activity);
         loadingProgress.show();
         OkHttpUtils.post().url(CHECK_USER_ACCOUNT).addHeader(ACCESS_TOKEN, mAccessToken).build().execute(new StringCallback() {

@@ -16,6 +16,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.blankj.utilcode.util.LogUtils;
+import com.squareup.picasso.Picasso;
 import com.yimiao100.sale.R;
 import com.yimiao100.sale.activity.InformationDetailActivity;
 import com.yimiao100.sale.activity.LiveActivity;
@@ -33,6 +35,7 @@ import com.yimiao100.sale.utils.CarouselUtil;
 import com.yimiao100.sale.utils.Constant;
 import com.yimiao100.sale.utils.DensityUtil;
 import com.yimiao100.sale.utils.LogUtil;
+import com.yimiao100.sale.utils.ScreenUtil;
 import com.yimiao100.sale.utils.Util;
 import com.yimiao100.sale.view.PullToRefreshListView;
 import com.zhy.http.okhttp.OkHttpUtils;
@@ -43,6 +46,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.bingoogolapple.bgabanner.BGABanner;
 import okhttp3.Call;
 
 /**
@@ -51,24 +55,8 @@ import okhttp3.Call;
  */
 public class InformationFragment extends BaseFragment implements SwipeRefreshLayout
         .OnRefreshListener, AdapterView.OnItemClickListener, PullToRefreshListView
-        .OnRefreshingListener,InformationAdAdapter
-        .OnAdClickListener, ViewPager.OnPageChangeListener, View.OnClickListener, CarouselUtil.HandleCarouselListener {
-    /**
-     * 显示下一页
-     */
-    public static final int SHOW_NEXT_PAGE = 0;
+        .OnRefreshingListener, View.OnClickListener, CarouselUtil.HandleCarouselListener {
 
-    private Handler mHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            switch (msg.what) {
-                case SHOW_NEXT_PAGE:
-                    showNextPage();
-                    break;
-            }
-        }
-    };
 
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private View mView;
@@ -85,12 +73,8 @@ public class InformationFragment extends BaseFragment implements SwipeRefreshLay
     private int mPage;
     private int mTotalPage;
 
-    private ViewPager mInformationAd;
-    private TextView mDesc;
-    private LinearLayout mDots;
-    private InformationAdAdapter mAdapter;
     private View mHeadView;
-    private ArrayList<Carousel> mCarouselList;
+    private BGABanner banner;
 
 
     @Nullable
@@ -105,21 +89,19 @@ public class InformationFragment extends BaseFragment implements SwipeRefreshLay
         return mView;
     }
 
+
     @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-        if (isVisibleToUser) {
-            // 如果可见，滑动切换
-            mHandler.sendEmptyMessageDelayed(SHOW_NEXT_PAGE, 3000);
-        } else {
-            mHandler.removeMessages(SHOW_NEXT_PAGE);
-        }
+    public void onResume() {
+        super.onResume();
+        LogUtils.d("onResume");
+        banner.startAutoPlay();
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
-        mHandler.removeMessages(SHOW_NEXT_PAGE);
+    public void onPause() {
+        super.onPause();
+        LogUtils.d("onPause");
+        banner.stopAutoPlay();
     }
 
     private void initView() {
@@ -130,7 +112,6 @@ public class InformationFragment extends BaseFragment implements SwipeRefreshLay
         initSearchView();
 
         initLiveView();
-
 
         initRefreshLayout();
 
@@ -150,10 +131,7 @@ public class InformationFragment extends BaseFragment implements SwipeRefreshLay
      * 广告轮播图
      */
     private void initAdView() {
-        mInformationAd = (ViewPager) mHeadView.findViewById(R.id.information_ad);
-        mInformationAd.addOnPageChangeListener(this);
-        mDesc = (TextView) mHeadView.findViewById(R.id.tv_desc);
-        mDots = (LinearLayout) mHeadView.findViewById(R.id.ll_dots);
+        banner = (BGABanner) mHeadView.findViewById(R.id.information_banner);
     }
 
     /**
@@ -211,6 +189,7 @@ public class InformationFragment extends BaseFragment implements SwipeRefreshLay
 
     /**
      * 处理轮播图
+     *
      * @param carouselList
      */
     @Override
@@ -220,23 +199,28 @@ public class InformationFragment extends BaseFragment implements SwipeRefreshLay
                 && carouselList.size() == 1) {
             //不做任何操作，意味着是假数据。
         } else {
-            mDots.removeAllViews();
+            banner.setAdapter((banner, itemView, model, position) ->
+                    Picasso.with(getContext())
+                            .load(((Carousel) model).getMediaUrl())
+                            .placeholder(R.mipmap.ico_default_bannner)
+                            .resize(ScreenUtil.getScreenWidth(getContext()), DensityUtil.dp2px(getContext(), 190))
+                            .into((ImageView) itemView));
+            List<String> desc = new ArrayList<>();
+            for (Carousel carousel : carouselList) {
+                desc.add(carousel.getObjectTitle());
+            }
+            banner.setData(carouselList, desc);
             if (mLv_information.getHeaderViewsCount() == 0) {
                 mLv_information.addHeaderView(mHeadView);
             }
 
-            mCarouselList = carouselList;
-            mAdapter = new InformationAdAdapter(mCarouselList);
-            mInformationAd.setAdapter(mAdapter);
-            //显示当前选中的界面
-            mInformationAd.setCurrentItem(mAdapter.getCount() / 2);
-            mAdapter.setOnAdClickListener(InformationFragment.this);
-            //初始化小圆点
-            initDots();
-            //选中小圆点并且设置文字描述
-            changeDescAndDot(0);
+            banner.setDelegate((banner, itemView, model, position) -> {
+                int newsId = ((Carousel) model).getObjectId();
+                Intent intent = new Intent(getContext(), InformationDetailActivity.class);
+                intent.putExtra("newsId", newsId);
+                startActivity(intent);
+            });
         }
-
 
 
     }
@@ -279,53 +263,6 @@ public class InformationFragment extends BaseFragment implements SwipeRefreshLay
         });
     }
 
-    /**
-     * 轮播图-初始化轮播图小圆点
-     */
-    private void initDots() {
-        if (mCarouselList == null) {
-            return;
-        }
-        if (mCarouselList.size() == 0) {
-            return;
-        }
-        for (int i = 0; i < mCarouselList.size(); i++) {
-            View dot = new View(InformationFragment.this.getContext());
-
-            dot.setBackgroundResource(R.drawable.selector_dot);
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(DensityUtil.dp2px
-                    (getContext(), 5), DensityUtil.dp2px(getContext(), 5));
-            params.leftMargin = i == 0 ? 0 : DensityUtil.dp2px(getContext(), 5);  //
-            // 如果是第0个点，不需要设置leftMargin
-            dot.setLayoutParams(params);        // 设置dot的layout参数
-            mDots.addView(dot);       // 把dot添加到线性布局中
-        }
-    }
-
-    /**
-     * 轮播图-根据位置设置小圆点
-     *
-     * @param position
-     */
-    private void changeDescAndDot(int position) {
-        // 显示position位置的文字描述
-        mDesc.setText(mCarouselList.get(position).getObjectTitle());
-        // 把position位置的点设置为selected状态
-        for (int i = 0; i < mDots.getChildCount(); i++) {
-            mDots.getChildAt(i).setSelected(i == position);
-        }
-    }
-
-    /**
-     * 轮播图-显示下一页
-     */
-    public void showNextPage() {
-        if (mInformationAd != null) {
-            mInformationAd.setCurrentItem(mInformationAd.getCurrentItem() + 1);
-            mHandler.sendEmptyMessageDelayed(SHOW_NEXT_PAGE, 5000);
-        }
-    }
-
     @Override
     public void onRefresh() {
         //刷新资讯
@@ -351,14 +288,8 @@ public class InformationFragment extends BaseFragment implements SwipeRefreshLay
 
             @Override
             public void onResponse(String response, int id) {
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        // 停止刷新
-                        mSwipeRefreshLayout.setRefreshing(false);
-                    }
-                }, 1000);
                 LogUtil.d("刷新资讯：" + response);
+                mSwipeRefreshLayout.setRefreshing(false);
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":
@@ -400,27 +331,9 @@ public class InformationFragment extends BaseFragment implements SwipeRefreshLay
         mPagedList.get(position).setReaded(true);
         mInformationAdapter.notifyDataSetChanged();
 
-
         Intent intent = new Intent(getContext(), InformationDetailActivity.class);
         intent.putExtra("newsId", news_id);
         startActivity(intent);
-    }
-
-    /**
-     * 点击广告轮播图
-     *
-     * @param position 处理过的position
-     */
-    @Override
-    public void onAdClick(int position) {
-        if (mCarouselList != null && mCarouselList.size() != 0) {
-            Carousel carousel = mCarouselList.get(position);
-            int newsId = carousel.getObjectId();
-            String imageUrl = carousel.getMediaUrl();
-            Intent intent = new Intent(getContext(), InformationDetailActivity.class);
-            intent.putExtra("newsId", newsId);
-            startActivity(intent);
-        }
     }
 
 
@@ -476,26 +389,11 @@ public class InformationFragment extends BaseFragment implements SwipeRefreshLay
         }
     }
 
-    @Override
-    public void onPageSelected(int position) {
-        LogUtil.d("Information-position---" + position);
-        changeDescAndDot(position % mCarouselList.size());
-    }
-
     private RequestCall getBuild(int page) {
         return OkHttpUtils.post().url(URL_NEWS_LIST).addParams(PAGE, page + "")
                 .addParams(PAGE_SIZE, "10").build();
     }
 
-    @Override
-    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-    }
-
-    @Override
-    public void onPageScrollStateChanged(int state) {
-
-    }
 
     /**
      * 解决如下问题

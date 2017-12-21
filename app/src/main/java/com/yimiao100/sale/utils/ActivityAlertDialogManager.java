@@ -6,7 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 
 import com.yimiao100.sale.base.ActivityCollector;
-import com.yimiao100.sale.login.LoginActivity;
+import com.yimiao100.sale.ui.login.LoginActivity;
 
 /**
  * Activity单一AlertDialog管理工具类---专用于重新登录

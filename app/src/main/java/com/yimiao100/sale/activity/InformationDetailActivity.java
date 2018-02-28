@@ -712,8 +712,8 @@ public class InformationDetailActivity extends BaseActivity implements View.OnCl
         mCommentPopupWindow = new CommentPopupWindow(this);
 
         WindowManager.LayoutParams lp = getWindow().getAttributes();
-        lp.alpha = 0.6f;
-        getWindow().setAttributes(lp);//设置PopupWindow弹出后背景颜色改变为半透明的黑色
+        lp.alpha = 1f;
+        getWindow().setAttributes(lp);//设置PopupWindow弹出后背景颜色改变为半透明的黑色--弃用
         /**
          * 第一个参数指定PopupWindow的锚点view，即依附在哪个view上。
          * 第二个参数指定起始点为parent的右下角，

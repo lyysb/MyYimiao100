@@ -83,6 +83,7 @@ class VendorArrayActivity : BaseActivityWithSpinner(), RegionSearchView.onSearch
 
     override fun onRefresh(position: Int) {
         when (type) {
+            // 对账刷新
             RECONCILIATION -> {
                 when (position) {
                     0 -> {
@@ -105,6 +106,7 @@ class VendorArrayActivity : BaseActivityWithSpinner(), RegionSearchView.onSearch
                     }
                 }
             }
+            // 业务订单刷新
             ORDER -> {
                 when (position) {
                     0 -> {
@@ -242,11 +244,11 @@ class VendorArrayActivity : BaseActivityWithSpinner(), RegionSearchView.onSearch
                 when (this.position) {
                     0, 1 -> {
                         // 进入疫苗的业务订单列表
-                        startActivity<BusinessVaccineActivity>("userAccountType" to userAccountType)
+                        BusinessVaccineActivity.start(this, list[position].objectId.toString(), userAccountType)
                     }
                     2, 3 -> {
                         // 进入保险的业务订单列表
-                        startActivity<BusinessInsuranceActivity>("userAccountType" to userAccountType)
+                        BusinessInsuranceActivity.start(this, list[position].objectId.toString(), userAccountType)
                     }
                 }
             }

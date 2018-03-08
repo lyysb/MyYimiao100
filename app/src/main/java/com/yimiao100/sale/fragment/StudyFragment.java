@@ -7,19 +7,24 @@ import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPUtils;
 import com.lcodecore.tkrefreshlayout.RefreshListenerAdapter;
 import com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout;
 import com.lcodecore.tkrefreshlayout.footer.LoadingView;
 import com.lcodecore.tkrefreshlayout.header.progresslayout.ProgressLayout;
+import com.squareup.picasso.Picasso;
 import com.yimiao100.sale.R;
+import com.yimiao100.sale.activity.JumpActivity;
 import com.yimiao100.sale.activity.MineAchievementActivity;
 import com.yimiao100.sale.activity.VideoDetailActivity;
 import com.yimiao100.sale.activity.VideoListActivity;
@@ -35,7 +40,9 @@ import com.yimiao100.sale.bean.OpenClassResult;
 import com.yimiao100.sale.ext.JSON;
 import com.yimiao100.sale.utils.CarouselUtil;
 import com.yimiao100.sale.utils.Constant;
+import com.yimiao100.sale.utils.DensityUtil;
 import com.yimiao100.sale.utils.LogUtil;
+import com.yimiao100.sale.utils.ScreenUtil;
 import com.yimiao100.sale.utils.SharePreferenceUtil;
 import com.yimiao100.sale.utils.ToastUtil;
 import com.yimiao100.sale.utils.Util;
@@ -48,42 +55,23 @@ import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import cn.bingoogolapple.bgabanner.BGABanner;
 import okhttp3.Call;
 
 /**
  * 学习主页
  * Created by 亿苗通 on 2016/8/1.
  */
-public class StudyFragment extends BaseFragment implements View.OnClickListener, AdapterView
-        .OnItemClickListener, ViewPager.OnPageChangeListener, StudyAdAdapter.OnClickListener,
-        PullToRefreshListView.OnRefreshingListener, CarouselUtil.HandleCarouselListener {
+public class StudyFragment extends BaseFragment implements View.OnClickListener, AdapterView.OnItemClickListener, PullToRefreshListView.OnRefreshingListener, CarouselUtil.HandleCarouselListener {
 
     @BindView(R.id.study_class_list)
     ListView mStudyClassListView;
     @BindView(R.id.study_refresh_layout)
     TwinklingRefreshLayout mRefreshLayout;
-    private ViewPager mStudyViewPager;
-    private TextView mStudyClassName;
-    private TextView mStudyAttribute;
-    /**
-     * 显示下一页
-     */
-    public static final int SHOW_NEXT_PAGE = 0;
-    private Handler mHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            switch (msg.what) {
-                case SHOW_NEXT_PAGE:
-                    showNextPage();
-                    break;
-            }
-        }
-    };
-
     private final String URL_OPEN_CLASS_LIST = Constant.BASE_URL + "/api/course/open_list";
     private final String ACCESS_TOKEN = "X-Authorization-Token";
     private final String PAGE = "page";
@@ -95,7 +83,7 @@ public class StudyFragment extends BaseFragment implements View.OnClickListener,
 
     private ArrayList<OpenClass> mOpenClasses;
     private PublicClassAdapter mOpenClassAdapter;
-    private ArrayList<Carousel> mCarouselList;
+    private BGABanner banner;
 
     @Nullable
     @Override
@@ -103,7 +91,6 @@ public class StudyFragment extends BaseFragment implements View.OnClickListener,
             savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_study, null);
         ButterKnife.bind(this, view);
-
 
         initView();
 
@@ -114,18 +101,14 @@ public class StudyFragment extends BaseFragment implements View.OnClickListener,
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
-        if (isVisibleToUser) {
-            // 如果可见，滑动切换
-            mHandler.sendEmptyMessageDelayed(SHOW_NEXT_PAGE, 3000);
-        } else {
-            mHandler.removeMessages(SHOW_NEXT_PAGE);
+        if (banner != null) {
+            if (isVisibleToUser) {
+                // 如果可见，滑动切换
+                banner.startAutoPlay();
+            } else {
+                banner.stopAutoPlay();
+            }
         }
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        mHandler.removeMessages(SHOW_NEXT_PAGE);
     }
 
     /**
@@ -169,10 +152,7 @@ public class StudyFragment extends BaseFragment implements View.OnClickListener,
     private void initListView() {
         //初始化头部布局
         View headerView = View.inflate(getContext(), R.layout.head_study, null);
-        mStudyViewPager = (ViewPager) headerView.findViewById(R.id.study_view_pager);
-        mStudyViewPager.addOnPageChangeListener(this);
-        mStudyClassName = (TextView) headerView.findViewById(R.id.study_class_name);
-        mStudyAttribute = (TextView) headerView.findViewById(R.id.study_attribute);
+        banner = (BGABanner) headerView.findViewById(R.id.study_banner);
         //推广考试
         headerView.findViewById(R.id.study_exam).setOnClickListener(this);
         //学习赚积分
@@ -192,12 +172,24 @@ public class StudyFragment extends BaseFragment implements View.OnClickListener,
 
     @Override
     public void handleCarouselList(@NotNull ArrayList<Carousel> carouselList) {
-        mCarouselList = carouselList;
-        StudyAdAdapter adAdapter = new StudyAdAdapter(mCarouselList);
-        mStudyViewPager.setAdapter(adAdapter);
-        adAdapter.setOnClickListener(StudyFragment.this);
-        //显示当前选中的界面
-        mStudyViewPager.setCurrentItem(adAdapter.getCount() / 2);
+        banner.setAdapter((banner, itemView, model, position) ->
+                Picasso.with(getContext())
+                        .load(((Carousel) model).getMediaUrl())
+                        .placeholder(R.mipmap.ico_default_bannner)
+                        .resize(ScreenUtil.getScreenWidth(getContext()), DensityUtil.dp2px(getContext(), 190))
+                        .into((ImageView) itemView));
+        List<String> desc = new ArrayList<>();
+        for (Carousel carousel : carouselList) {
+            desc.add(carousel.getObjectTitle());
+        }
+        banner.setData(carouselList, desc);
+        banner.setDelegate((banner, itemView, model, position) -> {
+            //进入视频详情页
+            Intent intent = new Intent(getContext(), VideoDetailActivity.class);
+            int courseId = carouselList.get(position).getObjectId();
+            intent.putExtra("courseId", courseId);
+            startActivity(intent);
+        });
     }
 
     /**
@@ -251,13 +243,6 @@ public class StudyFragment extends BaseFragment implements View.OnClickListener,
                 .addParams(PAGE, page + "").addParams(PAGE_SIZE, "10").build();
     }
 
-    /**
-     * 显示下一页ViewPager
-     */
-    public void showNextPage() {
-        mStudyViewPager.setCurrentItem(mStudyViewPager.getCurrentItem() + 1);
-        mHandler.sendEmptyMessageDelayed(SHOW_NEXT_PAGE, 3000);
-    }
 
     @Override
     public void onClick(View v) {
@@ -297,39 +282,7 @@ public class StudyFragment extends BaseFragment implements View.OnClickListener,
         startActivity(intent);
     }
 
-    @Override
-    public void onPageSelected(int position) {
-        //根据当前选择界面显示文字信息
-        position = position % mCarouselList.size();
-        mStudyClassName.setText(mCarouselList.get(position).getObjectTitle());
-        switch (mCarouselList.get(position).getIntegralType()) {
-            case "increase":
-                mStudyAttribute.setText("+" + mCarouselList.get(position).getIntegralValue() +
-                        "积分");
-                break;
-            case "decrease":
-                mStudyAttribute.setText("-" + mCarouselList.get(position).getIntegralValue() +
-                        "积分");
-                break;
-            case "free":
-                mStudyAttribute.setText("免费");
-                break;
-        }
-    }
 
-    /**
-     * 点击轮播图跳转到详情页
-     *
-     * @param position
-     */
-    @Override
-    public void onClick(int position) {
-        //进入视频详情页
-        Intent intent = new Intent(getContext(), VideoDetailActivity.class);
-        int courseId = mCarouselList.get(position).getObjectId();
-        intent.putExtra("courseId", courseId);
-        startActivity(intent);
-    }
 
     public void onLoadMore() {
 
@@ -365,17 +318,6 @@ public class StudyFragment extends BaseFragment implements View.OnClickListener,
         });
 
     }
-
-    @Override
-    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-    }
-
-    @Override
-    public void onPageScrollStateChanged(int state) {
-
-    }
-
 
     /**
      * 解决如下问题

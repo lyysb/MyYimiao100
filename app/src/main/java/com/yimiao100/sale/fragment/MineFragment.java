@@ -176,7 +176,7 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
                 android.R.color.holo_orange_light, android.R.color.holo_red_light);
         mRefreshLayout.setHeaderView(header);
         mRefreshLayout.setFloatRefresh(true);
-        mRefreshLayout.setOverScrollRefreshShow(false);
+        mRefreshLayout.setEnableOverScroll(false);
         mRefreshLayout.setOnRefreshListener(new RefreshListenerAdapter() {
             @Override
             public void onRefresh(TwinklingRefreshLayout refreshLayout) {

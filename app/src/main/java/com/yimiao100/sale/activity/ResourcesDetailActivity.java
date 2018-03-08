@@ -1,5 +1,6 @@
 package com.yimiao100.sale.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Html;
@@ -84,6 +85,12 @@ public class ResourcesDetailActivity extends BaseActivity implements TitleView
     private OptionsPickerView mPromotionType;
     private ArrayList<String> mPromotionTypeItems;
     private String mUserAccountType;
+
+    public static void start(Context context, int resourceID) {
+        Intent intent = new Intent(context, ResourcesDetailActivity.class);
+        intent.putExtra("resourceID", resourceID);
+        context.startActivity(intent);
+    }
 
 
     @Override

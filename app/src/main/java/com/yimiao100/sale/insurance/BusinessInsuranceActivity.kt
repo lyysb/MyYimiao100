@@ -1,5 +1,6 @@
 package com.yimiao100.sale.insurance
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -17,6 +18,7 @@ import com.zhy.http.okhttp.OkHttpUtils
 import com.zhy.http.okhttp.callback.StringCallback
 import com.zhy.http.okhttp.request.RequestCall
 import okhttp3.Call
+import org.jetbrains.anko.startActivity
 import java.lang.Exception
 
 class BusinessInsuranceActivity: BaseActivitySingleList() {
@@ -24,9 +26,21 @@ class BusinessInsuranceActivity: BaseActivitySingleList() {
     lateinit var userAccountType: String
     lateinit var list: ArrayList<Business>
     lateinit var adapter: BusinessAdapter
+    lateinit var vendorId: String
 
     val USER_ACCOUNT_TYPE = "userAccountType"
+    val VENDOR_ID = "vendorId"
     val URL_BUSINESS: String = "${Constant.BASE_URL}/api/insure/user_order_list"
+
+    companion object {
+
+        @JvmStatic
+        fun start(context: Context, vendorId: String, userAccountType: String){
+            context.startActivity<BusinessInsuranceActivity>(
+                    "userAccountType" to userAccountType,
+                    "vendorId" to vendorId)
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,6 +55,7 @@ class BusinessInsuranceActivity: BaseActivitySingleList() {
     override fun initVariate() {
         super.initVariate()
         userAccountType = intent.getStringExtra("userAccountType")
+        vendorId = intent.getStringExtra("vendorId")
     }
 
     override fun setTitle(titleView: TitleView) {
@@ -144,6 +159,7 @@ class BusinessInsuranceActivity: BaseActivitySingleList() {
         return OkHttpUtils.post().url(URL_BUSINESS).addHeader(ACCESS_TOKEN, accessToken)
                 .addParams(PAGE, page.toString()).addParams(PAGE_SIZE, pageSize)
                 .addParams(USER_ACCOUNT_TYPE, userAccountType)
+                .addParams(VENDOR_ID, vendorId)
                 .build()
     }
 }

@@ -91,17 +91,16 @@ public class InformationFragment extends BaseFragment implements SwipeRefreshLay
 
 
     @Override
-    public void onResume() {
-        super.onResume();
-        LogUtils.d("onResume");
-        banner.startAutoPlay();
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        LogUtils.d("onPause");
-        banner.stopAutoPlay();
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (banner != null) {
+            if (isVisibleToUser) {
+                // 如果可见，滑动切换
+                banner.startAutoPlay();
+            } else {
+                banner.stopAutoPlay();
+            }
+        }
     }
 
     private void initView() {

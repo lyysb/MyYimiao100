@@ -4,6 +4,9 @@ import android.util.DisplayMetrics;
 
 import com.blankj.utilcode.util.Utils;
 import com.facebook.drawee.backends.pipeline.Fresco;
+import com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout;
+import com.lcodecore.tkrefreshlayout.footer.LoadingView;
+import com.lcodecore.tkrefreshlayout.header.progresslayout.ProgressLayout;
 import com.meiqia.meiqiasdk.util.MQConfig;
 import com.umeng.socialize.Config;
 import com.umeng.socialize.PlatformConfig;
@@ -46,8 +49,20 @@ public class MyApplication extends Application {
         Fresco.initialize(this);
         initDisplayOpinion();
         initUtilCode();
+        initRefreshLayout();
     }
 
+    /**
+     * TwinklingRefreshLayout
+     */
+    private void initRefreshLayout() {
+        TwinklingRefreshLayout.setDefaultHeader(ProgressLayout.class.getName());
+        TwinklingRefreshLayout.setDefaultFooter(LoadingView.class.getName());
+    }
+
+    /**
+     * AndroidUtilCode初始化
+     */
     private void initUtilCode() {
         Utils.init(this);
     }

@@ -5,11 +5,15 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.view.ViewPager;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
+import com.blankj.utilcode.util.LogUtils;
+import com.squareup.picasso.Picasso;
 import com.yimiao100.sale.R;
 import com.yimiao100.sale.adapter.listview.ResourcesAdapter;
 import com.yimiao100.sale.adapter.peger.ResourceAdAdapter;
@@ -23,6 +27,7 @@ import com.yimiao100.sale.utils.CarouselUtil;
 import com.yimiao100.sale.utils.Constant;
 import com.yimiao100.sale.utils.DensityUtil;
 import com.yimiao100.sale.utils.LogUtil;
+import com.yimiao100.sale.utils.ScreenUtil;
 import com.yimiao100.sale.utils.Util;
 import com.yimiao100.sale.view.RegionSearchView;
 import com.yimiao100.sale.view.TitleView;
@@ -34,7 +39,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
+import cn.bingoogolapple.bgabanner.BGABanner;
 import okhttp3.Call;
 
 import static com.yimiao100.sale.ext.JSON.parseObject;
@@ -50,26 +57,9 @@ public class ResourcesActivity extends BaseActivitySingleList implements Carouse
     private final String URL_RESOURCE_LIST = Constant.BASE_URL + "/api/resource/resource_list";
 
     private ArrayList<ResourceListBean> mResourcesList;
-
-    /**
-     * 显示下一页
-     */
-    public static final int SHOW_NEXT_PAGE = 0;
-
-    private Handler mHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            switch (msg.what) {
-                case SHOW_NEXT_PAGE:
-                    showNextPage();
-                    break;
-            }
-        }
-    };
-    private ViewPager mResources_view_pager;
     private ResourcesAdapter mResourcesAdapter;
     private HashMap<String, String> mRegionIDs = new HashMap<>();
+    private BGABanner adBanner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,13 +83,13 @@ public class ResourcesActivity extends BaseActivitySingleList implements Carouse
 
     @Override
     protected void setTitle(TitleView titleView) {
-        titleView.setTitle("资源");
+        titleView.setTitle("疫苗");
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        mHandler.sendEmptyMessageDelayed(SHOW_NEXT_PAGE, 3000);
+        adBanner.startAutoPlay();
     }
 
     /**
@@ -109,17 +99,16 @@ public class ResourcesActivity extends BaseActivitySingleList implements Carouse
         View view = View.inflate(this, R.layout.head_resources, null);
         mListView.addHeaderView(view, null, false);
         RegionSearchView regionSearchView = (RegionSearchView) view.findViewById(R.id.resource_search);
-        mResources_view_pager = (ViewPager) view.findViewById(R.id.resources_view_pager);
+        adBanner = (BGABanner) view.findViewById(R.id.resource_banner);
         regionSearchView.setOnSearchClickListener(this);
-        //获取轮播图数据
-        CarouselUtil.getCarouselList(this, "vaccine", this);
     }
 
     @Override
     protected void initData() {
         super.initData();
+        //获取轮播图数据
+        CarouselUtil.getCarouselList(this, "vaccine", this);
     }
-
 
     @Override
     public void regionSearch(@NotNull HashMap<String, String> regionIDs) {
@@ -137,7 +126,6 @@ public class ResourcesActivity extends BaseActivitySingleList implements Carouse
     }
 
 
-
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         //获取Item的资源信息，携带resourceId进入资源详情界面
@@ -148,15 +136,6 @@ public class ResourcesActivity extends BaseActivitySingleList implements Carouse
         //进入详情页
         startActivity(intent);
     }
-
-    /**
-     * 自动切换下一页图片
-     */
-    public void showNextPage() {
-        mResources_view_pager.setCurrentItem(mResources_view_pager.getCurrentItem() + 1);
-        mHandler.sendEmptyMessageDelayed(SHOW_NEXT_PAGE, 3000);
-    }
-
 
     @Override
     public void onRefresh() {
@@ -181,7 +160,7 @@ public class ResourcesActivity extends BaseActivitySingleList implements Carouse
                         ResourceResultBean resourceResult = parseObject(response,
                                 ResourceBean.class).getResourceResult();
                         totalPage = resourceResult.getTotalPage();
-                        LogUtil.d("nextPage is " + page + ", totalPage is " + totalPage) ;
+                        LogUtil.d("nextPage is " + page + ", totalPage is " + totalPage);
                         //解析JSON，填充Adapter
                         //获取资源列表
                         mResourcesList = resourceResult.getResourcesList();
@@ -203,7 +182,7 @@ public class ResourcesActivity extends BaseActivitySingleList implements Carouse
     @Override
     protected void onStop() {
         super.onStop();
-        mHandler.removeMessages(SHOW_NEXT_PAGE);
+        adBanner.stopAutoPlay();
     }
 
     @Override
@@ -221,8 +200,8 @@ public class ResourcesActivity extends BaseActivitySingleList implements Carouse
                 ErrorBean errorBean = parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":
-                        page ++;
-                        LogUtil.d("nextPage is " + page + ", totalPage is " + totalPage) ;
+                        page++;
+                        LogUtil.d("nextPage is " + page + ", totalPage is " + totalPage);
                         mResourcesList.addAll(parseObject(response, ResourceBean
                                 .class).getResourceResult().getResourcesList());
                         mResourcesAdapter.notifyDataSetChanged();
@@ -244,24 +223,25 @@ public class ResourcesActivity extends BaseActivitySingleList implements Carouse
      */
     @Override
     public void handleCarouselList(ArrayList<Carousel> carouselList) {
-        mResources_view_pager.setAdapter(new ResourceAdAdapter(carouselList));
-        mResources_view_pager.setCurrentItem(mResources_view_pager.getAdapter().getCount() / 2);
-        mResources_view_pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int
-                    positionOffsetPixels) {
-
+        adBanner.setAdapter((banner, itemView, model, position) ->
+                Picasso.with(getCurrentContext())
+                        .load(((Carousel) model).getMediaUrl())
+                        .placeholder(R.mipmap.ico_default_bannner)
+                        .resize(ScreenUtil.getScreenWidth(getCurrentContext()), DensityUtil.dp2px(getCurrentContext(), 99))
+                        .into((ImageView) itemView));
+        List<String> desc = new ArrayList<>();
+        for (Carousel carousel : carouselList) {
+            desc.add(carousel.getObjectTitle());
+        }
+        adBanner.setData(carouselList, desc);
+        adBanner.setDelegate((banner, itemView, model, position) -> {
+            if (TextUtils.equals(((Carousel) model).getPageJumpUrl(), "")) {
+                LogUtils.d("You Jump, I Jump");
+                JumpActivity.start(getCurrentContext(), ((Carousel) model).getPageJumpUrl());
+            } else {
+                LogUtils.d("Fuck your DD");
             }
-
-            @Override
-            public void onPageSelected(int position) {
-                LogUtil.d("资源position------" + position);
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
+            LogUtils.d(((Carousel) model).getPageJumpUrl());
         });
     }
 }

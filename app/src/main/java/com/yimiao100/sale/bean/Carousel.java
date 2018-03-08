@@ -11,7 +11,16 @@ public class Carousel {
     private String integralType;
     private int integralValue;
     private String mediaUrl;
+    private String pageJumpUrl;
     private int sort;
+
+    public String getPageJumpUrl() {
+        return pageJumpUrl;
+    }
+
+    public void setPageJumpUrl(String pageJumpUrl) {
+        this.pageJumpUrl = pageJumpUrl;
+    }
 
     public int getId() {
         return id;

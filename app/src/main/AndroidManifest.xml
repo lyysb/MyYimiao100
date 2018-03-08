@@ -45,7 +45,7 @@
             android:value="A7qd5sCOV4EhjIuh5IvOadVjkGB5PW2N" />
         <meta-data
             android:name="UMENG_APPKEY"
-            android:value="579ff3aae0f55a0a4a003216"></meta-data>
+            android:value="579ff3aae0f55a0a4a003216" />
 
         <!-- -友盟 -->
         <activity
@@ -75,11 +75,11 @@
             android:name="com.sina.weibo.sdk.component.WeiboSdkBrowser"
             android:configChanges="keyboardHidden|orientation"
             android:exported="false"
-            android:windowSoftInputMode="adjustResize"></activity>
+            android:windowSoftInputMode="adjustResize" />
 
         <service
             android:name="com.sina.weibo.sdk.net.DownloadService"
-            android:exported="false"></service>
+            android:exported="false" />
         <!-- QQ/QZone -->
         <activity
             android:name="com.tencent.tauth.AuthActivity"
@@ -99,7 +99,7 @@
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
         <!-- -友盟 -->
-        <activity android:name=".base.BaseActivity"></activity>
+        <activity android:name=".base.BaseActivity" />
 
         <provider
             android:name="android.support.v4.content.FileProvider"
@@ -134,120 +134,120 @@
         </activity>
         <activity
             android:name=".activity.RegisterActivity"
-            android:theme="@style/TranslucentNavigation"></activity>
+            android:theme="@style/TranslucentNavigation" />
         <activity
             android:name=".activity.MainActivity"
-            android:launchMode="singleTask"></activity>
-        <activity android:name=".activity.PersonalSettingActivity"></activity>
-        <activity android:name=".activity.PersonalNameActivity"></activity>
-        <activity android:name=".activity.PersonalPhoneActivity"></activity>
-        <activity android:name=".activity.ForgetPwdActivity"></activity>
-        <activity android:name=".activity.ForgetPwd2Activity"></activity>
-        <activity android:name=".activity.ChangePwdActivity"></activity>
+            android:launchMode="singleTask" />
+        <activity android:name=".activity.PersonalSettingActivity" />
+        <activity android:name=".activity.PersonalNameActivity" />
+        <activity android:name=".activity.PersonalPhoneActivity" />
+        <activity android:name=".activity.ForgetPwdActivity" />
+        <activity android:name=".activity.ForgetPwd2Activity" />
+        <activity android:name=".activity.ChangePwdActivity" />
         <activity
             android:name=".activity.BindPromotionActivity"
             android:configChanges="orientation|keyboardHidden"
-            android:windowSoftInputMode="adjustUnspecified|stateHidden"></activity>
+            android:windowSoftInputMode="adjustUnspecified|stateHidden" />
         <activity
             android:name=".activity.BindPersonalActivity"
             android:configChanges="orientation|keyboardHidden"
-            android:windowSoftInputMode="adjustUnspecified|stateHidden"></activity>
+            android:windowSoftInputMode="adjustUnspecified|stateHidden" />
         <activity
             android:name=".activity.BindCompanyActivity"
-            android:windowSoftInputMode="adjustPan"></activity>
-        <activity android:name=".activity.PersonalEmailActivity"></activity>
-        <activity android:name=".activity.ChangeFinishedActivity"></activity>
-        <activity android:name=".activity.InformationDetailActivity"></activity>
-        <activity android:name=".activity.SearchActivity"></activity>
-        <activity android:name=".activity.ChangeErrorActivity"></activity>
-        <activity android:name=".activity.PersonalIDCardActivity"></activity>
-        <activity android:name=".activity.NoticeActivity"></activity>
-        <activity android:name=".activity.NoticeDetailActivity"></activity>
+            android:windowSoftInputMode="adjustPan" />
+        <activity android:name=".activity.PersonalEmailActivity" />
+        <activity android:name=".activity.ChangeFinishedActivity" />
+        <activity android:name=".activity.InformationDetailActivity" />
+        <activity android:name=".activity.SearchActivity" />
+        <activity android:name=".activity.ChangeErrorActivity" />
+        <activity android:name=".activity.PersonalIDCardActivity" />
+        <activity android:name=".activity.NoticeActivity" />
+        <activity android:name=".activity.NoticeDetailActivity" />
         <activity
             android:name=".activity.ResourcesActivity"
-            android:launchMode="singleTask"></activity>
-        <activity android:name=".activity.CollectionActivity"></activity>
+            android:launchMode="singleTask" />
+        <activity android:name=".activity.CollectionActivity" />
         <activity
             android:name=".activity.ResourcesDetailActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
-            android:screenOrientation="portrait"></activity>
-        <activity android:name=".activity.ResourcesPromotionActivity"></activity>
+            android:screenOrientation="portrait" />
+        <activity android:name=".activity.ResourcesPromotionActivity" />
         <activity
             android:name=".activity.OrderActivity"
-            android:launchMode="singleTask"></activity>
-        <activity android:name=".activity.OrderErrorActivity"></activity>
-        <activity android:name=".activity.OrderAlreadyActivity"></activity>
-        <activity android:name=".activity.ReconciliationActivity"></activity>
+            android:launchMode="singleTask" />
+        <activity android:name=".activity.OrderErrorActivity" />
+        <activity android:name=".activity.OrderAlreadyActivity" />
+        <activity android:name=".activity.ReconciliationActivity" />
         <activity
             android:name=".activity.ReconciliationDetailActivity"
-            android:launchMode="singleTask"></activity>
-        <activity android:name=".activity.CustomerActivity"></activity>
-        <activity android:name=".activity.CustomerDetailActivity"></activity>
-        <activity android:name=".activity.ClinicActivity"></activity>
-        <activity android:name=".activity.ClinicDetailActivity"></activity>
-        <activity android:name=".activity.OrderLaterActivity"></activity>
+            android:launchMode="singleTask" />
+        <activity android:name=".activity.CustomerActivity" />
+        <activity android:name=".activity.CustomerDetailActivity" />
+        <activity android:name=".activity.ClinicActivity" />
+        <activity android:name=".activity.ClinicDetailActivity" />
+        <activity android:name=".activity.OrderLaterActivity" />
         <activity
             android:name=".activity.RichesActivity"
-            android:launchMode="singleTask"></activity>
-        <activity android:name=".activity.RichesDetailActivity"></activity>
-        <activity android:name=".activity.AssuranceActivity"></activity>
-        <activity android:name=".activity.AssuranceCompanyActivity"></activity>
-        <activity android:name=".activity.PromotionActivity"></activity>
-        <activity android:name=".activity.PromotionDetailActivity"></activity>
-        <activity android:name=".activity.ShipActivity"></activity>
-        <activity android:name=".activity.PaymentActivity"></activity>
-        <activity android:name=".activity.OrderCompletedActivity"></activity>
-        <activity android:name=".activity.OrderSubmitActivity"></activity>
-        <activity android:name=".activity.WareHouseActivity"></activity>
-        <activity android:name=".activity.WholesaleActivity"></activity>
-        <activity android:name=".activity.ExamActivity"></activity>
-        <activity android:name=".activity.VideoListActivity"></activity>
-        <activity android:name=".activity.WinScoreActivity"></activity>
-        <activity android:name=".activity.MineAchievementActivity"></activity>
-        <activity android:name=".activity.StudyTaskActivity"></activity>
+            android:launchMode="singleTask" />
+        <activity android:name=".activity.RichesDetailActivity" />
+        <activity android:name=".activity.AssuranceActivity" />
+        <activity android:name=".activity.AssuranceCompanyActivity" />
+        <activity android:name=".activity.PromotionActivity" />
+        <activity android:name=".activity.PromotionDetailActivity" />
+        <activity android:name=".activity.ShipActivity" />
+        <activity android:name=".activity.PaymentActivity" />
+        <activity android:name=".activity.OrderCompletedActivity" />
+        <activity android:name=".activity.OrderSubmitActivity" />
+        <activity android:name=".activity.WareHouseActivity" />
+        <activity android:name=".activity.WholesaleActivity" />
+        <activity android:name=".activity.ExamActivity" />
+        <activity android:name=".activity.VideoListActivity" />
+        <activity android:name=".activity.WinScoreActivity" />
+        <activity android:name=".activity.MineAchievementActivity" />
+        <activity android:name=".activity.StudyTaskActivity" />
         <activity
             android:name=".activity.VideoDetailActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
-            android:screenOrientation="portrait"></activity>
-        <activity android:name=".activity.StudyCollectionActivity"></activity>
-        <activity android:name=".activity.ScoreDetailActivity"></activity>
-        <activity android:name=".activity.PersonalAddressActivity"></activity>
+            android:screenOrientation="portrait" />
+        <activity android:name=".activity.StudyCollectionActivity" />
+        <activity android:name=".activity.ScoreDetailActivity" />
+        <activity android:name=".activity.PersonalAddressActivity" />
         <activity
             android:name=".activity.PersonalAddressAddActivity"
             android:configChanges="orientation|keyboardHidden"
-            android:windowSoftInputMode="adjustUnspecified|stateHidden"></activity>
-        <activity android:name=".activity.IntegralActivity"></activity>
-        <activity android:name=".activity.IntegralDetailActivity"></activity>
-        <activity android:name=".activity.VendorListActivity"></activity>
-        <activity android:name=".activity.PromotionCashConfirmActivity"></activity>
-        <activity android:name=".activity.PromotionCashConfirmPersonalActivity"></activity>
-        <activity android:name=".activity.ScholarshipActivity"></activity>
-        <activity android:name=".ScholarshipCashConfirmActivity"></activity>
-        <activity android:name=".activity.ScholarshipCashConfirmPersonalActivity"></activity>
-        <activity android:name=".activity.RichItemDetailActivity"></activity>
-        <activity android:name=".activity.IntegralShopActivity"></activity>
+            android:windowSoftInputMode="adjustUnspecified|stateHidden" />
+        <activity android:name=".activity.IntegralActivity" />
+        <activity android:name=".activity.IntegralDetailActivity" />
+        <activity android:name=".activity.VendorListActivity" />
+        <activity android:name=".activity.PromotionCashConfirmActivity" />
+        <activity android:name=".activity.PromotionCashConfirmPersonalActivity" />
+        <activity android:name=".activity.ScholarshipActivity" />
+        <activity android:name=".ScholarshipCashConfirmActivity" />
+        <activity android:name=".activity.ScholarshipCashConfirmPersonalActivity" />
+        <activity android:name=".activity.RichItemDetailActivity" />
+        <activity android:name=".activity.IntegralShopActivity" />
         <activity
             android:name=".activity.IntegralGoodsListActivity"
-            android:launchMode="singleTask"></activity>
-        <activity android:name=".activity.CommodityDetailActivity"></activity>
-        <activity android:name=".activity.CommodityConfirmActivity"></activity>
-        <activity android:name=".activity.ExchangeNoteActivity"></activity>
+            android:launchMode="singleTask" />
+        <activity android:name=".activity.CommodityDetailActivity" />
+        <activity android:name=".activity.CommodityConfirmActivity" />
+        <activity android:name=".activity.ExchangeNoteActivity" />
         <activity
             android:name=".activity.PromotionExperienceActivity"
             android:configChanges="orientation|keyboardHidden"
-            android:windowSoftInputMode="adjustUnspecified|stateHidden"></activity>
-        <activity android:name=".activity.GuideActivity"></activity>
+            android:windowSoftInputMode="adjustUnspecified|stateHidden" />
+        <activity android:name=".activity.GuideActivity" />
         <activity
             android:name=".activity.LiveActivity"
             android:configChanges="orientation|screenSize"
-            android:hardwareAccelerated="true"></activity>
-        <activity android:name=".activity.ShowWebImageActivity"></activity>
+            android:hardwareAccelerated="true" />
+        <activity android:name=".activity.ShowWebImageActivity" />
         <activity
             android:name=".wxapi.WXPayEntryActivity"
             android:exported="true"
-            android:launchMode="singleTop"></activity>
-        <activity android:name=".activity.SubmitPromotionActivity"></activity>
-        <activity android:name=".activity.OrderUnpaidActivity"></activity>
+            android:launchMode="singleTop" />
+        <activity android:name=".activity.SubmitPromotionActivity" />
+        <activity android:name=".activity.OrderUnpaidActivity" />
         <activity
             android:name="me.iwf.photopicker.PhotoPickerActivity"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
@@ -269,92 +269,94 @@
         <service
             android:name=".service.AliasService"
             android:enabled="true"
-            android:exported="true"></service>
+            android:exported="true" />
         <service
             android:name=".service.DataVersionService"
             android:enabled="true"
-            android:exported="true"></service>
+            android:exported="true" />
 
-        <activity android:name=".base.BaseActivityWithTab"></activity>
-        <activity android:name=".activity.PromotionExperienceListActivity"></activity>
-        <activity android:name=".activity.UploadActivity"></activity>
-        <activity android:name=".base.BaseActivityListWithText"></activity>
+        <activity android:name=".base.BaseActivityWithTab" />
+        <activity android:name=".activity.PromotionExperienceListActivity" />
+        <activity android:name=".activity.UploadActivity" />
+        <activity android:name=".base.BaseActivityListWithText" />
         <activity
             android:name=".activity.ReportActivity"
-            android:launchMode="singleTask"></activity>
+            android:launchMode="singleTask" />
         <activity
             android:name=".activity.ReportDetailActivity"
             android:configChanges="orientation|keyboardHidden"
-            android:windowSoftInputMode="adjustUnspecified|stateHidden"></activity>
+            android:windowSoftInputMode="adjustUnspecified|stateHidden" />
         <activity
             android:name=".activity.AuthorizationActivity"
-            android:launchMode="singleTask"></activity>
+            android:launchMode="singleTask" />
         <activity
             android:name=".activity.AuthorizationDetailActivity"
             android:configChanges="orientation|keyboardHidden"
-            android:windowSoftInputMode="adjustUnspecified|stateHidden"></activity>
-        <activity android:name=".activity.VaccineQueryActivity"></activity>
-        <activity android:name=".activity.VendorOrderOnlineActivity"></activity>
+            android:windowSoftInputMode="adjustUnspecified|stateHidden" />
+        <activity android:name=".activity.VaccineQueryActivity" />
+        <activity android:name=".activity.VendorOrderOnlineActivity" />
         <activity
             android:name=".activity.OrderOnlineActivity"
             android:configChanges="orientation|keyboardHidden"
-            android:windowSoftInputMode="adjustUnspecified|stateHidden"></activity>
+            android:windowSoftInputMode="adjustUnspecified|stateHidden" />
         <activity
             android:name=".activity.OrderOnlineNoteActivity"
-            android:launchMode="singleTask"></activity>
+            android:launchMode="singleTask" />
         <activity
             android:name=".activity.ActivityActivity"
-            android:launchMode="singleTop"></activity>
+            android:launchMode="singleTop" />
         <activity
             android:name=".insurance.InsuranceActivity"
-            android:launchMode="singleTask"></activity>
-        <activity android:name=".insurance.InsuranceDetailActivity"></activity>
-        <activity android:name=".insurance.InsurancePromotionActivity"></activity>
+            android:launchMode="singleTask" />
+        <activity android:name=".insurance.InsuranceDetailActivity" />
+        <activity android:name=".insurance.InsurancePromotionActivity" />
         <activity
             android:name=".vaccine.RichVaccineActivity"
-            android:launchMode="singleTask"></activity>
-        <activity android:name=".activity.VendorArrayActivity"></activity>
-        <activity android:name=".base.BaseActivityWithSpinner"></activity>
-        <activity android:name=".insurance.SubmitInsuranceActivity"></activity>
+            android:launchMode="singleTask" />
+        <activity android:name=".activity.VendorArrayActivity" />
+        <activity android:name=".base.BaseActivityWithSpinner" />
+        <activity android:name=".insurance.SubmitInsuranceActivity" />
         <activity
             android:name=".insurance.BusinessInsuranceActivity"
-            android:launchMode="singleTask"></activity>
+            android:launchMode="singleTask" />
         <activity
             android:name=".vaccine.BusinessVaccineActivity"
-            android:launchMode="singleTask"></activity>
-        <activity android:name=".insurance.BusinessUnpaidActivity"></activity>
-        <activity android:name=".insurance.BusinessSubmitActivity"></activity>
-        <activity android:name=".insurance.BusinessAlreadyActivity"></activity>
-        <activity android:name=".insurance.BusinessCompletedActivity"></activity>
-        <activity android:name=".insurance.BusinessErrorActivity"></activity>
-        <activity android:name=".insurance.ReconciliationInsuranceActivity"></activity>
-        <activity android:name=".insurance.ReconInsDetailActivity"></activity>
-        <activity android:name=".insurance.VenInsActivity"></activity>
-        <activity android:name=".insurance.AssInsActivity"></activity>
-        <activity android:name=".insurance.AssInsCorActivity"></activity>
-        <activity android:name=".insurance.PromoInsActivity"></activity>
-        <activity android:name=".insurance.PromoInsDetailActivity"></activity>
-        <activity android:name=".insurance.PromoInsPerConfirmActivity"></activity>
-        <activity android:name=".insurance.PromoInsCorConfirmActivity"></activity>
-        <activity android:name=".insurance.ReconCusActivity"></activity>
-        <activity android:name=".activity.RichDetailActivity"></activity>
-        <activity android:name=".insurance.BusinessEndActivity"></activity>
-        <activity android:name=".activity.OrderEndActivity"></activity>
+            android:launchMode="singleTask" />
+        <activity android:name=".insurance.BusinessUnpaidActivity" />
+        <activity android:name=".insurance.BusinessSubmitActivity" />
+        <activity android:name=".insurance.BusinessAlreadyActivity" />
+        <activity android:name=".insurance.BusinessCompletedActivity" />
+        <activity android:name=".insurance.BusinessErrorActivity" />
+        <activity android:name=".insurance.ReconciliationInsuranceActivity" />
+        <activity android:name=".insurance.ReconInsDetailActivity" />
+        <activity android:name=".insurance.VenInsActivity" />
+        <activity android:name=".insurance.AssInsActivity" />
+        <activity android:name=".insurance.AssInsCorActivity" />
+        <activity android:name=".insurance.PromoInsActivity" />
+        <activity android:name=".insurance.PromoInsDetailActivity" />
+        <activity android:name=".insurance.PromoInsPerConfirmActivity" />
+        <activity android:name=".insurance.PromoInsCorConfirmActivity" />
+        <activity android:name=".insurance.ReconCusActivity" />
+        <activity android:name=".activity.RichDetailActivity" />
+        <activity android:name=".insurance.BusinessEndActivity" />
+        <activity android:name=".activity.OrderEndActivity" />
         <activity
             android:name=".insurance.RichInsActivity"
-            android:launchMode="singleTask"></activity>
-        <activity android:name=".vaccine.OverdueActivity"></activity>
-        <activity android:name=".vaccine.OverdueCorporateActivity"></activity>
-        <activity android:name=".base.BaseActivitySingleList2"></activity>
-        <activity android:name=".vaccine.OverduePersonalActivity"></activity>
-        <activity android:name=".vaccine.OverdueCorConfirmActivity"></activity>
-        <activity android:name=".vaccine.OverduePerConfirmActivity"></activity>
+            android:launchMode="singleTask" />
+        <activity android:name=".vaccine.OverdueActivity" />
+        <activity android:name=".vaccine.OverdueCorporateActivity" />
+        <activity android:name=".base.BaseActivitySingleList2" />
+        <activity android:name=".vaccine.OverduePersonalActivity" />
+        <activity android:name=".vaccine.OverdueCorConfirmActivity" />
+        <activity android:name=".vaccine.OverduePerConfirmActivity" />
         <activity
             android:name=".ui.login.LoginActivity"
             android:launchMode="singleInstance"
-            android:theme="@style/TranslucentNavigation"></activity>
-        <activity android:name=".mvpbase.BaseActivity"></activity>
-        <activity android:name=".ui.register.RegisterActivity"></activity>
+            android:theme="@style/TranslucentNavigation" />
+        <activity android:name=".mvpbase.BaseActivity" />
+        <activity android:name=".ui.register.RegisterActivity" />
+        <activity android:name=".activity.JumpActivity" />
+        <activity android:name=".ui.resource.ResourceActivity"></activity>
     </application>
 
 </manifest>

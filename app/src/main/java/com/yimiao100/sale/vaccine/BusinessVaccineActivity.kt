@@ -1,25 +1,24 @@
 package com.yimiao100.sale.vaccine
 
+import android.content.Context
 import android.content.Intent
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.AdapterView
 import com.yimiao100.sale.activity.*
-import com.yimiao100.sale.adapter.listview.BusinessAdapter
 import com.yimiao100.sale.adapter.listview.OrderAdapter
 import com.yimiao100.sale.base.BaseActivitySingleList
 import com.yimiao100.sale.bean.*
 import com.yimiao100.sale.ext.JSON
 import com.yimiao100.sale.utils.Constant
 import com.yimiao100.sale.utils.LogUtil
-import com.yimiao100.sale.utils.ToastUtil
 import com.yimiao100.sale.utils.Util
 import com.yimiao100.sale.view.TitleView
 import com.zhy.http.okhttp.OkHttpUtils
 import com.zhy.http.okhttp.callback.StringCallback
 import com.zhy.http.okhttp.request.RequestCall
 import okhttp3.Call
+import org.jetbrains.anko.startActivity
 import java.lang.Exception
 
 class BusinessVaccineActivity: BaseActivitySingleList() {
@@ -28,9 +27,21 @@ class BusinessVaccineActivity: BaseActivitySingleList() {
     lateinit var userAccountType: String
     lateinit var list: ArrayList<ResourceListBean>
     lateinit var adapter: OrderAdapter
+    lateinit var vendorId: String
 
     val USER_ACCOUNT_TYPE = "userAccountType"
+    val VENDOR_ID = "vendorId"
     val URL_BUSINESS = "${Constant.BASE_URL}/api/order/user_order_list"
+
+    companion object {
+
+        @JvmStatic
+        fun start(context: Context, vendorId: String, userAccountType: String){
+            context.startActivity<BusinessVaccineActivity>(
+                    "userAccountType" to userAccountType,
+                    "vendorId" to vendorId)
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,6 +55,7 @@ class BusinessVaccineActivity: BaseActivitySingleList() {
     override fun initVariate() {
         super.initVariate()
         userAccountType = intent.getStringExtra("userAccountType")
+        vendorId = intent.getStringExtra("vendorId")
     }
 
     override fun setTitle(titleView: TitleView) {
@@ -146,6 +158,7 @@ class BusinessVaccineActivity: BaseActivitySingleList() {
         return OkHttpUtils.post().url(URL_BUSINESS).addHeader(ACCESS_TOKEN, accessToken)
                 .addParams(PAGE, page.toString()).addParams(PAGE_SIZE, pageSize)
                 .addParams(USER_ACCOUNT_TYPE, userAccountType)
+                .addParams(VENDOR_ID, vendorId)
                 .build()
     }
 }

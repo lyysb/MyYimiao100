@@ -1,44 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
-    <RelativeLayout
+    <cn.bingoogolapple.bgabanner.BGABanner
+        android:id="@+id/study_banner"
+        app:banner_pointContainerBackground="@color/trans_black"
+        app:banner_indicatorGravity="right"
+        app:banner_pointAutoPlayAble="true"
+        app:banner_tipTextColor="@android:color/white"
+        app:banner_tipTextSize="14sp"
         android:layout_width="match_parent"
-        android:layout_height="190dp">
-        <android.support.v4.view.ViewPager
-            android:id="@+id/study_view_pager"
-            android:layout_width="match_parent"
-            android:layout_height="190dp"/>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:background="#80000000">
-            <TextView
-                android:id="@+id/study_class_name"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginLeft="12dp"
-                android:layout_weight="1"
-                android:textColor="@android:color/white"
-                android:textSize="14sp"/>
-            <TextView
-                android:id="@+id/study_attribute"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginRight="12dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginBottom="5dp"
-                android:background="@drawable/shape_input_login"
-                android:padding="4dp"
-                android:textColor="@android:color/white"
-                android:textSize="14sp"/>
-        </LinearLayout>
-    </RelativeLayout>
+        android:layout_height="190dp"/>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

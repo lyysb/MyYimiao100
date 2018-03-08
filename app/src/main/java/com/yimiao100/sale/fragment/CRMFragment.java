@@ -8,6 +8,7 @@ import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,6 +36,7 @@ import com.yimiao100.sale.bean.WaveBean;
 import com.yimiao100.sale.bean.WaveStat;
 import com.yimiao100.sale.ext.JSON;
 import com.yimiao100.sale.insurance.InsuranceActivity;
+import com.yimiao100.sale.ui.resource.ResourceActivity;
 import com.yimiao100.sale.utils.CarouselUtil;
 import com.yimiao100.sale.utils.Constant;
 import com.yimiao100.sale.utils.DensityUtil;
@@ -101,17 +103,16 @@ public class CRMFragment extends BaseFragment implements View.OnClickListener, C
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        LogUtils.d("onResume");
-        banner.startAutoPlay();
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        LogUtils.d("onPause");
-        banner.stopAutoPlay();
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (banner != null) {
+            if (isVisibleToUser) {
+                // 如果可见，滑动切换
+                banner.startAutoPlay();
+            } else {
+                banner.stopAutoPlay();
+            }
+        }
     }
 
 
@@ -132,7 +133,7 @@ public class CRMFragment extends BaseFragment implements View.OnClickListener, C
                 android.R.color.holo_orange_light, android.R.color.holo_red_light);
         mRefreshLayout.setHeaderView(header);
         mRefreshLayout.setFloatRefresh(true);
-        mRefreshLayout.setOverScrollRefreshShow(false);
+        mRefreshLayout.setEnableOverScroll(false);
         mRefreshLayout.setOnRefreshListener(new RefreshListenerAdapter() {
 
             @Override
@@ -337,7 +338,8 @@ public class CRMFragment extends BaseFragment implements View.OnClickListener, C
                 break;
             case R.id.crm_resources:
                 //跳转到资源列表
-                startActivity(new Intent(getContext(), ResourcesActivity.class));
+//                startActivity(new Intent(getContext(), ResourcesActivity.class));
+                ResourceActivity.start(getActivity());
                 break;
             case R.id.crm_insurance:
                 // 跳转到保险列表
@@ -391,13 +393,24 @@ public class CRMFragment extends BaseFragment implements View.OnClickListener, C
                 Picasso.with(getContext())
                         .load(((Carousel) model).getMediaUrl())
                         .placeholder(R.mipmap.ico_default_bannner)
-                        .resize(ScreenUtil.getScreenWidth(getContext()), DensityUtil.dp2px(getContext(), 190))
+                        .resize(ScreenUtil.getScreenWidth(getContext()), DensityUtil.dp2px(getContext(), 160))
                         .into((ImageView) itemView));
         List<String> desc = new ArrayList<>();
         for (Carousel carousel : carouselList) {
             desc.add(carousel.getObjectTitle());
         }
         banner.setData(carouselList, desc);
+        banner.setDelegate((banner, itemView, model, position) -> {
+            LogUtils.d(((Carousel) model).getPageJumpUrl());
+            if (((Carousel) model).getPageJumpUrl() == null) {
+                return;
+            }
+            if (TextUtils.equals(((Carousel) model).getPageJumpUrl(), "")) {
+                return;
+            }
+            JumpActivity.start(getContext(), ((Carousel) model).getPageJumpUrl());
+            LogUtils.d(((Carousel) model).getPageJumpUrl());
+        });
     }
 
 

@@ -6,13 +6,15 @@ import android.widget.LinearLayout
 import com.yimiao100.sale.R
 import com.yimiao100.sale.base.BaseActivity
 import com.yimiao100.sale.view.Html5WebView
+import com.yimiao100.sale.view.TitleView
 import org.jetbrains.anko.find
 
 /**
  * 活动界面
  */
-class ActivityActivity : BaseActivity() {
+class ActivityActivity : BaseActivity(), TitleView.TitleBarOnClickListener {
 
+    lateinit var title: TitleView
     lateinit var mLayout: LinearLayout
     lateinit var mWebView: Html5WebView
     lateinit var pageJumpUrl: String
@@ -37,8 +39,9 @@ class ActivityActivity : BaseActivity() {
     }
 
 
-
     private fun initView() {
+        title = find(R.id.activity_title)
+        title.setOnTitleBarClick(this)
         mLayout = find(R.id.activity_web_layout)
         val params = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams
                 .MATCH_PARENT)
@@ -64,6 +67,12 @@ class ActivityActivity : BaseActivity() {
 //        }
 //        return super.onKeyDown(keyCode, event)
 //    }
+    override fun leftOnClick() {
+        finish()
+    }
+
+    override fun rightOnClick() {
+    }
 
     override fun onDestroy() {
         super.onDestroy()

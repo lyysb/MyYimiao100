@@ -2,8 +2,10 @@ package com.yimiao100.sale.activity;
 
 import android.Manifest;
 import android.app.ProgressDialog;
+import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -11,9 +13,12 @@ import android.os.Environment;
 import android.os.Handler;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
+import android.text.TextUtils;
 import android.widget.ImageView;
 
+import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPUtils;
+import com.blankj.utilcode.util.TimeUtils;
 import com.yimiao100.sale.R;
 import com.yimiao100.sale.base.ActivityCollector;
 import com.yimiao100.sale.base.BaseActivity;
@@ -24,6 +29,7 @@ import com.yimiao100.sale.utils.AppUtil;
 import com.yimiao100.sale.utils.Constant;
 import com.yimiao100.sale.utils.LogUtil;
 import com.yimiao100.sale.utils.SharePreferenceUtil;
+import com.yimiao100.sale.utils.TimeUtil;
 import com.yimiao100.sale.utils.ToastUtil;
 import com.yimiao100.sale.utils.Util;
 import com.zhy.http.okhttp.OkHttpUtils;
@@ -31,6 +37,7 @@ import com.zhy.http.okhttp.callback.FileCallBack;
 import com.zhy.http.okhttp.callback.StringCallback;
 
 import java.io.File;
+import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
@@ -66,6 +73,57 @@ public class SplashActivity extends BaseActivity implements EasyPermissions.Perm
 
         // 检查权限
         checkPermissions();
+
+        // updateIcon-存在各种问题，不启用
+//        updateIcon();
+    }
+
+    private void updateIcon() {
+        // 获取当前的ComponentName
+        ComponentName nowCN = getComponentName();
+        LogUtils.e("当前的ComponentName：" + nowCN.getClassName());
+        // 实例化活动的ComponentName
+        ComponentName bbsCN = new ComponentName(getCurrentContext(), "com.yimiao100.sale.325bbs");
+        LogUtils.e(bbsCN.getClassName());
+        // 实例化默认的ComponentName
+        ComponentName defaultCN = new ComponentName(getCurrentContext(), "com.yimiao100.sale.default");
+        LogUtils.e(defaultCN.getClassName());
+        PackageManager pm = getApplicationContext().getPackageManager();
+
+        String nowTime = TimeUtil.timeStamp2Date(System.currentTimeMillis() + "", "mm");
+        int nowMinute = Integer.valueOf(nowTime);
+        LogUtils.d("nowMinute is " + nowMinute);
+        if (nowMinute % 10 < 5) {
+            LogUtils.e("替换成BBS");
+            if (TextUtils.equals(nowCN.getClassName(), bbsCN.getClassName())) {
+                return;
+            }
+            // 必须先禁止当前的
+            disableComponent(pm, nowCN);
+            disableComponent(pm, defaultCN);
+            enableComponent(pm, bbsCN);
+        } else {
+            if (TextUtils.equals(nowCN.getClassName(), defaultCN.getClassName())) {
+                return;
+            }
+            LogUtils.e("替换成默认");
+            disableComponent(pm, nowCN);
+            disableComponent(pm, bbsCN);
+            enableComponent(pm, defaultCN);
+        }
+
+    }
+
+    private void enableComponent(PackageManager pm, ComponentName componentName) {
+        pm.setComponentEnabledSetting(componentName,
+                PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
+                PackageManager.DONT_KILL_APP);
+    }
+
+    private void disableComponent(PackageManager pm, ComponentName componentName) {
+        pm.setComponentEnabledSetting(componentName,
+                PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
+                PackageManager.DONT_KILL_APP);
     }
 
     private void doNext() {

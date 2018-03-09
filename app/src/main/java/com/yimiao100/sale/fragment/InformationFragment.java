@@ -31,6 +31,7 @@ import com.yimiao100.sale.bean.InformationBean;
 import com.yimiao100.sale.bean.PagedListBean;
 import com.yimiao100.sale.bean.PagedResultBean;
 import com.yimiao100.sale.ext.JSON;
+import com.yimiao100.sale.glide.ImageLoad;
 import com.yimiao100.sale.utils.CarouselUtil;
 import com.yimiao100.sale.utils.Constant;
 import com.yimiao100.sale.utils.DensityUtil;
@@ -199,11 +200,7 @@ public class InformationFragment extends BaseFragment implements SwipeRefreshLay
             //不做任何操作，意味着是假数据。
         } else {
             banner.setAdapter((banner, itemView, model, position) ->
-                    Picasso.with(getContext())
-                            .load(((Carousel) model).getMediaUrl())
-                            .placeholder(R.mipmap.ico_default_bannner)
-                            .resize(ScreenUtil.getScreenWidth(getContext()), DensityUtil.dp2px(getContext(), 190))
-                            .into((ImageView) itemView));
+                    ImageLoad.loadAd(getContext(), ((Carousel) model).getMediaUrl(), 190, (ImageView) itemView));
             List<String> desc = new ArrayList<>();
             for (Carousel carousel : carouselList) {
                 desc.add(carousel.getObjectTitle());

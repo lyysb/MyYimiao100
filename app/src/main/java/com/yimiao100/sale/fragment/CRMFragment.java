@@ -19,9 +19,14 @@ import android.widget.TextView;
 
 import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPUtils;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.annotation.GlideModule;
 import com.lcodecore.tkrefreshlayout.RefreshListenerAdapter;
 import com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout;
 import com.lcodecore.tkrefreshlayout.header.progresslayout.ProgressLayout;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.MemoryPolicy;
+import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 import com.yimiao100.sale.R;
 import com.yimiao100.sale.activity.*;
@@ -35,6 +40,8 @@ import com.yimiao100.sale.bean.TipsBean;
 import com.yimiao100.sale.bean.WaveBean;
 import com.yimiao100.sale.bean.WaveStat;
 import com.yimiao100.sale.ext.JSON;
+import com.yimiao100.sale.glide.GlideApp;
+import com.yimiao100.sale.glide.ImageLoad;
 import com.yimiao100.sale.insurance.InsuranceActivity;
 import com.yimiao100.sale.ui.resource.ResourceActivity;
 import com.yimiao100.sale.utils.CarouselUtil;
@@ -390,14 +397,11 @@ public class CRMFragment extends BaseFragment implements View.OnClickListener, C
     public void handleCarouselList(ArrayList<Carousel> carouselList) {
         LogUtil.d("list size is " + carouselList.size());
         banner.setAdapter((banner, itemView, model, position) ->
-                Picasso.with(getContext())
-                        .load(((Carousel) model).getMediaUrl())
-                        .placeholder(R.mipmap.ico_default_bannner)
-                        .resize(ScreenUtil.getScreenWidth(getContext()), DensityUtil.dp2px(getContext(), 160))
-                        .into((ImageView) itemView));
+                ImageLoad.loadAd(getContext(), ((Carousel) model).getMediaUrl(), 160, (ImageView) itemView));
         List<String> desc = new ArrayList<>();
         for (Carousel carousel : carouselList) {
             desc.add(carousel.getObjectTitle());
+            LogUtils.d("picUrl is: " + carousel.getMediaUrl());
         }
         banner.setData(carouselList, desc);
         banner.setDelegate((banner, itemView, model, position) -> {
@@ -408,7 +412,7 @@ public class CRMFragment extends BaseFragment implements View.OnClickListener, C
             if (TextUtils.equals(((Carousel) model).getPageJumpUrl(), "")) {
                 return;
             }
-            JumpActivity.start(getContext(), ((Carousel) model).getPageJumpUrl());
+            JumpActivity.start(getContext(), ((Carousel) model).getObjectTitle(), ((Carousel) model).getPageJumpUrl());
             LogUtils.d(((Carousel) model).getPageJumpUrl());
         });
     }

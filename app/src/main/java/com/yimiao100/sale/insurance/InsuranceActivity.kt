@@ -20,6 +20,7 @@ import com.yimiao100.sale.adapter.peger.ResourceAdAdapter
 import com.yimiao100.sale.base.BaseActivitySingleList
 import com.yimiao100.sale.bean.*
 import com.yimiao100.sale.ext.JSON
+import com.yimiao100.sale.glide.ImageLoad
 import com.yimiao100.sale.utils.*
 import com.yimiao100.sale.view.RegionSearchView
 import com.yimiao100.sale.view.TitleView
@@ -168,11 +169,7 @@ class InsuranceActivity : BaseActivitySingleList(), RegionSearchView.onSearchCli
 
     override fun handleCarouselList(carouselList: ArrayList<Carousel>) {
         adBanner.setAdapter { banner, itemView, model, position ->
-            Picasso.with(currentContext)
-                    .load((model as Carousel).mediaUrl)
-                    .placeholder(R.mipmap.ico_default_bannner)
-                    .resize(ScreenUtil.getScreenWidth(currentContext), DensityUtil.dp2px(currentContext, 99f))
-                    .into(itemView as ImageView)
+            ImageLoad.loadAd(this, (model as Carousel).mediaUrl, 99, itemView as ImageView)
         }
         val desc = java.util.ArrayList<String>()
 //        for (carousel in carouselList) {
@@ -188,7 +185,7 @@ class InsuranceActivity : BaseActivitySingleList(), RegionSearchView.onSearchCli
             if (TextUtils.equals(model.pageJumpUrl, "")) {
                 return@setDelegate
             }
-            JumpActivity.start(this, model.pageJumpUrl)
+            JumpActivity.start(this, model.objectTitle, model.pageJumpUrl)
             LogUtils.d(model.pageJumpUrl)
         }
     }

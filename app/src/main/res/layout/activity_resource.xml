@@ -23,45 +23,12 @@
             android:id="@+id/resource_empty"
             layout="@layout/empty_view"/>
 
-        <RelativeLayout
+        <com.yimiao100.sale.view.SelectAllView
+            android:visibility="gone"
             android:id="@+id/resource_bottom"
             android:layout_alignParentBottom="true"
-            android:background="@android:color/white"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <CheckBox
-                android:text="全选"
-                android:textSize="10sp"
-                android:textColor="@color/color999"
-                android:paddingLeft="4dp"
-                android:layout_marginLeft="12dp"
-                android:layout_centerVertical="true"
-                android:button="@drawable/selector_pay_way"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-            <Button
-                android:id="@+id/resource_confirm"
-                android:text="确定竞标"
-                android:textSize="12sp"
-                android:textColor="@android:color/white"
-                android:background="@drawable/selector_button2"
-                android:layout_alignParentRight="true"
-                android:layout_width="112dp"
-                android:layout_height="44dp" />
-
-            <TextView
-                android:text="已选择：0个"
-                android:textSize="10sp"
-                android:textColor="@color/color333"
-                android:layout_marginRight="12dp"
-                android:layout_centerVertical="true"
-                android:layout_toLeftOf="@id/resource_confirm"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-        </RelativeLayout>
+            android:layout_height="wrap_content"/>
 
         <com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout
             android:id="@+id/resource_refresh"

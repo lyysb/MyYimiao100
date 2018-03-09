@@ -38,6 +38,7 @@ import com.yimiao100.sale.bean.OpenClass;
 import com.yimiao100.sale.bean.OpenClassBean;
 import com.yimiao100.sale.bean.OpenClassResult;
 import com.yimiao100.sale.ext.JSON;
+import com.yimiao100.sale.glide.ImageLoad;
 import com.yimiao100.sale.utils.CarouselUtil;
 import com.yimiao100.sale.utils.Constant;
 import com.yimiao100.sale.utils.DensityUtil;
@@ -173,11 +174,7 @@ public class StudyFragment extends BaseFragment implements View.OnClickListener,
     @Override
     public void handleCarouselList(@NotNull ArrayList<Carousel> carouselList) {
         banner.setAdapter((banner, itemView, model, position) ->
-                Picasso.with(getContext())
-                        .load(((Carousel) model).getMediaUrl())
-                        .placeholder(R.mipmap.ico_default_bannner)
-                        .resize(ScreenUtil.getScreenWidth(getContext()), DensityUtil.dp2px(getContext(), 190))
-                        .into((ImageView) itemView));
+                ImageLoad.loadAd(getContext(), ((Carousel) model).getMediaUrl(), 190, (ImageView) itemView));
         List<String> desc = new ArrayList<>();
         for (Carousel carousel : carouselList) {
             desc.add(carousel.getObjectTitle());

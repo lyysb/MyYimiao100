@@ -22,6 +22,7 @@ import com.yimiao100.sale.adapter.listview.ResourcesAdapter;
 import com.yimiao100.sale.bean.Carousel;
 import com.yimiao100.sale.bean.ResourceListBean;
 import com.yimiao100.sale.bean.ResourceResultBean;
+import com.yimiao100.sale.glide.ImageLoad;
 import com.yimiao100.sale.mvpbase.BaseActivity;
 import com.yimiao100.sale.mvpbase.CreatePresenter;
 import com.yimiao100.sale.utils.DensityUtil;
@@ -138,11 +139,7 @@ public class ResourceActivity extends BaseActivity<ResourceContract.View, Resour
     @Override
     public void initAdSuccess(ArrayList<Carousel> carouselList) {
         adBanner.setAdapter((banner, itemView, model, position) ->
-                Picasso.with(this)
-                        .load(((Carousel) model).getMediaUrl())
-                        .placeholder(R.mipmap.ico_default_bannner)
-                        .resize(ScreenUtil.getScreenWidth(this), DensityUtil.dp2px(this, 99))
-                        .into((ImageView) itemView));
+                ImageLoad.loadAd(this, ((Carousel) model).getMediaUrl(), 99, (ImageView) itemView));
         List<String> desc = new ArrayList<>();
         for (Carousel carousel : carouselList) {
             desc.add(carousel.getObjectTitle());
@@ -156,7 +153,7 @@ public class ResourceActivity extends BaseActivity<ResourceContract.View, Resour
             if (TextUtils.equals(((Carousel) model).getPageJumpUrl(), "")) {
                 return;
             }
-            JumpActivity.start(this, ((Carousel) model).getPageJumpUrl());
+            JumpActivity.start(this,((Carousel) model).getObjectTitle(), ((Carousel) model).getPageJumpUrl());
             LogUtils.d(((Carousel) model).getPageJumpUrl());
         });
     }

@@ -140,7 +140,8 @@ open class BaseActivity : AppCompatActivity() {
         adInfo.activityImg = activity.imageUrl
         advList.add(adInfo)
         val adManager = AdManager(this, advList)
-        adManager.setOverScreen(true)
+        adManager
+                .setOverScreen(true)
                 .setPageTransformer(DepthPageTransformer())
                 .setOnImageClickListener { view, advInfo ->
                     LogUtil.d("你点击了item")

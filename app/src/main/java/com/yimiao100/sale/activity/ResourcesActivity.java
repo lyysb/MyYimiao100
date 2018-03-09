@@ -237,7 +237,7 @@ public class ResourcesActivity extends BaseActivitySingleList implements Carouse
         adBanner.setDelegate((banner, itemView, model, position) -> {
             if (TextUtils.equals(((Carousel) model).getPageJumpUrl(), "")) {
                 LogUtils.d("You Jump, I Jump");
-                JumpActivity.start(getCurrentContext(), ((Carousel) model).getPageJumpUrl());
+//                JumpActivity.start(getCurrentContext(), ((Carousel) model).getPageJumpUrl());
             } else {
                 LogUtils.d("Fuck your DD");
             }

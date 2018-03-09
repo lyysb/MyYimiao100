@@ -3,6 +3,7 @@ package com.yimiao100.sale;
 import android.util.DisplayMetrics;
 
 import com.blankj.utilcode.util.Utils;
+import com.bumptech.glide.annotation.GlideModule;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout;
 import com.lcodecore.tkrefreshlayout.footer.LoadingView;
@@ -46,6 +47,7 @@ public class MyApplication extends Application {
         initJPush();
         initMQ();
 //        Picasso.with(this).setIndicatorsEnabled(true);
+        // 因为广告库使用了Fresco
         Fresco.initialize(this);
         initDisplayOpinion();
         initUtilCode();
@@ -67,6 +69,9 @@ public class MyApplication extends Application {
         Utils.init(this);
     }
 
+    /**
+     * 广告库所需设置
+     */
     private void initDisplayOpinion() {
         DisplayMetrics dm = getResources().getDisplayMetrics();
         DisplayUtil.density = dm.density;

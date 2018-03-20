@@ -385,7 +385,8 @@
         <activity android:name=".ui.resource.ResourceActivity" />
         <activity android:name=".ui.resource.detail.DetailActivity" />
         <activity android:name=".ui.resource.promotion.PromotionActivity" />
-        <activity android:name=".ui.pay.PayActivity"></activity>
+        <activity android:name=".ui.pay.PayActivity" />
+        <activity android:name=".ui.business.vaccine.BusinessActivity"></activity>
     </application>
 
 </manifest>

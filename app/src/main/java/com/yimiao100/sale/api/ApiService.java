@@ -57,7 +57,8 @@ public interface ApiService {
             @Header("X-Authorization-Token") String accessToken,
             @FieldMap HashMap<String, String> searchIds,
             @Field("page") int page,
-            @Field("pageSize") String pageSize);
+            @Field("pageSize") String pageSize
+    );
 
     /**
      * @return 厂家和分类列表
@@ -85,5 +86,18 @@ public interface ApiService {
             @Header("X-Authorization-Token") String accessToken,
             @Field("bizData") String bizData
             );
+
+    /**
+     * 疫苗-我的业务列表
+     */
+    @FormUrlEncoded
+    @POST("api/order/user_order_list")
+    Observable<ResourceBean> requestBusinessList(
+            @Header("X-Authorization-Token") String accessToken,
+            @Field("page") int page,
+            @Field("pageSize") String pageSize,
+            @Field("userAccountType") String userAccountType,
+            @Field("vendorId") String vendorId
+    );
 
 }

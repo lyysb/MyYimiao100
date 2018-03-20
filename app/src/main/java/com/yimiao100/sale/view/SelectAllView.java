@@ -1,6 +1,7 @@
 package com.yimiao100.sale.view;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.Button;
@@ -37,7 +38,15 @@ public class SelectAllView extends RelativeLayout {
 
     private void initView(Context context, AttributeSet attrs) {
         View.inflate(context, R.layout.select_all, this);
-        // todo: 自定义属性的设置
+        // 自定义属性的设置
+
+        TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.SelectAllView);
+
+        String selectNote = typedArray.getString(R.styleable.SelectAllView_select_note);
+        String selectConfirmText = typedArray.getString(R.styleable.SelectAllView_select_confirm_text);
+
+        typedArray.recycle();
+
         selectAll = (CheckBox) findViewById(R.id.select_all);
         selectAll.setOnClickListener(v -> {
             // 接口暴露到外部的全选点击事件
@@ -47,8 +56,15 @@ public class SelectAllView extends RelativeLayout {
                 onSelectAllClickListener.onSelectAllClick();
             }
         });
+        TextView tvSelectNote = (TextView) findViewById(R.id.select_note);
+        if (selectNote != null) {
+            tvSelectNote.setText(selectNote);
+        }
         selectCount = (TextView) findViewById(R.id.select_all_count);
         Button confirm = (Button) findViewById(R.id.select_all_confirm);
+        if (selectConfirmText != null) {
+            confirm.setText(selectConfirmText);
+        }
         confirm.setOnClickListener(v -> {
             // 接口暴露到外部的确定点击事件
             if (onConfirmClickListener != null) {

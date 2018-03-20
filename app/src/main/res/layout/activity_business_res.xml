@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    style="@style/TitleStyle"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.yimiao100.sale.view.TitleView
+        app:left_isShow="true"
+        app:right_isShow="true"
+        app:title_right="编辑"
+        app:title_text="我的业务"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <RelativeLayout
+        android:background="@color/colorEee"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <include
+            android:id="@+id/business_empty"
+            layout="@layout/empty_view"/>
+
+        <com.yimiao100.sale.view.SelectAllView
+            android:id="@+id/business_bottom"
+            android:layout_alignParentBottom="true"
+            app:select_note="已选订单："
+            app:select_confirm_text="确定"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout
+            android:id="@+id/business_refresh"
+            android:layout_above="@id/business_bottom"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <ListView
+                android:id="@+id/business_list"
+                style="@style/list_view"
+                android:dividerHeight="3dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+        </com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout>
+
+    </RelativeLayout>
+
+</LinearLayout>

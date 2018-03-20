@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <declare-styleable name="SelectAllView">
+        <!--底部备注-->
+        <attr name="select_note" format="string"/>
+        <!--确定按钮文字-->
+        <attr name="select_confirm_text" format="string" />
+    </declare-styleable>
 
     <declare-styleable name="TitleView">
 

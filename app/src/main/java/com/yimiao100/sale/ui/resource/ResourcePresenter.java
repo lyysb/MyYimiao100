@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 
 import com.yimiao100.sale.bean.Carousel;
 import com.yimiao100.sale.bean.ResourceResultBean;
+import com.yimiao100.sale.bean.VendorFilter;
 import com.yimiao100.sale.mvpbase.BasePresenter;
 
 import java.util.ArrayList;
@@ -38,6 +39,16 @@ public class ResourcePresenter extends BasePresenter<ResourceContract.View> impl
     public void initAdSuccess(ArrayList<Carousel> carouselList) {
         getView().initAdSuccess(carouselList);
     }
+
+    /**
+     * 去填充过滤条件
+     * @param vendorFilters
+     */
+    @Override
+    public void initFilterSuccess(ArrayList<VendorFilter> vendorFilters) {
+        getView().initFilterSuccess(vendorFilters);
+    }
+
 
     /**
      * 初始化List成功，将数据交由View层展示
@@ -87,10 +98,10 @@ public class ResourcePresenter extends BasePresenter<ResourceContract.View> impl
 
     /**
      * View请求条件搜索，由Model具体执行
-     * @param regionIDs
+     * @param searchIds
      */
     @Override
-    public void resourceSearch(HashMap<String, String> regionIDs) {
-        model.resourceSearch(regionIDs);
+    public void resourceSearch(HashMap<String, String> searchIds) {
+        model.resourceSearch(searchIds);
     }
 }

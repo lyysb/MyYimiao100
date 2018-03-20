@@ -18,6 +18,7 @@ class CalculateUtils {
         /**
          * 四舍五入
          */
+        @JvmStatic
         fun round(var1: Double, scale: Int): Double {
             if (scale < 0) {
                 throw IllegalArgumentException("精确位数必须是正整数或零")

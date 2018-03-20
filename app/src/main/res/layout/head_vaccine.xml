@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@android:color/white"
+    android:orientation="vertical">
+
+    <cn.bingoogolapple.bgabanner.BGABanner
+        android:id="@+id/resource_banner"
+        app:banner_pointContainerBackground="@color/trans_black"
+        app:banner_indicatorGravity="right"
+        app:banner_pointAutoPlayAble="true"
+        app:banner_tipTextColor="@android:color/white"
+        app:banner_tipTextSize="14sp"
+        android:layout_width="match_parent"
+        android:layout_height="99dp"/>
+
+    <LinearLayout
+        android:paddingLeft="12dp"
+        android:paddingRight="12dp"
+        android:paddingTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/resource_filter_vendor"
+            android:hint="厂家"
+            android:background="@drawable/shape_resources"
+            android:gravity="center"
+            android:textSize="12sp"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="26dp"/>
+        <View
+            android:layout_width="17dp"
+            android:layout_height="1dp"/>
+
+        <TextView
+            android:id="@+id/resource_filter_category"
+            android:hint="产品"
+            android:background="@drawable/shape_resources"
+            android:gravity="center"
+            android:textSize="12sp"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="26dp"/>
+
+
+
+    </LinearLayout>
+
+    <com.yimiao100.sale.view.RegionSearchView
+        android:id="@+id/resource_search"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+</LinearLayout>

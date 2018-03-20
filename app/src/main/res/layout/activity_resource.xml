@@ -24,7 +24,6 @@
             layout="@layout/empty_view"/>
 
         <com.yimiao100.sale.view.SelectAllView
-            android:visibility="gone"
             android:id="@+id/resource_bottom"
             android:layout_alignParentBottom="true"
             android:layout_width="match_parent"

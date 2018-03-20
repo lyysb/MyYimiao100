@@ -74,6 +74,18 @@ public class ResourceListBean implements Parcelable {
     private String productImageUrl;
     private String productVideoUrl;
 
+    private boolean isChecked;
+
+
+
+    public boolean isChecked() {
+        return isChecked;
+    }
+
+    public void setChecked(boolean checked) {
+        isChecked = checked;
+    }
+
     public int getResourceId() {
         return resourceId;
     }
@@ -554,6 +566,7 @@ public class ResourceListBean implements Parcelable {
         this.productVideoUrl = productVideoUrl;
     }
 
+
     @Override
     public int describeContents() {
         return 0;
@@ -580,7 +593,7 @@ public class ResourceListBean implements Parcelable {
         dest.writeString(this.resourceProtocolUrl);
         dest.writeString(this.orderProtocolUrl);
         dest.writeString(this.serialNo);
-        dest.writeByte(read ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.read ? (byte) 1 : (byte) 0);
         dest.writeLong(this.bidExpiredTipAt);
         dest.writeString(this.units);
         dest.writeString(this.totalQty);
@@ -621,6 +634,7 @@ public class ResourceListBean implements Parcelable {
         dest.writeInt(this.increment);
         dest.writeString(this.productImageUrl);
         dest.writeString(this.productVideoUrl);
+        dest.writeByte(this.isChecked ? (byte) 1 : (byte) 0);
     }
 
     public ResourceListBean() {
@@ -687,13 +701,16 @@ public class ResourceListBean implements Parcelable {
         this.increment = in.readInt();
         this.productImageUrl = in.readString();
         this.productVideoUrl = in.readString();
+        this.isChecked = in.readByte() != 0;
     }
 
-    public static final Parcelable.Creator<ResourceListBean> CREATOR = new Parcelable.Creator<ResourceListBean>() {
+    public static final Creator<ResourceListBean> CREATOR = new Creator<ResourceListBean>() {
+        @Override
         public ResourceListBean createFromParcel(Parcel source) {
             return new ResourceListBean(source);
         }
 
+        @Override
         public ResourceListBean[] newArray(int size) {
             return new ResourceListBean[size];
         }

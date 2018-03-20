@@ -8,12 +8,14 @@ import com.facebook.drawee.backends.pipeline.Fresco;
 import com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout;
 import com.lcodecore.tkrefreshlayout.footer.LoadingView;
 import com.lcodecore.tkrefreshlayout.header.progresslayout.ProgressLayout;
+import com.meiqia.meiqiasdk.imageloader.MQImage;
 import com.meiqia.meiqiasdk.util.MQConfig;
 import com.umeng.socialize.Config;
 import com.umeng.socialize.PlatformConfig;
 import com.umeng.socialize.UMShareAPI;
 import com.uuch.adlibrary.utils.DisplayUtil;
 import com.yimiao100.sale.bean.Application;
+import com.yimiao100.sale.glide.MQGlideImageLoader4;
 import com.yimiao100.sale.other.HttpLoggingInterceptor;
 import com.yimiao100.sale.utils.BuglyUtils;
 import com.yimiao100.sale.utils.Constant;
@@ -88,7 +90,8 @@ public class MyApplication extends Application {
     private void initMQ() {
         //显示客户头像
         MQConfig.isShowClientAvatar = true;
-
+        // 解决美洽对Glide4的兼容问题
+        MQImage.setImageLoader(new MQGlideImageLoader4());
     }
 
     /**

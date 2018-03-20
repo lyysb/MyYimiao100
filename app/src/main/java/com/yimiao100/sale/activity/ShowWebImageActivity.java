@@ -1,5 +1,7 @@
 package com.yimiao100.sale.activity;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.squareup.picasso.Callback;
@@ -19,6 +21,12 @@ public class ShowWebImageActivity extends BaseActivity {
 
     @BindView(R.id.web_image_photo)
     PhotoView mWebImagePhoto;
+
+    public static void start(Context context, String url) {
+        Intent intent = new Intent(context, ShowWebImageActivity.class);
+        intent.putExtra("image", url);
+        context.startActivity(intent);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

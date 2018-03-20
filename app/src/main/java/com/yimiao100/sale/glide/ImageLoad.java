@@ -14,6 +14,27 @@ import com.yimiao100.sale.utils.ScreenUtil;
 
 public class ImageLoad {
 
+    public static void loadShortUrl(Context context, String url, ImageView imageView) {
+        GlideApp.with(context)
+                .load(url)
+                .placeholder(R.mipmap.ico_default_short_picture)
+                .into(imageView);
+    }
+
+    public static void loadLongUrl(Context context, String url, ImageView imageView) {
+        GlideApp.with(context)
+                .load(url)
+                .placeholder(R.mipmap.ico_default_long_picture)
+                .into(imageView);
+    }
+
+    public static void loadUrl(Context context, String url, ImageView imageView) {
+        GlideApp.with(context)
+                .load(url)
+                .placeholder(R.mipmap.ico_default_bannner)
+                .into(imageView);
+    }
+
     public static void loadAd(Context context, String url, int height, ImageView imageView) {
         GlideApp.with(context)
                 .load(url)

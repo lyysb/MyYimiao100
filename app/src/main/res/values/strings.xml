@@ -206,5 +206,22 @@
     <string name="overdue_pay">
         请选择充值逾期垫款的可提现推广费
     </string>
+    
+    <string name="default_count">
+        3298 6341 3119
+    </string>
+    <string name="default_company_name">
+        北京亿苗通生物科技有限公司
+    </string>
+    <string name="default_bank">
+        中国银行北京西直门外支行
+    </string>
+    <string name="pay_instruction">
+        提交竞标保证金单个银行账户单日支付限额3000元，如达到支付上限请更改银行卡或择日支付。
+    </string>
+
+    <string name="pay_loading">
+        请求数据中..请稍后
+    </string>
 
 </resources>

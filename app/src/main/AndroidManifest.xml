@@ -132,28 +132,31 @@
                 <data android:scheme="vaccinesale" />
             </intent-filter>
         </activity>
-        <!--动态替换为活动图标-->
-        <!--<activity-alias-->
-            <!--android:name=".325bbs"-->
-            <!--android:icon="@mipmap/ic_launcher_bbs"-->
-            <!--android:targetActivity=".activity.SplashActivity">-->
-            <!--<intent-filter>-->
-                <!--<action android:name="android.intent.action.MAIN" />-->
+        <!-- 动态替换为活动图标 -->
+        <!-- <activity-alias -->
+        <!-- android:name=".325bbs" -->
+        <!-- android:icon="@mipmap/ic_launcher_bbs" -->
+        <!-- android:targetActivity=".activity.SplashActivity"> -->
+        <!-- <intent-filter> -->
+        <!-- <action android:name="android.intent.action.MAIN" /> -->
 
-                <!--<category android:name="android.intent.category.LAUNCHER" />-->
-            <!--</intent-filter>-->
-        <!--</activity-alias>-->
 
-        <!--<activity-alias-->
-            <!--android:name=".default"-->
-            <!--android:icon="@mipmap/ic_launcher"-->
-            <!--android:targetActivity=".activity.SplashActivity">-->
-            <!--<intent-filter>-->
-                <!--<action android:name="android.intent.action.MAIN" />-->
+        <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+        <!-- </intent-filter> -->
+        <!-- </activity-alias> -->
 
-                <!--<category android:name="android.intent.category.LAUNCHER" />-->
-            <!--</intent-filter>-->
-        <!--</activity-alias>-->
+
+        <!-- <activity-alias -->
+        <!-- android:name=".default" -->
+        <!-- android:icon="@mipmap/ic_launcher" -->
+        <!-- android:targetActivity=".activity.SplashActivity"> -->
+        <!-- <intent-filter> -->
+        <!-- <action android:name="android.intent.action.MAIN" /> -->
+
+
+        <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+        <!-- </intent-filter> -->
+        <!-- </activity-alias> -->
 
         <activity
             android:name=".activity.RegisterActivity"
@@ -379,7 +382,10 @@
         <activity android:name=".mvpbase.BaseActivity" />
         <activity android:name=".ui.register.RegisterActivity" />
         <activity android:name=".activity.JumpActivity" />
-        <activity android:name=".ui.resource.ResourceActivity"></activity>
+        <activity android:name=".ui.resource.ResourceActivity" />
+        <activity android:name=".ui.resource.detail.DetailActivity" />
+        <activity android:name=".ui.resource.promotion.PromotionActivity" />
+        <activity android:name=".ui.pay.PayActivity"></activity>
     </application>
 
 </manifest>

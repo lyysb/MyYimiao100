@@ -7,6 +7,15 @@
     android:orientation="horizontal"
     android:padding="10dp">
 
+    <CheckBox
+        android:id="@+id/resource_select"
+        android:layout_gravity="center_vertical"
+        android:button="@drawable/selector_pay_way"
+        android:scaleX="0.7"
+        android:scaleY="0.7"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent" />
+
     <ImageView
         android:id="@+id/resource_vendor_logo"
         android:layout_gravity="center_vertical"

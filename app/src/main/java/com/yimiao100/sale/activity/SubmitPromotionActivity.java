@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
+import com.blankj.utilcode.util.LogUtils;
 import com.tencent.mm.sdk.constants.Build;
 import com.tencent.mm.sdk.modelpay.PayReq;
 import com.tencent.mm.sdk.openapi.IWXAPI;
@@ -74,7 +75,6 @@ public class SubmitPromotionActivity extends BaseActivity implements TitleView
     private String mOrderId;
     private String mMark;
     private ProgressDialog mProgressDialog;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -206,7 +206,6 @@ public class SubmitPromotionActivity extends BaseActivity implements TitleView
             public void onResponse(String response, int id) {
                 mProgressDialog.dismiss();
                 mSubmitPromotionPay.setEnabled(true);
-                LogUtil.d(response);
                 ErrorBean errorBean = JSON.parseObject(response, ErrorBean.class);
                 switch (errorBean.getStatus()) {
                     case "success":

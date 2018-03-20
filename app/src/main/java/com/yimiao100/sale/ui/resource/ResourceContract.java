@@ -4,6 +4,7 @@ import android.widget.AdapterView;
 
 import com.yimiao100.sale.bean.Carousel;
 import com.yimiao100.sale.bean.ResourceResultBean;
+import com.yimiao100.sale.bean.VendorFilter;
 import com.yimiao100.sale.mvpbase.IBaseModel;
 import com.yimiao100.sale.mvpbase.IBasePresenter;
 import com.yimiao100.sale.mvpbase.IBaseView;
@@ -21,6 +22,8 @@ public interface ResourceContract {
     interface View extends IBaseView<Presenter> {
         void initAdSuccess(ArrayList<Carousel> carouselList);
 
+        void initFilterSuccess(ArrayList<VendorFilter> vendorFilters);
+
         void initListSuccess(ResourceResultBean resourceResult);
 
         void loadMoreSuccess(ResourceResultBean resourceResult);
@@ -30,6 +33,8 @@ public interface ResourceContract {
 
     interface Presenter extends IBasePresenter<View>{
         void initAdSuccess(ArrayList<Carousel> carouselList);
+
+        void initFilterSuccess(ArrayList<VendorFilter> vendorFilters);
 
         void initListSuccess(ResourceResultBean resourceResult);
 
@@ -41,7 +46,7 @@ public interface ResourceContract {
 
         void loadMoreSuccess(ResourceResultBean resourceResult);
 
-        void resourceSearch(HashMap<String, String> regionIDs);
+        void resourceSearch(HashMap<String, String> searchIds);
     }
 
     interface Model extends IBaseModel{
@@ -51,6 +56,6 @@ public interface ResourceContract {
 
         void loadMoreData(int page);
 
-        void resourceSearch(HashMap<String, String> regionIDs);
+        void resourceSearch(HashMap<String, String> searchIds);
     }
 }

@@ -42,6 +42,8 @@ public class SelectAllView extends RelativeLayout {
         selectAll.setOnClickListener(v -> {
             // 接口暴露到外部的全选点击事件
             if (onSelectAllClickListener != null) {
+                // 是否被选中，交由外部处理,so 给我反选回去！
+                selectAll.setChecked(!selectAll.isChecked());
                 onSelectAllClickListener.onSelectAllClick();
             }
         });
@@ -53,6 +55,13 @@ public class SelectAllView extends RelativeLayout {
                 onConfirmClickListener.onConfirmClick();
             }
         });
+    }
+
+    /**
+     * @return 全选的选中状态
+     */
+    public boolean isSelectAll() {
+        return selectAll.isChecked();
     }
 
     /**

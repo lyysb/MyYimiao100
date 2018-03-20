@@ -6,8 +6,21 @@ package com.yimiao100.sale.bean;
 public class ResourceDetailBean {
     private ResourceListBean resourceInfo;
 
+    private int reason;
 
     private String status;
+
+    public int getReason() {
+        return reason;
+    }
+
+    public void setReason(int reason) {
+        this.reason = reason;
+    }
+
+    public ResourceListBean getResourceInfo() {
+        return resourceInfo;
+    }
 
     public ResourceListBean getResourceResult() {
         return resourceInfo;

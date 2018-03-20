@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -23,6 +24,7 @@ public class ResourcesAdapter extends BaseAdapter{
 
     private Context mContext;
     private List<ResourceListBean> mList;
+    private OnResourceSelectListener onResourceSelectListener;
 
     public ResourcesAdapter(Context context, List<ResourceListBean> resourcesList){
         mContext = context;
@@ -44,12 +46,29 @@ public class ResourcesAdapter extends BaseAdapter{
         return mList != null ? position : 0;
     }
 
+    public void setOnResourceSelectListener(OnResourceSelectListener onResourceSelectListener) {
+        this.onResourceSelectListener = onResourceSelectListener;
+    }
+
+    public interface OnResourceSelectListener{
+        void onSelect(CheckBox select, int position);
+    }
+
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         ResourceListBean resource = getItem(position);
         if (convertView == null){
             convertView = View.inflate(mContext, R.layout.item_resources, null);
         }
+        // 复选框
+        CheckBox select = ViewHolderUtil.get(convertView, R.id.resource_select);
+        select.setChecked(resource.isChecked());
+        select.setOnClickListener(v -> {
+            // 选中
+            if (onResourceSelectListener != null) {
+                onResourceSelectListener.onSelect(select, position);
+            }
+        });
         //厂家名称
         TextView resource_vendor_name = ViewHolderUtil.get(convertView, R.id.resource_vendor_name);
         resource_vendor_name.setText(resource.getVendorName());

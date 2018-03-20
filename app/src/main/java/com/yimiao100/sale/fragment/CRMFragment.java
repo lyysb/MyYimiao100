@@ -2,6 +2,7 @@ package com.yimiao100.sale.fragment;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -396,12 +397,12 @@ public class CRMFragment extends BaseFragment implements View.OnClickListener, C
     @Override
     public void handleCarouselList(ArrayList<Carousel> carouselList) {
         LogUtil.d("list size is " + carouselList.size());
-        banner.setAdapter((banner, itemView, model, position) ->
-                ImageLoad.loadAd(getContext(), ((Carousel) model).getMediaUrl(), 160, (ImageView) itemView));
+        banner.setAdapter((banner, itemView, model, position) -> {
+            ImageLoad.loadAd(getContext(), ((Carousel) model).getMediaUrl(), 160, (ImageView) itemView);
+        });
         List<String> desc = new ArrayList<>();
         for (Carousel carousel : carouselList) {
             desc.add(carousel.getObjectTitle());
-            LogUtils.d("picUrl is: " + carousel.getMediaUrl());
         }
         banner.setData(carouselList, desc);
         banner.setDelegate((banner, itemView, model, position) -> {

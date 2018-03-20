@@ -4,6 +4,7 @@ import com.blankj.utilcode.util.ActivityUtils;
 import com.yimiao100.sale.api.Api;
 import com.yimiao100.sale.mvpbase.BaseModel;
 import com.yimiao100.sale.utils.CarouselUtil;
+
 import java.util.HashMap;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -17,7 +18,7 @@ import io.reactivex.schedulers.Schedulers;
 public class ResourceModel extends BaseModel implements ResourceContract.Model {
 
     private final ResourcePresenter presenter;
-    private HashMap<String, String> regionIds = new HashMap<>();
+    private HashMap<String, String> searchIds = new HashMap<>();
 
     public ResourceModel(ResourcePresenter presenter) {
         super();
@@ -28,8 +29,17 @@ public class ResourceModel extends BaseModel implements ResourceContract.Model {
     public void initData() {
         // 请求轮播图数据 并通过Presenter将Ad交给View层
         CarouselUtil.getCarouselList(ActivityUtils.getTopActivity(), "vaccine", presenter::initAdSuccess);
+        // 请求厂家和分类列表
+        // 将数据返回给View展示
+        Api.getInstance().requestVaccineFilter(accessToken)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        // 将过滤条件传给view
+                        presenter::initFilterSuccess,
+                        throwable -> presenter.onError(throwable.getMessage()));
         // 请求疫苗列表数据
-        Api.getInstance().requestVaccineList(accessToken, regionIds, 1, "10")
+        Api.getInstance().requestVaccineList(accessToken, searchIds, 1, "10")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(resourceBean -> {
@@ -51,7 +61,7 @@ public class ResourceModel extends BaseModel implements ResourceContract.Model {
         // 请求轮播图数据 并通过Presenter将Ad交给View层
         CarouselUtil.getCarouselList(ActivityUtils.getTopActivity(), "vaccine", presenter::initAdSuccess);
         // 请求疫苗列表数据
-        Api.getInstance().requestVaccineList(accessToken, regionIds, 1, "10")
+        Api.getInstance().requestVaccineList(accessToken, searchIds, 1, "10")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(resourceBean -> {
@@ -70,7 +80,7 @@ public class ResourceModel extends BaseModel implements ResourceContract.Model {
 
     @Override
     public void loadMoreData(int page) {
-        Api.getInstance().requestVaccineList(accessToken, regionIds, page, "10")
+        Api.getInstance().requestVaccineList(accessToken, searchIds, page, "10")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(resourceBean -> {
@@ -88,9 +98,9 @@ public class ResourceModel extends BaseModel implements ResourceContract.Model {
     }
 
     @Override
-    public void resourceSearch(HashMap<String, String> regionIDs) {
-        this.regionIds = regionIDs;
-        Api.getInstance().requestVaccineList(accessToken, regionIds, 1, "10")
+    public void resourceSearch(HashMap<String, String> searchIds) {
+        this.searchIds = searchIds;
+        Api.getInstance().requestVaccineList(accessToken, this.searchIds, 1, "10")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(resourceBean -> {

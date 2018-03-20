@@ -12,6 +12,7 @@ import com.squareup.picasso.Picasso;
 import com.yimiao100.sale.R;
 import com.yimiao100.sale.bean.ImageListBean;
 import com.yimiao100.sale.bean.PagedListBean;
+import com.yimiao100.sale.glide.ImageLoad;
 import com.yimiao100.sale.utils.TimeUtil;
 import com.yimiao100.sale.utils.ViewHolderUtil;
 
@@ -104,8 +105,7 @@ public class InformationAdapter extends BaseAdapter {
                 List<ImageListBean> imageList1 = pagedListBean.getImageList();
                 if (imageList1.size() > 0) {
                     String imageUrl_1 = imageList1.get(0).getImageUrl();
-                    Picasso.with(context).load(imageUrl_1 + "?imageMogr2/thumbnail/270x225")
-                            .placeholder(R.mipmap.ico_default_short_picture).into(mType1_image);
+                    ImageLoad.loadShortUrl(context, imageUrl_1 + "?imageMogr2/thumbnail/270x225", mType1_image);
                 }
                 ImageView type1_top = ViewHolderUtil.get(convertView, R.id.type1_top);
                 type1_top.setVisibility(pagedListBean.getIsTop() == 1 ? View.VISIBLE : View.GONE);
@@ -133,25 +133,19 @@ public class InformationAdapter extends BaseAdapter {
                 List<ImageListBean> imageList = pagedListBean.getImageList();
                 if (imageList.size() == 1){
                     String imageUrl_2_1 = pagedListBean.getImageList().get(0).getImageUrl();
-                    Picasso.with(context).load(imageUrl_2_1)
-                            .placeholder(R.mipmap.ico_default_short_picture).into(mType2_image1);
+                    ImageLoad.loadShortUrl(context, imageUrl_2_1, mType2_image1);
                 }else if (imageList.size() == 2){
                     String imageUrl_2_1 = pagedListBean.getImageList().get(0).getImageUrl();
                     String imageUrl_2_2 = pagedListBean.getImageList().get(1).getImageUrl();
-                    Picasso.with(context).load(imageUrl_2_1)
-                            .placeholder(R.mipmap.ico_default_short_picture).into(mType2_image1);
-                    Picasso.with(context).load(imageUrl_2_2)
-                            .placeholder(R.mipmap.ico_default_short_picture).into(mType2_image2);
+                    ImageLoad.loadShortUrl(context, imageUrl_2_1, mType2_image1);
+                    ImageLoad.loadShortUrl(context, imageUrl_2_2, mType2_image2);
                 }else if (imageList.size() >= 3){
                     String imageUrl_2_1 = pagedListBean.getImageList().get(0).getImageUrl();
                     String imageUrl_2_2 = pagedListBean.getImageList().get(1).getImageUrl();
                     String imageUrl_2_3 = pagedListBean.getImageList().get(2).getImageUrl();
-                    Picasso.with(context).load(imageUrl_2_1)
-                            .placeholder(R.mipmap.ico_default_short_picture).into(mType2_image1);
-                    Picasso.with(context).load(imageUrl_2_2)
-                            .placeholder(R.mipmap.ico_default_short_picture).into(mType2_image2);
-                    Picasso.with(context).load(imageUrl_2_3)
-                            .placeholder(R.mipmap.ico_default_short_picture).into(mType2_image3);
+                    ImageLoad.loadShortUrl(context, imageUrl_2_1, mType2_image1);
+                    ImageLoad.loadShortUrl(context, imageUrl_2_2, mType2_image2);
+                    ImageLoad.loadShortUrl(context, imageUrl_2_3, mType2_image3);
                 }
                 ImageView type2_top = ViewHolderUtil.get(convertView, R.id.type2_top);
                 type2_top.setVisibility(pagedListBean.getIsTop() == 1 ? View.VISIBLE : View.GONE);
@@ -177,8 +171,7 @@ public class InformationAdapter extends BaseAdapter {
                 List<ImageListBean> imageList2 = pagedListBean.getImageList();
                 if (imageList2.size() > 0) {
                     String imageUrl_3 = imageList2.get(0).getImageUrl();
-                    Picasso.with(context).load(imageUrl_3)
-                            .placeholder(R.mipmap.ico_default_long_picture).into(mType3_image);
+                    ImageLoad.loadLongUrl(context, imageUrl_3, mType3_image);
                 }
                 ImageView type3_top = ViewHolderUtil.get(convertView, R.id.type3_top);
                 type3_top.setVisibility(pagedListBean.getIsTop() == 1 ? View.VISIBLE : View.GONE);

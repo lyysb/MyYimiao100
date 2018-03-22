@@ -78,11 +78,11 @@ public interface ApiService {
     );
 
     /**
-     * 请求支付
+     * 请求疫苗资源批量竞标支付
      */
     @FormUrlEncoded
     @POST("api/order/batch_place_order")
-    Observable<PayResult> requestPay(
+    Observable<PayResult> requestBizDataPay(
             @Header("X-Authorization-Token") String accessToken,
             @Field("bizData") String bizData
             );
@@ -100,4 +100,13 @@ public interface ApiService {
             @Field("vendorId") String vendorId
     );
 
+    /**
+     * 我的业务-资源-批量支付
+     */
+    @FormUrlEncoded
+    @POST("api/order/batch_pay_bid_deposit")
+    Observable<PayResult> requestBidDepositPay(
+            @Header("X-Authorization-Token") String accessToken,
+            @Field("orderIds") String orderIds
+    );
 }

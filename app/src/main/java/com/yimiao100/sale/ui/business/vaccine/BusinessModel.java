@@ -38,4 +38,38 @@ public class BusinessModel extends BaseModel implements BusinessContract.Model {
                     }
                 }, throwable -> presenter.onError(throwable.getMessage()));
     }
+
+    @Override
+    public void refreshList(String userAccountType, String vendorId) {
+        Api.getInstance().requestBusinessList(accessToken, 1, "10", userAccountType, vendorId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(resourceBean -> {
+                    switch (resourceBean.getStatus()) {
+                        case "success":
+                            presenter.refreshSuccess(resourceBean.getResourceResult());
+                            break;
+                        case "failure":
+                            presenter.refreshFailure(resourceBean.getReason());
+                            break;
+                    }
+                }, throwable -> presenter.onError(throwable.getMessage()));
+    }
+
+    @Override
+    public void loadMoreList(String userAccountType, String vendorId, int page) {
+        Api.getInstance().requestBusinessList(accessToken, page, "10", userAccountType, vendorId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(resourceBean -> {
+                    switch (resourceBean.getStatus()) {
+                        case "success":
+                            presenter.loadMoreSuccess(resourceBean.getResourceResult());
+                            break;
+                        case "failure":
+                            presenter.loadMoreFailure(resourceBean.getReason());
+                            break;
+                    }
+                }, throwable -> presenter.onError(throwable.getMessage()));
+    }
 }

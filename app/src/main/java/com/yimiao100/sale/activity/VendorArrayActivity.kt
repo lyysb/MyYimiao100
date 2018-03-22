@@ -8,6 +8,7 @@ import com.yimiao100.sale.bean.*
 import com.yimiao100.sale.ext.JSON
 import com.yimiao100.sale.insurance.BusinessInsuranceActivity
 import com.yimiao100.sale.insurance.ReconCusActivity
+import com.yimiao100.sale.ui.business.vaccine.BusinessActivity
 import com.yimiao100.sale.utils.Constant
 import com.yimiao100.sale.utils.LogUtil
 import com.yimiao100.sale.utils.ToastUtil
@@ -244,7 +245,8 @@ class VendorArrayActivity : BaseActivityWithSpinner(), RegionSearchView.onSearch
                 when (this.position) {
                     0, 1 -> {
                         // 进入疫苗的业务订单列表
-                        BusinessVaccineActivity.start(this, list[position].objectId.toString(), userAccountType)
+//                        BusinessVaccineActivity.start(this, list[position].objectId.toString(), userAccountType)
+                        BusinessActivity.start(this, userAccountType, list[position].objectId.toString())
                     }
                     2, 3 -> {
                         // 进入保险的业务订单列表

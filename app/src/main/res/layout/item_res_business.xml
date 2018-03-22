@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:background="@android:color/white"
+    android:gravity="center_vertical"
+    android:padding="10dp">
+
+    <CheckBox
+        android:id="@+id/business_select"
+        android:layout_gravity="center_vertical"
+        android:button="@drawable/selector_pay_way"
+        android:scaleX="0.7"
+        android:scaleY="0.7"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/order_vendor_logo"
+            android:layout_width="88dp"
+            android:layout_height="88dp"
+            android:scaleType="fitCenter"/>
+        <TextView
+            android:id="@+id/order_updated_at"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:drawableLeft="@mipmap/ico_resources_time"
+            android:drawablePadding="5dp"
+            android:textColor="@color/color999"
+            android:textSize="9sp"/>
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_marginBottom="5dp"
+            android:id="@+id/order_vendor_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ellipsize="end"
+            android:gravity="center_vertical"
+            android:lines="1"
+            android:textColor="@color/color333"
+            android:textSize="14sp"/>
+
+        <TextView
+            android:layout_marginBottom="5dp"
+            android:id="@+id/order_product_commonName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:text="产品："
+            android:textColor="@color/color666"
+            android:textSize="12sp"/>
+        <LinearLayout
+            android:layout_marginBottom="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+            <TextView
+                android:id="@+id/order_dosage_form"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:text="剂型："
+                android:textColor="@color/color666"
+                android:textSize="12sp"/>
+            <TextView
+                android:id="@+id/order_spec"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:layout_marginLeft="2dp"
+                android:text="规格："
+                android:textColor="@color/color666"
+                android:textSize="12sp"/>
+            <ImageView
+                android:src="@mipmap/ico_company_promotion_click"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+        <TextView
+            android:layout_marginBottom="5dp"
+            android:id="@+id/order_region"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:text="区域："
+            android:textColor="@color/color666"
+            android:textSize="12sp"/>
+
+        <TextView
+            android:layout_marginBottom="5dp"
+            android:id="@+id/order_customer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:text="客户："
+            android:textColor="@color/color666"
+            android:textSize="12sp"/>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+            <TextView
+                android:id="@+id/order_serial_no"
+                android:text="协议单号："
+                android:textSize="12sp"
+                android:textColor="@color/color666"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"/>
+            <TextView
+                android:id="@+id/order_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                android:textStyle="bold"/>
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

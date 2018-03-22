@@ -32,6 +32,8 @@ public interface ResourceContract {
     }
 
     interface Presenter extends IBasePresenter<View>{
+        void initData();
+
         void initAdSuccess(ArrayList<Carousel> carouselList);
 
         void initFilterSuccess(ArrayList<VendorFilter> vendorFilters);

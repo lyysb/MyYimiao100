@@ -20,6 +20,7 @@ import com.tencent.mm.sdk.openapi.WXAPIFactory;
 import com.yimiao100.sale.R;
 import com.yimiao100.sale.mvpbase.BaseActivity;
 import com.yimiao100.sale.mvpbase.CreatePresenter;
+import com.yimiao100.sale.ui.business.vaccine.BusinessActivity;
 import com.yimiao100.sale.ui.resource.ResourceActivity;
 import com.yimiao100.sale.utils.Constant;
 import com.yimiao100.sale.utils.FormatUtils;
@@ -36,6 +37,10 @@ public class PayActivity extends BaseActivity<PayContract.View, PayContract.Pres
     private ProgressDialog loadingDialog;
     private double payAmount;
     private String bizData;
+    private String from;
+    private String orderIds;
+    private String userAccountType;
+    private String vendorId;
 
     /*
     * 参数:bizData(json格式的字符串)
@@ -63,10 +68,21 @@ public class PayActivity extends BaseActivity<PayContract.View, PayContract.Pres
      * @param payAmount 实付款金额-bidDeposit
      * @param bizData 批量竞标json
      */
-    public static void start(Context context,double payAmount, String bizData) {
+    public static void startFromVaccineRes(Context context, String from, double payAmount, String bizData) {
         Intent intent = new Intent(context, PayActivity.class);
+        intent.putExtra("from", from);
         intent.putExtra("payAmount", payAmount);
         intent.putExtra("bizData", bizData);
+        context.startActivity(intent);
+    }
+
+    public static void startFromVaccineBus(Context context, String from, double payAmount, String userAccountType, String vendorId, String orderIds) {
+        Intent intent = new Intent(context, PayActivity.class);
+        intent.putExtra("from", from);
+        intent.putExtra("payAmount", payAmount);
+        intent.putExtra("userAccountType", userAccountType);
+        intent.putExtra("vendorId", vendorId);
+        intent.putExtra("orderIds", orderIds);
         context.startActivity(intent);
     }
 
@@ -82,10 +98,21 @@ public class PayActivity extends BaseActivity<PayContract.View, PayContract.Pres
 
     private void initVariate() {
         Intent intent = getIntent();
+        from = intent.getStringExtra("from");
         payAmount = intent.getDoubleExtra("payAmount", -1.0);
-        bizData = intent.getStringExtra("bizData");
-        LogUtils.d("payAmount：" + payAmount);
-        LogUtils.json(bizData);
+        switch (from) {
+            case "vaccine_res":
+                bizData = intent.getStringExtra("bizData");
+                LogUtils.d("payAmount：" + payAmount);
+                LogUtils.json(bizData);
+                break;
+            case "vaccine_bus":
+                userAccountType = intent.getStringExtra("userAccountType");
+                vendorId = intent.getStringExtra("vendorId");
+                orderIds = intent.getStringExtra("orderIds");
+                LogUtils.d("orderIds：" + orderIds);
+                break;
+        }
     }
 
     private void initView() {
@@ -153,7 +180,16 @@ public class PayActivity extends BaseActivity<PayContract.View, PayContract.Pres
             return;
         }
         // 发起支付
-        getPresenter().requestPay(weChatId, bizData);
+        switch (from) {
+            case "vaccine_res":
+                // 请求批量竞标支付
+                getPresenter().requestBizDataPay(weChatId, bizData);
+                break;
+            case "vaccine_bus":
+                // 请求我的业务批量支付
+                getPresenter().requestBidDeposit(weChatId, orderIds);
+                break;
+        }
     }
 
     private BroadcastReceiver weChatReceiver = new BroadcastReceiver() {
@@ -193,7 +229,14 @@ public class PayActivity extends BaseActivity<PayContract.View, PayContract.Pres
         builder.setPositiveButton("ok", (dialog, which) -> {
             if (0 == code) {
                 //支付成功，返回列表页
-                ResourceActivity.start(getApplicationContext());
+                switch (from) {
+                    case "vaccine_res":
+                        ResourceActivity.start(getApplicationContext());
+                        break;
+                    case "vaccine_bus":
+                        BusinessActivity.start(getApplicationContext(), userAccountType, vendorId);
+                        break;
+                }
             }
             //支付出现问题（取消，失败），不需要做任何操作。停留在支付页面
             dialog.dismiss();

@@ -19,12 +19,19 @@ public class PayPresenter extends BasePresenter<PayContract.View> implements Pay
     }
 
     /**
-     * 请求支付
+     * 请求疫苗资源支付
      */
     @Override
-    public void requestPay(IWXAPI weChatId, String bizData) {
+    public void requestBizDataPay(IWXAPI weChatId, String bizData) {
         this.weChatId = weChatId;
-        model.requestPay(bizData);
+        model.requestBizDataPay(bizData);
+        getView().showPayLoading();
+    }
+
+    @Override
+    public void requestBidDeposit(IWXAPI weChatId, String orderIds) {
+        this.weChatId = weChatId;
+        model.requestBidDeposit(orderIds);
         getView().showPayLoading();
     }
 
@@ -46,6 +53,7 @@ public class PayPresenter extends BasePresenter<PayContract.View> implements Pay
         getView().showFailureInfo(reason);
         getView().dismissPayLoading();
     }
+
 
     /**
      * 链接出现问题

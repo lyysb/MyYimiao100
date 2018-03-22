@@ -22,11 +22,40 @@ public class PayModel extends BaseModel implements PayContract.Model {
     }
 
     /**
-     * 请求支付
+     * 请求疫苗资源批量竞标支付
      */
     @Override
-    public void requestPay(String bizData) {
-        Api.getInstance().requestPay(accessToken, bizData)
+    public void requestBizDataPay(String bizData) {
+        Api.getInstance().requestBizDataPay(accessToken, bizData)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(payResult -> {
+                    switch (payResult.getStatus()) {
+                        case "success":
+                            PayRequest payRequest = payResult.getPayRequest();
+                            PayReq req = new PayReq();
+                            req.appId = payRequest.getAppid();
+                            req.partnerId = payRequest.getPartnerid();
+                            req.prepayId = payRequest.getPrepayid();
+                            req.nonceStr = payRequest.getNoncestr();
+                            req.timeStamp = payRequest.getTimestamp();
+                            req.packageValue = payRequest.getPackageValue();
+                            req.sign = payRequest.getSign();
+                            presenter.payRequestSuccess(req);
+                            break;
+                        case "failure":
+                            presenter.payRequestFailure(payResult.getReason());
+                            break;
+                    }
+                }, throwable -> presenter.onError(throwable.getMessage()));
+    }
+
+    /**
+     * 请求支付-我的业务资源列表
+     */
+    @Override
+    public void requestBidDeposit(String orderIds) {
+        Api.getInstance().requestBidDepositPay(accessToken, orderIds)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(payResult -> {

@@ -172,7 +172,7 @@ public class PromotionActivity extends BaseActivity {
         String bizDataJson = JSON.toJSONString(bizData);
 
         // 进入支付页面
-        PayActivity.start(this, payAmount, bizDataJson);
+        PayActivity.startFromVaccineRes(this, "vaccine_res", payAmount, bizDataJson);
     }
 
 

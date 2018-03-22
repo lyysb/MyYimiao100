@@ -74,6 +74,8 @@ public class ResourceActivity extends BaseActivity<ResourceContract.View, Resour
         initView();
 
         showProgress();
+
+        initData();
     }
 
     /**
@@ -162,6 +164,10 @@ public class ResourceActivity extends BaseActivity<ResourceContract.View, Resour
         selectAllView = (SelectAllView) findViewById(R.id.resource_bottom);
         selectAllView.setOnSelectAllClickListener(this::selectAllResource);
         selectAllView.setOnConfirmClickListener(this::enterDetail);
+    }
+
+    private void initData() {
+        getPresenter().initData();
     }
 
     private void search(HashMap<String, String> regionIds) {
@@ -432,6 +438,12 @@ public class ResourceActivity extends BaseActivity<ResourceContract.View, Resour
         } else {
             emptyView.setVisibility(View.GONE);
         }
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        getPresenter().initData();
     }
 
     @Override

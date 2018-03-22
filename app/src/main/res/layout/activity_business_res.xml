@@ -7,6 +7,7 @@
     android:layout_height="match_parent">
 
     <com.yimiao100.sale.view.TitleView
+        android:id="@+id/business_title"
         app:left_isShow="true"
         app:right_isShow="true"
         app:title_right="编辑"
@@ -25,9 +26,10 @@
 
         <com.yimiao100.sale.view.SelectAllView
             android:id="@+id/business_bottom"
+            android:visibility="gone"
             android:layout_alignParentBottom="true"
             app:select_note="已选订单："
-            app:select_confirm_text="确定"
+            app:select_confirm_text="支付"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 

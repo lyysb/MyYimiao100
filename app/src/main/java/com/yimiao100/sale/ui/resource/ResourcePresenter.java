@@ -1,8 +1,5 @@
 package com.yimiao100.sale.ui.resource;
 
-import android.os.Bundle;
-import android.support.annotation.Nullable;
-
 import com.yimiao100.sale.bean.Carousel;
 import com.yimiao100.sale.bean.ResourceResultBean;
 import com.yimiao100.sale.bean.VendorFilter;
@@ -25,9 +22,7 @@ public class ResourcePresenter extends BasePresenter<ResourceContract.View> impl
     }
 
     @Override
-    public void onCreatePresenter(@Nullable Bundle savedState) {
-        super.onCreatePresenter(savedState);
-        // 初始化数据
+    public void initData() {
         model.initData();
     }
 

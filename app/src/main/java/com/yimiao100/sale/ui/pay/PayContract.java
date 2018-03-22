@@ -20,7 +20,9 @@ public interface PayContract {
     }
 
     interface Presenter extends IBasePresenter<View>{
-        void requestPay(IWXAPI weChatId, String bizData);
+        void requestBizDataPay(IWXAPI weChatId, String bizData);
+
+        void requestBidDeposit(IWXAPI weChatId, String orderIds);
 
         void payRequestSuccess(PayReq payReq);
 
@@ -28,6 +30,8 @@ public interface PayContract {
     }
 
     interface Model extends IBaseModel{
-        void requestPay(String bizData);
+        void requestBizDataPay(String bizData);
+
+        void requestBidDeposit(String orderIds);
     }
 }

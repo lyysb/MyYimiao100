@@ -7,7 +7,7 @@ import java.util.HashMap;
  * Created by Michel on 2016/8/9.
  */
 public interface Constant {
-    boolean isTest = true;     // 是否在测试环境下
+    boolean isTest = false;     // 是否在测试环境下
 
     boolean isInsurance = true;   // 是否开启保险业务模块
 

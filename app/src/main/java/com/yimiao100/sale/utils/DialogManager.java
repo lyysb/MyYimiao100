@@ -10,8 +10,12 @@ import android.net.Uri;
 import android.os.Build;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
+import android.widget.Toast;
+
+import com.blankj.utilcode.util.ToastUtils;
 import com.yimiao100.sale.R;
 import com.yimiao100.sale.base.ActivityCollector;
 import com.yimiao100.sale.base.BaseActivity;
@@ -20,6 +24,7 @@ import com.yimiao100.sale.base.FragmentCollector;
 import pub.devrel.easypermissions.EasyPermissions;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -123,6 +128,15 @@ public class DialogManager implements EasyPermissions.PermissionCallbacks{
     private void openGallery(BaseActivity activity) {
         Intent intent = new Intent(Intent.ACTION_PICK);
         intent.setType("image/*");
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            // 7.0以上使用Provider
+            String tempFileName = "tempFile" + System.currentTimeMillis() + ".jpg";
+            tempFile = Util.createFile(tempFileName);
+            Uri uriForFile = FileProvider.getUriForFile(activity, "com.yimiao100.sale.fileprovider", tempFile);
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, uriForFile);
+            intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        }
         if (activity.getSupportFragmentManager().getFragments() != null) {
             FragmentCollector.getTopFragment().startActivityForResult(intent, PHOTO_REQUEST_GALLERY);
         } else {
@@ -143,7 +157,13 @@ public class DialogManager implements EasyPermissions.PermissionCallbacks{
             case PHOTO_REQUEST_GALLERY:
                 LogUtil.d("result from gallery");
                 if (data != null) {
-                    Uri uri = data.getData();
+                    Uri uri;
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                        File imgUri = new File(GetImagePath.getPath(activity, data.getData()));
+                        uri = FileProvider.getUriForFile(activity, "com.yimiao100.sale.fileprovider", imgUri);
+                    } else {
+                        uri = data.getData();
+                    }
                     crop(activity, uri);
                 }
                 break;
@@ -151,9 +171,23 @@ public class DialogManager implements EasyPermissions.PermissionCallbacks{
                 // 从Crop返回
                 LogUtil.d("result from crop");
                 if (data != null && resultCode == Activity.RESULT_OK) {
-                    Bitmap bitmap = data.getParcelableExtra("data");
-                    if (listener != null) {
-                        listener.handleBitmap(view, bitmap);
+                    Bitmap bitmap = null;
+                    if (data.getData() != null) {
+                        try {
+                            bitmap = BitmapUtil.getBitmapFormUri(activity, data.getData());
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        bitmap = data.getParcelableExtra("data");
+                    }
+
+                    if (bitmap == null) {
+                        ToastUtils.showShort("unknown error");
+                    } else {
+                        if (listener != null) {
+                            listener.handleBitmap(view, bitmap);
+                        }
                     }
                 }
                 break;
@@ -163,7 +197,23 @@ public class DialogManager implements EasyPermissions.PermissionCallbacks{
     private void crop(BaseActivity activity, Uri uri) {
         // 裁剪图片意图
         Intent intent = new Intent("com.android.camera.action.CROP");
-        intent.setDataAndType(uri, "image/*");
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            intent.setDataAndType(uri, "image/*");
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+        } else {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                String url = GetImagePath.getPath(activity, uri);
+                intent.setDataAndType(Uri.fromFile(new File(url)), "image/*");
+            } else {
+                intent.setDataAndType(uri, "image/*");
+            }
+        }
+
+        Uri outPutUri = Uri.fromFile(tempFile);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, outPutUri);
+
         intent.putExtra("crop", "true");
         // 裁剪框的比例，1：1
         intent.putExtra("aspectX", 1);

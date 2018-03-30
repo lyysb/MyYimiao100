@@ -3,4 +3,8 @@
     <paths>
         <external-path path="VaccineCircle" name="download"/>
     </paths>
+    <!--相册的路径-->
+    <paths>
+        <external-path path="" name="camera_photos" />
+    </paths>
 </resources>

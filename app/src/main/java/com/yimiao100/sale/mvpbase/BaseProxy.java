@@ -18,7 +18,7 @@ public class BaseProxy<V extends IBaseView<P>, P extends IBasePresenter<V>> impl
     private PresenterFactory<V, P> factory;
     private P presenter;
     private Bundle bundle;
-    private boolean isAttchView;
+    private boolean isAttachView;
 
 
     public BaseProxy(PresenterFactory<V, P> presenterFactory) {
@@ -70,18 +70,18 @@ public class BaseProxy<V extends IBaseView<P>, P extends IBasePresenter<V>> impl
     public void onResume(V view) {
         getPresenter();
         LogUtils.d("Proxy onResume");
-        if (presenter != null && !isAttchView){
+        if (presenter != null && !isAttachView){
             presenter.onAttachView(view);
-            isAttchView = true;
+            isAttachView = true;
         }
     }
     /**
      * 销毁Presenter持有的View
      */
     private void onDetachView() {
-        if (presenter != null && isAttchView) {
+        if (presenter != null && isAttachView) {
             presenter.onDetachView();
-            isAttchView = false;
+            isAttachView = false;
         }
     }
 

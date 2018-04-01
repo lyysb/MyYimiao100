@@ -2,7 +2,6 @@ package com.yimiao100.sale.mvpbase;
 
 /**
  * Presenter工厂实现类
- * Created by Michel on 2017/12/18.
  */
 
 public class PresenterFactoryImpl<V extends IBaseView<P>, P extends IBasePresenter<V>> implements PresenterFactory<V, P> {

@@ -7,7 +7,6 @@ import com.blankj.utilcode.util.LogUtils;
 
 /**
  * 真正的BasePresenter
- * Created by Michel on 2017/12/15.
  */
 
 public class BasePresenter<V extends IBaseView> implements IBasePresenter<V> {

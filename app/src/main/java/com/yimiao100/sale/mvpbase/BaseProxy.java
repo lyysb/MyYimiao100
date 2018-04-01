@@ -6,9 +6,7 @@ import com.blankj.utilcode.util.LogUtils;
 
 /**
  * 代理实现类，用来管理Presenter的生命周期，还有和view之间的关联
- * Created by Michel on 2017/12/18.
  */
-
 public class BaseProxy<V extends IBaseView<P>, P extends IBasePresenter<V>> implements PresenterProxyInterface<V, P>{
 
     /**

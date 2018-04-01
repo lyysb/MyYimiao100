@@ -5,7 +5,6 @@ import android.support.annotation.Nullable;
 
 /**
  * MVP-Presenter
- * Created by michel on 2017/12/11.
  * 绑定的View必须继承自IBaseView
  */
 public interface IBasePresenter<V extends IBaseView> {

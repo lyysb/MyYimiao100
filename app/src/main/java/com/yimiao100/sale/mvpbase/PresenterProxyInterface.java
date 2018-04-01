@@ -2,7 +2,6 @@ package com.yimiao100.sale.mvpbase;
 
 /**
  * 代理接口
- * Created by Michel on 2017/12/18.
  */
 
 public interface PresenterProxyInterface<V extends IBaseView<P>, P extends IBasePresenter<V>> {

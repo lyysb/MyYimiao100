@@ -6,7 +6,6 @@ import java.lang.annotation.RetentionPolicy;
 
 /**
  * 创建Presenter的注解
- * Created by Michel on 2017/12/18.
  */
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)

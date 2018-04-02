@@ -136,14 +136,16 @@ public class DetailActivity extends BaseActivity<DetailContract.View, DetailCont
         switch (v.getId()) {
             case R.id.detail_promotion:
                 LogUtil.d("选择：" + options1);
+                String userAccountType = "";
                 switch (options1) {
                     case 0:
-                        PromotionActivity.start(this, "personal", resources);
+                        userAccountType = "personal";
                         break;
                     case 1:
-                        PromotionActivity.start(this, "corporate", resources);
+                        userAccountType = "corporate";
                         break;
                 }
+                PromotionActivity.start(this, userAccountType, resources);
                 break;
         }
     }
@@ -219,14 +221,14 @@ public class DetailActivity extends BaseActivity<DetailContract.View, DetailCont
         ivDelete.setOnClickListener(v -> {
             // 如果只剩下一条数据，则不删除
             if (itemLayout.getChildCount() == 1) {
-                ToastUtils.showShort("至少保留一条数据");
+                ToastUtils.showShort(getString(R.string.detail_at_least_one));
                 return;
             }
             // 移除View
             int deletePosition = list.indexOf(actI);
             itemLayout.removeViewAt(deletePosition);
             list.remove(deletePosition);
-            ToastUtils.showShort("您删除了一条数据");
+            ToastUtils.showShort(getString(R.string.detail_delete));
             // 记录所删除数据的key，即资源id
             ResourceListBean temp = resources.valueAt(resources.size() - deletePosition - 1);
             LogUtils.d("移除：" + temp.getAreaName());

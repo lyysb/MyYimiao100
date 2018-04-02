@@ -150,7 +150,7 @@ public class ResourceActivity extends BaseActivity<ResourceContract.View, Resour
         tvCategoryFilter.setOnClickListener(v -> {
             // 展示产品过滤条目
             if (tvVendorFilter.getText().toString().isEmpty()) {
-                ToastUtils.showShort("请先选择厂家");
+                ToastUtils.showShort(getString(R.string.vendor_first));
                 return;
             }
             resourceFilter.setPicker(categoryFilters);
@@ -290,12 +290,12 @@ public class ResourceActivity extends BaseActivity<ResourceContract.View, Resour
             if (!currentItem.isChecked()) {
                 ResourceListBean lastItem = resources.valueAt(0);
                 if (!TextUtils.equals(currentItem.getVendorName(), lastItem.getVendorName())) {
-                    ToastUtils.showShort("请添加同一厂家");
+                    ToastUtils.showShort(getString(R.string.vendor_same));
                     select.setChecked(false);
                     return;
                 }
                 if (!TextUtils.equals(currentItem.getCategoryName(), lastItem.getCategoryName())) {
-                    ToastUtils.showShort("请添加同一产品");
+                    ToastUtils.showShort(getString(R.string.category_same));
                     select.setChecked(false);
                     return;
                 }
@@ -357,7 +357,7 @@ public class ResourceActivity extends BaseActivity<ResourceContract.View, Resour
                     item.setChecked(true);
                 }
             } else {
-                ToastUtils.showShort("请选择同一厂家、同一产品的疫苗");
+                ToastUtils.showShort(getString(R.string.vaccine_all));
             }
         }
         selectAllView.updateSelectCount(resources.size() + "个");
@@ -369,7 +369,7 @@ public class ResourceActivity extends BaseActivity<ResourceContract.View, Resour
      */
     private void enterDetail() {
         if (resources.size() == 0) {
-            ToastUtils.showShort("请至少选择一条资源");
+            ToastUtils.showShort(getString(R.string.vaccine_at_least));
             return;
         }
         DetailActivity.start(this, resources);

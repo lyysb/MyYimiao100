@@ -64,9 +64,7 @@ public class PayActivity extends BaseActivity<PayContract.View, PayContract.Pres
     * */
 
     /**
-     * @param context 上下文
-     * @param payAmount 实付款金额-bidDeposit
-     * @param bizData 批量竞标json
+     * 从 疫苗资源列表 跳转而来
      */
     public static void startFromVaccineRes(Context context, String from, double payAmount, String bizData) {
         Intent intent = new Intent(context, PayActivity.class);
@@ -76,6 +74,9 @@ public class PayActivity extends BaseActivity<PayContract.View, PayContract.Pres
         context.startActivity(intent);
     }
 
+    /**
+     * 从 我的业务 跳转而来
+     */
     public static void startFromVaccineBus(Context context, String from, double payAmount, String userAccountType, String vendorId, String orderIds) {
         Intent intent = new Intent(context, PayActivity.class);
         intent.putExtra("from", from);
@@ -140,7 +141,7 @@ public class PayActivity extends BaseActivity<PayContract.View, PayContract.Pres
                 .throttleFirst(1, TimeUnit.SECONDS)
                 .subscribe(o -> {
                     if (!cbWxPay.isChecked()) {
-                        ToastUtils.showShort("请选择支付方式");
+                        ToastUtils.showShort(getString(R.string.pay_way_first));
                         return;
                     }
                     // 微信支付
@@ -170,13 +171,13 @@ public class PayActivity extends BaseActivity<PayContract.View, PayContract.Pres
         // 检查是否安装微信
         if (!weChatId.isWXAppInstalled()) {
             // 提示用户安装微信
-            ToastUtils.showShort("请先安装微信");
+            ToastUtils.showShort(getString(R.string.install_wx));
             return;
         }
         // 检查微信版本是否支持
         if (weChatId.getWXAppSupportAPI() < Build.PAY_SUPPORTED_SDK_INT) {
             // 提示更新微信版本
-            ToastUtils.showShort("您目前微信版本不支持支付，请先升级微信");
+            ToastUtils.showShort(getString(R.string.update_wx));
             return;
         }
         // 发起支付
@@ -210,19 +211,19 @@ public class PayActivity extends BaseActivity<PayContract.View, PayContract.Pres
         //-1 发生错误 可能的原因：签名错误、未注册APPID、项目设置APPID不正确、注册的APPID与设置的不匹配、其他异常等。
         //-2 用户取消 发生场景：用户不支付了，点击取消，返回APP。
         AlertDialog.Builder builder = new AlertDialog.Builder(PayActivity.this);
-        builder.setTitle("支付结果");
+        builder.setTitle(getString(R.string.pay_result));
         switch (code) {
             case 0:
-                builder.setMessage("支付成功");
+                builder.setMessage(getString(R.string.pay_success));
                 break;
             case -1:
-                builder.setMessage("支付失败，请稍后再试");
+                builder.setMessage(getString(R.string.pay_failure));
                 break;
             case -2:
-                builder.setMessage("支付取消");
+                builder.setMessage(getString(R.string.pay_cancel));
                 break;
             default:
-                builder.setMessage("支付失败，请稍后再试");
+                builder.setMessage(getString(R.string.pay_failure));
                 break;
         }
         builder.setCancelable(false);

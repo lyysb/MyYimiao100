@@ -224,4 +224,56 @@
         请求数据中..请稍后
     </string>
 
+    <string name="vendor_first">
+        请先选择厂家
+    </string>
+    <string name="vendor_same">
+        请添加同一厂家
+    </string>
+    <string name="category_same">
+        请添加同一产品
+    </string>
+    <string name="vaccine_all">
+        请选择同一厂家、同一产品的疫苗
+    </string>
+    <string name="vaccine_at_least">
+        请至少选择一条资源
+    </string>
+
+    <string name="detail_at_least_one">
+        至少保留一条资源
+    </string>
+    <string name="detail_delete">
+        您删除了一条资源
+    </string>
+
+    <string name="pay_way_first">
+        请先选择支付方式
+    </string>
+    <string name="install_wx">
+        请先安装微信
+    </string>
+    <string name="update_wx">
+        您目前微信版本不支持支付，请先升级微信
+    </string>
+    <string name="pay_result">
+        支付结果
+    </string>
+    <string name="pay_success">
+        支付成功
+    </string>
+    <string name="pay_failure">
+        支付失败，请稍后再试
+    </string>
+    <string name="pay_cancel">
+        支付取消
+    </string>
+
+    <string name="no_data">
+        暂无数据
+    </string>
+    <string name="no_unpaid_order">
+        当前暂无未支付状态订单
+    </string>
+
 </resources>

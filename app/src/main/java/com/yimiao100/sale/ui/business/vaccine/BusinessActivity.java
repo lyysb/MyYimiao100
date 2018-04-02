@@ -241,12 +241,12 @@ public class BusinessActivity extends BaseActivity<BusinessContract.View, Busine
      */
     private void selectAllUnpaidOrder() {
         if (list.size() == 0) {
-            ToastUtils.showShort("暂无数据");
+            ToastUtils.showShort(getString(R.string.no_data));
             return;
         }
         // 如果不存在“未支付”状态订单，不做任何操作
         if (unpaidCount == 0) {
-            ToastUtils.showShort("当前暂无未支付状态订单");
+            ToastUtils.showShort(getString(R.string.no_unpaid_order));
             return;
         }
 
@@ -288,6 +288,7 @@ public class BusinessActivity extends BaseActivity<BusinessContract.View, Busine
                     item.setChecked(true);
                 }
             } else {
+                // 暂时并不做这一限制
                 ToastUtils.showShort("只能选择同一产品订单");
             }
         }

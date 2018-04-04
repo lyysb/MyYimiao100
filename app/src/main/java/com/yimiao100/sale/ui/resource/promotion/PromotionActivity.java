@@ -129,7 +129,7 @@ public class PromotionActivity extends BaseActivity {
         finalCount = (TextView) findViewById(R.id.promotion_final_count);
         finalAmount = (TextView) findViewById(R.id.promotion_final_amount);
         finalCount.setText(tempCount + resourceDetail.getUnits());
-        finalAmount.setText(FormatUtils.MoneyFormat(tempAmount) + "(人民币)");
+        finalAmount.setText("¥" + FormatUtils.MoneyFormat(tempAmount) + "(人民币)");
         // 进入支付
         findViewById(R.id.promotion_submit).setOnClickListener(v -> showConfirmDialog());
     }
@@ -234,7 +234,7 @@ public class PromotionActivity extends BaseActivity {
         // 推广保证金=(基础服务量+竞标数量)*推广保证金基数
         TextView itemTotalAmount = (TextView) itemView.findViewById(R.id.promotion_total_amount);
         String format = FormatUtils.MoneyFormat(quota * saleDeposit);
-        itemTotalAmount.setText(format + "(人民币)");
+        itemTotalAmount.setText("¥" + format + "(人民币)");
         // 竞标增量
         int increment = resource.getIncrement();
         // 每次改变量
@@ -268,7 +268,7 @@ public class PromotionActivity extends BaseActivity {
         itemCount.setText(currentCount + "");
         itemTotalCount.setText((quota + currentCount) + units);
         String formatVal = FormatUtils.MoneyFormat((quota + currentCount) * saleDeposit);
-        itemTotalAmount.setText(formatVal + "(人民币)");
+        itemTotalAmount.setText("¥" + formatVal + "(人民币)");
         // 更新数据记录
         promotions.put(resource.getId(), currentCount);
         // 更新底部显示
@@ -283,7 +283,7 @@ public class PromotionActivity extends BaseActivity {
             tempAmount += (tempNote.getBaseCount() + tempNote.getCurrentCount()) * tempNote.getBaseAmount();
         }
         finalCount.setText(tempCount + resource.getUnits());
-        finalAmount.setText(FormatUtils.MoneyFormat(tempAmount) + "(人民币)");
+        finalAmount.setText("¥" + FormatUtils.MoneyFormat(tempAmount) + "(人民币)");
     }
 
     @Override

@@ -25,6 +25,7 @@
 
         <com.yimiao100.sale.view.SelectAllView
             android:id="@+id/resource_bottom"
+            app:select_note="已选订单："
             android:layout_alignParentBottom="true"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>

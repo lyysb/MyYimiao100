@@ -2,6 +2,7 @@ package com.yimiao100.sale;
 
 import android.util.DisplayMetrics;
 
+import com.blankj.utilcode.util.ToastUtils;
 import com.blankj.utilcode.util.Utils;
 import com.bumptech.glide.annotation.GlideModule;
 import com.facebook.drawee.backends.pipeline.Fresco;
@@ -69,6 +70,7 @@ public class MyApplication extends Application {
      */
     private void initUtilCode() {
         Utils.init(this);
+        ToastUtils.setMsgColor(getResources().getColor(R.color.black));
     }
 
     /**

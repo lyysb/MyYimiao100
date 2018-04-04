@@ -330,6 +330,10 @@ public class BusinessActivity extends BaseActivity<BusinessContract.View, Busine
             bigDecimal = bigDecimal.add(decimal);
         }
         double payAmount = bigDecimal.doubleValue();
+        if (businesses.size() == 0) {
+            ToastUtils.showShort(getString(R.string.order_at_least_one));
+            return;
+        }
         PayActivity.startFromVaccineBus(this, "vaccine_bus", payAmount, userAccountType, vendorId, orderIds.toString());
     }
 

@@ -228,23 +228,23 @@
         请先选择厂家
     </string>
     <string name="vendor_same">
-        请添加同一厂家
+        请选择同一厂家
     </string>
     <string name="category_same">
-        请添加同一产品
+        请选择同一产品
     </string>
     <string name="vaccine_all">
-        请选择同一厂家、同一产品的疫苗
+        请选择同一厂家产品
     </string>
     <string name="vaccine_at_least">
         请至少选择一条资源
     </string>
 
     <string name="detail_at_least_one">
-        至少保留一条资源
+        请至少保留一条资源
     </string>
     <string name="detail_delete">
-        您删除了一条资源
+        资源删除成功
     </string>
 
     <string name="pay_way_first">
@@ -272,8 +272,11 @@
     <string name="no_data">
         暂无数据
     </string>
+    <string name="order_at_least_one">
+        请选择要支付的订单
+    </string>
     <string name="no_unpaid_order">
-        当前暂无未支付状态订单
+        当前暂无待支付状态订单
     </string>
 
 </resources>

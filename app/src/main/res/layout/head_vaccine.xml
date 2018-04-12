@@ -25,7 +25,7 @@
 
         <TextView
             android:id="@+id/resource_filter_vendor"
-            android:hint="厂家"
+            android:hint="生产厂家"
             android:background="@drawable/shape_resources"
             android:gravity="center"
             android:textSize="12sp"

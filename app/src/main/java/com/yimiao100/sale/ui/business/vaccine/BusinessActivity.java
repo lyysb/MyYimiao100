@@ -264,21 +264,23 @@ public class BusinessActivity extends BaseActivity<BusinessContract.View, Busine
                 ResourceListBean item = list.get(i);
                 // 判断当前条目是否为“未支付”状态
                 if (TextUtils.equals(item.getOrderStatus(), "unpaid")) {
-                    // 如果当前未支付订单集合没有数据
-                    if (businesses.size() == 0) {
-                        businesses.put(item.getId(), item);
-                    } else {
-                        // 判断当前的订单产品，是否和之前订单产品相同
-                        ResourceListBean old = businesses.valueAt(0);
-                        if (TextUtils.equals(old.getCategoryName(), item.getCategoryName())) {
-                            // 相同，则添加记录
-                            businesses.put(item.getId(), item);
-                        } else {
-                            // 存在不同，则清空记录
-                            businesses.clear();
-                            break;
-                        }
-                    }
+                    // 如果是未支付状态。则直接添加到记录集合
+                    businesses.put(item.getId(), item);
+//                    // 如果当前未支付订单集合没有数据----废弃，这里是判断产品是否相同
+//                    if (businesses.size() == 0) {
+//                        businesses.put(item.getId(), item);
+//                    } else {
+//                        // 判断当前的订单产品，是否和之前订单产品相同-暂不判断
+//                        ResourceListBean old = businesses.valueAt(0);
+//                        if (TextUtils.equals(old.getCategoryName(), item.getCategoryName())) {
+//                            // 相同，则添加记录
+//                            businesses.put(item.getId(), item);
+//                        } else {
+//                            // 存在不同，则清空记录
+//                            businesses.clear();
+//                            break;
+//                        }
+//                    }
                 }
             }
             // 记录完毕，判断是否选中全选

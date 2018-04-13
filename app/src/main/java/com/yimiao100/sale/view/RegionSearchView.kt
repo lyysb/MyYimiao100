@@ -77,6 +77,7 @@ class RegionSearchView @JvmOverloads  constructor(
             regionPicker.show(it)
         }
 
+        // 点击搜索响应事件取消
         find<View>(R.id.region_search).setOnClickListener {
             searchClickListener?.let {
                 LogUtil.d("search region is ${regionIds.entries}")
@@ -134,6 +135,10 @@ class RegionSearchView @JvmOverloads  constructor(
                 tvArea.text = areaPicker?.get(options1)?.name
                 regionIds.put("areaId", areaPicker?.get(options1)!!.id.toString())
             }
+        }
+        searchClickListener?.let {
+            LogUtil.d("search region is ${regionIds.entries}")
+            it.regionSearch(regionIds)
         }
     }
 

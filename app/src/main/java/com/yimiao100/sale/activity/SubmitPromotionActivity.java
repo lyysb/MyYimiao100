@@ -22,6 +22,7 @@ import com.yimiao100.sale.base.BaseActivity;
 import com.yimiao100.sale.bean.ErrorBean;
 import com.yimiao100.sale.bean.ResourceListBean;
 import com.yimiao100.sale.ext.JSON;
+import com.yimiao100.sale.ui.business.vaccine.BusinessActivity;
 import com.yimiao100.sale.utils.Constant;
 import com.yimiao100.sale.utils.FormatUtils;
 import com.yimiao100.sale.utils.LogUtil;
@@ -43,7 +44,7 @@ import butterknife.OnClick;
 import okhttp3.Call;
 
 /**
- * 提交竞标保证金
+ * 提交竞标保证金--暂未弃用--只作为我的业务-疫苗单独付款用
  * Created by Michel
  */
 public class SubmitPromotionActivity extends BaseActivity implements TitleView
@@ -75,6 +76,7 @@ public class SubmitPromotionActivity extends BaseActivity implements TitleView
     private String mOrderId;
     private String mMark;
     private ProgressDialog mProgressDialog;
+    private String vendorId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -124,6 +126,7 @@ public class SubmitPromotionActivity extends BaseActivity implements TitleView
                 double deposit = order.getBidDeposit();
                 mAmount.setText("实付款：" + FormatUtils.RMBFormat(deposit));
                 mOrderId = order.getId() + "";
+                vendorId = order.getVendorId() + "";
                 LogUtil.d(mOrderId);
                 //添加参数
                 mParams.put(ORDER_ID, mOrderId);
@@ -278,18 +281,19 @@ public class SubmitPromotionActivity extends BaseActivity implements TitleView
             public void onClick(DialogInterface dialog, int which) {
                 if (0 == code) {
                     //支付成功，返回列表页
-                    Class clz = null;
                     switch (mMark) {
                         case "resource":
-                            clz = ResourcesActivity.class;
+                            // 这一步其实已经弃用
+                            Intent intent = new Intent(SubmitPromotionActivity.this, ResourcesActivity.class);
+                            intent.putExtra("userAccountType", mUserAccountType);
+                            startActivity(intent);
                             break;
                         case "order":
-                            clz = BusinessVaccineActivity.class;
+//                            clz = BusinessVaccineActivity.class;
+                            // 跳转到新的我的业务列表
+                            BusinessActivity.start(SubmitPromotionActivity.this, mUserAccountType, vendorId);
                             break;
                     }
-                    Intent intent = new Intent(SubmitPromotionActivity.this, clz);
-                    intent.putExtra("userAccountType", mUserAccountType);
-                    startActivity(intent);
                 }
                 //支付出现问题（取消，失败），不需要做任何操作。停留在支付页面
                 dialog.dismiss();

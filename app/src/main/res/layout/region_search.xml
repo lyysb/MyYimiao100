@@ -14,6 +14,8 @@
         android:id="@+id/region_province"
         android:hint="省"
         android:background="@drawable/shape_resources"
+        android:lines="1"
+        android:ellipsize="end"
         android:gravity="center"
         android:textSize="12sp"
         android:layout_weight="1"
@@ -26,6 +28,8 @@
         android:id="@+id/region_city"
         android:hint="市"
         android:background="@drawable/shape_resources"
+        android:lines="1"
+        android:ellipsize="end"
         android:gravity="center"
         android:textSize="12sp"
         android:layout_weight="1"
@@ -38,15 +42,19 @@
         android:id="@+id/region_county"
         android:hint="县/区"
         android:background="@drawable/shape_resources"
+        android:lines="1"
+        android:ellipsize="end"
         android:gravity="center"
         android:textSize="12sp"
         android:layout_weight="1"
         android:layout_width="0dp"
         android:layout_height="26dp"/>
     <View
+        android:visibility="gone"
         android:layout_width="7dp"
         android:layout_height="1dp"/>
     <ImageView
+        android:visibility="gone"
         android:id="@+id/region_search"
         android:src="@mipmap/ico_resources_search"
         android:layout_width="wrap_content"

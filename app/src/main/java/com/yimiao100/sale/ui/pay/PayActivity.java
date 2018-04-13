@@ -232,10 +232,10 @@ public class PayActivity extends BaseActivity<PayContract.View, PayContract.Pres
                 //支付成功，返回列表页
                 switch (from) {
                     case "vaccine_res":
-                        ResourceActivity.start(getApplicationContext());
+                        ResourceActivity.start(PayActivity.this);
                         break;
                     case "vaccine_bus":
-                        BusinessActivity.start(getApplicationContext(), userAccountType, vendorId);
+                        BusinessActivity.start(PayActivity.this, userAccountType, vendorId);
                         break;
                 }
             }

@@ -85,7 +85,7 @@ public abstract class BaseActivity<V extends IBaseView<P>,P extends IBasePresent
 
     @Override
     public void hideProgress() {
-        if (mProgressDialog.isShowing()) {
+        if (mProgressDialog != null && mProgressDialog.isShowing()) {
             mProgressDialog.dismiss();
         }
     }

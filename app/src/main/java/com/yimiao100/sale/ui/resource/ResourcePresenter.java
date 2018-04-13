@@ -1,5 +1,6 @@
 package com.yimiao100.sale.ui.resource;
 
+import com.blankj.utilcode.util.LogUtils;
 import com.yimiao100.sale.bean.Carousel;
 import com.yimiao100.sale.bean.ResourceResultBean;
 import com.yimiao100.sale.bean.VendorFilter;

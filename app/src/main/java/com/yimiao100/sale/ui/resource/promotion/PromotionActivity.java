@@ -130,6 +130,11 @@ public class PromotionActivity extends BaseActivity {
         finalAmount = (TextView) findViewById(R.id.promotion_final_amount);
         finalCount.setText(tempCount + resourceDetail.getUnits());
         finalAmount.setText("¥" + FormatUtils.MoneyFormat(tempAmount) + "(人民币)");
+        // 如果只有一条数据，则不显示底部竞标统计
+        if (resources.size() == 1) {
+            findViewById(R.id.promotion_detail_l1).setVisibility(View.GONE);
+            findViewById(R.id.promotion_detail_l2).setVisibility(View.GONE);
+        }
         // 进入支付
         findViewById(R.id.promotion_submit).setOnClickListener(v -> showConfirmDialog());
     }

@@ -123,7 +123,7 @@ public class ResourceActivity extends BaseActivity<ResourceContract.View, Resour
         });
         // ListView
         listView = (ListView) findViewById(R.id.resource_list);
-//        listView.setOnItemClickListener(this::navigateToResourceDetail);
+        listView.setOnItemClickListener(this::navigateToResourceDetail);
         // HeaderView
         View view = View.inflate(this, R.layout.head_vaccine, null);
         listView.addHeaderView(view, null, false);
@@ -158,7 +158,6 @@ public class ResourceActivity extends BaseActivity<ResourceContract.View, Resour
         });
         // RegionSearchView
         RegionSearchView regionSearchView = (RegionSearchView) view.findViewById(R.id.resource_search);
-        regionSearchView.setOnSearchClickListener(getPresenter()::resourceSearch);
         regionSearchView.setOnSearchClickListener(this::search);
         // SelectAllView
         selectAllView = (SelectAllView) findViewById(R.id.resource_bottom);
@@ -171,7 +170,16 @@ public class ResourceActivity extends BaseActivity<ResourceContract.View, Resour
     }
 
     private void search(HashMap<String, String> regionIds) {
+        if (regionIds.size() == 1) {
+            // 只有ProvinceID
+            searchIds.remove("cityId");
+            searchIds.remove("areaId");
+        }
+        if (regionIds.size() == 2) {
+            searchIds.remove("areaId");
+        }
         searchIds.putAll(regionIds);
+        showProgress();
         getPresenter().resourceSearch(searchIds);
     }
 
@@ -223,6 +231,9 @@ public class ResourceActivity extends BaseActivity<ResourceContract.View, Resour
         resourceFilter.setPicker(vendorFilters);
     }
 
+    /**
+     * 厂家过滤条件选中
+     */
     private void filterSelect(int options1, int options2, int options3, View v) {
         switch (v.getId()) {
             case R.id.resource_filter_vendor:
@@ -241,6 +252,9 @@ public class ResourceActivity extends BaseActivity<ResourceContract.View, Resour
                 searchIds.put("categoryId", categoryFilter.getId() + "");
                 break;
         }
+        showProgress();
+        // 进行搜索
+        getPresenter().resourceSearch(searchIds);
     }
 
     /**
@@ -449,8 +463,10 @@ public class ResourceActivity extends BaseActivity<ResourceContract.View, Resour
     @Override
     public void navigateToResourceDetail(AdapterView<?> parent, View view, int position, long id) {
         // 跳入详情
-        int resourceID = resourcesList.get(position - 1).getId();
-        ResourcesDetailActivity.start(this, resourceID);
+        ResourceListBean item = resourcesList.get(position - 1);
+        SparseArray<ResourceListBean> sparseArray = new SparseArray<>();
+        sparseArray.put(item.getId(), item);
+        DetailActivity.start(this, sparseArray);
     }
 
     @Override

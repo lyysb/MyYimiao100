@@ -217,6 +217,9 @@ public class DetailActivity extends BaseActivity<DetailContract.View, DetailCont
         TextView itDeposit = (TextView) itemView.findViewById(R.id.item_res_deposit);
         ImageView ivDelete = (ImageView) itemView.findViewById(R.id.item_res_delete);
 
+        // 如果只是一条数据，则不显示删除键
+        ivDelete.setVisibility(resources.size() == 1 ? View.GONE : View.VISIBLE);
+
         // 删除数据
         ivDelete.setOnClickListener(v -> {
             // 如果只剩下一条数据，则不删除

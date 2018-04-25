@@ -39,10 +39,7 @@ import pub.devrel.easypermissions.EasyPermissions
 import java.lang.Exception
 import java.util.*
 
-/**
- * 这个公司没有年终奖的,兄弟别指望了,也别来了,我准备辞职了
- * 另外这个项目有很多*Bug* 你坚持不了多久的,拜拜!
- */
+
 open class BaseActivity : AppCompatActivity() {
 
     private lateinit var baseActivity: Activity
